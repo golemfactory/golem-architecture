@@ -124,3 +124,30 @@ perhaps even integrity of their execution.
 
 Each of these service providers would build and use a different reputation
 system.
+
+Rationale and discussions
+==========================
+
+TODO: these are just the stubs to be re-written later with proper narration.
+
+# Exemplary business models
+
+ - Standalone service providers (current monolithic Golem Blender)
+ - Service Providers as requestors offering services to 3rd part clients
+ - Service Providers as providers offering computation power
+ - Service Providers as reputation/quality of service providers
+
+# Mapping Golem goal to real world problems
+
+ - Untrustworthy cloud (service provider and infrastructure owners)
+ - Censorship
+ - Cloud market centralization
+
+# The trap of over generality vs. app-specificness
+
+ - Over generality is already solved -- we have computers and networks, we can
+   build everything!
+ - Too much app-specificness hampers architecture decisions, which then
+   unnecessarily limits future applications :/
+ - Finding the right spot is an art, and largely falls under the "Beauty"
+   optimization, rather than "Truth" seeking ;)
