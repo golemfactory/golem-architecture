@@ -1,7 +1,7 @@
 Golem Mission Statement
 ========================
 
-# What is Golem
+## What is Golem
 
 Golem is a decentralized platform for facilitating renting of computational
 resources to clients, called **requestors**. Likewise, it can also be described
@@ -28,7 +28,7 @@ These include, but are not limited to, sandboxed execution environments to
 protect both the hosts from the payloads, as well as the payloads from the
 hosts.
 
-# How Golem is used
+## How Golem is used
 
 Each requestor defines a **job** (e.g. an executable for a service to be
 deployed) and a set of minimal **properties**, which should be satisfied by
@@ -40,7 +40,7 @@ The job might be a batch-processing (i.e. non-interactive) program, or an
 interactive network-aware service. Golem does not also make any assumptions with
 regards whether the job will be stateless or stateful.
 
-# Level of service and other requirements
+## Level of service and other requirements
 
 The requirements for nodes are generally job-specific. They may take the form of:
 
@@ -79,7 +79,7 @@ The actual implementation of how should the policy be expressed formally, as
 well as who should evaluate it and build the list of matching nodes is not part
 of this high-level document.
 
-# What functionality does Golem provide
+## What functionality does Golem provide
 
 Once the requestor has defined the policy and the job(s), the Golem network
 takes care of selecting the suitable node(s) and then sending and starting the
@@ -91,7 +91,7 @@ application/service logic as different applications/services require different
 forms of verification. In this respect Golem is analogical to the UDP protocol,
 rather than to the TCP.
 
-# Flexible reputation/scoring system
+## Flexible reputation/scoring system
 
 Golem does provide, however, an easy way for service providers to build
 reputation/scoring systems of the nodes, based on variety criteria. These
@@ -130,20 +130,20 @@ Rationale and discussions
 
 TODO: these are just the stubs to be re-written later with proper narration.
 
-# Exemplary business models
+## Exemplary business models
 
  - Standalone service providers (current monolithic Golem Blender)
  - Service Providers as requestors offering services to 3rd part clients
  - Service Providers as providers offering computation power
  - Service Providers as reputation/quality of service providers
 
-# Mapping Golem goal to real world problems
+## Mapping Golem goal to real world problems
 
  - Untrustworthy cloud (service provider and infrastructure owners)
  - Censorship
  - Cloud market centralization
 
-# The trap of over generality vs. app-specificness
+## The trap of over generality vs. app-specificness
 
  - Over generality is already solved -- we have computers and networks, we can
    build everything!
