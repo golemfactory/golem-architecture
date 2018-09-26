@@ -3,9 +3,30 @@ Golem Mission Statement
 
 # What is Golem
 
-Golem is an infrastructure for renting computational resources (e.g. CPU or GPU
-time) to clients (called **requestors**) in exchange for payments. The payments are
-made using Golem-specific, blockchain-based tokens called **GNT**.
+Golem is a decentralized platform for facilitating renting of computational
+resources to clients, called **requestors**. Likewise, it can also be described
+as a platform for **providers** to offer and rent their computational resources
+to requestors. The resources are primarily a CPU or GPU time, but in the future
+might also include e.g. storage.
+
+    TODO: I'm not entirely convinced if we should not focus on compute nodes
+    renting only? -- JR
+
+To incentives providers, Golem offers an infrastructure for implementing market
+economies.
+
+Golem strives to remain as generic as reasonably possible. This means that it
+does not try to impose any particular policies, payment or reputation schemes.
+
+Golem does, however, provide a number of building blocks, which allows **service
+providers** to build tailored solutions, by plugging in modules realizing
+particular economies, policies, or reputation systems.
+
+Golem also provides a number of mechanisms (primarily in a form of pluggable
+modules) to secure the client data and payloads, as well as the infrastructure.
+These include, but are not limited to, sandboxed execution environments to
+protect both the hosts from the payloads, as well as the payloads from the
+hosts.
 
 # How Golem is used
 
