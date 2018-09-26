@@ -30,13 +30,15 @@ hosts.
 
 # How Golem is used
 
-Each requestor defines a **job** (e.g. an executable) and a set of minimal
-**requirements**, which should be satisfied by the resources (called
-**provider** nodes) allocated for the job. Golem network takes care of selecting
-providers matching the requirements and deploying the job on these nodes.
+Each requestor defines a **job** (e.g. an executable for a service to be
+deployed) and a set of minimal **properties**, which should be satisfied by
+the resources managed by the selected provider **nodes** allocated for the job.
+Golem network takes care of selecting providers matching the requirements and
+deploying the job on these nodes.
 
 The job might be a batch-processing (i.e. non-interactive) program, or an
-interactive network-aware service.
+interactive network-aware service. Golem does not also make any assumptions with
+regards whether the job will be stateless or stateful.
 
 # Level of service and other requirements
 
