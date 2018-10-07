@@ -1,0 +1,42 @@
+# Glossary
+
+__Node__ A fundamental entity in the Golem p2p network. Each node has a unique
+Golem ID (address).
+
+__Computational resources__ Any resources which allow to run a program. In
+practice a single traditional computer or a cluster of computers.
+
+__Requestor__ A node which needs computational power. It defines the payload
+descriptor and sends out demand order to find requestors.
+
+__Provider__ A node that has computation resources to offer. It creates and
+sends out the offers. One provider might be managing many computers (e.g. in
+case of a datacenter).
+
+__Payload__ The computer program code, Docker or VM image, as well as the
+configuration and/or input data, which the requestor intends to have deployed
+and executed by the provider node(s).
+
+__Demand__ Demand is created by Requestors and contains description of the
+payload, including properties telling what capabilities the payload might
+require (e.g. specific hardware architecture or features) and optionally other
+conditions which ought to be satisfied by the provider nodes (e.g. asking only
+for nodes which are located within specific country). Most of the content of the
+Demand is opaque for the Golem network.
+
+__Offer__ Offer is created by Provider nodes and contains the description of the
+computing resources the node has to offer, as well as any optional conditions
+for their use (e.g. limiting their availability only to certain requestor
+nodes).
+
+__Contract Note__ A digitally signed statement, issued by a provider node, once
+it accepted a demand order. The statement is signed with the key which is
+unambiguously connected to the Golem ID of the provider node.
+
+__Service Provider__ A 3rd-party business entity which uses Golem network to
+provide some services to its customers. The customers might be completely
+unaware of the Golem network, e.g. consumers of a 3D rendering service running
+on the Golem nodes. It is also possible for one Service Provider to provide
+services  used by other Service Providers (or Requestors), such as e.g.
+reputation or verification. **TODO**: consider a different name to avoid
+overloading of the "provider" term.
