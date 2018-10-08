@@ -22,6 +22,9 @@ category, thus creating a cartesian product of all the category sets.
 
 7. Use only specific providers (white- or non-black-listed-)
 
+8. Provider issued an offer, but later becomes unable to accept demands (e.g.
+due to being busy with other payloads)
+
 ## Service architecture scenarios
 
 1. Requestor nodes also used as application/service clients (Brass Blender case)
