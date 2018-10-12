@@ -25,6 +25,11 @@ category, thus creating a cartesian product of all the category sets.
 8. Provider issued an offer, but later becomes unable to accept demands (e.g.
 due to being busy with other payloads)
 
+9. Service Provider might want (need to) _attest_ to its customers (who might,
+or might not be part of the Golem network), that the services/applications it
+offers have indeed been deployed on Goilem nodes _with specific properties_
+(e.g. of certain reputation or not located within specific country).
+
 ## Service architecture scenarios
 
 1. Requestor nodes also used as application/service clients (Brass Blender case)
