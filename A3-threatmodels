@@ -1,0 +1,16 @@
+## Assumptions
+
+- Providers might be hostile
+  - might cheat about resources
+  - might tamper with requestor's payloads
+- Providers might not be reliable
+- Requestors might be hostile
+  - might cheat about payments
+  - might wish to attack provider infrastructure
+- Requestors might want decent quality of services
+- Some requestors might want to use only specific providers
+  - e.g. those they trust not to attack their payloads and data
+  - e.g. those they have a (outside protocol) business relationship
+- Some providers might want to serve only specific requestors
+  - e.g. those they trust not to attack their infrastructure
+  - e.g. those they have a (outside protocol) business relationship
