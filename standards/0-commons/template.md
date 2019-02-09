@@ -1,7 +1,7 @@
 # Property set name
 _property set description, purpose_
 
-## Property 1 Name:Type
+## Property 1 Name : Type
 
 _Property description_
 
