@@ -8,7 +8,8 @@ Specifications of CPU assigned to a service
 CPU vendor
 
 #### `golem.inf.cpu.model`
-CPU model name
+CPU model name.
+(note: this is a scalar property, ie. we do not attempt to model very unusual variants or nuances like multi-CPU-model host machines... Common sense! ;) )
 
 #### `golem.inf.cpu.cores`
 Number of CPU cores
