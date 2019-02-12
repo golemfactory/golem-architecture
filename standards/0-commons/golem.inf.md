@@ -1,7 +1,7 @@
 # Golem Infrastructural Properties
 Properties which describe infrastructural aspects of Golem service (hardware parameters, software platform parameters)
 
-## `golem.inf.cores : Number`
+## `golem.inf.cores : Number (int32)`
 
 Number of cores assigned to service.
 
@@ -9,24 +9,30 @@ Number of cores assigned to service.
 
 * `golem.inf.cores=4` - Declares 4 cores available to a requestor's software.
 
-## `golem.inf.ram.gb : Number`
+## `golem.inf.ram.gb : Number (float)`
 _Description_
 
 ### Sample values
 
 * `golem.inf.ram.gb=16` - Declares 16 GB RAM available to a requestor's software.
 
-## `golem.inf.cpu.platform : String`
-_Description_
+## `golem.inf.cpu.architecture : String`
+CPU architecture.
 
-### Sample values
-
-* `golem.inf.cpu.platform="x86"` - Declares x86 CPU available.
-* `golem.inf.cpu.platform="x64"` - Declares x64 CPU available.
-* `golem.inf.cpu.platform="arm"` - Declares ARM CPU available.
+### Value enum
+|Value| Description |
+|---|---|
+|"x86"|Intel x86/x64 architecture|
 
 ## `golem.inf.cpu.bit : List of String`
-_Description_
+
+CPU bitness.
+
+### Value enum
+|Value| Description |
+|---|---|
+|"32"|32-bit CPU|
+|"64"|64-bit CPU|
 
 ### Sample values
 
@@ -34,7 +40,7 @@ _Description_
 * `golem.inf.cpu.bit=["32","64"]` - Declares availability of both 32-bit and 64-bit platform.
 
 
-## `golem.inf.disk.gb : Number`
+## `golem.inf.disk.gb : Number (double)`
 _Description_
 
 ### Sample values
@@ -45,9 +51,9 @@ _Description_
 
 # Sample property block
 ```
-golem.inf.cores=
-golem.inf.cpu.platform=
-golem.inf.ram.gb=
-golem.inf.cpu.bit=
-golem.inf.disk.gb=
+golem.inf.cores=2
+golem.inf.cpu.platform="x86"
+golem.inf.ram.gb=4
+golem.inf.cpu.bit=["32","64"]
+golem.inf.disk.gb=30
 ```
