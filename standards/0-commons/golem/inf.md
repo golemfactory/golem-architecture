@@ -40,20 +40,10 @@ CPU bitness.
 * `golem.inf.cpu.bit=["32","64"]` - Declares availability of both 32-bit and 64-bit platform.
 
 
-## `golem.inf.disk.gb : Number (double)`
-_Description_
-
-### Sample values
-
-* `golem.inf.disk.gb=30` - Declares 30 GB of storage available to guest process.
-* `golem.inf.disk.gb=15.5` - Declares 15.5 GB of storage available to guest process.
-
-
 # Sample property block
 ```
 golem.inf.cores=2
 golem.inf.cpu.platform="x86"
 golem.inf.ram.gb=4
 golem.inf.cpu.bit=["32","64"]
-golem.inf.disk.gb=30
 ```
