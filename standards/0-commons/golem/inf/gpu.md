@@ -20,7 +20,7 @@ GPU RAM available in GiB
 # Sample property block
 ```
 golem.inf.gpu.vendor="NVidia"
-golem.inf.gpu.model=”GeForce GTX 960”
+golem.inf.gpu.model="GeForce GTX 960"
 golem.inf.gpu.count=8
 golem.inf.gpu.gib=3.947
 ```
