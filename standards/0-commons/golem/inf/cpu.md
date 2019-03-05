@@ -37,10 +37,10 @@ Total number of CPU threads assigned to service. It is a sum of CPU threads poss
 * `golem.inf.cpu.threads=8` - Declares 8 cores available
 
 
-## `golem.inf.cpu.max_frequency : Number (float)`
+## `golem.inf.cpu.max_frequency_mhz : Number (float)`
 Maximum allowed CPU clock frequency in Mhz
 ### Sample values
-* `golem.inf.cpu.max_frequency=3400` - Declares maximum CPU frequency of 3400 Mhz 
+* `golem.inf.cpu.max_frequency_mhz=3400` - Declares maximum CPU frequency of 3400 Mhz 
 
 
 ## `golem.inf.cpu.vendor : String`
@@ -64,7 +64,7 @@ golem.inf.cpu.architecture="x86"
 golem.inf.cpu.bit=["32","64"]
 golem.inf.cpu.cores=4
 golem.inf.cpu.threads=8
-golem.inf.cpu.max_frequency=3400
+golem.inf.cpu.max_frequency_mhz=3400
 golem.inf.cpu.vendor="Intel"
 golem.inf.cpu.model="i7-3770"
 golem.inf.cpu.capabilities=["fpu","sse","sse2","ssse3","sse4_1","sse4_2","ht","x86-64","avx","avx2"]
