@@ -48,15 +48,30 @@ CPU vendor
 ### Sample values
 * `golem.inf.cpu.vendor="Intel"` - Declares Intel's CPU 
 
+
 ## `golem.inf.cpu.model : String`
 CPU model
 ### Sample values
 * `golem.inf.cpu.model="i7-3770"` - Declares i7-3770 CPU
 
+
 ## `golem.inf.cpu.capabilities : List[String]`
 CPU capability flags 
 ### Sample values
 * `golem.inf.cpu.capabilities=["fpu","sse","sse2","ssse3","sse4_1","sse4_2","ht","x86-64","avx","avx2"]`
+
+
+## `golem.inf.cpu.l1cache.kib : Number (float)`
+Amount of L1 cache in kiB
+
+
+## `golem.inf.cpu.l2cache.kib : Number (float)`
+Amount of L2 cache in kiB
+
+
+## `golem.inf.cpu.l3cache.kib : Number (float)`
+Amount of L3 cache in kiB
+
 
 # Sample property block
 ```
@@ -68,5 +83,7 @@ golem.inf.cpu.max_frequency_mhz=3400
 golem.inf.cpu.vendor="Intel"
 golem.inf.cpu.model="i7-3770"
 golem.inf.cpu.capabilities=["fpu","sse","sse2","ssse3","sse4_1","sse4_2","ht","x86-64","avx","avx2"]
-
+golem.inf.cpu.l1cache.kib=32
+golem.inf.cpu.l2cache.kib=256
+golem.inf.cpu.l3cache.kib=8192
 ```
