@@ -26,21 +26,21 @@ CPU bitness
 
 
 ## `golem.inf.cpu.cores : Number (int32)`
-Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from different CPUs
+Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from multiple CPUs
 ### Sample values
-* `golem.inf.cpu.cores=4` - Declares 4 cores available
+* `golem.inf.cpu.cores=4`
 
 
 ## `golem.inf.cpu.threads : Number (int32)`
-Total number of CPU threads assigned to service. It is a sum of CPU threads possibly from different CPUs and cores
+Total number of CPU threads assigned to service. It is a sum of CPU threads possibly from multiple CPUs and cores
 ### Sample values
-* `golem.inf.cpu.threads=8` - Declares 8 cores available
+* `golem.inf.cpu.threads=8`
 
 
 ## `golem.inf.cpu.max_frequency_mhz : Number (float)`
 Maximum allowed CPU clock frequency in Mhz
 ### Sample values
-* `golem.inf.cpu.max_frequency_mhz=3400` - Declares maximum CPU frequency of 3400 Mhz 
+* `golem.inf.cpu.max_frequency_mhz=3400` 
 
 
 ## `golem.inf.cpu.vendor : String`
@@ -51,6 +51,8 @@ CPU vendor
 
 ## `golem.inf.cpu.model : String`
 CPU model
+(note: this is a scalar property, ie. we do not attempt to model very unusual variants
+or nuances like multi-CPU-model host machines... Common sense! )
 ### Sample values
 * `golem.inf.cpu.model="i7-3770"` - Declares i7-3770 CPU
 
