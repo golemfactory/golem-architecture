@@ -1,5 +1,9 @@
 ## Brass Golem blender use case
 
+This article contains examples of Demands & Offers which cover the Brass Golem Blender batch computation use case.
+
+**Note:** Blender computation service can be described in multiple ways.
+
 ### Props accepted
 ```properties
 # inf

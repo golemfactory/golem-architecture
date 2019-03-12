@@ -1,13 +1,13 @@
-# `golem.inf.mem`
-Specifications of operating memory assigned to a service
+# Golem Infrastructural Properties - Memory
+Specifications of operating memory assigned to a service.
 
  #### `golem.inf.mem.gib : Number (float)`
-Amount of RAM in GiB
+Amount of RAM available (in GiB).
 
- #### `golem.inf.mem.mhz : Number (float)`
-RAM clock frequency in MHz
+ #### `golem.inf.mem.freq_mhz : Number (float)`
+RAM clock frequency (in MHz).
 
- ##### Sample values
+ ##### **Examples**
 
  ```
 golem.inf.mem.gib=16

@@ -3,7 +3,7 @@ Properties which describe storage properties of Golem service (hardware paramete
 
 ## `golem.inf.storage.gib : Number (float)`
 Storage available in GiB
-### Sample values
+### **Examples**
 * `golem.inf.storage.gib=30` - Declares 30 GB of storage available to guest process
 * `golem.inf.storage.gib=15.5` - Declares 15.5 GB of storage available to guest process
 

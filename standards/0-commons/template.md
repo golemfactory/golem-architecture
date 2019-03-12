@@ -18,9 +18,9 @@ _Enum dictionaries where applicable_
 |dblah|jinx|
 
 
-### (Optional) Sample values
+### (Optional) **Examples**
 
-_Sample values with descriptions (note that for "enum" properties, each enum value needs to be specified)_
+_**Examples** with descriptions (note that for "enum" properties, each enum value needs to be specified)_
 
 * Sample value 1 - _Description 1_
 * Sample value 1 - _Description 2_
@@ -28,6 +28,6 @@ _Sample values with descriptions (note that for "enum" properties, each enum val
 
 # Sample property block
 ```
-<sample block of all properties and values as specified by this>
+<sample block of all properties and values as specified by this namespace>
 ```
 

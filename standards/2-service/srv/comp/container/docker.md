@@ -1,8 +1,6 @@
 # Docker Service 
 Ability to run a containerized software component, within a Docker host.
 
-## 
-
 ## Common Properties
 
 * [golem.inf](../0-commons/golem.inf.md)
@@ -15,17 +13,19 @@ Indicates Docker images which are to be hosted by the Provider. The Offer may ei
 
 This property is a list of String values, where each item in the list is an image descriptor (identifying a docker image precisely, the format of image name is as in the ‘[`docker pull`](https://docs.docker.com/engine/reference/commandline/pull/)’ command).
 
-### Sample values
+### **Examples**
 
 * `golem.svc.docker.image=["golemfactory/blender"]` - declares Golem Factory's Blender image.
 * `golem.svc.docker.image=["myregistry.local:5000/testing/test-image"]` - example of specifying a docker image from a non-GitHub repository.
+* `golem.svc.docker.image` - declares that the Provider supports the `golem.svc.docker.image` property, which can be referred to by Demand's constraint expressions. The dynamic resolution of the property value shall unveil the images currently supported by the Provider.
   
 ## `golem.svc.docker.benchmark{<image>} : Number` 
 A benchmark performance metric calculated for specific docker image for the Provider node.
 
-_(Note: it should probably be specified how a Provider host should run the image to measure the benchmark)_
+_(**Note:** (TODO) it must be specified how a Provider host should run the image to measure the benchmark. This property defines the benchmark trigger standard which needs to be supported by the Golem Node's Docker execution environment.)_
   
-## `golem.svc.docker.timeout.secs : Number` 
-A timeout value for docker-hosted computation (used for docker-based batch processes)
+## `golem.svc.docker.timeout_secs : Number` 
+A timeout value for docker-hosted computation (used for docker-based batch processes). 
+
 
 

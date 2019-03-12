@@ -1,21 +1,17 @@
-# `golem.inf.gpu`
-GPU specifications
+# Golem Infrastructural Properties - GPU
+Specifications of GPU computing power assigned to a service.
 
 ## `golem.inf.gpu.vendor : String`
-GPU card vendor name
-
+GPU card vendor name.
 
 ## `golem.inf.gpu.model : String`
-_GPU card model name
-
+GPU card model name.
 
 ## `golem.inf.gpu.count : Number (int32)`
-Number of GPU cards
-
+Number of GPU cards.
 
 ## `golem.inf.gpu.gib : Number (float)`
-GPU RAM available in GiB
-
+GPU RAM available (in GiB)
 
 # Sample property block
 ```
