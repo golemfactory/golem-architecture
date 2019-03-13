@@ -1,5 +1,5 @@
 # Pricing Models
-Pricing Models
+This namespace defines **pricing models** for Golem computation resources. 
 
 ## `golem.com.pricing.model : String`
 Type of pricing function describing the pricing model.
@@ -10,6 +10,7 @@ Type of pricing function describing the pricing model.
 |"linear"| Price is a linear function of vector of counters. |
 |"stepped"| Price is specified for... |
 |"fixed"| Fized price for one-off. |
+| ... | ... |
 
 
 ## `golem.com.pricing.model.linear.coeffs : List of Number`

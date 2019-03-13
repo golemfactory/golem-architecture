@@ -2,23 +2,28 @@
 
 This article contains examples of Demands & Offers which cover the Brass Golem Blender batch computation use case.
 
-**Note:** Blender computation service can be described in multiple ways.
+**Note:** Blender computation service can be described in various ways.
 
-### Props accepted
+## Scenario 1 - Containerized Golem Brass Blender Docker Image
+
+One way of providing Blender computation service is to host a standardized Docker Image with Blender logic in it. The Provider assigns a dedicated about of machine resources to Docker Host, and declares an Offer describing a generic Docker-based hosting capability with a known amount of resources.
+
+### Properties used
 ```properties
-# inf
+# srv 
+golem.svc.docker.image
+golem.svc.docker.benchmark{<image>}
 golem.inf.cpu.cores
+golem.inf.cpu.threads
 golem.inf.storage.gib
 golem.inf.mem.gib
-golem.brass.blender.performance
-golem.net.mask
-golem.brass.min_version
 
 # com
+golem.usage.vector
 golem.com.payment.scheme
-golem.com.pricing.model.linear.micro_gnt_per_second
-
-# service
+golem.com.pricing.est{<usage_vector>}
+golem.com.pricing.model
+golem.com.pricing.model.linear.coeffs
 
 ```
 
@@ -26,16 +31,18 @@ golem.com.pricing.model.linear.micro_gnt_per_second
 
 ```properties
 # props
+golem.svc.docker.image=["golemfactory/blender"]
+golem.svc.docker.benchmark{golemfactory/blender}=682.1076
+golem.svc.docker.benchmark{*}
 golem.inf.cpu.cores=4
 golem.inf.cpu.threads=8
 golem.inf.mem.gib=16
 golem.inf.storage.gib=30
-golem.brass.blender.performance=682.107663718836
-golem.brass.min_version=v"0.19.1"
-golem.com.payment.scheme="after"
+
 golem.usage.vector=["golem.usage.duration_sec"]
+golem.com.payment.scheme="after"
 golem.com.pricing.model="linear"
-golem.com.pricing.model.linear.coeffs=[200000]
+golem.com.pricing.model.linear.coeffs=[20]
 
 # constraints
 ()
@@ -44,15 +51,68 @@ golem.com.pricing.model.linear.coeffs=[200000]
 ### Sample Demand
 
 ```properties
-#properties
-golem.inf.cpu.cores=4
-golem.inf.cpu.threads=8
-golem.inf.mem.gib=16
-golem.inf.storage.gib=30
-golem.brass.blender.performance=682.107663718836
-golem.net.mask="???"
-golem.brass.min_version="0.19.1"
-golem.com.payment.scheme="GNTB@ETH"
-golem.com.pricing.model.linear.micro_gnt_per_second=200000
+# properties
+
+# constraints
+(&
+    (golem.svc.docker.image=["golemfactory/blender"])
+    (golem.svc.docker.benchmark{golemfactory/blender}>300)
+    (golem.com.payment.scheme="after")
+    (golem.usage.vector=["golem.usage.duration_sec"])
+    (golem.com.pricing.est{[30]}<125>)
+)
+
+```
+
+## Scenario 2 - Dedicated specialized Blender rendering service
+
+It is also possible to offer a specialized Blender service, which abstracts from hardware & infrastructure aspects. Such a service is described by app-specific properties as defined in `srv.app.*` namespace. 
+
+### Properties used
+```properties
+# srv 
+srv.app.media.render.engine
+srv.app.media.render.blender.benchmark
+srv.app.media.render.blender.????
+
+# com
+golem.usage.vector
+golem.com.payment.scheme
+golem.com.pricing.est{<usage_vector>}
+golem.com.pricing.model
+golem.com.pricing.model.linear.coeffs
+
+```
+
+### Sample Offer
+
+```properties
+# props
+srv.app.media.render.engine="blender"
+srv.app.media.render.blender.benchmark=553
+
+golem.usage.vector=["golem.usage.duration_sec"]
+golem.com.payment.scheme="after"
+golem.com.pricing.model="linear"
+golem.com.pricing.model.linear.coeffs=[37]
+
+# constraints
+()
+```
+
+### Sample Demand
+
+```properties
+# properties
+
+# constraints
+(&
+    (srv.app.media.render.engine="blender")
+    (srv.app.media.render.blender.benchmark>100)
+    (golem.com.payment.scheme="after")
+    (golem.usage.vector=["golem.usage.duration_sec"])
+    (golem.com.pricing.est{[30]}<125>)
+    (srv.app.media.render.timeout_secs=30)
+)
 
 ```

@@ -1,6 +1,8 @@
 # Docker Service 
 Ability to run a containerized software component, within a Docker host.
 
+A Provider which declares any property from this namespace is assumed to be able to support a Docker Image execution environment.
+
 ## Common Properties
 
 * [golem.inf](../0-commons/golem.inf.md)
@@ -25,7 +27,14 @@ A benchmark performance metric calculated for specific docker image for the Prov
 _(**Note:** (TODO) it must be specified how a Provider host should run the image to measure the benchmark. This property defines the benchmark trigger standard which needs to be supported by the Golem Node's Docker execution environment.)_
   
 ## `golem.svc.docker.timeout_secs : Number` 
-A timeout value for docker-hosted computation (used for docker-based batch processes). 
+A timeout value for docker-hosted computation (used for docker-based batch processes). This property allows to set the timeout to be applied by the Provider when running a Docker-based computation: the Requestor expects the Activity to take no longer than the specified timeout value - which implies that eg. the `golem.usage.duration_sec` counter shall not exceed the specified timeout value.
 
+**Important:** This property shall be declared in the Offer as "supported" by the Provider, however it is the Requestor which sets the timeout - by expressing the timeout in the constraints in the Demand.
+
+**Note:** If more than one instance of this property is specified in Demand - the smallest value will be set as processing timeout.
+
+### **Examples**
+
+* `(golem.svc.docker.timeout_secs=30)` - this expression included in the Demand's constraints sets the Activity timeout to 30 seconds.
 
 
