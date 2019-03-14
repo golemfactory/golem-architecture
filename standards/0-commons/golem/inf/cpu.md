@@ -1,4 +1,4 @@
-# Golem Infrastructural Properties - GPU
+# Golem Infrastructural Properties - CPU
 Specifications of CPU computing power assigned to a service.
 
 ## `golem.inf.cpu.architecture : String`
