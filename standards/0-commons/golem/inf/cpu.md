@@ -1,4 +1,4 @@
-# Property set name
+# Golem Infrastructural Properties - GPU
 Specifications of CPU computing power assigned to a service.
 
 ## `golem.inf.cpu.architecture : String`
