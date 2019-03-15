@@ -34,6 +34,8 @@ golem.com.pricing.model.linear.coeffs
 golem.svc.docker.image=["golemfactory/blender"]
 golem.svc.docker.benchmark{golemfactory/blender}=682.1076
 golem.svc.docker.benchmark{*}
+golem.svc.docker.timeout
+
 golem.inf.cpu.cores=4
 golem.inf.cpu.threads=8
 golem.inf.mem.gib=16
@@ -42,7 +44,7 @@ golem.inf.storage.gib=30
 golem.usage.vector=["golem.usage.duration_sec"]
 golem.com.payment.scheme="after"
 golem.com.pricing.model="linear"
-golem.com.pricing.model.linear.coeffs=[20]
+golem.com.pricing.model.linear.coeffs=[20, 0]
 
 # constraints
 ()
@@ -59,7 +61,8 @@ golem.com.pricing.model.linear.coeffs=[20]
     (golem.svc.docker.benchmark{golemfactory/blender}>300)
     (golem.com.payment.scheme="after")
     (golem.usage.vector=["golem.usage.duration_sec"])
-    (golem.com.pricing.est{[30]}<125>)
+    (golem.com.pricing.model="linear")
+    #(golem.com.pricing.est{[30]}<125)
 )
 
 ```
