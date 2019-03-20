@@ -1,5 +1,7 @@
 # Golem Computation Resource Standards
 
+## [TODO] Move the Standards Building Block framework article here to explain the approach and structure.
+
 The Golem Standards repository consists of following sections:
 
 * [0-commons](0-commons) - A collection of namespaces which specify generic aspects of Golem ecosystem. These namespaces are designed to be building blocks to which other, more area-specifc property namespaces may refer.
