@@ -5,7 +5,7 @@ This namespace defines mechanism for **price estimation** for Offers published i
 Pseudo-function property allowing to query the Provider for price calculation for a given estimated usage vector value.
 
 **Important:** The pricing models described by this `golem.com.pricing` namespace must be expressed by a 'pricing function', and the types of pricing functions are standardized, it still may be useful for the Requestor to query the Provider for their accurate calculation. This may be aplicable for cases where:
-* a Demand includes a filter constraint referring to the price estimaiton for estimated usage,
+* a Demand includes a filter constraint referring to the price estimation for estimated usage,
 * a Requestor wants to validate their calcul;ation of the estimated price (derived from the standardized pricing model) with the calculation made by the Provider (to ensure both have identical "understanding" of the pricing model).
 
 This property defined an "estimation query" protocol, whereby:
