@@ -15,13 +15,13 @@ The usage counters used to specify the service usage vector are defined in this 
 
 **Note:** Usage counters are always expressed in Number type.
 
-## `golem.usage.duration_sec`
+## `golem.usage.duration_sec : Number (int32)`
 Duration of Activity (in seconds).
 
-## `golem.usage.transactions`
+## `golem.usage.transactions : Number (int32)`
 Number of "transactions" executed via the service hosted by Provider. The actual definition of "transaction" varies between services, eg. for a serverless function a "transaction" can be equivalent to a single "function call", etc.
 
-## `golem.usage.gib_sec`
+## `golem.usage.gib_sec : Number (float)`
 Aggregated RAM consumption of a service (in GB * sec). This counter is typical for eg. a serverless function where the RAM usage of each funciton call is tallied-up to a cummulated amount which corresponds to the amount charged for the function usage.
 
 (TODO) other counter definitions.
