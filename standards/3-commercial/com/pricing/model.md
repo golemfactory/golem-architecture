@@ -15,7 +15,7 @@ The `p(u)` can be ultimately any function, however this namespace defines a set 
 ### Value enum
 |Value| Description |
 |---|---|
-|"fixed"| Fixed price for one-off. |
+|"fixed"| Fixed price for one-off Activity. |
 |"linear"| Price is a linear function of vector of counters. |
 |"stepped"| Price is specified for... |
 | ... | ... |
