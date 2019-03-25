@@ -84,14 +84,14 @@ namespace GolemStandardSummaryGen
             
             #line default
             #line hidden
-            this.Write("|`");
+            this.Write("|**`");
             
             #line 28 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prop.FullName));
             
             #line default
             #line hidden
-            this.Write("`|`");
+            this.Write("`**|`");
             
             #line 28 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prop.Type));
