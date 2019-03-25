@@ -15,6 +15,8 @@ namespace GolemStandardSummaryGen.Model
 
         public string Description { get; set; }
 
+        public string RelativePath { get; set; }
+
         public ICollection<PropertySummary> Properties { get; set; }
     }
 }

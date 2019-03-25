@@ -17,7 +17,7 @@ This page contains an aggregated summary of all namespaces and properties specif
 	foreach(var ns in category.Where(nsp => nsp.Properties.Any()))
 	{
 #>
-## `<#= ns.Name #>`
+## [`<#= ns.Name #>`](<#= ns.RelativePath #>)
 
 <#= ns.Description #>
 
@@ -28,6 +28,7 @@ This page contains an aggregated summary of all namespaces and properties specif
 |`<#= prop.FullName #>`|`<#= prop.Type #>`|<#= prop.Description #>|
 <#	}
 #>
+---
 
 <#
 	}

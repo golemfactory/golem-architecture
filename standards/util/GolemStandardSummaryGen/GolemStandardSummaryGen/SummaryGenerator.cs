@@ -1,6 +1,7 @@
 ﻿using GolemStandardSummaryGen.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace GolemStandardSummaryGen
@@ -18,6 +19,13 @@ namespace GolemStandardSummaryGen
 
         public void Process()
         {
+            // translate the namespace paths
+
+            foreach(var ns in this.Namespaces.Values)
+            {
+                ns.RelativePath = Path.GetRelativePath(Path.GetDirectoryName(this.TargetFileName), ns.RelativePath).Replace(Path.DirectorySeparatorChar, '/');
+            }
+            
             var page = new GolemStandardCheatSheet(this.Namespaces);
             String pageContent = page.TransformText();
             System.IO.File.WriteAllText(this.TargetFileName, pageContent);

@@ -2,7 +2,7 @@
   "profiles": {
     "GolemStandardSummaryGen": {
       "commandName": "Project",
-      "commandLineArgs": "cheat_sheet.md C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\0-commons C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\1-node C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\2-service C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\3-commercial"
+      "commandLineArgs": "C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\cheat_sheet.md C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\0-commons C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\1-node C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\2-service C:\\Users\\Miko\\Documents\\GitHub\\golem-architecture\\standards\\3-commercial"
     }
   }
 }

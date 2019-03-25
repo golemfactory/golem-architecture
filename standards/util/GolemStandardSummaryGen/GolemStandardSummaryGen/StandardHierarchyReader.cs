@@ -55,8 +55,10 @@ namespace GolemStandardSummaryGen
             }
         }
 
-        public string DecodeNamespace(string fileName, string folderRoot)
+        public (string, string) DecodeNamespace(string fileName, string folderRoot)
         {
+            var relPath = fileName;
+            
             // remove the root folder, and strip the .md from the end.
             // then replace all slashes with dots
 
@@ -68,7 +70,7 @@ namespace GolemStandardSummaryGen
             }
             else
             {
-                return null;
+                return (null, relPath);
             }
 
             if(result.StartsWith(folderRoot))
@@ -77,12 +79,12 @@ namespace GolemStandardSummaryGen
             }
             else
             {
-                return null;
+                return (null, relPath);
             }
 
             result = result.Replace(Path.DirectorySeparatorChar, '.');
 
-            return result;
+            return (result, relPath);
         }
 
         public string DecodeCategoryFromFolderRoot(string folderRoot)
@@ -99,12 +101,13 @@ namespace GolemStandardSummaryGen
 
         public void ProcessFile(string fileName, IDictionary<string, NamespaceSummary> namespaces, string folderRoot)
         {
-            var nsName = this.DecodeNamespace(fileName, folderRoot);
+            var (nsName, nsRelPath) = this.DecodeNamespace(fileName, folderRoot);
 
             var ns = new NamespaceSummary()
             {
                 Category = this.DecodeCategoryFromFolderRoot(folderRoot),
                 Name = nsName,
+                RelativePath = nsRelPath,
                 Properties = new List<PropertySummary>()
             };
 
