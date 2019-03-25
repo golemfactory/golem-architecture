@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/standards/util/GolemStandardSummaryGen/.vs/GolemStandardSummaryGen/v15
+/standards/util/GolemStandardSummaryGen/GolemStandardSummaryGen/bin/Debug/netcoreapp2.1
+/standards/util/GolemStandardSummaryGen/GolemStandardSummaryGen/obj
