@@ -1,5 +1,5 @@
 # Payment Schemes
-Payment schemes, which describe the "protocols" of payment for computation resources published on Golem Network.
+Payment schemes, which describe the "protocols" of payment for services/resources published on Golem Network. The purpose of the standardized schemes is to put structure into typical scenarios of payment for consumed resources - these scenarios define de facto "protocols" of Provider-Requestor interaction in the aspect of paying for a Golem service. 
 
 ## `golem.com.payment.scheme : String`
 Scheme of payments made for computing resources consumed.

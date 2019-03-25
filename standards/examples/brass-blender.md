@@ -25,6 +25,10 @@ golem.com.pricing.est{<usage_vector>}
 golem.com.pricing.model
 golem.com.pricing.model.linear.coeffs
 
+## TODO: use case specific
+golem.app.blender.resolution.x
+golem.app.blender.resolution.y
+
 ```
 
 ### Sample Offer
@@ -45,6 +49,10 @@ golem.usage.vector=["golem.usage.duration_sec"]
 golem.com.payment.scheme="after"
 golem.com.pricing.model="linear"
 golem.com.pricing.model.linear.coeffs=[20, 0]
+
+## TODO: use case specific
+golem.app.blender.resolution.x=320
+golem.app.blender.resolution.y=240
 
 # constraints
 ()
