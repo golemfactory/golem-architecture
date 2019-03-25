@@ -9,7 +9,7 @@ Namespace defining location/geography aspects of a Golem node.
 
 ## `golem.node.geo.country_code : String`
 
-Country of location of Golem node (expressed in ISO???? country codes).
+Country of location of Golem node (expressed in [ISO 3166-1 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) country codes).
 
 ### **Examples**
 

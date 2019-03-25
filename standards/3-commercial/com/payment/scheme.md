@@ -1,5 +1,5 @@
 # Payment Schemes
-Payment schemes, which describe the "protocols" of payment for 
+Payment schemes, which describe the "protocols" of payment for computation resources published on Golem Network.
 
 ## `golem.com.payment.scheme : String`
 Scheme of payments made for computing resources consumed.
