@@ -28,4 +28,4 @@ The Golem Standards repository consists of following sections/categories:
 * [3-commercial](3-commercial) - A collection of namespaces containing properties which describe commercial aspects of Golem ecosystem. All properties referring to **pricing**, **payments** or **licenses** are defined here.
 
 ## Standard properties - Cheat sheet
-[TODO]
+[Cheat sheet](cheat_sheet.md)
