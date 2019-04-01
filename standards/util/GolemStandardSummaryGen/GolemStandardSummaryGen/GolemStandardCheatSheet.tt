@@ -14,13 +14,18 @@ This page contains an aggregated summary of all namespaces and properties specif
 #>
 <#	foreach(var item in m_tocEntries[category])
 	{ 
+		if(item.Level == 0)
+		{ #>
+###	<#= item.Label#>
+<#		}
+		else
 		if(item.RelativePath == null) 
 		{ #>
-<#= "".PadRight(2*item.Level)#>* <#= item.Label#>
+<#= "".PadRight(2*item.Level-1)#>* <#= item.Label#>
 <#		}
 		else
 		{ #>
-<#= "".PadRight(2*item.Level)#>* [<#= item.Label#>](<#= item.RelativePath??""#>)
+<#= "".PadRight(2*item.Level-1)#>* [<#= item.Label#>](<#= item.RelativePath??""#>)
 <#		}
 	}
 }

@@ -43,18 +43,12 @@ namespace GolemStandardSummaryGen
             #line 15 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 	foreach(var item in m_tocEntries[category])
 	{ 
-		if(item.RelativePath == null) 
+		if(item.Level == 0)
 		{ 
             
             #line default
             #line hidden
-            
-            #line 19 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture("".PadRight(2*item.Level)));
-            
-            #line default
-            #line hidden
-            this.Write("* ");
+            this.Write("###\t");
             
             #line 19 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Label));
@@ -66,33 +60,56 @@ namespace GolemStandardSummaryGen
             #line 20 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 		}
 		else
+		if(item.RelativePath == null) 
 		{ 
             
             #line default
             #line hidden
             
-            #line 23 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture("".PadRight(2*item.Level)));
+            #line 24 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture("".PadRight(2*item.Level-1)));
+            
+            #line default
+            #line hidden
+            this.Write("* ");
+            
+            #line 24 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(item.Label));
+            
+            #line default
+            #line hidden
+            this.Write("\r\n");
+            
+            #line 25 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+		}
+		else
+		{ 
+            
+            #line default
+            #line hidden
+            
+            #line 28 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture("".PadRight(2*item.Level-1)));
             
             #line default
             #line hidden
             this.Write("* [");
             
-            #line 23 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 28 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.Label));
             
             #line default
             #line hidden
             this.Write("](");
             
-            #line 23 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 28 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(item.RelativePath??""));
             
             #line default
             #line hidden
             this.Write(")\r\n");
             
-            #line 24 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 29 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 		}
 	}
 }
@@ -102,7 +119,7 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("\r\n");
             
-            #line 29 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 34 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
  foreach(var category in m_namespaces.Values.GroupBy(ns => ns.Category))
 {
 
@@ -111,14 +128,14 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("# Category: ");
             
-            #line 32 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 37 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(category.Key));
             
             #line default
             #line hidden
             this.Write("\r\n\r\n");
             
-            #line 34 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 39 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 
 	foreach(var ns in category.Where(nsp => nsp.Properties.Any()))
 	{
@@ -128,28 +145,28 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("## [`");
             
-            #line 38 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 43 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ns.Name));
             
             #line default
             #line hidden
             this.Write("`](");
             
-            #line 38 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 43 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ns.RelativePath));
             
             #line default
             #line hidden
             this.Write(")\r\n\r\n");
             
-            #line 40 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 45 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(ns.Description));
             
             #line default
             #line hidden
             this.Write("\r\n\r\n");
             
-            #line 42 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 47 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
  if(ns.IncludedNamespaces.Count > 0) 
 {
 
@@ -158,7 +175,7 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("### Included Namespaces\r\n\r\n");
             
-            #line 46 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 51 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 	foreach(var incNs in ns.IncludedNamespaces) 
 	{
 
@@ -166,21 +183,21 @@ namespace GolemStandardSummaryGen
             #line default
             #line hidden
             
-            #line 48 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 53 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(incNs));
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 49 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 54 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 	} 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 51 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 56 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
  }
 
             
@@ -188,7 +205,7 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("### Properties\r\n\r\n| Property | Type | Description |\r\n|---|---|---|\r\n");
             
-            #line 57 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 62 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 	foreach(var prop in ns.Properties)
 	{ 
             
@@ -196,28 +213,28 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("|**`");
             
-            #line 59 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 64 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prop.FullName));
             
             #line default
             #line hidden
             this.Write("`**|`");
             
-            #line 59 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 64 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prop.Type));
             
             #line default
             #line hidden
             this.Write("`|");
             
-            #line 59 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 64 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prop.Description));
             
             #line default
             #line hidden
             this.Write("|\r\n");
             
-            #line 60 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 65 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 	}
 
             
@@ -225,7 +242,7 @@ namespace GolemStandardSummaryGen
             #line hidden
             this.Write("---\r\n\r\n");
             
-            #line 64 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            #line 69 "C:\Users\Miko\Documents\GitHub\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 
 	}
 }
