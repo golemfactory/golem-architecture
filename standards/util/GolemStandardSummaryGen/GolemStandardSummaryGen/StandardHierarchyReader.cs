@@ -108,7 +108,8 @@ namespace GolemStandardSummaryGen
                 Category = this.DecodeCategoryFromFolderRoot(folderRoot),
                 Name = nsName,
                 RelativePath = nsRelPath,
-                Properties = new List<PropertySummary>()
+                Properties = new List<PropertySummary>(),
+                IncludedNamespaces = new List<string>()
             };
 
             using(var file = File.OpenRead(fileName))
@@ -146,6 +147,26 @@ namespace GolemStandardSummaryGen
                                 namespaces.Add(nsName, ns);
                             }
                         }
+                    }
+
+                    // check if line looks like Common Properties:
+                    if(line.StartsWith("## ") && line.ToLower().Contains("common properties"))
+                    {
+                        string descLine = null;
+
+                        // skip any empty lines that follow.
+                        while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
+
+                        // read and aggregate the description
+                        do
+                        {
+                            if (!String.IsNullOrWhiteSpace(descLine) && descLine.Trim().StartsWith("*"))
+                            {
+                                ns.IncludedNamespaces.Add(descLine);
+                            }
+                        }
+                        while (!reader.EndOfStream && !String.IsNullOrWhiteSpace(descLine = reader.ReadLine()) && !descLine.StartsWith("#"));
+
                     }
 
                     // check if line matches the "property layout" regex

@@ -39,6 +39,19 @@ This page contains an aggregated summary of all namespaces and properties specif
 
 <#= ns.Description #>
 
+<# if(ns.IncludedNamespaces.Count > 0) 
+{
+#>### Included Namespaces
+
+<#	foreach(var incNs in ns.IncludedNamespaces) 
+	{
+#><#= incNs#>
+<#	} #>
+
+<# }
+#>
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 <#	foreach(var prop in ns.Properties)

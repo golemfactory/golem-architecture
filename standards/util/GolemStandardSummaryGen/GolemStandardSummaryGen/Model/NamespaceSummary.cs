@@ -18,5 +18,7 @@ namespace GolemStandardSummaryGen.Model
         public string RelativePath { get; set; }
 
         public ICollection<PropertySummary> Properties { get; set; }
+
+        public IList<string> IncludedNamespaces { get; set; }
     }
 }

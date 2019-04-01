@@ -3,8 +3,8 @@ Ability to host and execute a WebAssembly program.
 
 ## Common Properties
 
-* [golem.inf](../../../../0-commons/golem/inf.md)
-* [golem.activity](../../../../0-commons/golem/activity.md)
+* [golem.inf](../../../0-commons/golem/inf.md)
+* [golem.activity](../../../0-commons/golem/activity.md)
 
 ## Specific Properties
 

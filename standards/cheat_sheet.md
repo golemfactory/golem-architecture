@@ -41,6 +41,8 @@ This page contains an aggregated summary of all namespaces and properties specif
 
 Namespace that describes various properties related to Activities and their execution. 
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.activity.timeout_secs`**|`Number`|A timeout value for batch computation (eg. used for container-based batch processes). This property allows to set the timeout to be applied by the Provider when running a batch computation: the Requestor expects the Activity to take no longer than the specified timeout value - which implies that eg. the `golem.usage.duration_sec` counter shall not exceed the specified timeout value. |
@@ -49,6 +51,8 @@ Namespace that describes various properties related to Activities and their exec
 ## [`golem.inf.cpu`](0-commons/golem/inf/cpu.md)
 
 Specifications of CPU computing power assigned to a service. 
+
+### Properties
 
 | Property | Type | Description |
 |---|---|---|
@@ -69,6 +73,8 @@ Specifications of CPU computing power assigned to a service.
 
 Specifications of GPU computing power assigned to a service. 
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.inf.gpu.vendor`**|`String`|GPU card vendor name. |
@@ -81,6 +87,8 @@ Specifications of GPU computing power assigned to a service.
 
 Properties which describe network properties of Golem service (network protocols supported, network visibility, VPN capabilities, etc.) 
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.inf.net.ipv4.has_pub_addr`**|`Boolean`|Declares that a Provider does have a public IP. |
@@ -90,6 +98,8 @@ Properties which describe network properties of Golem service (network protocols
 ## [`golem.inf.os`](0-commons/golem/inf/os.md)
 
 Specifications of operating systems. 
+
+### Properties
 
 | Property | Type | Description |
 |---|---|---|
@@ -102,6 +112,8 @@ Specifications of operating systems.
 
 Properties which describe storage properties of Golem service (hardware parameters, disk categories, sizes, etc.) 
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.inf.storage.gib`**|`Number (float)`|Storage available in GiB |
@@ -113,6 +125,8 @@ Properties which describe storage properties of Golem service (hardware paramete
 ## [`golem.usage`](0-commons/golem/usage.md)
 
 Namespace defining service usage aspects (usage vector and counters). 
+
+### Properties
 
 | Property | Type | Description |
 |---|---|---|
@@ -128,6 +142,8 @@ Namespace defining service usage aspects (usage vector and counters).
 
 Namespace defining location/geography aspects of a Golem node. 
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.node.geo.country_code`**|`String`|Country of location of Golem node (expressed in [ISO 3166-1 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) country codes). |
@@ -136,6 +152,8 @@ Namespace defining location/geography aspects of a Golem node.
 ## [`node.id`](1-node/node/id.md)
 
 Namespace defining identity aspects of a Golem node. 
+
+### Properties
 
 | Property | Type | Description |
 |---|---|---|
@@ -148,6 +166,13 @@ Namespace defining identity aspects of a Golem node.
 
 Ability to run a containerized software component, within a Docker host. 
 
+### Included Namespaces
+
+* [golem.inf](../../../../0-commons/golem/inf.md)
+* [golem.activity](../../../../0-commons/golem/activity.md)
+
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.svc.docker.image`**|`List of String`|Indicates Docker images which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
@@ -158,6 +183,12 @@ Ability to run a containerized software component, within a Docker host.
 
 Ability to host a generic Virtual Machine. 
 
+### Included Namespaces
+
+* [golem.inf](../0-commons/golem.inf.md)
+
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.svc.vm.host`**|`String`|Indicates the VM host platform available.  |
@@ -167,6 +198,13 @@ Ability to host a generic Virtual Machine.
 ## [`srv.comp.wasm`](2-service/srv/comp/wasm.md)
 
 Ability to host and execute a WebAssembly program. 
+
+### Included Namespaces
+
+* [golem.inf](../../../0-commons/golem/inf.md)
+* [golem.activity](../../../0-commons/golem/activity.md)
+
+### Properties
 
 | Property | Type | Description |
 |---|---|---|
@@ -179,6 +217,8 @@ Ability to host and execute a WebAssembly program.
 
 Payment schemes, which describe the "protocols" of payment for services/resources published on Golem Network. The purpose of the standardized schemes is to put structure into typical scenarios of payment for consumed resources - these scenarios define de facto "protocols" of Provider-Requestor interaction in the aspect of paying for a Golem service.  
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.com.payment.scheme`**|`String`|Scheme of payments made for computing resources consumed. |
@@ -189,6 +229,8 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 
 This namespace defines mechanism for **price estimation** for Offers published in Golem network.  
 
+### Properties
+
 | Property | Type | Description |
 |---|---|---|
 |**`golem.com.pricing.est{*}`**|`Number`|Pseudo-function property allowing to query the Provider for price calculation for a given estimated usage vector value (amount is indicated in GNT). |
@@ -197,6 +239,8 @@ This namespace defines mechanism for **price estimation** for Offers published i
 ## [`com.pricing.model`](3-commercial/com/pricing/model.md)
 
 This namespace defines **pricing models** for Golem computation resources.  
+
+### Properties
 
 | Property | Type | Description |
 |---|---|---|
