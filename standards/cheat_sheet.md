@@ -3,6 +3,38 @@
 
 This page contains an aggregated summary of all namespaces and properties specified in Golem Standards.
 
+# Standards Hierarchy
+* 0-commons
+  * golem
+    * [activity](0-commons/golem/activity.md)
+      * [caps](0-commons/golem/activity/caps.md)
+    * [inf](0-commons/golem/inf.md)
+      * [cpu](0-commons/golem/inf/cpu.md)
+      * [gpu](0-commons/golem/inf/gpu.md)
+      * [mem](0-commons/golem/inf/mem.md)
+      * [net](0-commons/golem/inf/net.md)
+      * [os](0-commons/golem/inf/os.md)
+      * [storage](0-commons/golem/inf/storage.md)
+    * [usage](0-commons/golem/usage.md)
+* 1-node
+  * node
+    * [geo](1-node/node/geo.md)
+    * [id](1-node/node/id.md)
+* 2-service
+  * srv
+    * comp
+      * container
+        * [docker](2-service/srv/comp/container/docker.md)
+      * [vm](2-service/srv/comp/vm.md)
+      * [wasm](2-service/srv/comp/wasm.md)
+* 3-commercial
+  * com
+    * payment
+      * [scheme](3-commercial/com/payment/scheme.md)
+    * pricing
+      * [est](3-commercial/com/pricing/est.md)
+      * [model](3-commercial/com/pricing/model.md)
+
 # Category: 0-commons
 
 ## [`golem.activity`](0-commons/golem/activity.md)

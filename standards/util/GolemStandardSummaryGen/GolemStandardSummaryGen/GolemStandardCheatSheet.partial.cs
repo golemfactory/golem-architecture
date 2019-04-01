@@ -15,10 +15,12 @@ namespace GolemStandardSummaryGen
     public partial class GolemStandardCheatSheet
     {
         private IDictionary<string, NamespaceSummary> m_namespaces;
+        private IDictionary<string, IList<ToCEntry>> m_tocEntries;
 
-        public GolemStandardCheatSheet(IDictionary<string, NamespaceSummary> namespaces)
+        public GolemStandardCheatSheet(IDictionary<string, NamespaceSummary> namespaces, IDictionary<string, IList<ToCEntry>> tocEntries)
         {
             this.m_namespaces = namespaces;
+            this.m_tocEntries = tocEntries;
         }
     }
     

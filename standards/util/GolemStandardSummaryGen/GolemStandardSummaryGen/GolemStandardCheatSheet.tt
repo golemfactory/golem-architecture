@@ -8,6 +8,24 @@
 
 This page contains an aggregated summary of all namespaces and properties specified in Golem Standards.
 
+# Standards Hierarchy
+<# foreach(var category in m_tocEntries.Keys)
+{
+#>
+<#	foreach(var item in m_tocEntries[category])
+	{ 
+		if(item.RelativePath == null) 
+		{ #>
+<#= "".PadRight(2*item.Level)#>* <#= item.Label#>
+<#		}
+		else
+		{ #>
+<#= "".PadRight(2*item.Level)#>* [<#= item.Label#>](<#= item.RelativePath??""#>)
+<#		}
+	}
+}
+#>
+
 <# foreach(var category in m_namespaces.Values.GroupBy(ns => ns.Category))
 {
 #>
