@@ -25,16 +25,19 @@ golem.com.pricing.est{<usage_vector>}
 golem.com.pricing.model
 golem.com.pricing.model.linear.coeffs
 
-## TODO: use case specific
-golem.app.blender.resolution.x
-golem.app.blender.resolution.y
+# use case specific
+## TODO: what else here?
+golem.app.blender.input_file_size_kib
+golem.app.blender.output.resolution.x
+golem.app.blender.output.resolution.y
+
 
 ```
 
 ### Sample Offer
 
 ```properties
-# props
+# properties
 golem.svc.docker.image=["golemfactory/blender"]
 golem.svc.docker.benchmark{golemfactory/blender}=682.1076
 golem.svc.docker.benchmark{*}
@@ -50,10 +53,6 @@ golem.com.payment.scheme="after"
 golem.com.pricing.model="linear"
 golem.com.pricing.model.linear.coeffs=[20, 0]
 
-## TODO: use case specific
-golem.app.blender.resolution.x=320
-golem.app.blender.resolution.y=240
-
 # constraints
 ()
 ```
@@ -62,6 +61,11 @@ golem.app.blender.resolution.y=240
 
 ```properties
 # properties
+
+## use case specific
+golem.app.blender.input_file_size_kib=7233
+golem.app.blender.output.resolution.x=1920
+golem.app.blender.output.resolution.y=1080
 
 # constraints
 (&
@@ -98,7 +102,7 @@ golem.com.pricing.model.linear.coeffs
 ### Sample Offer
 
 ```properties
-# props
+# properties
 srv.app.media.render.engine="blender"
 srv.app.media.render.blender.benchmark=553
 
