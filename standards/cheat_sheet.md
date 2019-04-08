@@ -175,8 +175,8 @@ Ability to run a containerized software component, within a Docker host.
 
 | Property | Type | Description |
 |---|---|---|
-|**`golem.svc.docker.image`**|`List of String`|Indicates Docker images which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
-|**`golem.svc.docker.benchmark{<image>}`**|`Number`|A benchmark performance metric calculated for specific docker image for the Provider node. |
+|**`golem.srv.comp.container.docker.image`**|`List of String`|Indicates Docker images which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
+|**`golem.srv.comp.container.docker.benchmark{<image>}`**|`Number`|A benchmark performance metric calculated for specific docker image for the Provider node. |
 ---
 
 ## [`srv.comp.vm`](2-service/srv/comp/vm.md)
