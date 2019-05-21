@@ -40,9 +40,9 @@ golem.app.transcoding.key_frames_number=307
 golem.app.transcoding.input_resolution.x=1024
 golem.app.transcoding.input_resolution.y=768
 golem.app.transcoding.bitrate_kibs=1522
-golem.app.transcoding.input_container=avi
+golem.app.transcoding.input_container="avi"
 golem.app.transcoding.input_video_codecs=["H264", "H265"]
-golem.app.transcoding.input_container=mp4
+golem.app.transcoding.input_container="mp4"
 golem.app.transcoding.output_video_codecs=["vp6", "DivX"]
 
 ## audio is currently not supported
