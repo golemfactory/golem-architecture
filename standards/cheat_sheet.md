@@ -22,6 +22,10 @@ This page contains an aggregated summary of all namespaces and properties specif
    * [id](1-node/node/id.md)
 ###	2-service
  * srv
+   * app
+     * media
+       * [render](2-service/srv/app/media/render.md)
+       * [transcode](2-service/srv/app/media/transcode.md)
    * comp
      * container
        * [docker](2-service/srv/comp/container/docker.md)
@@ -34,6 +38,8 @@ This page contains an aggregated summary of all namespaces and properties specif
    * pricing
      * [est](3-commercial/com/pricing/est.md)
      * [model](3-commercial/com/pricing/model.md)
+ * term
+   * [term](3-commercial/term/term.md)
 
 # Category: 0-commons
 
@@ -162,6 +168,46 @@ Namespace defining identity aspects of a Golem node.
 
 # Category: 2-service
 
+## [`srv.app.media.render`](2-service/srv/app/media/render.md)
+
+This namespace includes properties used to describe visualization and rendering services. 
+
+### Included Namespaces
+
+* [golem.activity](../../../../0-commons/golem/activity.md)
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.srv.app.media.render.input_file_size_kib`**|`Number (int32)`|Size of input scene file, in KB. |
+|**`golem.srv.app.media.render.output.resolution.x`**|`Number (int32)`|X resolution of output rendered image (in pixels). |
+|**`golem.srv.app.media.render.output.resolution.y`**|`Number (int32)`|Y resolution of output rendered image (in pixels). |
+|**`golem.srv.app.media.render.engine`**|`List of String`|Indicates rendering engines supported by the provider.  |
+|**`golem.srv.app.media.render.blender.benchmark`**|`Number (int32)`|Indicates benchmark value of Provider tested by rendering a standardized benchmark scene.  _(**Note:** (TODO) the standard must define the standardized input scene to be used as benchmark.)_ |
+---
+
+## [`srv.app.media.transcode`](2-service/srv/app/media/transcode.md)
+
+This napespace includes properties used to describe visualization and rendering services. 
+
+### Included Namespaces
+
+* [golem.activity](../../../../0-commons/golem/activity.md)
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.srv.app.media.transcode.input.resolution.x`**|`Number (int32)`|X resolution of input stream. |
+|**`golem.srv.app.media.transcode.input.resolution.y`**|`Number (int32)`|Y resolution of input stream. |
+|**`golem.srv.app.media.transcode.input.container`**|`List of String`|Supported container formats of input stream. |
+|**`golem.srv.app.media.transcode.input.video.codecs`**|`List of String`|Supported video codecs for input processing. |
+|**`golem.srv.app.media.transcode.output.video.codecs`**|`List of String`|Supported video codecs for output generation. |
+|**`golem.srv.app.media.transcode.key_frames_number`**|`Number (int32)`|Number of key frames in input stream. |
+|**`golem.srv.app.media.transcode.bitrate_kibs`**|`Number (int32)`|Requested output stream bitrate (in kbit/sec) |
+---
+
 ## [`srv.comp.container.docker`](2-service/srv/comp/container/docker.md)
 
 Ability to run a containerized software component, within a Docker host. 
@@ -191,13 +237,13 @@ Ability to host a generic Virtual Machine.
 
 | Property | Type | Description |
 |---|---|---|
-|**`golem.svc.vm.host`**|`String`|Indicates the VM host platform available.  |
-|**`golem.svc.vm.term_protocol`**|`List of String`|A list of protocols that can be used to establish a terminal session to the VM. |
+|**`golem.srv.comp.vm.host`**|`String`|Indicates the VM host platform available.  |
+|**`golem.srv.comp.vm.term_protocol`**|`List of String`|A list of protocols that can be used to establish a terminal session to the VM. |
 ---
 
 ## [`srv.comp.wasm`](2-service/srv/comp/wasm.md)
 
-Ability to host and execute a WebAssembly program. 
+This namespace defines properties used to indicte ability to host and execute a WebAssembly program. 
 
 ### Included Namespaces
 
@@ -208,7 +254,7 @@ Ability to host and execute a WebAssembly program.
 
 | Property | Type | Description |
 |---|---|---|
-|**`golem.svc.wasm.task_package`**|`List of String`|Indicates WebAssembly packages which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
+|**`golem.srv.comp.wasm.task_package`**|`List of String`|Indicates WebAssembly packages which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
 ---
 
 # Category: 3-commercial
@@ -222,7 +268,7 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 | Property | Type | Description |
 |---|---|---|
 |**`golem.com.payment.scheme`**|`String`|Scheme of payments made for computing resources consumed. |
-|**`golem.com.payment.payu.interval_sec`**|`Number`|For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
+|**`golem.com.payment.scheme.payu.interval_sec`**|`Number`|For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
 ---
 
 ## [`com.pricing.est`](3-commercial/com/pricing/est.md)

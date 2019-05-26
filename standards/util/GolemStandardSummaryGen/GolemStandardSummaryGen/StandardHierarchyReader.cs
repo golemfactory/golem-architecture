@@ -101,6 +101,7 @@ namespace GolemStandardSummaryGen
 
         public void ProcessFile(string fileName, IDictionary<string, NamespaceSummary> namespaces, string folderRoot)
         {
+
             var (nsName, nsRelPath) = this.DecodeNamespace(fileName, folderRoot);
 
             var ns = new NamespaceSummary()
@@ -111,6 +112,8 @@ namespace GolemStandardSummaryGen
                 Properties = new List<PropertySummary>(),
                 IncludedNamespaces = new List<string>()
             };
+
+            Console.WriteLine($"Processing file: {fileName}");
 
             using(var file = File.OpenRead(fileName))
             using(var reader = new StreamReader(file))
@@ -183,7 +186,8 @@ namespace GolemStandardSummaryGen
                             FullName = match.Groups["name"].Value.Trim()
                         };
 
-                        if (!property.FullName.StartsWith(property.Namespace))
+                        if (!property.FullName.StartsWith(property.Namespace) &&
+                            !property.FullName.StartsWith("golem." + property.Namespace) )
                         {
                             Console.WriteLine($"Warning: property name {property.FullName} is not aligned with namespace {property.Namespace}");
                         }

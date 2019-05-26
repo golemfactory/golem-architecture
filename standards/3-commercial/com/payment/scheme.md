@@ -14,14 +14,14 @@ Scheme of payments made for computing resources consumed.
 ### **Examples**
 * `golem.com.payment.scheme="before"` - The Provider declares the `"before"` payment scheme.
 
-## `golem.com.payment.payu.interval_sec : Number`
+## `golem.com.payment.scheme.payu.interval_sec : Number`
 For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage.
 
 ### **Examples**
-* `golem.com.payment.payu.interval_sec=3600` - The Provider expects the Requestor to pay for the usage in 1 hour intervals.
+* `golem.com.payment.scheme.payu.interval_sec=3600` - The Provider expects the Requestor to pay for the usage in 1 hour intervals.
 
 # Sample property block
 ```
 golem.com.payment.scheme="payu"
-golem.com.payment.payu.interval_sec=3600
+golem.com.payment.scheme.payu.interval_sec=3600
 ```

@@ -40,5 +40,6 @@ A linear pricing function is a function of following form:
 To define a linear pricing function of n-counter usage vector, it is required to specify the numeric coefficients to be multiplied by respective counter values of a usage vector, plus a fixed coefficient. 
 
 ### **Examples**
+* `golem.com.pricing.model="linear"` - Declares a linear pricing model (with prameters indicated via `golem.com.pricing.model.linear.*` properties).
 * `golem.com.pricing.model.linear.coeffs=[0.3, 0]` - For a 1-counter usage vector (eg. `golem.usage.vector=["golem.usage.duration_sec"]`) the price is calculated as: `price = 0.3 * golem.usage.duration_sec`.
 

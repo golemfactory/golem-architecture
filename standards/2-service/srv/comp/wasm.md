@@ -1,5 +1,5 @@
 # WebAssembly Host 
-Ability to host and execute a WebAssembly program.
+This namespace defines properties used to indicte ability to host and execute a WebAssembly program.
 
 ## Common Properties
 
@@ -8,7 +8,7 @@ Ability to host and execute a WebAssembly program.
 
 ## Specific Properties
 
-## `golem.svc.wasm.task_package : List of String` 
+## `golem.srv.comp.wasm.task_package : List of String` 
 
 Indicates WebAssembly packages which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist).
 
@@ -18,6 +18,6 @@ The repo of WASM task packages maintained by Golem Factory can be found [here](h
 
 ### **Examples**
 
-* `golem.svc.wasm.task_package=["https://github.com/golemfactory/wasm-store/tree/master/flite/flite.zip"]` - declares Golem Factory's 'text-to-speech' sample WASM package.
+* `golem.srv.comp.wasm.task_package=["https://github.com/golemfactory/wasm-store/tree/master/flite/flite.zip"]` - declares Golem Factory's 'text-to-speech' sample WASM package.
 
 

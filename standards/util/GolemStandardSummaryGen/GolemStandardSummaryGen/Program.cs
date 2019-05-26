@@ -29,6 +29,8 @@ namespace GolemStandardSummaryGen
                 }
             }
 
+            Console.ReadKey();
+
         }
     }
 }

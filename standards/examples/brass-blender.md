@@ -11,8 +11,8 @@ One way of providing Blender computation service is to host a standardized Docke
 ### Properties used
 ```properties
 # srv 
-golem.svc.docker.image
-golem.svc.docker.benchmark{<image>}
+golem.srv.comp.container.docker.image
+golem.srv.comp.container.docker.benchmark{<image>}
 golem.inf.cpu.cores
 golem.inf.cpu.threads
 golem.inf.storage.gib
@@ -26,10 +26,10 @@ golem.com.pricing.model
 golem.com.pricing.model.linear.coeffs
 
 # use case specific
+golem.srv.app.media.render.input_file_size_kib
+golem.srv.app.media.render.output.resolution.x
+golem.srv.app.media.render.output.resolution.y
 ## TODO: what else here?
-golem.app.blender.input_file_size_kib
-golem.app.blender.output.resolution.x
-golem.app.blender.output.resolution.y
 
 
 ```
@@ -38,10 +38,10 @@ golem.app.blender.output.resolution.y
 
 ```properties
 # properties
-golem.svc.docker.image=["golemfactory/blender"]
-golem.svc.docker.benchmark{golemfactory/blender}=682.1076
-golem.svc.docker.benchmark{*}
-golem.svc.docker.timeout
+golem.srv.comp.container.docker.image=["golemfactory/blender"]
+golem.srv.comp.container.docker.benchmark{golemfactory/blender}=682.1076
+golem.srv.comp.container.docker.benchmark{*}
+golem.activity.timeout_secs
 
 golem.inf.cpu.cores=4
 golem.inf.cpu.threads=8
@@ -63,32 +63,32 @@ golem.com.pricing.model.linear.coeffs=[20, 0]
 # properties
 
 ## use case specific
-golem.app.blender.input_file_size_kib=7233
-golem.app.blender.output.resolution.x=1920
-golem.app.blender.output.resolution.y=1080
+golem.srv.app.media.render.input_file_size_kib=7233
+golem.srv.app.media.render.output.resolution.x=1920
+golem.srv.app.media.render.output.resolution.y=1080
 
 # constraints
 (&
-    (golem.svc.docker.image=["golemfactory/blender"])
-    (golem.svc.docker.benchmark{golemfactory/blender}>300)
+    (golem.srv.comp.container.docker.image="golemfactory/blender")
+    (golem.srv.comp.container.docker.benchmark{golemfactory/blender}>300)
     (golem.com.payment.scheme="after")
     (golem.usage.vector=["golem.usage.duration_sec"])
     (golem.com.pricing.model="linear")
-    #(golem.com.pricing.est{[30]}<125)
+    (golem.com.pricing.est{[30]}<125)
 )
 
 ```
 
 ## Scenario 2 - Dedicated specialized Blender rendering service
 
-It is also possible to offer a specialized Blender service, which abstracts from hardware & infrastructure aspects. Such a service is described by app-specific properties as defined in `srv.app.*` namespace. 
+It is also possible to offer a specialized Blender service, which abstracts from hardware & infrastructure aspects. Such a service is described by app-specific properties as defined in `golem.srv.app.*` namespace. 
 
 ### Properties used
 ```properties
 # srv 
-srv.app.media.render.engine
-srv.app.media.render.blender.benchmark
-srv.app.media.render.blender.????
+golem.srv.app.media.render.engine
+golem.srv.app.media.render.blender.benchmark
+golem.srv.app.media.render.blender.????
 
 # com
 golem.usage.vector
@@ -97,19 +97,24 @@ golem.com.pricing.est{<usage_vector>}
 golem.com.pricing.model
 golem.com.pricing.model.linear.coeffs
 
+# use case specific
+golem.srv.app.media.render.input_file_size_kib
+golem.srv.app.media.render.output.resolution.x
+golem.srv.app.media.render.output.resolution.y
+
 ```
 
 ### Sample Offer
 
 ```properties
 # properties
-srv.app.media.render.engine="blender"
-srv.app.media.render.blender.benchmark=553
+golem.srv.app.media.render.engine="blender"
+golem.srv.app.media.render.blender.benchmark=553
 
 golem.usage.vector=["golem.usage.duration_sec"]
 golem.com.payment.scheme="after"
 golem.com.pricing.model="linear"
-golem.com.pricing.model.linear.coeffs=[37]
+golem.com.pricing.model.linear.coeffs=[0, 37]
 
 # constraints
 ()
@@ -120,14 +125,18 @@ golem.com.pricing.model.linear.coeffs=[37]
 ```properties
 # properties
 
+golem.srv.app.media.render.input_file_size_kib=7233
+golem.srv.app.media.render.output.resolution.x=1920
+golem.srv.app.media.render.output.resolution.y=1080
+
 # constraints
 (&
-    (srv.app.media.render.engine="blender")
-    (srv.app.media.render.blender.benchmark>100)
+    (golem.srv.app.media.render.engine="blender")
+    (golem.srv.app.media.render.blender.benchmark>100)
     (golem.com.payment.scheme="after")
     (golem.usage.vector=["golem.usage.duration_sec"])
     (golem.com.pricing.est{[30]}<125>)
-    (srv.app.media.render.timeout_secs=30)
+    (golem.activity.timeout_secs=30)
 )
 
 ```
