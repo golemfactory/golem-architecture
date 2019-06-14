@@ -22,7 +22,7 @@ Duration of Activity (in seconds).
 Number of "transactions" executed via the service hosted by Provider. The actual definition of "transaction" varies between services, eg. for a serverless function a "transaction" can be equivalent to a single "function call", etc.
 
 ## `golem.usage.gib_sec : Number (float)`
-Aggregated RAM consumption of a service (in GB * sec). This counter is typical for eg. a serverless function where the RAM usage of each funciton call is tallied-up to a cummulated amount which corresponds to the amount charged for the function usage.
+Aggregated RAM consumption of a service (in GB * sec). This counter is typical for eg. a serverless function where the RAM usage of each function call is tallied-up to a cummulated amount which corresponds to the amount charged for the function usage.
 
 (TODO) other counter definitions.
 

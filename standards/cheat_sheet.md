@@ -33,11 +33,13 @@ This page contains an aggregated summary of all namespaces and properties specif
      * [wasm](2-service/srv/comp/wasm.md)
 ###	3-commercial
  * com
-   * payment
+   * [payment](3-commercial/com/payment.md)
      * [scheme](3-commercial/com/payment/scheme.md)
    * pricing
      * [est](3-commercial/com/pricing/est.md)
      * [model](3-commercial/com/pricing/model.md)
+   * term
+     * [term](3-commercial/com/term/term.md)
  * term
    * [term](3-commercial/term/term.md)
 
@@ -139,7 +141,7 @@ Namespace defining service usage aspects (usage vector and counters).
 |**`golem.usage.vector`**|`List of Strings`|This property specifies the usage counters from which the service cost is calculated. |
 |**`golem.usage.duration_sec`**|`Number (int32)`|Duration of Activity (in seconds). |
 |**`golem.usage.transactions`**|`Number (int32)`|Number of "transactions" executed via the service hosted by Provider. The actual definition of "transaction" varies between services, eg. for a serverless function a "transaction" can be equivalent to a single "function call", etc. |
-|**`golem.usage.gib_sec`**|`Number (float)`|Aggregated RAM consumption of a service (in GB * sec). This counter is typical for eg. a serverless function where the RAM usage of each funciton call is tallied-up to a cummulated amount which corresponds to the amount charged for the function usage. |
+|**`golem.usage.gib_sec`**|`Number (float)`|Aggregated RAM consumption of a service (in GB * sec). This counter is typical for eg. a serverless function where the RAM usage of each function call is tallied-up to a cummulated amount which corresponds to the amount charged for the function usage. |
 ---
 
 # Category: 1-node
@@ -269,6 +271,17 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 |---|---|---|
 |**`golem.com.payment.scheme`**|`String`|Scheme of payments made for computing resources consumed. |
 |**`golem.com.payment.scheme.payu.interval_sec`**|`Number`|For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
+---
+
+## [`com.payment`](3-commercial/com/payment.md)
+
+Payment details.  
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.com.payment.eth_address_credit`**|`String`|Beneficiary (Provider's) ethereum address - GNT payments are expected on this address. |
 ---
 
 ## [`com.pricing.est`](3-commercial/com/pricing/est.md)
