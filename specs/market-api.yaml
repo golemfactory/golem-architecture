@@ -400,7 +400,7 @@ definitions:
         description: Attachment name
       contentType:
         type: string
-        description: Attachment mime typea
+        description: Attachment mime type
       sha256:
         type: string
         description: hex encoded sha256 of attachment binary content
