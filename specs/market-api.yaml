@@ -393,6 +393,17 @@ paths:
           description: OK
 
 definitions:
+  Attachment:
+    properties:
+      name:
+        type: string
+        description: Attachment name
+      contentType:
+        type: string
+        description: Attachment mime typea
+      sha256:
+        type: string
+        description: hex encoded sha256 of attachment binary content
 
   RequestorEvent:
     required:
@@ -451,6 +462,10 @@ definitions:
           type: string
         prevProposalId:
           type: string
+        attachments:
+          type: array
+          item:      
+            ref: '#/definitons/Attachment'
 
   DemandEvent:
     allOf:
