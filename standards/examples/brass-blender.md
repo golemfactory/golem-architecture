@@ -69,11 +69,11 @@ golem.srv.app.media.render.output.resolution.y=1080
 
 # constraints
 (&
-    (golem.srv.comp.container.docker.image="golemfactory/blender")
+    (golem.srv.comp.container.docker.image=golemfactory/blender)
     (golem.srv.comp.container.docker.benchmark{golemfactory/blender}>300)
-    (golem.com.payment.scheme="after")
-    (golem.usage.vector=["golem.usage.duration_sec"])
-    (golem.com.pricing.model="linear")
+    (golem.com.payment.scheme=after)
+    (golem.usage.vector=[golem.usage.duration_sec])
+    (golem.com.pricing.model=linear)
     (golem.com.pricing.est{[30]}<125)
 )
 
@@ -131,10 +131,10 @@ golem.srv.app.media.render.output.resolution.y=1080
 
 # constraints
 (&
-    (golem.srv.app.media.render.engine="blender")
+    (golem.srv.app.media.render.engine=blender)
     (golem.srv.app.media.render.blender.benchmark>100)
-    (golem.com.payment.scheme="after")
-    (golem.usage.vector=["golem.usage.duration_sec"])
+    (golem.com.payment.scheme=after)
+    (golem.usage.vector=[golem.usage.duration_sec])
     (golem.com.pricing.est{[30]}<125>)
     (golem.activity.timeout_secs=30)
 )
