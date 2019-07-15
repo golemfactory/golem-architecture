@@ -1,0 +1,39 @@
+﻿{
+	"golem": {
+		"srv":{
+			"comp":{
+				"container":{
+					"docker":{
+						"image":["golemfactory/ffmpeg"],
+						"benchmark{golemfactory/ffmpeg}":700,
+						"benchmark{*}":null
+					}
+				}
+			}
+		},
+		"inf":{
+			"cpu":{
+				"cores":4,
+				"threads":8
+			},
+			"mem":{
+				"gib":16
+			},
+			"storage":{
+				"gib":30
+			}
+		},
+		"com":{
+			"payment":{
+				"scheme":"after"
+			},
+			"pricing":{
+				"model":"linear",
+				"est{*}":null
+			}
+		},
+		"usage":{
+			"vector":["golem.usage.duration_sec"]
+		}
+	}
+}

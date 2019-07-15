@@ -16,7 +16,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
     /// <summary>
     /// API client is mainly responible for making the HTTP call to the API backend.
     /// </summary>
-    public class ApiClient
+    public partial class ApiClient
     {
         private readonly Dictionary<String, String> _defaultHeaderMap = new Dictionary<String, String>();
   

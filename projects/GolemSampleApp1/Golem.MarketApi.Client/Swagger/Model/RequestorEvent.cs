@@ -5,33 +5,27 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace Golem.MarketApi.Client.Swagger.Model
+{
 
   /// <summary>
   /// 
   /// </summary>
   [DataContract]
-  public class AgreementProposal {
+  public class RequestorEvent {
     /// <summary>
-    /// Gets or Sets Id
+    /// Gets or Sets EventType
     /// </summary>
-    [DataMember(Name="id", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    [DataMember(Name="eventType", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "eventType")]
+    public string EventType { get; set; }
 
     /// <summary>
-    /// Gets or Sets Demand
+    /// Gets or Sets ProviderId
     /// </summary>
-    [DataMember(Name="demand", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demand")]
-    public Proposal Demand { get; set; }
-
-    /// <summary>
-    /// Gets or Sets Offer
-    /// </summary>
-    [DataMember(Name="offer", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "offer")]
-    public Proposal Offer { get; set; }
+    [DataMember(Name="providerId", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "providerId")]
+    public string ProviderId { get; set; }
 
 
     /// <summary>
@@ -40,10 +34,9 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class AgreementProposal {\n");
-      sb.Append("  Id: ").Append(Id).Append("\n");
-      sb.Append("  Demand: ").Append(Demand).Append("\n");
-      sb.Append("  Offer: ").Append(Offer).Append("\n");
+      sb.Append("class RequestorEvent {\n");
+      sb.Append("  EventType: ").Append(EventType).Append("\n");
+      sb.Append("  ProviderId: ").Append(ProviderId).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

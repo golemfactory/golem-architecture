@@ -40,6 +40,13 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     [JsonProperty(PropertyName = "prevProposalId")]
     public string PrevProposalId { get; set; }
 
+    /// <summary>
+    /// Gets or Sets Attachments
+    /// </summary>
+    [DataMember(Name="attachments", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "attachments")]
+    public List<object> Attachments { get; set; }
+
 
     /// <summary>
     /// Get the string presentation of the object
@@ -52,6 +59,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
       sb.Append("  Properties: ").Append(Properties).Append("\n");
       sb.Append("  Constraints: ").Append(Constraints).Append("\n");
       sb.Append("  PrevProposalId: ").Append(PrevProposalId).Append("\n");
+      sb.Append("  Attachments: ").Append(Attachments).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
