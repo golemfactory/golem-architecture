@@ -84,7 +84,7 @@ namespace GolemSampleProvider1.Processor
                             Constraints = "()"
                         };
 
-                        Console.WriteLine("Counter Offer (priced) composed:");
+                        Console.WriteLine("\nCounter Offer (priced) composed:");
                         Console.WriteLine($"{pricedProposal}");
                         Console.WriteLine("Sending counter-Offer...\n");
 
@@ -93,13 +93,20 @@ namespace GolemSampleProvider1.Processor
                     }
                     else if (provEvent is NewAgreementEvent)
                     {
+                        Console.WriteLine("\nApproving proposed agreement...");
                         var agreementEvent = provEvent as NewAgreementEvent;
                         this.ProviderClient.ApproveAgreement(agreementEvent.AgreementId);
 
+                        Console.WriteLine("Agreement approved!");
                         break;
                     }
 
                 }
+
+                Console.WriteLine("\nClosing subscription...");
+                this.ProviderClient.Unsubscribe(offerSubscriptionId);
+
+                Console.WriteLine("Subscription closed.\n");
 
             }
             catch (Exception exc)
