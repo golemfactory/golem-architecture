@@ -139,7 +139,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Proposal'
+              $ref: '#/definitions/ProviderEvent'
 
 
   '/offers/{subscriptionId}/propertyQuery/{queryId}':
@@ -398,24 +398,32 @@ definitions:
     required:
       - eventType
       - providerId
+    discriminator: eventType
+#      propertyName: eventType
+#      mapping:
+#        offer: '#/definitions/OfferEvent'
+#        propertyQuery: '#/definitions/RequestorPropertyQuery'
     properties:
       eventType:
         type: string
       providerId:
         type: string
-    discriminator: eventType
-
 
   ProviderEvent:
     required:
       - eventType
       - requestorId
+    discriminator: eventType
+#      propertyName: eventType
+#      mapping:
+#        demand: '#/definitions/DemandEvent'
+#        propertyQuery: '#/definitions/ProviderPropertyQuery'
+#        newAgreement: '#/definitions/NewAgreementEvent'
     properties:
       eventType:
         type: string
       requestorId:
         type: string
-    discriminator: eventType
     example:
       eventType: DemandEvent
       requestorId: 1172812402961
@@ -473,6 +481,8 @@ definitions:
       - $ref: '#/definitions/ProviderEvent'
       - type: object
         properties:
+          agreementId:
+            type: string
           requestorId:
             type: string
           demand:
@@ -481,6 +491,20 @@ definitions:
             type: string
           offer:
             $ref: '#/definitions/Offer'
+
+  RequestorPropertyQuery:
+    allOf:
+      - $ref: '#/definitions/RequestorEvent'
+      - type: object
+        properties:
+          requestorDesc:
+            type: object
+          queryId:
+            type: string
+          queriedProps:
+            type: array
+            items:
+              type: string
 
   ProviderPropertyQuery:
     allOf:

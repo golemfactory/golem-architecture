@@ -1,8 +1,7 @@
 ﻿(&
-    (golem.srv.comp.container.docker.image="golemfactory/ffmpeg")
+    (golem.srv.comp.container.docker.image=golemfactory/ffmpeg)
     (golem.srv.comp.container.docker.benchmark{golemfactory/ffmpeg}>300)
-    (golem.com.payment.scheme="after")
-    (golem.usage.vector=["golem.usage.duration_sec"])
-    (golem.com.pricing.model="linear")
-    (golem.com.pricing.est{[30]}<125)
+    (golem.com.payment.scheme=after)
+    (golem.usage.vector=[golem.usage.duration_sec])
+    (golem.com.pricing.model=linear)
 )

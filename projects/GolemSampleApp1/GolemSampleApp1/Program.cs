@@ -10,7 +10,7 @@ namespace GolemSampleApp1
     {
         static void Main(string[] args)
         {
-            var client = new ApiClient("http://localhost:8080");
+            var client = new ApiClient("http://localhost:5001/market-api/v1");
 
             var processor = new MarketProcessor(client);
 
