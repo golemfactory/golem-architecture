@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>activity-api</name>
+    </assembly>
+    <members>
+        <member name="M:activity_api.Controllers.ControlController.CreateActivity(System.Guid)">
+            <summary>
+            Creates new Activity based on given Agreement.
+            </summary>
+            <param name="agreementId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ControlController.Exec(System.Guid,activity_api.Model.ExeScriptBatch)">
+            <summary>
+            Executes an ExeScript batch within a given Activity.
+            </summary>
+            <param name="activityId"></param>
+            <param name="script"></param>
+            <returns>ExeScript batch Id</returns>
+        </member>
+        <member name="M:activity_api.Controllers.ControlController.GetExecBatchResult(System.Guid,System.Int32,System.Int32)">
+            <summary>
+            Queries for ExeScript batch results.
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ControlController.DestroyActivity(System.Guid)">
+            <summary>
+            Destroys given Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.StateController.GetState(System.Int32)">
+            <summary>
+            Get state of specified Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.StateController.GetCurrentUsage(System.Int32)">
+            <summary>
+            Get usage of specified Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.StateController.GetRunningCommand(System.Int32)">
+            <summary>
+            Get running command for a specified Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="P:activity_api.Model.ActivityState.Reason">
+            <summary>
+            Reason for Activity termination (specified when Activity in Terminated state.
+            </summary>
+        </member>
+    </members>
+</doc>
