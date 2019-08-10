@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Golem.ActivityApi.Client.Swagger.Api;
+using Golem.MarketApi.Client.Swagger.Api;
 using Golem.Provider.Entities;
 
 namespace Golem.Provider.ActivityControl
@@ -11,7 +11,7 @@ namespace Golem.Provider.ActivityControl
         /// <summary>
         /// The Activity API proxy that this controller will listen to and handle.
         /// </summary>
-        IProviderApi ActivityApi { get; set; }
+        IProviderGatewayApi ActivityApi { get; set; }
 
         /// <summary>
         /// ExeUnit factory.
@@ -19,7 +19,7 @@ namespace Golem.Provider.ActivityControl
         IExeUnitFactory ExeUnitFactory { get; set; }
 
         public ActivityController(
-            IProviderApi activityApi,
+            IProviderGatewayApi activityApi,
             IExeUnitFactory exeUnitFactory)
         {
             this.ActivityApi = activityApi;
@@ -37,7 +37,10 @@ namespace Golem.Provider.ActivityControl
 
             while (!isStopped)
             {
-                // Collect the Activity APi events
+                // Collect the Activity API events
+
+                var events = this.ActivityApi.CollectActivityEvents(5000);
+
                 // Handle the CreateActivity calls
             }
         }
@@ -61,6 +64,8 @@ namespace Golem.Provider.ActivityControl
             // ...should we consult ResourceManager to pre-reserve the resources???
 
             // All is confirmed, 
+
+            throw new NotImplementedException();
         }
     }
 }
