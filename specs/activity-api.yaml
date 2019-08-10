@@ -175,6 +175,44 @@ paths:
           description: Server Error
           schema:
             $ref: '#/definitions/ErrorBase'
+  /activity/events:
+    get:
+      tags:
+        - ProviderGateway
+      summary: Queries for ExeScript batch results.
+      operationId: CollectActivityEvents
+      consumes: []
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: timeout
+          in: query
+          description: ''
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          schema:
+            uniqueItems: false
+            type: array
+            items:
+              $ref: '#/definitions/ProviderEvent'
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+        '500':
+          description: Server Error
+          schema:
+            $ref: '#/definitions/ErrorBase'
   '/activity/{activityId}/state':
     get:
       tags:
@@ -334,6 +372,18 @@ definitions:
           - Error
         type: string
       message:
+        type: string
+  ProviderEvent:
+    type: object
+    properties:
+      eventType:
+        enum:
+          - CreateActivity
+          - Exec
+          - DestroyActivity
+          - GetState
+        type: string
+      activityId:
         type: string
   ActivityState:
     type: object

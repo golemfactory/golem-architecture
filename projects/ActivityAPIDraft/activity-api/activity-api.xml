@@ -4,14 +4,14 @@
         <name>activity-api</name>
     </assembly>
     <members>
-        <member name="M:activity_api.Controllers.ControlController.CreateActivity(System.Guid)">
+        <member name="M:activity_api.Controllers.ControlController.CreateActivity(System.String)">
             <summary>
             Creates new Activity based on given Agreement.
             </summary>
             <param name="agreementId"></param>
             <returns></returns>
         </member>
-        <member name="M:activity_api.Controllers.ControlController.Exec(System.Guid,activity_api.Model.ExeScriptBatch)">
+        <member name="M:activity_api.Controllers.ControlController.Exec(System.String,activity_api.Model.ExeScriptBatch)">
             <summary>
             Executes an ExeScript batch within a given Activity.
             </summary>
@@ -19,7 +19,7 @@
             <param name="script"></param>
             <returns>ExeScript batch Id</returns>
         </member>
-        <member name="M:activity_api.Controllers.ControlController.GetExecBatchResult(System.Guid,System.Int32,System.Int32)">
+        <member name="M:activity_api.Controllers.ControlController.GetExecBatchResults(System.String,System.Int32,System.Int32)">
             <summary>
             Queries for ExeScript batch results.
             </summary>
@@ -28,11 +28,20 @@
             <param name="timeout"></param>
             <returns></returns>
         </member>
-        <member name="M:activity_api.Controllers.ControlController.DestroyActivity(System.Guid)">
+        <member name="M:activity_api.Controllers.ControlController.DestroyActivity(System.String)">
             <summary>
             Destroys given Activity.
             </summary>
             <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ProviderGatewayController.CollectActivityEvents(System.Int32)">
+            <summary>
+            Queries for ExeScript batch results.
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="timeout"></param>
             <returns></returns>
         </member>
         <member name="M:activity_api.Controllers.StateController.GetState(System.Int32)">
@@ -58,7 +67,7 @@
         </member>
         <member name="P:activity_api.Model.ActivityState.Reason">
             <summary>
-            Reason for Activity termination (specified when Activity in Terminated state.
+            Reason for Activity termination (specified when Activity in Terminated state).
             </summary>
         </member>
     </members>
