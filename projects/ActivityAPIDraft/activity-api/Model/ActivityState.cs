@@ -13,5 +13,10 @@ namespace activity_api.Model
         /// Reason for Activity termination (specified when Activity in Terminated state).
         /// </summary>
         public string Reason { get; set; }
+
+        /// <summary>
+        /// If error caused state change - error message shall be provided.
+        /// </summary>
+        public string ErrorMessage { get; set; }
     }
 }

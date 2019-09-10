@@ -22,13 +22,50 @@ namespace activity_api.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(List<ProviderEvent>), 200)]
-        [ProducesResponseType(403)] // Forbidden (no rights to activity)
-        [ProducesResponseType(404)] // Not found (nonexistent activity)
+        [ProducesResponseType(403)] // Forbidden 
         [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
         [Route("activity/events")]
         public ActionResult<List<ProviderEvent>> CollectActivityEvents([FromQuery] int timeout)
         {
             return null;
         }
+
+        /// <summary>
+        /// Pass activity state (which may include error details)
+        /// </summary>
+        /// <param name="activityId"></param>
+        /// <param name="batchId"></param>
+        /// <param name="commandResult"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)] // Forbidden (no rights to activity)
+        [ProducesResponseType(404)] // Not found (nonexistent activity)
+        [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
+        [Route("activity/{activityId}/state")]
+        public ActionResult PutActivityStateDetails([FromRoute] string activityId, ActivityStateDetails state)
+        {
+            return null;
+        }
+
+
+        /// <summary>
+        /// Pass result of individual ExeScript command executed within the batch.
+        /// </summary>
+        /// <param name="activityId"></param>
+        /// <param name="batchId"></param>
+        /// <param name="commandResult"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)] // Forbidden (no rights to activity)
+        [ProducesResponseType(404)] // Not found (nonexistent activity)
+        [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
+        [Route("activity/{activityId}/exec/{batchId}")]
+        public ActionResult PutExeScriptResult([FromRoute] string activityId, [FromRoute] string batchId, ExeScriptCommandResult commandResult)
+        {
+            return null;
+        }
+
     }
 }

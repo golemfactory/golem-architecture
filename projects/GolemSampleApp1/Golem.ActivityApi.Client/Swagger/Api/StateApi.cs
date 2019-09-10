@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using RestSharp;
-using Golem.MarketApi.Client.Swagger.Client;
-using Golem.MarketApi.Client.Swagger.Model;
+using Golem.ActivityApi.Client.Swagger.Client;
+using Golem.ActivityApi.Client.Swagger.Model;
 
-namespace Golem.MarketApi.Client.Swagger.Api
+namespace Golem.ActivityApi.Client.Swagger.Api
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints

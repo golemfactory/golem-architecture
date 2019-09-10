@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Golem.MarketApi.Client.Swagger.Api;
+using System.Threading.Tasks;
+using Golem.ActivityApi.Client.Swagger.Api;
 using Golem.Provider.Entities;
+using Golem.Provider.Repository;
 
 namespace Golem.Provider.ActivityControl
 {
@@ -18,12 +21,26 @@ namespace Golem.Provider.ActivityControl
         /// </summary>
         IExeUnitFactory ExeUnitFactory { get; set; }
 
+        public IAgreementRepository AgreementRepository { get; set; }
+
+        public IActivityRepository ActivityRepository { get; set; }
+
+
+        /// <summary>
+        /// Dictionary of ExeUnit instances indexed by ActivityId
+        /// </summary>
+        public IDictionary<string, IExeUnit> ExeUnitsByActivityId { get; set; } = new Dictionary<string, IExeUnit>();
+
         public ActivityController(
             IProviderGatewayApi activityApi,
-            IExeUnitFactory exeUnitFactory)
+            IExeUnitFactory exeUnitFactory,
+            IAgreementRepository agreementRepository,
+            IActivityRepository activityRepository)
         {
             this.ActivityApi = activityApi;
             this.ExeUnitFactory = exeUnitFactory;
+            this.AgreementRepository = agreementRepository;
+            this.ActivityRepository = activityRepository;
         }
 
         private bool isStopped = false;
@@ -42,6 +59,28 @@ namespace Golem.Provider.ActivityControl
                 var events = this.ActivityApi.CollectActivityEvents(5000);
 
                 // Handle the CreateActivity calls
+
+                foreach(var evn in events)
+                {
+                    switch(evn.EventType)
+                    {
+                        case "CreateActivity":
+                            this.CreateActivity(evn as ActivityApi.Client.Swagger.Model.CreateActivityProviderEvent);
+                            break;
+                        case "Exec":
+                            this.Exec(evn as ActivityApi.Client.Swagger.Model.ExecProviderEvent);
+                            break;
+                        case "DestroyActivity":
+                            this.DestroyActivity(evn);
+                            break;
+                        case "GetState":
+                            this.GetStateDetails(evn);
+                            break;
+                        default:
+                            // TODO log unknown event type
+                            break;
+                    }
+                }
             }
         }
 
@@ -56,14 +95,137 @@ namespace Golem.Provider.ActivityControl
         /// <summary>
         /// The handler method to handle the incoming Create Activity requests.
         /// </summary>
-        /// <param name="agreement"></param>
+        /// <param name="eventDetails"></param>
         /// <returns></returns>
-        protected Activity CreateActivity(Agreement agreement)
+        protected Activity CreateActivity(ActivityApi.Client.Swagger.Model.CreateActivityProviderEvent eventDetails)
         {
-            // ...should we validate the Agreement again here???
-            // ...should we consult ResourceManager to pre-reserve the resources???
+            Agreement agreement = null;
 
-            // All is confirmed, 
+            // We assume that the client has validated the existence of Agreement, so we assume Agreement is there
+            if((agreement = this.AgreementRepository.GetAgreement(eventDetails.AgreementId)) != null)
+            {
+                // ...should we validate the Agreement again here???
+                // 
+                // ...should we consult ResourceManager to pre-reserve the resources???
+                               
+                // All is confirmed, create Activity entity, build relevant ExeUnit
+
+                var exeUnit = this.ExeUnitFactory.BuildExeUnit(agreement);
+
+                var activity = new Activity()
+                {
+                    Agreement = agreement,
+                    Id = eventDetails.ActivityId,
+                    ExeUnitInstance = exeUnit
+                };
+
+                exeUnit.OnStateChanged += ExeUnit_OnStateChanged;
+                
+                activity.SetState(ActivityState.New);
+
+                activity = this.ActivityRepository.CreateActivity(activity);
+
+                return activity;
+
+            }
+            else
+            {
+                throw new Exception($"Agreement Id {eventDetails.AgreementId} not found!");
+            }
+        }
+
+        /// <summary>
+        /// Handler to process incoming Exec events for activity.
+        /// Spawns a sequential command processor in separate thread.
+        /// </summary>
+        /// <param name="eventDetails"></param>
+        protected void Exec(ActivityApi.Client.Swagger.Model.ExecProviderEvent eventDetails)
+        {
+            Task.Run(() => { this.DoExec(eventDetails); }); 
+        }
+
+        protected void DoExec(ActivityApi.Client.Swagger.Model.ExecProviderEvent eventDetails)
+        {
+            if (!this.ExeUnitsByActivityId.ContainsKey(eventDetails.ActivityId))
+                throw new Exception($"ExeUnit for Activity {eventDetails.ActivityId} not found!");
+
+            var exeUnit = this.ExeUnitsByActivityId[eventDetails.ActivityId];
+
+            int i = 0;
+
+            foreach(var command in eventDetails.ExeScript.Commands)
+            {
+                var entCommand = new ExeScriptCommand()
+                {
+                    Command = command.Command,
+                    Params = command.Params
+                };
+
+                var entResult = exeUnit.ExecCommand(entCommand);
+
+                var commandResult = new ActivityApi.Client.Swagger.Model.ExeScriptCommandResult()
+                {
+                    Index = i,
+                    Message = entResult.Message,
+                    Result = entResult.Result.ToString()
+                };
+
+                this.ActivityApi.PutExeScriptResult(eventDetails.ActivityId, eventDetails.BatchId, commandResult);
+
+                i++;
+            }
+
+        }
+
+        /// <summary>
+        /// Handler for incoming DestroyActivity events.
+        /// </summary>
+        /// <param name="eventDetails"></param>
+        protected void DestroyActivity(ActivityApi.Client.Swagger.Model.ProviderEvent eventDetails)
+        {
+            if (!this.ExeUnitsByActivityId.ContainsKey(eventDetails.ActivityId))
+                throw new Exception($"ExeUnit for Activity {eventDetails.ActivityId} not found!");
+
+            var exeUnit = this.ExeUnitsByActivityId[eventDetails.ActivityId];
+
+            exeUnit.Destroy();
+
+        }
+
+        protected void GetStateDetails(ActivityApi.Client.Swagger.Model.ProviderEvent eventDetails)
+        {
+            if (!this.ExeUnitsByActivityId.ContainsKey(eventDetails.ActivityId))
+                throw new Exception($"ExeUnit for Activity {eventDetails.ActivityId} not found!");
+
+            var exeUnit = this.ExeUnitsByActivityId[eventDetails.ActivityId];
+
+            var stateDetails = exeUnit.GetStateDetails();
+
+            this.ActivityApi.PutActivityStateDetails(eventDetails.ActivityId, new Golem.ActivityApi.Client.Swagger.Model.ActivityStateDetails()
+            {
+                State = $"{stateDetails.State}",
+                CurrentUsage = stateDetails.CurrentUsage.Select(item => (double?)item).ToList()
+            });
+
+        }
+
+
+        private void ExeUnit_OnStateChanged(ExeUnitStateDetails newStateDetails)
+        {
+            if (newStateDetails.ActivityId == null)
+                throw new Exception("Activity Id not initialized in ExeUnitStateDetails!");
+
+            // update Activity state in repo
+
+            this.ActivityRepository.SetActivityState(newStateDetails.ActivityId, (ActivityState)Enum.Parse(typeof(ActivityState), $"{newStateDetails.State}"));
+
+            // now send the state update to Provider gateway
+
+            this.ActivityApi.PutActivityStateDetails(newStateDetails.ActivityId, new ActivityApi.Client.Swagger.Model.ActivityStateDetails()
+            {
+                State = $"{newStateDetails.State}",
+                CurrentUsage = null  // do not send usage (as we don't know it)
+            });
 
             throw new NotImplementedException();
         }

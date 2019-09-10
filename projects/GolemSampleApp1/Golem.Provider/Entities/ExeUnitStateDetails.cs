@@ -6,6 +6,7 @@ namespace Golem.Provider.Entities
 {
     public enum ExeUnitState
     {
+        Undefined,
         New,
         Deploying,
         Ready,
@@ -20,9 +21,19 @@ namespace Golem.Provider.Entities
     public class ExeUnitStateDetails
     {
         /// <summary>
+        /// Id of Activity related to this ExeUnit
+        /// </summary>
+        public string ActivityId { get; set; }
+
+        /// <summary>
         /// ExeUnit State
         /// </summary>
         public ExeUnitState State { get; set; }
+
+        /// <summary>
+        /// Current usage vector
+        /// </summary>
+        public List<decimal> CurrentUsage { get; set; }
 
         /// <summary>
         /// Additional, arbitrary attributes, which may carry any set of key-value pairs, 

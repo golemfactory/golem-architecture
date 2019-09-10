@@ -1,6 +1,6 @@
 using System;
 
-namespace Golem.MarketApi.Client.Swagger.Client {
+namespace Golem.ActivityApi.Client.Swagger.Client {
   /// <summary>
   /// API Exception
   /// </summary>

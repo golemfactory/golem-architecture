@@ -44,6 +44,24 @@
             <param name="timeout"></param>
             <returns></returns>
         </member>
+        <member name="M:activity_api.Controllers.ProviderGatewayController.PutActivityStateDetails(System.String,activity_api.Model.ActivityStateDetails)">
+            <summary>
+            Pass activity state (which may include error details)
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="commandResult"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ProviderGatewayController.PutExeScriptResult(System.String,System.String,activity_api.Model.ExeScriptCommandResult)">
+            <summary>
+            Pass result of individual ExeScript command executed within the batch.
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="commandResult"></param>
+            <returns></returns>
+        </member>
         <member name="M:activity_api.Controllers.StateController.GetState(System.Int32)">
             <summary>
             Get state of specified Activity.
@@ -68,6 +86,26 @@
         <member name="P:activity_api.Model.ActivityState.Reason">
             <summary>
             Reason for Activity termination (specified when Activity in Terminated state).
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.ActivityState.ErrorMessage">
+            <summary>
+            If error caused state change - error message shall be provided.
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.ActivityStateDetails.CurrentUsage">
+            <summary>
+            Current usage vector
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.CreateActivityProviderEvent.AgreementId">
+            <summary>
+            ID Agreement within which the Activity is being created.
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.ExecProviderEvent.BatchId">
+            <summary>
+            Batch Id
             </summary>
         </member>
     </members>

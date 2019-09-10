@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using RestSharp;
-using Golem.MarketApi.Client.Swagger.Client;
-using Golem.MarketApi.Client.Swagger.Model;
+using Golem.ActivityApi.Client.Swagger.Client;
+using Golem.ActivityApi.Client.Swagger.Model;
 
-namespace Golem.MarketApi.Client.Swagger.Api
+namespace Golem.ActivityApi.Client.Swagger.Api
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -17,6 +17,21 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <param name="timeout"></param>
         /// <returns>List&lt;ProviderEvent&gt;</returns>
         List<ProviderEvent> CollectActivityEvents (int? timeout);
+        /// <summary>
+        /// Pass activity state (which may include error details) 
+        /// </summary>
+        /// <param name="activityId"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        void PutActivityStateDetails (string activityId, ActivityStateDetails state);
+        /// <summary>
+        /// Pass result of individual ExeScript command executed within the batch. 
+        /// </summary>
+        /// <param name="activityId"></param>
+        /// <param name="batchId"></param>
+        /// <param name="commandResult"></param>
+        /// <returns></returns>
+        void PutExeScriptResult (string activityId, string batchId, ExeScriptCommandResult commandResult);
     }
   
     /// <summary>
@@ -104,6 +119,89 @@ namespace Golem.MarketApi.Client.Swagger.Api
                 throw new ApiException ((int)response.StatusCode, "Error calling CollectActivityEvents: " + response.ErrorMessage, response.ErrorMessage);
     
             return (List<ProviderEvent>) ApiClient.Deserialize(response.Content, typeof(List<ProviderEvent>), response.Headers);
+        }
+    
+        /// <summary>
+        /// Pass activity state (which may include error details) 
+        /// </summary>
+        /// <param name="activityId"></param> 
+        /// <param name="state"></param> 
+        /// <returns></returns>            
+        public void PutActivityStateDetails (string activityId, ActivityStateDetails state)
+        {
+            
+            // verify the required parameter 'activityId' is set
+            if (activityId == null) throw new ApiException(400, "Missing required parameter 'activityId' when calling PutActivityStateDetails");
+            
+    
+            var path = "/activity/{activityId}/state";
+            path = path.Replace("{format}", "json");
+            path = path.Replace("{" + "activityId" + "}", ApiClient.ParameterToString(activityId));
+    
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+    
+                                                postBody = ApiClient.Serialize(state); // http body (model) parameter
+    
+            // authentication setting, if any
+            String[] authSettings = new String[] {  };
+    
+            // make the HTTP request
+            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+    
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException ((int)response.StatusCode, "Error calling PutActivityStateDetails: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException ((int)response.StatusCode, "Error calling PutActivityStateDetails: " + response.ErrorMessage, response.ErrorMessage);
+    
+            return;
+        }
+    
+        /// <summary>
+        /// Pass result of individual ExeScript command executed within the batch. 
+        /// </summary>
+        /// <param name="activityId"></param> 
+        /// <param name="batchId"></param> 
+        /// <param name="commandResult"></param> 
+        /// <returns></returns>            
+        public void PutExeScriptResult (string activityId, string batchId, ExeScriptCommandResult commandResult)
+        {
+            
+            // verify the required parameter 'activityId' is set
+            if (activityId == null) throw new ApiException(400, "Missing required parameter 'activityId' when calling PutExeScriptResult");
+            
+            // verify the required parameter 'batchId' is set
+            if (batchId == null) throw new ApiException(400, "Missing required parameter 'batchId' when calling PutExeScriptResult");
+            
+    
+            var path = "/activity/{activityId}/exec/{batchId}";
+            path = path.Replace("{format}", "json");
+            path = path.Replace("{" + "activityId" + "}", ApiClient.ParameterToString(activityId));
+path = path.Replace("{" + "batchId" + "}", ApiClient.ParameterToString(batchId));
+    
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+    
+                                                postBody = ApiClient.Serialize(commandResult); // http body (model) parameter
+    
+            // authentication setting, if any
+            String[] authSettings = new String[] {  };
+    
+            // make the HTTP request
+            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.PUT, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+    
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException ((int)response.StatusCode, "Error calling PutExeScriptResult: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException ((int)response.StatusCode, "Error calling PutExeScriptResult: " + response.ErrorMessage, response.ErrorMessage);
+    
+            return;
         }
     
     }

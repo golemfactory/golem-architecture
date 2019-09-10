@@ -41,7 +41,7 @@ paths:
         '500':
           description: Server Error
           schema:
-            $ref: '#/definitions/ErrorBase'
+            $ref: '#/definitions/CreateActivityError'
   '/activity/{activityId}/exec':
     post:
       tags:
@@ -89,7 +89,7 @@ paths:
         '500':
           description: Server Error
           schema:
-            $ref: '#/definitions/ErrorBase'
+            $ref: '#/definitions/ExecError'
   '/activity/{activityId}/exec/{batchId}':
     get:
       tags:
@@ -143,6 +143,52 @@ paths:
           description: Server Error
           schema:
             $ref: '#/definitions/ErrorBase'
+    put:
+      tags:
+        - ProviderGateway
+      summary: Pass result of individual ExeScript command executed within the batch.
+      operationId: PutExeScriptResult
+      consumes:
+        - application/json-patch+json
+        - application/json
+        - text/json
+        - application/*+json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: activityId
+          in: path
+          description: ''
+          required: true
+          type: string
+        - name: batchId
+          in: path
+          description: ''
+          required: true
+          type: string
+        - name: commandResult
+          in: body
+          description: ''
+          required: false
+          schema:
+            $ref: '#/definitions/ExeScriptCommandResult'
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+        '500':
+          description: Server Error
+          schema:
+            $ref: '#/definitions/ErrorBase'
   '/activity/{activityId}':
     delete:
       tags:
@@ -174,7 +220,7 @@ paths:
         '500':
           description: Server Error
           schema:
-            $ref: '#/definitions/ErrorBase'
+            $ref: '#/definitions/DestroyActivityError'
   /activity/events:
     get:
       tags:
@@ -203,10 +249,6 @@ paths:
               $ref: '#/definitions/ProviderEvent'
         '403':
           description: Forbidden
-          schema:
-            $ref: '#/definitions/ProblemDetails'
-        '404':
-          description: Not Found
           schema:
             $ref: '#/definitions/ProblemDetails'
         '500':
@@ -240,6 +282,46 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/ErrorBase'
+        '500':
+          description: Server Error
+          schema:
+            $ref: '#/definitions/ErrorBase'
+    put:
+      tags:
+        - ProviderGateway
+      summary: Pass activity state (which may include error details)
+      operationId: PutActivityStateDetails
+      consumes:
+        - application/json-patch+json
+        - application/json
+        - text/json
+        - application/*+json
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - name: activityId
+          in: path
+          description: ''
+          required: true
+          type: string
+        - name: state
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/ActivityStateDetails'
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ProblemDetails'
         '500':
           description: Server Error
           schema:
@@ -332,11 +414,6 @@ definitions:
         type: string
     additionalProperties:
       type: object
-  ErrorBase:
-    type: object
-    properties:
-      message:
-        type: string
   ExeScriptBatch:
     type: object
     properties:
@@ -373,7 +450,19 @@ definitions:
         type: string
       message:
         type: string
+  ErrorBase:
+    type: object
+    properties:
+      message:
+        type: string
+  DestroyActivityError:
+    type: object
+    properties:
+      message:
+        type: string
   ProviderEvent:
+    required:
+      - eventType
     type: object
     properties:
       eventType:
@@ -384,6 +473,33 @@ definitions:
           - GetState
         type: string
       activityId:
+        type: string
+    discriminator: eventType
+  ActivityStateDetails:
+    type: object
+    properties:
+      currentUsage:
+        description: Current usage vector
+        uniqueItems: false
+        type: array
+        items:
+          format: double
+          type: number
+      state:
+        enum:
+          - New
+          - Deploying
+          - Ready
+          - Starting
+          - Active
+          - Unresponsive
+          - Terminated
+        type: string
+      reason:
+        description: Reason for Activity termination (specified when Activity in Terminated state).
+        type: string
+      errorMessage:
+        description: If error caused state change - error message shall be provided.
         type: string
   ActivityState:
     type: object
@@ -401,3 +517,44 @@ definitions:
       reason:
         description: Reason for Activity termination (specified when Activity in Terminated state).
         type: string
+      errorMessage:
+        description: If error caused state change - error message shall be provided.
+        type: string
+  CreateActivityProviderEvent:
+    type: object
+    allOf:
+      - $ref: '#/definitions/ProviderEvent'
+      - type: object
+        properties:
+          agreementId:
+            type: string
+          eventType:
+            enum:
+              - CreateActivity
+              - Exec
+              - DestroyActivity
+              - GetState
+            type: string
+          activityId:
+            type: string
+    properties: {}
+  ExecProviderEvent:
+    type: object
+    allOf:
+      - $ref: '#/definitions/ProviderEvent'
+      - type: object
+        properties:
+          batchId:
+            type: string
+          exeScript:
+            $ref: '#/definitions/ExeScriptBatch'
+          eventType:
+            enum:
+              - CreateActivity
+              - Exec
+              - DestroyActivity
+              - GetState
+            type: string
+          activityId:
+            type: string
+    properties: {}

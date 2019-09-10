@@ -22,7 +22,7 @@ namespace activity_api.Controllers
         [ProducesResponseType(typeof(string), 201)]
         [ProducesResponseType(typeof(CreateActivityError), 400)] // Bad request (unknown agreement id)
         [ProducesResponseType(403)] // Forbidden (no rights to the agreement)
-        [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
+        [ProducesResponseType(typeof(CreateActivityError), 500)] // Server error
         public ActionResult<string> CreateActivity([FromBody] string agreementId)
         {
             return "";
@@ -39,7 +39,7 @@ namespace activity_api.Controllers
         [ProducesResponseType(typeof(ExecError), 400)] // Bad request (invalid command)
         [ProducesResponseType(403)] // Forbidden (no rights to activity)
         [ProducesResponseType(404)] // Not found (nonexistent activity)
-        [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
+        [ProducesResponseType(typeof(ExecError), 500)] // Server error
         [Route("activity/{activityId}/exec")]
         public ActionResult<string> Exec(string activityId, ExeScriptBatch script)
         {
@@ -75,7 +75,7 @@ namespace activity_api.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(403)] // Forbidden (no rights to activity)
         [ProducesResponseType(404)] // Not found (nonexistent activity)
-        [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
+        [ProducesResponseType(typeof(DestroyActivityError), 500)] // Server error
         [Route("activity/{activityId}")]
         public ActionResult DestroyActivity(string activityId)
         {

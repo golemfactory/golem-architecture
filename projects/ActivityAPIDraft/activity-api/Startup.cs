@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using activity_api.Filters;
 using activity_api.Helper;
 using activity_api.Model;
 using Microsoft.AspNetCore.Builder;
@@ -37,8 +38,8 @@ namespace activity_api
                 c.SwaggerDoc("v1", new Info { Title = "Golem Activity API", Version = "v1" });
 
                 // here are attepmpts to use polymorphism for Provider Events, but this seems overkill (content mostly identical!)
-                //c.DocumentFilter<PolymorphismDocumentFilter<ProviderEvent>>();
-                //c.SchemaFilter<PolymorphismSchemaFilter<ProviderEvent>>();
+                c.DocumentFilter<PolymorphismDocumentFilter<ProviderEvent>>();
+                c.SchemaFilter<PolymorphismSchemaFilter<ProviderEvent>>();
 
                 c.DescribeAllEnumsAsStrings(); 
 
@@ -48,6 +49,10 @@ namespace activity_api
 
                 //... and tell Swagger to use those XML comments.
                 c.IncludeXmlComments(xmlPath);
+
+                // Sets the basePath property in the Swagger document generated
+                c.DocumentFilter<BasePathFilter>("/activity-api/v1");
+
             });
         }
 

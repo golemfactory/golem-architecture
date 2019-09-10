@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Golem.MarketApi.Client.Swagger.Client
+namespace Golem.ActivityApi.Client.Swagger.Client
 {
     /// <summary>
     /// Represents a set of configuration settings

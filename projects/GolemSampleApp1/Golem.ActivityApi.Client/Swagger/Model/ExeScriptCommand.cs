@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace Golem.ActivityApi.Client.Swagger.Model {
 
   /// <summary>
   /// 

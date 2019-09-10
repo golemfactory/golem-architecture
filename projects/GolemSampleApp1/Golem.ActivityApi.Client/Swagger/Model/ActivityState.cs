@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace Golem.ActivityApi.Client.Swagger.Model {
 
   /// <summary>
   /// 
@@ -27,6 +27,14 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     [JsonProperty(PropertyName = "reason")]
     public string Reason { get; set; }
 
+    /// <summary>
+    /// If error caused state change - error message shall be provided.
+    /// </summary>
+    /// <value>If error caused state change - error message shall be provided.</value>
+    [DataMember(Name="errorMessage", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "errorMessage")]
+    public string ErrorMessage { get; set; }
+
 
     /// <summary>
     /// Get the string presentation of the object
@@ -37,6 +45,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
       sb.Append("class ActivityState {\n");
       sb.Append("  State: ").Append(State).Append("\n");
       sb.Append("  Reason: ").Append(Reason).Append("\n");
+      sb.Append("  ErrorMessage: ").Append(ErrorMessage).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

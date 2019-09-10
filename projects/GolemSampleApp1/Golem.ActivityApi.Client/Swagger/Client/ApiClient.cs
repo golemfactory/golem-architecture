@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Extensions;
 
-namespace Golem.MarketApi.Client.Swagger.Client
+namespace Golem.ActivityApi.Client.Swagger.Client
 {
     /// <summary>
     /// API client is mainly responible for making the HTTP call to the API backend.

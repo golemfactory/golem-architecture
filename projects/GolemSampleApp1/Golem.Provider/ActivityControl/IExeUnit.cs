@@ -9,7 +9,12 @@ namespace Golem.Provider.ActivityControl
 
     public interface IExeUnit
     {
-        
+
+        /// <summary>
+        /// Activity related to this ExeUnit
+        /// </summary>
+        Activity Activity { get; set; }
+
         /// <summary>
         /// Gets called when Activity is created.
         /// </summary>
