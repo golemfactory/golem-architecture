@@ -22,7 +22,7 @@ namespace GolemSampleApp1.Processor
             this.ProviderClient = new ProviderApi(client);
         }
 
-        public void Run()
+        public string Run()
         {
             // -- simulate generic offer being placed on market by provider
 
@@ -92,30 +92,27 @@ namespace GolemSampleApp1.Processor
 
                 Console.WriteLine();
 
-                this.Negotiate_AsItIs(demandSubscriptionId, ""/*offerSubscriptionId*/, proposals[proposalIndex-1]);
+                var agreementId = this.Negotiate_AsItIs(demandSubscriptionId, ""/*offerSubscriptionId*/, proposals[proposalIndex-1]);
 
+                // -- close the offer subscription
                 Console.WriteLine("\nClosing subscription...");
                 this.RequestorClient.Unsubscribe(demandSubscriptionId);
 
                 Console.WriteLine("Subscription closed.\n");
 
-
-                // -- close the offer subscription
-
-                //this.ProviderClient.Unsubscribe(offerSubscriptionId);
+                return agreementId;
             }
             catch(Exception exc)
             {
                 Console.WriteLine($"{exc}");
             }
 
-            Console.WriteLine("Press any key...");
-            Console.ReadKey();
+            return null;
 
         }
 
 
-        protected void Negotiate_AsItIs(string demandSubscriptionId, string offerSubscriptionId, OfferEvent offerProposal)
+        protected string Negotiate_AsItIs(string demandSubscriptionId, string offerSubscriptionId, OfferEvent offerProposal)
         {
             // -- Create Agreement 
 
@@ -147,6 +144,8 @@ namespace GolemSampleApp1.Processor
             {
                 this.RequestorClient.WaitForApproval(agreementId);
                 Console.WriteLine("Agreement approved!");
+
+                return agreementId;
             }
             catch (ApiException exc)
             {
@@ -159,6 +158,8 @@ namespace GolemSampleApp1.Processor
                     Console.WriteLine("Timeout waiting for agreement approval...");
                 }
             }
+
+            return null;
         }
 
         protected void Negotiate_AsItShouldBe(string demandSubscriptionId, string offerSubscriptionId, Proposal offerProposal)

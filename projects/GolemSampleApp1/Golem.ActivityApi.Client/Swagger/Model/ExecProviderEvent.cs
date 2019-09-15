@@ -28,21 +28,6 @@ namespace Golem.ActivityApi.Client.Swagger.Model
     public ExeScriptBatch ExeScript { get; set; }
 
     /// <summary>
-    /// Gets or Sets EventType
-    /// </summary>
-    [DataMember(Name="eventType", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "eventType")]
-    public string EventType { get; set; }
-
-    /// <summary>
-    /// Gets or Sets ActivityId
-    /// </summary>
-    [DataMember(Name="activityId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "activityId")]
-    public string ActivityId { get; set; }
-
-
-    /// <summary>
     /// Get the string presentation of the object
     /// </summary>
     /// <returns>String presentation of the object</returns>

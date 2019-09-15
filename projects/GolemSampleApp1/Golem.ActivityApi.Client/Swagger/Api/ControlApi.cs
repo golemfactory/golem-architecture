@@ -29,7 +29,7 @@ namespace Golem.ActivityApi.Client.Swagger.Api
         /// <param name="activityId"></param>
         /// <param name="script"></param>
         /// <returns>string</returns>
-        string Exec (string activityId, ExeScriptBatch script);
+        string Exec (string activityId, ExeScriptRequest script);
         /// <summary>
         /// Queries for ExeScript batch results. 
         /// </summary>
@@ -37,7 +37,7 @@ namespace Golem.ActivityApi.Client.Swagger.Api
         /// <param name="batchId"></param>
         /// <param name="timeout"></param>
         /// <returns>List&lt;ExeScriptCommandResult&gt;</returns>
-        List<ExeScriptCommandResult> GetExecBatchResults (string activityId, int? batchId, int? timeout);
+        List<ExeScriptCommandResult> GetExecBatchResults (string activityId, string batchId, int? timeout);
     }
   
     /// <summary>
@@ -170,7 +170,7 @@ namespace Golem.ActivityApi.Client.Swagger.Api
         /// <param name="activityId"></param> 
         /// <param name="script"></param> 
         /// <returns>string</returns>            
-        public string Exec (string activityId, ExeScriptBatch script)
+        public string Exec (string activityId, ExeScriptRequest script)
         {
             
             // verify the required parameter 'activityId' is set
@@ -210,7 +210,7 @@ namespace Golem.ActivityApi.Client.Swagger.Api
         /// <param name="batchId"></param> 
         /// <param name="timeout"></param> 
         /// <returns>List&lt;ExeScriptCommandResult&gt;</returns>            
-        public List<ExeScriptCommandResult> GetExecBatchResults (string activityId, int? batchId, int? timeout)
+        public List<ExeScriptCommandResult> GetExecBatchResults (string activityId, string batchId, int? timeout)
         {
             
             // verify the required parameter 'activityId' is set

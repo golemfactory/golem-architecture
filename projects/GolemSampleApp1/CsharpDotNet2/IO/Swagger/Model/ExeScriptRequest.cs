@@ -5,20 +5,20 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.ActivityApi.Client.Swagger.Model
-{
+namespace IO.Swagger.Model {
 
   /// <summary>
   /// 
   /// </summary>
   [DataContract]
-  public class CreateActivityProviderEvent : ProviderEvent {
+  public class ExeScriptRequest {
     /// <summary>
-    /// Gets or Sets AgreementId
+    /// Gets or Sets Text
     /// </summary>
-    [DataMember(Name="agreementId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "agreementId")]
-    public string AgreementId { get; set; }
+    [DataMember(Name="text", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "text")]
+    public string Text { get; set; }
+
 
     /// <summary>
     /// Get the string presentation of the object
@@ -26,10 +26,8 @@ namespace Golem.ActivityApi.Client.Swagger.Model
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class CreateActivityProviderEvent {\n");
-      sb.Append("  AgreementId: ").Append(AgreementId).Append("\n");
-      sb.Append("  EventType: ").Append(EventType).Append("\n");
-      sb.Append("  ActivityId: ").Append(ActivityId).Append("\n");
+      sb.Append("class ExeScriptRequest {\n");
+      sb.Append("  Text: ").Append(Text).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
@@ -38,7 +36,7 @@ namespace Golem.ActivityApi.Client.Swagger.Model
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public  new string ToJson() {
+    public string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

@@ -7,9 +7,18 @@ namespace Golem.Provider.ActivityControl
 {
     public delegate void StateChanged(ExeUnitStateDetails newStateDetails);
 
+    public enum ExeUnitCommand
+    {
+        Unknown,
+        Deploy,
+        Start,
+        Run,
+        Stop,
+        Transfer
+    }
+
     public interface IExeUnit
     {
-
         /// <summary>
         /// Activity related to this ExeUnit
         /// </summary>

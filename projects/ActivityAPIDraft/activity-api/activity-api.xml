@@ -11,7 +11,7 @@
             <param name="agreementId"></param>
             <returns></returns>
         </member>
-        <member name="M:activity_api.Controllers.ControlController.Exec(System.String,activity_api.Model.ExeScriptBatch)">
+        <member name="M:activity_api.Controllers.ControlController.Exec(System.String,activity_api.Model.ExeScriptRequest)">
             <summary>
             Executes an ExeScript batch within a given Activity.
             </summary>
@@ -19,7 +19,7 @@
             <param name="script"></param>
             <returns>ExeScript batch Id</returns>
         </member>
-        <member name="M:activity_api.Controllers.ControlController.GetExecBatchResults(System.String,System.Int32,System.Int32)">
+        <member name="M:activity_api.Controllers.ControlController.GetExecBatchResults(System.String,System.String,System.Int32)">
             <summary>
             Queries for ExeScript batch results.
             </summary>
@@ -82,6 +82,30 @@
             </summary>
             <param name="activityId"></param>
             <returns></returns>
+        </member>
+        <member name="T:activity_api.Filters.BasePathFilter">
+            <summary>
+            BasePath Document Filter sets BasePath property of Swagger and removes it from the individual URL paths
+            </summary>
+        </member>
+        <member name="M:activity_api.Filters.BasePathFilter.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="basePath">BasePath to remove from Operations</param>
+        </member>
+        <member name="P:activity_api.Filters.BasePathFilter.BasePath">
+            <summary>
+            Gets the BasePath of the Swagger Doc
+            </summary>
+            <returns>The BasePath of the Swagger Doc</returns>
+        </member>
+        <member name="M:activity_api.Filters.BasePathFilter.Apply(Swashbuckle.AspNetCore.Swagger.SwaggerDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
+            <summary>
+            Apply the filter
+            </summary>
+            <param name="swaggerDoc">SwaggerDocument</param>
+            <param name="context">FilterContext</param>
         </member>
         <member name="P:activity_api.Model.ActivityState.Reason">
             <summary>

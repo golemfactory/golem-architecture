@@ -11,13 +11,24 @@ ActivityController
     - IActivityRepository with Activity persistence
     - ... do we want to keep Activity as an anemic entity, or should we include logic to update state, etc in it???
     - Use IExeUnitFactory to create IExeUnit instance based on agreement
-      - Where do we include logic to validate if the IExeUnitFactory is able to handle the Agreement?
+      - (TODO) Where do we include logic to validate if the IExeUnitFactory is able to handle the Agreement?
       - This should be like IEnumerable<Type> GetExeUnitTypes(Agreement) - to return all ExeUnit which seem to be able to handle the Agreement, based on its properties
         - Do we want to put this CanHandleAgreement(Agreement) logic in IExeUnit itself???
     - Put IExeUnit instance in a dictionary indexed by ActivityId 
     - Add observer to Activity State changes, to persist state changes in IActivityRepository
     - send CreateActivityResult back to ActivityAPI
-  - Handle Exec by spawning an ExeScriptBatchProcessor in separate thread to iterate over subsequent commands in batch, call ExecCommand() for each, and process results:
+  - (DONE) Handle Exec by spawning an ExeScriptBatchProcessor in separate thread to iterate over subsequent commands in batch, call ExecCommand() for each, and process results:
     - Halt processing if error occurred.
     - Pass response to ActivityAPI (set IsBatchFInished flag appropriately)
-  - Handle DestroyActivity
+  - (DONE) Handle DestroyActivity
+
+Repository 
+  - TODO Implement InMemory repositories (agreement, activity)
+
+ExeUnit
+  - TODO Implement BaseExeUnit<IExeUnitWorker>
+    - With rudimentary ExeScript parser to map commands onto IExeUnitWorker methods
+  
+  - TODO Implement Dummy ExeUnitFactory 
+    - See notes on logic of ExeUnit type selection above...
+    - To always return a

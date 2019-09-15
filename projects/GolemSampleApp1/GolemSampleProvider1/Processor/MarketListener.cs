@@ -1,6 +1,7 @@
 ﻿using Golem.MarketApi.Client.Swagger.Api;
 using Golem.MarketApi.Client.Swagger.Client;
 using Golem.MarketApi.Client.Swagger.Model;
+using Golem.Provider.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,13 @@ namespace GolemSampleProvider1.Processor
 
         public ProviderApi ProviderClient { get; protected set; }
 
-        public MarketListener(ApiClient client)
+        public IAgreementRepository AgreementRepository { get; set; }
+
+        public MarketListener(ApiClient client, IAgreementRepository agreementRepository)
         {
             this.ApiClient = client;
             this.ProviderClient = new ProviderApi(client);
+            this.AgreementRepository = agreementRepository;
         }
 
         public void Run()
@@ -96,6 +100,27 @@ namespace GolemSampleProvider1.Processor
                         Console.WriteLine("\nApproving proposed agreement...");
                         var agreementEvent = provEvent as NewAgreementEvent;
                         this.ProviderClient.ApproveAgreement(agreementEvent.AgreementId);
+
+
+                        //* this is prototype code, should be removed, as there should be proper mappers for MarketAPI Models to Golem.Provider.Entities
+
+                        var agreementEntity = new Golem.Provider.Entities.Agreement()
+                        {
+                            AgreementId = agreementEvent.AgreementId,
+                            Demand = new Golem.Provider.Entities.Demand()
+                            {
+                                Id = agreementEvent.AgreementId,
+                                Constraints = agreementEvent.Demand.Constraints,
+                                Properties = agreementEvent.Demand.Properties as Dictionary<string, string>
+                            },
+                            Offer = new Golem.Provider.Entities.Offer()
+                            {
+                                Constraints = agreementEvent.Offer.Constraints,
+                                Properties = agreementEvent.Offer.Properties as Dictionary<string, string>
+                            }
+                        };
+
+                        this.AgreementRepository.SaveAgreement(agreementEntity);
 
                         Console.WriteLine("Agreement approved!");
                         break;

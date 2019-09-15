@@ -22,6 +22,7 @@ namespace activity_api.Controllers
         [ProducesResponseType(typeof(string), 201)]
         [ProducesResponseType(typeof(CreateActivityError), 400)] // Bad request (unknown agreement id)
         [ProducesResponseType(403)] // Forbidden (no rights to the agreement)
+        [ProducesResponseType(404)] // Not found (nonexistent agreement)
         [ProducesResponseType(typeof(CreateActivityError), 500)] // Server error
         public ActionResult<string> CreateActivity([FromBody] string agreementId)
         {
@@ -41,7 +42,7 @@ namespace activity_api.Controllers
         [ProducesResponseType(404)] // Not found (nonexistent activity)
         [ProducesResponseType(typeof(ExecError), 500)] // Server error
         [Route("activity/{activityId}/exec")]
-        public ActionResult<string> Exec(string activityId, ExeScriptBatch script)
+        public ActionResult<string> Exec(string activityId, ExeScriptRequest script)
         {
             return this.Ok("");
         }
@@ -60,7 +61,7 @@ namespace activity_api.Controllers
         [ProducesResponseType(404)] // Not found (nonexistent activity)
         [ProducesResponseType(typeof(ErrorBase), 500)] // Server error
         [Route("activity/{activityId}/exec/{batchId}")]
-        public ActionResult<List<ExeScriptCommandResult>> GetExecBatchResults(string activityId, int batchId, [FromQuery] int timeout)
+        public ActionResult<List<ExeScriptCommandResult>> GetExecBatchResults(string activityId, string batchId, [FromQuery] int timeout)
         {
             return null;
         }

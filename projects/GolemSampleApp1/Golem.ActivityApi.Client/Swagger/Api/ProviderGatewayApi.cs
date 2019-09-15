@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using Golem.ActivityApi.Client.Swagger.Client;
 using Golem.ActivityApi.Client.Swagger.Model;
+using Golem.ActivityApi.Client.Swagger.Model.Converters;
 
 namespace Golem.ActivityApi.Client.Swagger.Api
 {
@@ -118,7 +119,7 @@ namespace Golem.ActivityApi.Client.Swagger.Api
             else if (((int)response.StatusCode) == 0)
                 throw new ApiException ((int)response.StatusCode, "Error calling CollectActivityEvents: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (List<ProviderEvent>) ApiClient.Deserialize(response.Content, typeof(List<ProviderEvent>), response.Headers);
+            return (List<ProviderEvent>) ApiClient.Deserialize(response.Content, typeof(List<ProviderEvent>), response.Headers, new ProviderEventConverter());
         }
     
         /// <summary>

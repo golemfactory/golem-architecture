@@ -2,6 +2,7 @@ swagger: '2.0'
 info:
   version: v1
   title: Golem Activity API
+basePath: /activity-api/v1
 paths:
   /activity:
     post:
@@ -38,6 +39,10 @@ paths:
           description: Forbidden
           schema:
             $ref: '#/definitions/ProblemDetails'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ProblemDetails'
         '500':
           description: Server Error
           schema:
@@ -68,7 +73,7 @@ paths:
           description: ''
           required: false
           schema:
-            $ref: '#/definitions/ExeScriptBatch'
+            $ref: '#/definitions/ExeScriptRequest'
       responses:
         '200':
           description: Success
@@ -111,8 +116,7 @@ paths:
           in: path
           description: ''
           required: true
-          type: integer
-          format: int32
+          type: string
         - name: timeout
           in: query
           description: ''
@@ -414,24 +418,11 @@ definitions:
         type: string
     additionalProperties:
       type: object
-  ExeScriptBatch:
+  ExeScriptRequest:
     type: object
     properties:
-      commands:
-        uniqueItems: false
-        type: array
-        items:
-          $ref: '#/definitions/ExeScriptCommand'
-  ExeScriptCommand:
-    type: object
-    properties:
-      command:
+      text:
         type: string
-      params:
-        uniqueItems: false
-        type: array
-        items:
-          type: string
   ExecError:
     type: object
     properties:
@@ -520,6 +511,16 @@ definitions:
       errorMessage:
         description: If error caused state change - error message shall be provided.
         type: string
+  ExeScriptCommand:
+    type: object
+    properties:
+      command:
+        type: string
+      params:
+        uniqueItems: false
+        type: array
+        items:
+          type: string
   CreateActivityProviderEvent:
     type: object
     allOf:
@@ -527,15 +528,6 @@ definitions:
       - type: object
         properties:
           agreementId:
-            type: string
-          eventType:
-            enum:
-              - CreateActivity
-              - Exec
-              - DestroyActivity
-              - GetState
-            type: string
-          activityId:
             type: string
     properties: {}
   ExecProviderEvent:
@@ -548,13 +540,12 @@ definitions:
             type: string
           exeScript:
             $ref: '#/definitions/ExeScriptBatch'
-          eventType:
-            enum:
-              - CreateActivity
-              - Exec
-              - DestroyActivity
-              - GetState
-            type: string
-          activityId:
-            type: string
     properties: {}
+  ExeScriptBatch:
+    type: object
+    properties:
+      commands:
+        uniqueItems: false
+        type: array
+        items:
+          $ref: '#/definitions/ExeScriptCommand'

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Golem.ActivityApi.Client\Golem.ActivityApi.Client.csproj" />
     <ProjectReference Include="..\Golem.MarketApi.Client\Golem.MarketApi.Client.csproj" />
   </ItemGroup>
 
