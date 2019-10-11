@@ -42,6 +42,8 @@ namespace Golem.Provider.ActivityControl
 
         public CreateActivityResult CreateActivity(Activity activity)
         {
+            Console.WriteLine($"CreateActivity({activity.Id}) called...");
+
             lock (this)
             {
                 if (this.State == ExeUnitState.Undefined)
@@ -72,6 +74,7 @@ namespace Golem.Provider.ActivityControl
 
         public ExeScriptCommandResult Deploy(ExeScriptCommand command, int commandIndex)
         {
+            Console.WriteLine($"DEPLOY called...");
             lock (this)
             {
                 if (this.State == ExeUnitState.New)
@@ -117,6 +120,7 @@ namespace Golem.Provider.ActivityControl
 
         public ExeUnitResult DestroyActivity()
         {
+            Console.WriteLine($"DestroyActivity called...");
             lock (this)
             {
                 this.State = ExeUnitState.Terminated;
@@ -135,7 +139,8 @@ namespace Golem.Provider.ActivityControl
 
         public ExeScriptCommandResult Run(ExeScriptCommand command, int commandIndex)
         {
-            if(this.State == ExeUnitState.Active)
+            Console.WriteLine($"RUN called...");
+            if (this.State == ExeUnitState.Active)
             {
                 // this command does not change state, so only simulate time required and some response...
                 Thread.Sleep(2000);
@@ -161,6 +166,7 @@ namespace Golem.Provider.ActivityControl
 
         public ExeScriptCommandResult Start(ExeScriptCommand command, int commandIndex)
         {
+            Console.WriteLine($"START called...");
             lock (this)
             {
                 if (this.State == ExeUnitState.Ready)
@@ -208,6 +214,7 @@ namespace Golem.Provider.ActivityControl
 
         public ExeScriptCommandResult Stop(ExeScriptCommand command, int commandIndex)
         {
+            Console.WriteLine($"STOP called...");
             lock (this)
             {
                 if (this.State == ExeUnitState.Active)
@@ -246,6 +253,7 @@ namespace Golem.Provider.ActivityControl
 
         public ExeScriptCommandResult Transfer(ExeScriptCommand command, int commandIndex)
         {
+            Console.WriteLine($"TRANSFER called...");
             if (this.State == ExeUnitState.Active)
             {
                 // simulate transfer time

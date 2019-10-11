@@ -15,20 +15,37 @@ namespace GolemSampleApp1
 
             var agreementId = processor.Run();
 
+
+            if(agreementId == null)
+            {
+                Console.WriteLine("Provider does not respond to Agreement proposal, exiting...");
+                return;
+            }
             // Now proceed with Activity
 
             var activityApi = new Golem.ActivityApi.Client.Swagger.Api.ControlApi(activityClient);
 
+            Console.WriteLine("Creating Activity...");
+
             var activityId = activityApi.CreateActivity(agreementId);
+
+            Console.WriteLine($"Activity {activityId} created.");
+
+            var exeScriptText = "DEPLOY\nSTART";
+
+            Console.WriteLine($"Calling Exec(\n{exeScriptText}\n) created.");
+
 
             var batchId = activityApi.Exec(activityId, new Golem.ActivityApi.Client.Swagger.Model.ExeScriptRequest()
             {
-                Text = "DEPLOY\nSTART"
+                Text = exeScriptText
             });
 
             // loop trying to collect Exec results
 
             List<Golem.ActivityApi.Client.Swagger.Model.ExeScriptCommandResult> batchResults;
+
+            Console.WriteLine("Press any key to stop listening...");
 
             do
             {
@@ -47,15 +64,7 @@ namespace GolemSampleApp1
                     }
                 }
             }
-            while (batchResults.Count == 0);
-
-
-
-
-
-            Console.WriteLine("Press any key...");
-            Console.ReadKey();
-
+            while (!Console.KeyAvailable);
         }
 
 

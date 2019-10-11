@@ -125,6 +125,19 @@ namespace Golem.Provider.ActivityControl
 
                 activity = this.ActivityRepository.CreateActivity(activity);
 
+
+                var createActivityResult = exeUnit.CreateActivity(activity);
+
+                // in case of ExeUnit error - set activity immediately to Terminated state
+                if(createActivityResult.Result == ExeUnitResultType.Error)
+                {
+                    activity.SetState(ActivityState.Terminated);
+                    this.ActivityRepository.SetActivityState(activity.Id, ActivityState.Terminated);
+                }
+                
+                // store the ExeUnit in dictionary
+                this.ExeUnitsByActivityId.Add(activity.Id, exeUnit);
+
                 return activity;
 
             }
@@ -224,10 +237,9 @@ namespace Golem.Provider.ActivityControl
             this.ActivityApi.PutActivityStateDetails(newStateDetails.ActivityId, new ActivityApi.Client.Swagger.Model.ActivityStateDetails()
             {
                 State = $"{newStateDetails.State}",
+                ErrorMessage = String.Empty,
                 CurrentUsage = null  // do not send usage (as we don't know it)
             });
-
-            throw new NotImplementedException();
         }
     }
 }

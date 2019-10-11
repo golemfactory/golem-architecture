@@ -1,15 +1,25 @@
 ﻿DONE Use the InMemory repositories from Golem.Provider assembly.
 
-In ExeUnitCore add Initialize method that initiates the Worker from Agreement
+In ExeUnitCore 
+  - DONE In CreateActivity crete Worker and add Worker.Initilize() call.
   - Consider how the constraints and properties are to be extracted, so that the detailed parameters of the ExeUnit are defined
     - the above includes resource amounts and eg. "payload" image location (the agreement must specify the location of application to be deployed)
+  
 
 Implement DummyExeUnitFactory
-  - Instantate ExeUnit from Dummy worker and call Initialize().
+  - DONE Instantate ExeUnit from Dummy worker.
 
 Write UnitTests for following classes:
- - ActivityController
+ - (some done) ActivityController
  - ExeUnitCore
 
+Add "LastCommand" field to ExeScript Result structure to indicate the last command from batch has been executed.
+  - Note this should be set to yes if the script execution has terminated in error!
+  - Remove the batch from active batches available in API (so that GetBatchDetails returns 404)
+  - In the sample app, show that the batch has completed.
+
+Implement the CurrentCommand of State Details
+
 Add Logging to Golem.Provider
+  - So that it is visible what is going on in the ExeUnit...
 

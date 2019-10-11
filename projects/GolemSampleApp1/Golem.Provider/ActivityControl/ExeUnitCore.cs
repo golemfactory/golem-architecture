@@ -7,7 +7,7 @@ using Golem.Provider.Entities;
 namespace Golem.Provider.ActivityControl
 {
     public class ExeUnitCore<IWorker> : IExeUnit
-        where IWorker : IExeUnitWorker
+        where IWorker : IExeUnitWorker, new()
     {
         public Activity Activity { get; set; }
         protected IExeUnitWorker Worker { get; set; }
@@ -18,7 +18,23 @@ namespace Golem.Provider.ActivityControl
         {
             this.Activity = activity;
 
+            this.Worker = new IWorker();
+
+            this.Worker.OnStateChanged += Worker_OnStateChanged;
+
+            this.Worker.Initialize(activity.Agreement);
+
             return Worker.CreateActivity(activity);
+        }
+
+        private void Worker_OnStateChanged(ExeUnitStateDetails newStateDetails)
+        {
+            newStateDetails.ActivityId = this.Activity.Id;
+
+            Console.WriteLine($"ExeUnit state changed to {newStateDetails.State}");
+
+            // forward the state change event
+            this.OnStateChanged?.Invoke(newStateDetails);
         }
 
         public void Destroy()
