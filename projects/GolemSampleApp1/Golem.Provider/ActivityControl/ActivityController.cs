@@ -175,10 +175,18 @@ namespace Golem.Provider.ActivityControl
                 };
 
                 var entResult = exeUnit.ExecCommand(entCommand);
+                bool isBatchFinished = false;
+
+                // set IsBatchFinished if we have processed the last command in batch or error
+                if (entResult.Result == ExeUnitResultType.Error || i == (eventDetails.ExeScript.Commands.Count - 1))
+                {
+                    isBatchFinished = true;
+                }
 
                 var commandResult = new ActivityApi.Client.Swagger.Model.ExeScriptCommandResult()
                 {
                     Index = i,
+                    IsBatchFinished = isBatchFinished,  
                     Message = entResult.Message,
                     Result = entResult.Result.ToString()
                 };

@@ -19,20 +19,6 @@ namespace IO.Swagger.Model {
     [JsonProperty(PropertyName = "agreementId")]
     public string AgreementId { get; set; }
 
-    /// <summary>
-    /// Gets or Sets EventType
-    /// </summary>
-    [DataMember(Name="eventType", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "eventType")]
-    public string EventType { get; set; }
-
-    /// <summary>
-    /// Gets or Sets ActivityId
-    /// </summary>
-    [DataMember(Name="activityId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "activityId")]
-    public string ActivityId { get; set; }
-
 
     /// <summary>
     /// Get the string presentation of the object
@@ -42,8 +28,6 @@ namespace IO.Swagger.Model {
       var sb = new StringBuilder();
       sb.Append("class CreateActivityProviderEvent {\n");
       sb.Append("  AgreementId: ").Append(AgreementId).Append("\n");
-      sb.Append("  EventType: ").Append(EventType).Append("\n");
-      sb.Append("  ActivityId: ").Append(ActivityId).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

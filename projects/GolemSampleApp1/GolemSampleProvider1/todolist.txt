@@ -13,10 +13,10 @@ Write UnitTests for following classes:
  - (some done) ActivityController
  - ExeUnitCore
 
-Add "LastCommand" field to ExeScript Result structure to indicate the last command from batch has been executed.
-  - Note this should be set to yes if the script execution has terminated in error!
+Add "LastCommand" handling - to detect the last command from batch has been executed.
+  - DONE Note this should be set to yes if the script execution has terminated in error!
   - Remove the batch from active batches available in API (so that GetBatchDetails returns 404)
-  - In the sample app, show that the batch has completed.
+  - DONE In the sample app, show that the batch has completed.
 
 Implement the CurrentCommand of State Details
 

@@ -20,6 +20,13 @@ namespace Golem.ActivityApi.Client.Swagger.Model {
     public int? Index { get; set; }
 
     /// <summary>
+    /// Gets or Sets IsBatchFinished
+    /// </summary>
+    [DataMember(Name="IsBatchFinished", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "IsBatchFinished")]
+    public bool? IsBatchFinished { get; set; }
+
+    /// <summary>
     /// Gets or Sets Result
     /// </summary>
     [DataMember(Name="result", EmitDefaultValue=false)]
@@ -42,6 +49,7 @@ namespace Golem.ActivityApi.Client.Swagger.Model {
       var sb = new StringBuilder();
       sb.Append("class ExeScriptCommandResult {\n");
       sb.Append("  Index: ").Append(Index).Append("\n");
+      sb.Append("  IsBatchFinished: ").Append(IsBatchFinished).Append("\n");
       sb.Append("  Result: ").Append(Result).Append("\n");
       sb.Append("  Message: ").Append(Message).Append("\n");
       sb.Append("}\n");

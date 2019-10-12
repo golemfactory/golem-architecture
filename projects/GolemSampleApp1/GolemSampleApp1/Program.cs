@@ -47,6 +47,8 @@ namespace GolemSampleApp1
 
             Console.WriteLine("Press any key to stop listening...");
 
+            bool stop = false;
+
             do
             {
                 batchResults = activityApi.GetExecBatchResults(activityId, batchId, 1000);
@@ -61,10 +63,16 @@ namespace GolemSampleApp1
                     {
                         Console.WriteLine($"Exec result: [{result.Index}] ({result.Result}), {result.Message}");
 
+                        if(result.IsBatchFinished == true)
+                        {
+                            Console.WriteLine($"ExeScript batch complete.");
+                            stop = true;
+                        }
+
                     }
                 }
             }
-            while (!Console.KeyAvailable);
+            while (!Console.KeyAvailable && !stop);
         }
 
 

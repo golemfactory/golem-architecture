@@ -20,6 +20,13 @@ namespace IO.Swagger.Model {
     public int? Index { get; set; }
 
     /// <summary>
+    /// Gets or Sets IsLastCommand
+    /// </summary>
+    [DataMember(Name="isLastCommand", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "isLastCommand")]
+    public bool? IsLastCommand { get; set; }
+
+    /// <summary>
     /// Gets or Sets Result
     /// </summary>
     [DataMember(Name="result", EmitDefaultValue=false)]
@@ -42,6 +49,7 @@ namespace IO.Swagger.Model {
       var sb = new StringBuilder();
       sb.Append("class ExeScriptCommandResult {\n");
       sb.Append("  Index: ").Append(Index).Append("\n");
+      sb.Append("  IsLastCommand: ").Append(IsLastCommand).Append("\n");
       sb.Append("  Result: ").Append(Result).Append("\n");
       sb.Append("  Message: ").Append(Message).Append("\n");
       sb.Append("}\n");

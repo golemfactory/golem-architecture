@@ -434,6 +434,8 @@ definitions:
       index:
         format: int32
         type: integer
+      isBatchFinished:
+        type: boolean
       result:
         enum:
           - Ok

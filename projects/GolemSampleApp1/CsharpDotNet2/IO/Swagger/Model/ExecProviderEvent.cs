@@ -26,20 +26,6 @@ namespace IO.Swagger.Model {
     [JsonProperty(PropertyName = "exeScript")]
     public ExeScriptBatch ExeScript { get; set; }
 
-    /// <summary>
-    /// Gets or Sets EventType
-    /// </summary>
-    [DataMember(Name="eventType", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "eventType")]
-    public string EventType { get; set; }
-
-    /// <summary>
-    /// Gets or Sets ActivityId
-    /// </summary>
-    [DataMember(Name="activityId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "activityId")]
-    public string ActivityId { get; set; }
-
 
     /// <summary>
     /// Get the string presentation of the object
@@ -50,8 +36,6 @@ namespace IO.Swagger.Model {
       sb.Append("class ExecProviderEvent {\n");
       sb.Append("  BatchId: ").Append(BatchId).Append("\n");
       sb.Append("  ExeScript: ").Append(ExeScript).Append("\n");
-      sb.Append("  EventType: ").Append(EventType).Append("\n");
-      sb.Append("  ActivityId: ").Append(ActivityId).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
