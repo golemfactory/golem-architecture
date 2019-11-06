@@ -45,6 +45,17 @@ This page contains an aggregated summary of all namespaces and properties specif
 
 # Category: 0-commons
 
+## [`golem.activity.caps`](0-commons/golem/activity/caps.md)
+
+Namespace that describes Activity API capabilities, which can be perceived as "segments" of Activity API functionality. 
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.activity.caps.transfer.protocol`**|`List[String]`|Indicates the data transmission protocols available for TRANSFER operation on this Provider/ExeUnit. |
+---
+
 ## [`golem.activity`](0-commons/golem/activity.md)
 
 Namespace that describes various properties related to Activities and their execution. 
@@ -53,6 +64,8 @@ Namespace that describes various properties related to Activities and their exec
 
 | Property | Type | Description |
 |---|---|---|
+|**`golem.activity.cost_cap`**|`Number`|Sets a **Hard** cap on total cost of the Activity (regardless of the usage vector or pricing function).  The Provider is entitled to 'kill' an Activity which exceeds the capped cost amount indicated by Requestor. Note, the Provider still is entitled to issue an Invoice to cover the cost, and the Requestor is obliged to pay it. |
+|**`golem.activity.cost_warning`**|`Number`|Sets a **Soft** cap on total cost of the Activity (regardless of the usage vector or pricing function).  When the cost_warning amount is reached for the Activity, the Provider is expected to send a Debit Note to the Requestor, indicating the current amount due. |
 |**`golem.activity.timeout_secs`**|`Number`|A timeout value for batch computation (eg. used for container-based batch processes). This property allows to set the timeout to be applied by the Provider when running a batch computation: the Requestor expects the Activity to take no longer than the specified timeout value - which implies that eg. the `golem.usage.duration_sec` counter shall not exceed the specified timeout value. |
 ---
 
@@ -245,7 +258,7 @@ Ability to host a generic Virtual Machine.
 
 ## [`srv.comp.wasm`](2-service/srv/comp/wasm.md)
 
-This namespace defines properties used to indicte ability to host and execute a WebAssembly program. 
+This namespace defines properties used to indicate ability to host and execute a WebAssembly program. 
 
 ### Included Namespaces
 
@@ -256,6 +269,11 @@ This namespace defines properties used to indicte ability to host and execute a 
 
 | Property | Type | Description |
 |---|---|---|
+|**`golem.srv.comp.wasm.api`**|`List of String`|Indicates the APIs supported by the WebAssembly runtime and available to WebAssembly packages.  |
+|**`golem.srv.comp.wasm.emscripten.js`**|`Version`|Indicates the version of JavaScript supported by the Emscripten-compliant runtime. |
+|**`golem.srv.comp.wasm.emscripten.caps`**|`List of String`|Indicates the runtime capabilities of the Emscripten-compliant runtime. |
+|**`golem.srv.comp.wasm.wasi.version`**|`Version`|Indicates the version of WASI API supported by the runtime. |
+|**`golem.srv.comp.wasm.wasi.caps`**|`List of String`|Indicates the runtime capabilities of the WASI-compliant runtime. |
 |**`golem.srv.comp.wasm.task_package`**|`List of String`|Indicates WebAssembly packages which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
 ---
 
@@ -275,7 +293,7 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 
 ## [`com.payment`](3-commercial/com/payment.md)
 
-Payment details.  
+Namespace with properties defining payment parameters.  
 
 ### Properties
 

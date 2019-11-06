@@ -9,3 +9,17 @@ Example segments can be:
 **Important:** 
 - this standard also specifies both "caps pattern" of specification, ie. how an Offer indicates capabilites supported, and what capability namespaces are there.
 - the "caps pattern" shall define the versioning and backward-compatibility specification guidelines.
+
+## Specific Properties
+
+## `golem.activity.caps.transfer.protocol : List[String]`
+Indicates the data transmission protocols available for TRANSFER operation on this Provider/ExeUnit.
+### Value enum
+|Value| Description |
+|---|---|
+|"http"| HTTP Protocol |
+|"https"| HTTPS Protocol |
+|"gft"| Golem File Transfer - proprietary protocol allowing for transfer of data over the Golem P2P network |
+### **Examples**
+* `golem.activity.caps.transfer.protocol:List=["https"]` - Declares availability of HTTPS protocol for data transfer
+* `golem.activity.caps.transfer.protocol=["http","https","gft"]` - Declares availability of HTTP, HTTPS and "GFT" protocols for file transfer
