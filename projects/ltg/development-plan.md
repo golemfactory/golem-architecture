@@ -47,7 +47,11 @@ The software will be used to...
 
 ### Technology Stack
 
+The programming language used in this project will be Rust (https://www.rust-lang.org/).
+
 ### Supported Platforms
+
+All code should compile and run on Linux, macOS and Windows. The main development platform is Ubuntu Linux, but all code should be portable. E.g. instead of using "/tmp", use `std::env::temp_dir()` function; instead of using platform-native functions, use `std::env::current_exe()` to find the path of the current executable.
 
 ### Coding Standard
 
