@@ -123,7 +123,8 @@ message RegisterReply {
 }
 
 message CallRequest {
-  bytes data = 1;
+  bytes request_id = 1;
+  bytes data = 2;
 }
 
 message CallReply {
@@ -133,13 +134,14 @@ message CallReply {
   }
 
   enum Type {
-    SINGLE = 0;
-    STREAM = 1;
+    FULL = 0;
+    PARTIAL = 1;
   }
 
-  Code code = 1;
-  Type type = 2;
-  bytes data = 3;
+  bytes request_id = 1;
+  Code code = 2;
+  Type type = 3;
+  bytes data = 4;
 }
 ```
 
