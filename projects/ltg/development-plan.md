@@ -51,7 +51,11 @@ The programming language used in this project will be Rust (https://www.rust-lan
 
 ### Supported Platforms
 
-All code should compile and run on Linux, macOS and Windows. The main development platform is Ubuntu Linux, but all code should be portable. E.g. instead of using "/tmp", use `std::env::temp_dir()` function; instead of using platform-native functions, use `std::env::current_exe()` to find the path of the current executable.
+All code should compile and run on Linux, macOS and Windows.
+
+The main development platform is Ubuntu Linux, but all code should be portable. E.g. instead of using "/tmp", use `std::env::temp_dir()` function; instead of using platform-native functions, use `std::env::current_exe()` to find the path of the current executable.
+
+If this is impossible, use `#[cfg(unix)]` for Unix platforms and `#[cfg(windows)]` for Windows. To target only macOS, use `cfg!(target_os = "macos")`.
 
 ### Coding Standard
 
