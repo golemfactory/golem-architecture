@@ -13,6 +13,7 @@ This document describes the Service Relaying API and its purpose in lightweight 
     - [Service address](#service-address)
     - [Service registration](#service-registration)
     - [Service relaying](#service-relaying)
+    - [SRAPI module](#srapi-module)
   - [Authorization](#authorization)
   - [Authentication and accounting](#authentication-and-accounting)
   - [API definition](#api-definition)
@@ -31,17 +32,19 @@ An access point to the Golem Network. Abstracts away concepts like network addre
 
 ### Channel
 
-A MIMO (Multiple Input, Multiple Output) communication overlay in the networking layer. Implemented as a multiplexed channel in the Golem protocol. In its concept, similar to [PubSub](https://en.wikipedia.org/wiki/Publish–subscribe_pattern).
+A [PubSub](https://en.wikipedia.org/wiki/Publish–subscribe_pattern) pattern implemented as a network overlay. Channels will be executed as multiplexed logical channels within the Golem protocol. The protocol will enable multiple different callers per registered method.
 
-**The MIMO aspect is out of scope of the PoC version of lightweight Golem.** The implementation will be executed as SISO (Single Input, Single Output).
+**The multiple-caller aspect is out of scope of the PoC** which will support a single caller only.
 
-Channels are identified by a name string and created via registering a service within the SRAPI implementation module.
+Channels are mapped to service names and created via registering a service within the SRAPI module.
 
-Channels are MIMO by default. Each node is responsible for authorizing calls coming from the network. Typically, a requestor handles this kind of service authorization, i.e. by remotely populating whitelists on provider Golem daemons.
+Each node is responsible for authorizing calls coming from the network. Typically, a requestor manages this kind of service authorization, i.e. by remotely populating whitelists on providers' Golem daemons.
 
 ### Service
 
-Any entity that benefits from exposing its interface on the Golem Network. In particular, it can be:
+Any entity that benefits from exposing its interface on the Golem Network. Usually an external processes or a (built-in) Golem daemon module.
+
+Foreseen service types:
 
 - an API implementation provider, e.g. a third-party Market API implementation external to the Golem daemon
 - an ExeUnit instance, awaiting and responding to requestor's remote calls
@@ -59,9 +62,13 @@ Registration shares the lifetime of a "connection" between the SRAPI module and 
 
 ### Service relaying
 
-An application state in the Golem daemon where service's interface can be exposed directly on the Golem network and called by a third party.
+A state of exposing a Service interface directly on the Golem network. The interface may be called by any third party who has the knowledge of service's address.
 
 The prerequisite for relaying is to register a service within the SRAPI module. In consequence, messages addressed to that service will be routed to that service by the SRAPI module. Responses are routed back to the caller either as a single reply or a stream.
+
+### SRAPI module
+
+A module within the Golem daemon exposing the Service Relaying API.
 
 ## Authorization
 
