@@ -1,10 +1,10 @@
-# Service Relaying API
+# Golem Service Bus API
 
-This document describes the Service Relaying API and its purpose in lightweight Golem.
+This document describes the Golem Service Bus (GSB) API and its purpose in lightweight Golem.
 
 ## Table of contents
 
-- [Service Relaying API](#service-relaying-api)
+- [Golem Service Bus API](#golem-service-bus-api)
   - [Table of contents](#table-of-contents)
   - [Concepts](#concepts)
     - [Net API](#net-api)
@@ -13,7 +13,7 @@ This document describes the Service Relaying API and its purpose in lightweight 
     - [Service address](#service-address)
     - [Service registration](#service-registration)
     - [Service relaying](#service-relaying)
-    - [SRAPI module](#srapi-module)
+    - [GSB API module](#gsb-api-module)
   - [Authorization](#authorization)
   - [Authentication and accounting](#authentication-and-accounting)
   - [API definition](#api-definition)
@@ -34,9 +34,9 @@ An access point to the Golem Network. Abstracts away concepts like network addre
 
 A [PubSub](https://en.wikipedia.org/wiki/Publish–subscribe_pattern) pattern implemented as a network overlay. Channels will be executed as multiplexed logical channels within the Golem protocol. The protocol will enable multiple different callers per registered method.
 
-**The multiple-caller aspect is out of scope of the PoC** which will support a single caller only.
+**The multiple-caller aspect is out of scope of the PoC** and will only support a single caller.
 
-Channels are mapped to service names and created via registering a service within the SRAPI module.
+Channels are mapped to service names and created via registering a service within the Golem Service Bus API module.
 
 Each node is responsible for authorizing calls coming from the network. Typically, a requestor manages this kind of service authorization, i.e. by remotely populating whitelists on providers' Golem daemons.
 
@@ -56,19 +56,19 @@ A string that consists of node's id and the registered service name.
 
 ### Service registration
 
-An API call to the SRAPI module which binds a given service name string to the registered service process and route any incoming messages to that service. The latter is performed by calling an appropriate interface method, which is required to be implemented by the service.
+An API call to the GSB API module which binds a given service name string to the registered service process and route any incoming messages to that service. The latter is performed by calling an appropriate interface method, which is required to be implemented by the service.
 
-Registration shares the lifetime of a "connection" between the SRAPI module and the registered service.
+Registration shares the lifetime of a "connection" between the GSB API module and the registered service.
 
 ### Service relaying
 
-A state of exposing a Service interface directly on the Golem network. The interface may be called by any third party who has the knowledge of service's address.
+A state of exposing a Service interface directly on the Golem network. The interface may be called by any third party who poses the knowledge of that service's address.
 
-The prerequisite for relaying is to register a service within the SRAPI module. In consequence, messages addressed to that service will be routed to that service by the SRAPI module. Responses are routed back to the caller either as a single reply or a stream.
+The prerequisite for relaying is to register a service within the GSB API module. In consequence, messages addressed to that service will be routed to that service by the GSB API module. Responses are routed back to the caller either as a single reply or a stream.
 
-### SRAPI module
+### GSB API module
 
-A module within the Golem daemon exposing the Service Relaying API.
+A module within the Golem daemon exposing the Golem Service Bus API.
 
 ## Authorization
 
@@ -84,20 +84,18 @@ Proposal: services can only be _authorized_ within the Golem daemon. Accounting 
 
 ## API definition
 
-Due to the PubSub nature of the API, two different services need to be implemented by the SRAPI provider and the registering service.
+Due to the PubSub nature of the API, two different services need to be implemented by the GSB API provider and the registering service.
 
 Note: authorization is not included in the scope of this proposal.
 
 ### Protocol Buffers
 
-Error codes were chosen arbitrarily and may be a subject to change.
-
 ```protobuf
 syntax = "proto3";
 
-package SRAPI;
+package GSB_API;
 
-/* Exposed by SRAPI implementation */
+/* Exposed by Golem Service Bus API implementation */
 service Relay {
   rpc Register (RegisterRequest) returns (RegisterReply);
 }
@@ -147,7 +145,7 @@ message CallReply {
 
 ## API implementation details
 
-This section describes implementation hints and requirements for modules exposing the Service Relaying API.
+This section describes implementation hints and requirements for modules exposing the Golem Service Bus API.
 
 ### Message definition
 
@@ -159,7 +157,7 @@ Provided by `protobuf` libraries.
 
 ### Transport
 
-SRAPI modules utilize a `nanomsg-next-gen` library with 2 transports enabled:
+GSB API modules utilize a `nanomsg-next-gen` library with 2 transports enabled:
 
 - IPC: unix sockets (Linux, macOS) and Named Pipes (Windows)
 - TCP: all supported operating systems
