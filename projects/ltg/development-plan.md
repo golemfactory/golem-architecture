@@ -2,22 +2,18 @@
 
 ## Introduction
 
-This document describes...
+This document describes software development process for Light Golem Provider and technical requirements related to its source code (technology stack, supported platforms, coding standard).
 
-To change this document...
+This document should be updated when project development process or source code requirements change.
 
 ## Goals and Scope
 
 ### Software Description
 
-The software will be used to...
+Light Golem Provider will be used to provide computing power to clients.
+It will run WASM code and measure CPU time spend on computations.
 
-| Phase | Features |
-|--|--|
-| Minimum Viable Product | ... |
-| 2nd Phase | ... |
-
-### Artifacts
+### Project Artifacts
 
 | Platform | Artifacts |
 |--|--|
@@ -25,23 +21,49 @@ The software will be used to...
 | macOS | Apple Disk Image (.dmg) |
 | Windows | Windows Installer (.msi) |
 
-## Process
+## Development Process
 
-### Planning
+### Feature Specification
 
-### Specification
 
-### Working on a Git Branch
 
-### Pull Request
+### Working on Git Branches
+
+Software development should be done on Git branches.
+
+| Branch Name or Prefix | Meaning |
+|--|--|
+| master | Main Branch |
+| feature/ | New Feature, e.g. feature/connection-manager |
+| bugfix/ | Bug fix, e.g. bugfix/division-by-zero |
+| release/ | Branch for a special release, e.g. release/3.0 |
+
+### Pull Requests
+
+After work on a feature is finished, a pull request based on the branch where the work happened must be created on GitHub. At least one code reviewer must be added to the pull request.
 
 ### Automatic Testing
 
-### Code Review
+Every branch is automatically compiled and tested in Jenkins.
 
-### Code Merging
+| Test Name | Requirement |
+|--|--|
+| Compilation | All code must compile without errors. |
+| Unit Tests | All tests (prefixed with `#[cfg(test)]`) should pass. |
+| Code Formatting | All code must be formatted with rustfmt (`cargo fmt`). |
+
+### Code Review and Merging
+
+At least one reviewer must review the code related to a new pull request.
+After the review is complete and all the automated tests pass, the code could be merged.
+
+Interesting guidelines for code review:
+https://phauer.com/2018/code-review-guidelines/
 
 ### Automatic Builds
+
+The project artifacts (i.e. installation packages and standalone/portable binaries) 
+should be automatically build in Jenkins for every supported operating system (Linux, macOS, Windows).
 
 ## Source Code Requirements
 
@@ -49,13 +71,15 @@ The software will be used to...
 
 The programming language used in this project will be Rust (https://www.rust-lang.org/).
 
+For HTTP client/server code, Actix Web 1.0 (https://actix.rs) will be used.
+
 ### Supported Platforms
 
 All code should compile and run on Linux, macOS and Windows.
 
 The main development platform is Ubuntu Linux, but all code should be portable. E.g. instead of using "/tmp", use `std::env::temp_dir()` function; instead of using platform-native functions, use `std::env::current_exe()` to find the path of the current executable.
 
-If this is impossible, use `#[cfg(unix)]` for Unix platforms and `#[cfg(windows)]` for Windows. To target only macOS, use `cfg!(target_os = "macos")`.
+If this is impossible, use `#[cfg(unix)]` to target Unix platforms and `#[cfg(windows)]` to target Windows. To target only macOS, use `cfg!(target_os = "macos")`.
 
 ### Coding Standard
 
@@ -82,7 +106,7 @@ Tests can be run using `cargo test` command:
 
 https://doc.rust-lang.org/book/ch11-01-writing-tests.html
 
-To create a test, open a `tests` module prefixed with `#[cfg(test)]`, add test functions and prefix them with `#[cfg(test)]`.
+To create a test, open a `tests` module prefixed with `#[cfg(test)]`, add test functions and prefix them with `#[test]`.
 
 ### Documentation
 
@@ -93,7 +117,3 @@ https://doc.rust-lang.org/rustdoc/index.html
 To generate documentation, please enter `cargo doc` command in your shell.
 
 The comments that are copied to the documentation are prefixed with `///`, Markdown is supported.
-
-### Other Teams and Technologies
-
-Other teams in the company: ... Technologies used and provided by them: ...
