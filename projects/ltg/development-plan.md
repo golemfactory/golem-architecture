@@ -11,7 +11,7 @@ This document should be updated when project development process or source code 
 ### Software Description
 
 Light Golem Provider will be used to provide computing power to clients.
-It will run WASM code and measure CPU time spend on computations.
+It will run WASM code and measure CPU time spent on computations.
 
 ### Project Artifacts
 
