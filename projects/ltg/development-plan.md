@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document describes software development process for Light Golem Provider and technical requirements related to its source code (technology stack, supported platforms, coding standard).
+This document describes software development process for Light Golem Provider and technical requirements related to its source code (technology stack, supported platforms, coding standards).
 
 This document should be updated when project development process or source code requirements change.
 
@@ -25,7 +25,18 @@ It will run WASM code and measure CPU time spent on computations.
 
 ### Feature Specification
 
+GitHub Issues should contain specifications of all new features. Every issue should be assigned to a developer.
+Milestones should be used to pin issues to specific releases.
 
+Labels should be used to filter issues by other criteria:
+
+| Label | Description |
+|--|--|
+| enhancement | A new feature that can be implemented. |
+| bug | A bug report. |
+| in progress | Work on this issue is in progress. |
+| duplicate | A very similar issue already exists. |
+| deferred | Will be done later, after other issues are closed. |
 
 ### Working on Git Branches
 
@@ -33,10 +44,10 @@ Software development should be done on Git branches.
 
 | Branch Name or Prefix | Meaning |
 |--|--|
-| master | Main Branch |
-| feature/ | New Feature, e.g. feature/connection-manager |
-| bugfix/ | Bug fix, e.g. bugfix/division-by-zero |
-| release/ | Branch for a special release, e.g. release/3.0 |
+| master | Main branch. |
+| feature/ | New feature, e.g. feature/connection-manager. |
+| bugfix/ | Bug fix, e.g. bugfix/division-by-zero. |
+| release/ | Branch for a special release, e.g. release/3.0. |
 
 ### Pull Requests
 
@@ -63,13 +74,18 @@ https://phauer.com/2018/code-review-guidelines/
 ### Automatic Builds
 
 The project artifacts (i.e. installation packages and standalone/portable binaries) 
-should be automatically build in Jenkins for every supported operating system (Linux, macOS, Windows).
+should automatically build in Jenkins for every supported operating system (Linux, macOS, Windows).
+
+### Bug Reporting
+
+Bugs should be reported in GitHub Issues.
 
 ## Source Code Requirements
 
 ### Technology Stack
 
 The programming language used in this project will be Rust (https://www.rust-lang.org/).
+The newest stable version of Rust compiler (`rustc`) should compile all source code without errors.
 
 For HTTP client/server code, Actix Web 1.0 (https://actix.rs) will be used.
 
@@ -81,7 +97,7 @@ The main development platform is Ubuntu Linux, but all code should be portable. 
 
 If this is impossible, use `#[cfg(unix)]` to target Unix platforms and `#[cfg(windows)]` to target Windows. To target only macOS, use `cfg!(target_os = "macos")`.
 
-### Coding Standard
+### Coding Standards
 
 Rust coding style guidelines:
 
@@ -93,7 +109,7 @@ To install it, run `rustup component add rustfmt` command. To format files in th
 ### Code Repositories
 
 Most Rust crates used in the project should be located in one repository.
-This repository should contain a subdirectory with a `Cargo.toml` file and a `src` directory for every crate.
+For every crate, this repository should contain a crate subdirectory with a `Cargo.toml` file and a `src` directory.
 
 ### Usage Examples
 
