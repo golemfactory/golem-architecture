@@ -101,12 +101,18 @@ service Bus {
   rpc Register (RegisterRequest) returns (RegisterReply);
 
   /* Call a local or remote service method */
-  rpc ServiceCall (CallRequest) returns (CallReply);
+  rpc ServiceCall (ServiceCallRequest) returns (CallReply);
 }
 
 /* Exposed by registering services */
 service Service {
   rpc Call (CallRequest) returns (CallReply);
+}
+
+enum RegisterReplyCode {
+  OK = 0;
+  BAD_REQUEST = 400; // e.g. invalid name
+  CONFLICT = 409;  // already registered
 }
 
 enum ServiceReplyCode {
@@ -124,14 +130,14 @@ message RegisterRequest {
 }
 
 message RegisterReply {
-  enum Code {
-    OK = 0;
-    BAD_REQUEST = 400; // e.g. invalid name
-    CONFLICT = 409;  // already registered
-  }
-
-  Code code = 1;
+  RegisterReplyCode code = 1;
   string message = 2;  // in case of errors
+}
+
+message ServiceCallRequest {
+  string address = 1;
+  string request_id = 2;
+  bytes data = 3;
 }
 
 message CallRequest {
