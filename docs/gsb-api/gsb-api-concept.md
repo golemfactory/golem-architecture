@@ -96,13 +96,27 @@ syntax = "proto3";
 package GSB_API;
 
 /* Exposed by Golem Service Bus API implementation */
-service Relay {
+service Bus {
+  /* Register a service within the bus */
   rpc Register (RegisterRequest) returns (RegisterReply);
+
+  /* Call a local or remote service method */
+  rpc ServiceCall (CallRequest) returns (CallReply);
 }
 
 /* Exposed by registering services */
 service Service {
   rpc Call (CallRequest) returns (CallReply);
+}
+
+enum ServiceReplyCode {
+  OK = 0;
+  SERVICE_FAILURE = 500;  // e.g. service did not respond in time
+}
+
+enum ServiceReplyType {
+  FULL = 0;  // a single response or end of stream
+  PARTIAL = 1;  // i.e. a streaming response
 }
 
 message RegisterRequest {
@@ -121,24 +135,14 @@ message RegisterReply {
 }
 
 message CallRequest {
-  bytes request_id = 1;
+  string request_id = 1;
   bytes data = 2;
 }
 
 message CallReply {
-  enum Code {
-    OK = 0;
-    SERVICE_FAILURE = 500;  // e.g. service did not respond in time
-  }
-
-  enum Type {
-    FULL = 0;
-    PARTIAL = 1;
-  }
-
-  bytes request_id = 1;
-  Code code = 2;
-  Type type = 3;
+  string request_id = 1;
+  ServiceReplyCode code = 2;
+  ServiceReplyType type = 3;
   bytes data = 4;
 }
 ```
