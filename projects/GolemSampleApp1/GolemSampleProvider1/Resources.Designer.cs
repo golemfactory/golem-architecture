@@ -68,7 +68,7 @@ namespace GolemSampleProvider1 {
         ///				&quot;container&quot;:{
         ///					&quot;docker&quot;:{
         ///						&quot;image&quot;:[&quot;golemfactory/ffmpeg&quot;],
-        ///						&quot;benchmark{golemfactory/ffmpeg}&quot;:7,
+        ///						&quot;benchmark{golemfactory/ffmpeg}&quot;:700,
         ///						&quot;benchmark{*}&quot;:null
         ///					}
         ///				}
@@ -96,7 +96,7 @@ namespace GolemSampleProvider1 {
         ///			}
         ///		},
         ///		&quot;usage&quot;:{
-        ///			&quot;vector&quot;:[&quot;golem.us [rest of string was truncated]&quot;;.
+        ///			&quot;vector&quot;:[&quot;golem. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Transcoding_Offer_Generic {
             get {
