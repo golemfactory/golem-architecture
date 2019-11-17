@@ -73,8 +73,10 @@ namespace GolemSampleApp1
                 }
             }
             while (!Console.KeyAvailable && !stop);
-        }
 
+            Console.ReadKey();
+
+        }
 
     }
 }

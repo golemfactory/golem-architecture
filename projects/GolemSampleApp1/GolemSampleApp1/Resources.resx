@@ -117,17 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Transcoding_Demand_Negotiate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Transcoding_Demand_Negotiate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="Transcoding_Demand_Negotiate" xml:space="preserve">
+    <value>(&amp;
+    (golem.srv.comp.container.docker.image="golemfactory/ffmpeg")
+    (golem.srv.comp.container.docker.benchmark{golemfactory/ffmpeg}&gt;300)
+    (golem.com.payment.scheme="after")
+    (golem.usage.vector=["golem.usage.duration_sec"])
+    (golem.com.pricing.model="linear")
+)</value>
   </data>
-  <data name="Transcoding_Demand_Start" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Transcoding_Demand_Start.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="Transcoding_Offer_Generic" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Transcoding_Offer_Generic.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="Transcoding_Offer_Priced" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Transcoding_Offer_Priced.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="Transcoding_Demand_Start" xml:space="preserve">
+    <value>(&amp;
+    (golem.srv.comp.container.docker.image=golemfactory/ffmpeg)
+    (golem.srv.comp.container.docker.benchmark{golemfactory/ffmpeg}&gt;300)
+    (golem.com.payment.scheme=after)
+    (golem.usage.vector=[golem.usage.duration_sec])
+    (golem.com.pricing.model=linear)
+)</value>
   </data>
 </root>
