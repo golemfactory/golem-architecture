@@ -22,6 +22,7 @@ This document describes the Golem Service Bus (GSB) API and its purpose in light
     - [Message definition](#message-definition)
     - [(De)serialization](#deserialization)
     - [Transport](#transport)
+    - [Encapsulated payload serialization](#encapsulated-payload-serialization)
     - [Message routing](#message-routing)
 
 ## Concepts
@@ -165,6 +166,8 @@ According to the `protobuf` specification, as seen in the [example above](#proto
 
 Provided by `protobuf` libraries.
 
+The binary `data` field within the messages must be serialized with [msgpack](https://msgpack.org/index.html).
+
 ### Transport
 
 GSB API modules utilize a `nanomsg-next-gen` library with 2 transports enabled:
@@ -177,6 +180,8 @@ Per language libraries:
 - Rust: [runng](https://github.com/jeikabu/runng)
 - C: [nanomsg-next-gen](https://github.com/nanomsg/nng)
 - Python: [pynng](https://github.com/codypiersall/pynng)
+
+### Encapsulated payload serialization
 
 ### Message routing
 
