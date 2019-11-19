@@ -10,5 +10,14 @@ namespace Golem.Provider.Entities
 
         public List<string> Params { get; set; }
 
+        public override string ToString()  {
+        var sb = new StringBuilder();
+        sb.Append("class ExeScriptCommand {");
+        sb.Append(" Command: ").Append(Command);
+        sb.Append(", Params: ").Append(Params);
+        sb.Append("}");
+        return sb.ToString();
+        }
+
     }
 }

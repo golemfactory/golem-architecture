@@ -175,6 +175,7 @@ namespace Golem.Provider.ActivityControl
                 };
 
                 var entResult = exeUnit.ExecCommand(entCommand);
+                entResult.Message = $"activity state is {exeUnit.Activity.State} after {entCommand}.";
                 bool isBatchFinished = false;
 
                 // set IsBatchFinished if we have processed the last command in batch or error

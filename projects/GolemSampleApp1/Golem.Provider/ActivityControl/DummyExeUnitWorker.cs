@@ -89,7 +89,7 @@ namespace Golem.Provider.ActivityControl
                     });
 
                     // simulate deployment time
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1500);
 
                     // Move to "ready" state and return
                     this.State = ExeUnitState.Ready;

@@ -181,15 +181,13 @@ namespace Golem.ActivityApi.Client.Swagger.Api
             var path = "/activity/{activityId}/exec/{batchId}";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "activityId" + "}", ApiClient.ParameterToString(activityId));
-path = path.Replace("{" + "batchId" + "}", ApiClient.ParameterToString(batchId));
+            path = path.Replace("{" + "batchId" + "}", ApiClient.ParameterToString(batchId));
     
             var queryParams = new Dictionary<String, String>();
             var headerParams = new Dictionary<String, String>();
             var formParams = new Dictionary<String, String>();
             var fileParams = new Dictionary<String, FileParameter>();
-            String postBody = null;
-    
-                                                postBody = ApiClient.Serialize(commandResult); // http body (model) parameter
+            String postBody = ApiClient.Serialize(commandResult); // http body (model) parameter
     
             // authentication setting, if any
             String[] authSettings = new String[] {  };

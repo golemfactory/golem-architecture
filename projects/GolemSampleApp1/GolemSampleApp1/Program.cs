@@ -61,7 +61,7 @@ namespace GolemSampleApp1
                 {
                     foreach(var result in batchResults)
                     {
-                        Console.WriteLine($"Exec result: [{result.Index}] ({result.Result}), {result.Message}");
+                        Console.WriteLine($"Exec result: [{result}");
 
                         if(result.IsBatchFinished == true)
                         {

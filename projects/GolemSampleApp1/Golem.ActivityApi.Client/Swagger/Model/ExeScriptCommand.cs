@@ -38,6 +38,7 @@ namespace Golem.ActivityApi.Client.Swagger.Model {
       sb.Append("  Params: ").Append(Params).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
+      
     }
 
     /// <summary>
