@@ -64,8 +64,7 @@ e.g. `market-api/get-offers`.
 | Destination | Description |
 |--|--|
 | net/0x123/market-api/get-offers | Get offers from the Market API module on node 0x123. |
-| net/broadcast:5/payment/get-payment-method | Get payment methods from nodes that are not further than N hops
-from the originating node. |
+| net/broadcast:5/payment/get-payment-method | Get payment methods from nodes that are not further than N hops from the originating node. |
 
 ### Payload
 
