@@ -68,15 +68,38 @@ e.g. `market-api/get-offers`.
 from the originating node. |
 
 ### Payload
+
+The payload depends on the destination module and method. It could contain method parameters encoded in JSON
+(for example: `[ "method-name": "param" ]`) or binary data. The GolemNet module does not check payload content format.
+
 ### Reply To
+
+Specifies node address that send this message. It is automatically added by GolemNet module so that the reply
+could be send to the originating node.
+
 ### Request ID
+
+Request ID is necessary to pair a request with response. It should be a unguessable random number.
+
 ### Message Type
 
+| Message Type | Description |
+|--|--|
+| Request | Remote method call |
+| Response | Reply to a remote method call |
+| Error | Error message |
+
 ## Message Handling
+
+### Requests
 
 When GolemNet receives a network message prefixed with `net/NODE_ID/`, where NODE_ID is the current node identifier, 
 the message is put on the Golem Service Bus without the `net/NODE_ID/` prefix, so that modules subscribed to this type
 of message receive it.
 
 If the message is prefixed with `net/NODE_ID/`, where NODE_ID is different from the current node identifier,
-the message is forwarded to the centralized server (hub) which relays it to the destination node. 
+the message (in GolemNet Mk1 version) is forwarded to the centralized server (hub) which relays it to the destination node.
+
+### Responses and Errors
+
+TODO
