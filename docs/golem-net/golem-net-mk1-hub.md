@@ -75,7 +75,7 @@ The payload depends on the destination module and method. It could contain metho
 ### Reply To
 
 Specifies node address that send this message. It is automatically added by GolemNet module so that the reply
-could be send to the originating node.
+could be sent to the originating node.
 
 ### Request ID
 
