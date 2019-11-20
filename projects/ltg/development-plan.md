@@ -111,9 +111,18 @@ To install it, run `rustup component add rustfmt` command. To format files in th
 Most Rust crates used in the project should be located in one repository.
 For every crate, this repository should contain a crate subdirectory with a `Cargo.toml` file and a `src` directory.
 
+### Versioning
+
+Semantic Versioning (MAJOR.MINOR.PATCH, https://semver.org/) should be used for version numbers.
+
+### Project Dependencies
+
+Project dependencies of each crate are specified in `Cargo.toml` file.
+The dependencies should not be spontaneously updated by developers.
+
 ### Usage Examples
 
-If some create need usage examples, they should be placed in the `examples` subdirectory of the crate. To run such example, 
+If a crate needs usage examples, they should be placed in the `examples` subdirectory of the crate. To run such example, 
 please run `cargo run --example <example name>` command.
 
 ### Tests
