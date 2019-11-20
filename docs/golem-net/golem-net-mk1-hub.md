@@ -17,15 +17,29 @@ or use P2P network to send it to the destination node (GolemNet Mk2).
 
 ## Message Format
 
-### Prefix
+### Message Components
+
+Every message contains following parts:
+
+| Message Part Name | Example |
+|--|--|
+| [Destination](#message-destination) | net/0x123/market-api/get-offers |
+| [Payload](#payload) | { "max-offers": 50 } |
+| [Reply To](#reply-to) | 0x789 |
+| [Request ID](#request-id) | 1574244629 |
+| [Message Type](#message-type) | REQUEST |
+
+### Message Destination
+
+#### Prefix
 
 Messages addressed to GolemNet module must start with `net/`.
 
-### Destination Address
+#### Address
 
 The messages could be sent to a given node address or to a broadcast address.
 
-#### Node Address
+##### Node Address
 
 A Lightweight Golem node address, e.g. `0x123...`.
 A message with an address like this should be delivered to the given node.
@@ -33,24 +47,30 @@ In the GolemNet Mk1 implementation it is sent to the centralized server, which s
 The GolemMk2 implementation should allow P2P messages without a centralized server; sometimes the messages will need to
 travel between many nodes before reaching the destination node.
 
-#### Broadcast Address
+##### Broadcast Address
 
 When a messages is sent to a broadcast address, it can be delivered to more than one node in the network.
 The broadcast address is a string `broadcast` (which means all nodes in the network)
-optionally followed by a `:N` (which means all nodes which addresses have no more than N bits different 
-from the sender's address in binary representation - this can be used to send it only to a part of the network).
+optionally followed by a `:N` (which means all nodes that are not further than N hops
+from the originating node - this can be used to send broadcast messages only to a part of the network).
 
-### Destination Module and Function
+#### Destination Module and Function
 
 The next part of the message should be the destination module name followed by the method name, 
 e.g. `market-api/get-offers`.
 
-### Example Messages
+#### Example Destinations
 
-| Address | Description |
+| Destination | Description |
 |--|--|
 | net/0x123/market-api/get-offers | Get offers from the Market API module on node 0x123. |
-| net/broadcast:5/payment/get-payment-method | Get payment methods from nodes with node addresses that have no more than 5 bits different from the sender's address. |
+| net/broadcast:5/payment/get-payment-method | Get payment methods from nodes that are not further than N hops
+from the originating node. |
+
+### Payload
+### Reply To
+### Request ID
+### Message Type
 
 ## Message Handling
 
