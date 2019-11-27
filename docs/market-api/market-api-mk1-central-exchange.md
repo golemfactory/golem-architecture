@@ -16,7 +16,7 @@ https://github.com/golemfactory/yagna/tree/master/test-utils/market-hub
 ## Yagna Market
 
 The Yagna Market is a core component of the Yagna Network, which enables computational Offers
-and Demands circulation. The Market open for all entities willing to buy computations (Demands)
+and Demands circulation. The Market is open for all entities willing to buy computations (Demands)
 or monetize computational resources (Offers).
 
 ## Yagna Market API
