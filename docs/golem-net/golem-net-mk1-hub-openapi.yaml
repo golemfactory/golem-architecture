@@ -1,15 +1,18 @@
-openapi: 3.0.1
+openapi: 3.0.2
 info:
   title: GolemNet Hub
   description: Centralized hub for GolemNet MK1
   version: 0.1.0
+servers: 
+  - url: /net-api/v0.1
+    description: relative path to the net API
 tags:
 - name: auth
   description: Hub authentication
 - name: message
   description: Hub message operations
 paths:
-  /v0.1/auth:
+  /auth:
     post:
       tags:
       - auth
@@ -48,7 +51,7 @@ paths:
           content: {}
       security:
       - bearerAuth: []
-  /v0.1/message:
+  /message:
     post:
       tags:
       - message
