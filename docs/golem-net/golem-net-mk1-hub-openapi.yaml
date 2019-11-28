@@ -3,7 +3,7 @@ info:
   title: GolemNet Hub
   description: Centralized hub for GolemNet MK1
   version: 0.1.0
-servers: 
+servers:
   - url: /net-api/v0.1
     description: relative path to the net API
 tags:
@@ -18,23 +18,18 @@ paths:
       - auth
       summary: Authenticate within the hub
       operationId: authenticate
-      requestBody:
-        description: Authentication request
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthRequest'
-        required: true
       responses:
         200:
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
-        405:
-          description: Invalid input
+                $ref: '#/components/schemas/JWT'
+        403:
+          description: Forbidden
           content: {}
+      security:
+      - bearerAuth: []
     delete:
       tags:
       - auth
@@ -95,32 +90,8 @@ paths:
       - bearerAuth: []
 components:
   schemas:
-    AuthRequest:
-      type: object
-      properties:
-        scheme:
-          type: string
-          description: Encryption scheme
-          example: secp256k1
-        key:
-          type: string
-          description: Public key (base64)
-          example: ZXhhbXBsZQ==
-        keySig:
-          type: string
-          description: Public key signature (base64)
-          example: ZXhhbXBsZQ==
-      required:
-        - scheme
-        - key
-        - keySig
-    AuthResponse:
-      type: object
-      properties:
-        jwtToken:
-          type: object
-      required:
-        - apiKey       
+    JWT:
+      type: string
     Message:
       type: object
       properties:
