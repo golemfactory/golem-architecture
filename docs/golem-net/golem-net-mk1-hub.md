@@ -1,4 +1,27 @@
-# GolemNet Mk1 (Net API)
+# Table of contents
+
+- [Table of contents](#table-of-contents)
+  - [Description](#description)
+  - [Architecture](#architecture)
+  - [Message Format](#message-format)
+    - [Message Components](#message-components)
+    - [Message Destination](#message-destination)
+      - [Prefix](#prefix)
+      - [Address](#address)
+        - [Node Address](#node-address)
+        - [Broadcast Address](#broadcast-address)
+      - [Destination Module and Function](#destination-module-and-function)
+      - [Example Destinations](#example-destinations)
+    - [Payload](#payload)
+    - [Reply To](#reply-to)
+    - [Request ID](#request-id)
+    - [Message Type](#message-type)
+  - [Message Handling](#message-handling)
+    - [Requests](#requests)
+    - [Responses and Errors](#responses-and-errors)
+  - [Hub](#hub)
+    - [Technology stack](#technology-stack)
+    - [Specification](#specification)
 
 ## Description
 
@@ -8,12 +31,11 @@ The first implementation called GolemNet Mk1 uses a centralized server to allow 
 ## Architecture
 
 GolemNet module receives messages from two sources:
+
 - Golem Service Bus (GSB)
 - Other nodes in the network
 
-After receiving a message, GolemNet module may put it on the Golem Service Bus if it is addressed to the current node, 
-send it to the centralized server which forwards it to the GolemNet module of the destination node (GolemNet Mk1) 
-or use P2P network to send it to the destination node (GolemNet Mk2).
+After receiving a message, GolemNet module may put it on the Golem Service Bus if it is addressed to the current node, send it to the centralized server which forwards it to the GolemNet module of the destination node (GolemNet Mk1) or use P2P network to send it to the destination node (GolemNet Mk2).
 
 ## Message Format
 
@@ -56,8 +78,7 @@ from the originating node - this can be used to send broadcast messages only to 
 
 #### Destination Module and Function
 
-The next part of the message should be the destination module name followed by the method name, 
-e.g. `market-api/get-offers`.
+The next part of the message should be the destination module name followed by the method name, e.g. `market-api/get-offers`.
 
 #### Example Destinations
 
@@ -73,8 +94,7 @@ The payload depends on the destination module and method. It could contain metho
 
 ### Reply To
 
-Specifies node address that send this message. It is automatically added by GolemNet module so that the reply
-could be sent to the originating node.
+Specifies node address that send this message. It is automatically added by GolemNet module so that the reply could be sent to the originating node.
 
 ### Request ID
 
@@ -92,8 +112,7 @@ Request ID is necessary to pair a request with response. It should be a unguessa
 
 ### Requests
 
-When GolemNet receives a network message prefixed with `net/NODE_ID/`, where NODE_ID is the current node identifier, 
-the message is put on the Golem Service Bus without the `net/NODE_ID/` prefix, so that modules subscribed to this type
+When GolemNet receives a network message prefixed with `net/NODE_ID/`, where NODE_ID is the current node identifier, the message is put on the Golem Service Bus without the `net/NODE_ID/` prefix, so that modules subscribed to this type
 of message receive it.
 
 If the message is prefixed with `net/NODE_ID/`, where NODE_ID is different from the current node identifier,
@@ -102,3 +121,27 @@ the message (in GolemNet Mk1 version) is forwarded to the centralized server (hu
 ### Responses and Errors
 
 TODO
+
+## Hub
+
+An HTTP(S) server and a centralized predecessor of the MK2 P2P network. Provides means to exchange messages between network peers via HTTP requests.
+
+Functionality provided by the hub:
+
+- unicasting messages
+- broadcasting messages with a TTL
+- polling for messages
+- peer authentication
+- authorization of requests
+
+Note: can be implemented as a WSS server.
+
+### Technology stack
+
+The programming language used in this project will be [Rust](https://www.rust-lang.org/). The newest stable version of Rust compiler (rustc) should compile all source code without errors.
+
+For the HTTP (/ WS) server code, [Actix Web 1.0](https://actix.rs) will be used.
+
+### Specification
+
+[OpenAPI specification](golem-net-mk1-hub-openapi.yaml)

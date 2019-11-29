@@ -1,0 +1,119 @@
+openapi: 3.0.2
+info:
+  title: GolemNet Hub
+  description: Centralized hub for GolemNet MK1
+  version: 0.1.0
+servers:
+  - url: /net-api/v0.1
+    description: relative path to the net API
+tags:
+- name: auth
+  description: Hub authentication
+- name: message
+  description: Hub message operations
+paths:
+  /auth:
+    post:
+      tags:
+      - auth
+      summary: Authenticate within the hub
+      operationId: authenticate
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+        403:
+          description: Forbidden
+          content: {}
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - auth
+      summary: Deactivate the authorization token within the hub
+      responses:
+        200:
+          description: Successful operation
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - bearerAuth: []
+  /message:
+    post:
+      tags:
+      - message
+      summary: Send a message
+      operationId: send
+      requestBody:
+        description: Network message to send
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+      security:
+      - bearerAuth: []
+    get:
+      tags:
+      - message
+      summary: Receive a message
+      operationId: poll
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        403:
+          description: Forbidden
+          content: {}
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    JWT:
+      type: string
+    Message:
+      type: object
+      properties:
+        requestId:
+          type: string
+          example: 11c47c94-ed06-44cb-b1f2-e26b7c943489
+        destination:
+          type: string
+          description: Destination address
+          example: 0x123/market-api/get-offers
+        payload:
+          type: string
+          description: Binary data (base64)
+          example: ZXhhbXBsZQ==
+      required:
+        - requestId
+        - destination
+        - payload
+      xml:
+        name: Message
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
