@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Golem.MarketApi.Client.Swagger.Client
+namespace IO.Swagger.Client
 {
     /// <summary>
     /// Represents a set of configuration settings
@@ -117,13 +117,13 @@ namespace Golem.MarketApi.Client.Swagger.Client
         /// </summary>
         public static String ToDebugReport()
         {
-            String report = "C# SDK (Golem.MarketApi.Client.Swagger) Debug Report:\n";
+            String report = "C# SDK (IO.Swagger) Debug Report:\n";
             report += "    OS: " + Environment.OSVersion + "\n";
             report += "    .NET Framework Version: " + Assembly
                      .GetExecutingAssembly()
                      .GetReferencedAssemblies()
                      .Where(x => x.Name == "System.Core").First().Version.ToString()  + "\n";
-            report += "    Version of the API: 1.4.0\n";
+            report += "    Version of the API: 1.4.1\n";
             report += "    SDK Package Version: 1.0.0\n";
   
             return report;

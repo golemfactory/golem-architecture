@@ -5,26 +5,19 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace IO.Swagger.Model {
 
   /// <summary>
   /// 
   /// </summary>
   [DataContract]
-  public class Demand : DemandOfferBase {
+  public class AgreementEvent : Event {
     /// <summary>
-    /// Gets or Sets DemandId
+    /// Gets or Sets Agreement
     /// </summary>
-    [DataMember(Name="demandId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demandId")]
-    public string DemandId { get; set; }
-
-    /// <summary>
-    /// Gets or Sets RequestorId
-    /// </summary>
-    [DataMember(Name="requestorId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "requestorId")]
-    public string RequestorId { get; set; }
+    [DataMember(Name="agreement", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "agreement")]
+    public Agreement Agreement { get; set; }
 
 
     /// <summary>
@@ -33,11 +26,8 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class Demand {\n");
-      sb.Append("  DemandId: ").Append(DemandId).Append("\n");
-      sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
-      sb.Append("  Properties: ").Append(Properties).Append("\n");
-      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
+      sb.Append("class AgreementEvent {\n");
+      sb.Append("  Agreement: ").Append(Agreement).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

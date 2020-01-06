@@ -11,20 +11,13 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class Demand : DemandOfferBase {
+  public class ProposalEvent : Event {
     /// <summary>
-    /// Gets or Sets DemandId
+    /// Gets or Sets Proposal
     /// </summary>
-    [DataMember(Name="demandId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demandId")]
-    public string DemandId { get; set; }
-
-    /// <summary>
-    /// Gets or Sets RequestorId
-    /// </summary>
-    [DataMember(Name="requestorId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "requestorId")]
-    public string RequestorId { get; set; }
+    [DataMember(Name="proposal", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "proposal")]
+    public Proposal Proposal { get; set; }
 
 
     /// <summary>
@@ -33,11 +26,8 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class Demand {\n");
-      sb.Append("  DemandId: ").Append(DemandId).Append("\n");
-      sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
-      sb.Append("  Properties: ").Append(Properties).Append("\n");
-      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
+      sb.Append("class ProposalEvent {\n");
+      sb.Append("  Proposal: ").Append(Proposal).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

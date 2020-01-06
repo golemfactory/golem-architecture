@@ -5,19 +5,26 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace IO.Swagger.Model {
 
   /// <summary>
   /// 
   /// </summary>
   [DataContract]
-  public class DemandEvent : ProviderEvent {
+  public class Event {
     /// <summary>
-    /// Gets or Sets Demand
+    /// Gets or Sets EventType
     /// </summary>
-    [DataMember(Name="demand", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demand")]
-    public Proposal Demand { get; set; }
+    [DataMember(Name="eventType", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "eventType")]
+    public string EventType { get; set; }
+
+    /// <summary>
+    /// Gets or Sets EventDate
+    /// </summary>
+    [DataMember(Name="eventDate", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "eventDate")]
+    public DateTime? EventDate { get; set; }
 
 
     /// <summary>
@@ -26,8 +33,9 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class DemandEvent {\n");
-      sb.Append("  Demand: ").Append(Demand).Append("\n");
+      sb.Append("class Event {\n");
+      sb.Append("  EventType: ").Append(EventType).Append("\n");
+      sb.Append("  EventDate: ").Append(EventDate).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
@@ -36,7 +44,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public  new string ToJson() {
+    public string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

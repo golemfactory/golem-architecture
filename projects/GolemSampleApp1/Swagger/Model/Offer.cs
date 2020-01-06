@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace IO.Swagger.Model {
 
   /// <summary>
   /// 
@@ -32,14 +32,12 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// </summary>
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
-        var sb = new StringBuilder();
-        sb.Append("class Offer {\n");
-        sb.Append("  OfferId: ").Append(OfferId).Append("\n");
-        sb.Append("  ProviderId: ").Append(ProviderId).Append("\n");
-        sb.Append("  Properties: ").Append(Properties).Append("\n");
-        sb.Append("  Constraints: ").Append(Constraints).Append("\n");
-        sb.Append("}\n");
-        return sb.ToString();
+      var sb = new StringBuilder();
+      sb.Append("class Offer {\n");
+      sb.Append("  OfferId: ").Append(OfferId).Append("\n");
+      sb.Append("  ProviderId: ").Append(ProviderId).Append("\n");
+      sb.Append("}\n");
+      return sb.ToString();
     }
 
     /// <summary>

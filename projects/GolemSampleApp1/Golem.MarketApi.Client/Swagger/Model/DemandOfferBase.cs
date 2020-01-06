@@ -11,20 +11,20 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class ProviderEvent {
+  public class DemandOfferBase {
     /// <summary>
-    /// Gets or Sets EventType
+    /// Gets or Sets Properties
     /// </summary>
-    [DataMember(Name="eventType", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "eventType")]
-    public string EventType { get; set; }
+    [DataMember(Name="properties", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "properties")]
+    public Object Properties { get; set; }
 
     /// <summary>
-    /// Gets or Sets RequestorId
+    /// Gets or Sets Constraints
     /// </summary>
-    [DataMember(Name="requestorId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "requestorId")]
-    public string RequestorId { get; set; }
+    [DataMember(Name="constraints", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "constraints")]
+    public string Constraints { get; set; }
 
 
     /// <summary>
@@ -33,9 +33,9 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class ProviderEvent {\n");
-      sb.Append("  EventType: ").Append(EventType).Append("\n");
-      sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
+      sb.Append("class DemandOfferBase {\n");
+      sb.Append("  Properties: ").Append(Properties).Append("\n");
+      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

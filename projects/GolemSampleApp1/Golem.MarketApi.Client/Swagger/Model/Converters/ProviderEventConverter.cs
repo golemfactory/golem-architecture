@@ -10,7 +10,7 @@ namespace Golem.MarketApi.Client.Swagger.Model.Converters
     {
         public override bool CanConvert(Type objectType)
         {
-            return typeof(ProviderEvent).IsAssignableFrom(objectType);
+            return typeof(Event).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -18,15 +18,15 @@ namespace Golem.MarketApi.Client.Swagger.Model.Converters
             JObject item = JObject.Load(reader);
             if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "demand")
             {
-                return item.ToObject<DemandEvent>();
+                return item.ToObject<ProposalEvent>();
             }
             if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "newAgreement")
             {
-                return item.ToObject<NewAgreementEvent>();
+                return item.ToObject<AgreementEvent>();
             }
             else
             {
-                return item.ToObject<ProviderEvent>();
+                return item.ToObject<Event>();
             }
         }
 

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using RestSharp;
-using Golem.MarketApi.Client.Swagger.Client;
-using Golem.MarketApi.Client.Swagger.Model;
-using Golem.MarketApi.Client.Swagger.Model.Converters;
-using Newtonsoft.Json;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
 
-namespace Golem.MarketApi.Client.Swagger.Api
+namespace IO.Swagger.Api
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -26,7 +24,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <param name="timeout"></param>
         /// <param name="maxEvents"></param>
         /// <returns>List&lt;&gt;</returns>
-        List<Event> CollectDemands (string subscriptionId, int? timeout, int? maxEvents);
+        List<> CollectDemands (string subscriptionId, int? timeout, int? maxEvents);
         /// <summary>
         /// Responds with a bespoke Offer to received Demand. Creates and sends a modified version of original Offer (a counter-proposal) adjusted to previously received Proposal (ie. Demand). Changes Proposal state to &#x60;Draft&#x60;. Returns created Proposal id. 
         /// </summary>
@@ -145,13 +143,13 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <summary>
         /// Approves Agreement proposed by the Reqestor. 
         /// </summary>
-        /// <param name="agreementId"></param> 
-        /// <returns></returns>            
+        /// <param name="agreementId"></param>
+        /// <returns></returns>
         public void ApproveAgreement (string agreementId)
         {
             // verify the required parameter 'agreementId' is set
             if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling ApproveAgreement");
-            
+    
             var path = "/agreements/{agreementId}/approve";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
@@ -180,11 +178,11 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <summary>
         ///  
         /// </summary>
-        /// <param name="subscriptionId"></param> 
-        /// <param name="timeout"></param> 
-        /// <param name="maxEvents"></param> 
-        /// <returns>List&lt;Event&gt;</returns>
-        public List<Event> CollectDemands (string subscriptionId, int? timeout, int? maxEvents)
+        /// <param name="subscriptionId"></param>
+        /// <param name="timeout"></param>
+        /// <param name="maxEvents"></param>
+        /// <returns>List&lt;&gt;</returns>
+        public List<> CollectDemands (string subscriptionId, int? timeout, int? maxEvents)
         {
             // verify the required parameter 'subscriptionId' is set
             if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling CollectDemands");
@@ -213,16 +211,16 @@ namespace Golem.MarketApi.Client.Swagger.Api
             else if (((int)response.StatusCode) == 0)
                 throw new ApiException ((int)response.StatusCode, "Error calling CollectDemands: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (List<Event>) ApiClient.Deserialize(response.Content, typeof(List<Event>), response.Headers, new ProviderEventConverter());
+            return (List<>) ApiClient.Deserialize(response.Content, typeof(List<>), response.Headers);
         }
     
         /// <summary>
         /// Responds with a bespoke Offer to received Demand. Creates and sends a modified version of original Offer (a counter-proposal) adjusted to previously received Proposal (ie. Demand). Changes Proposal state to &#x60;Draft&#x60;. Returns created Proposal id. 
         /// </summary>
         /// <param name="body"></param>
-        /// <param name="subscriptionId"></param> 
-        /// <param name="proposalId"></param> 
-        /// <returns>string</returns>            
+        /// <param name="subscriptionId"></param>
+        /// <param name="proposalId"></param>
+        /// <returns>string</returns>
         public string CreateProposalOffer (Proposal body, string subscriptionId, string proposalId)
         {
             // verify the required parameter 'body' is set
@@ -231,7 +229,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
             if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling CreateProposalOffer");
             // verify the required parameter 'proposalId' is set
             if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling CreateProposalOffer");
-            
+    
             var path = "/offers/{subscriptionId}/proposals/{proposalId}";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "subscriptionId" + "}", ApiClient.ParameterToString(subscriptionId));
@@ -258,7 +256,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
     
             return (string) ApiClient.Deserialize(response.Content, typeof(string), response.Headers);
         }
-
+    
         /// <summary>
         /// Fetches agreement with given agreement id. 
         /// </summary>
@@ -379,13 +377,13 @@ path = path.Replace("{" + "queryId" + "}", ApiClient.ParameterToString(queryId))
         /// <summary>
         /// Rejects Agreement proposed by the Requestor. 
         /// </summary>
-        /// <param name="agreementId"></param> 
-        /// <returns></returns>            
+        /// <param name="agreementId"></param>
+        /// <returns></returns>
         public void RejectAgreement (string agreementId)
         {
             // verify the required parameter 'agreementId' is set
             if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling RejectAgreement");
-            
+    
             var path = "/agreements/{agreementId}/reject";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
@@ -414,9 +412,9 @@ path = path.Replace("{" + "queryId" + "}", ApiClient.ParameterToString(queryId))
         /// <summary>
         /// Rejects Proposal (ie. Demand) 
         /// </summary>
-        /// <param name="subscriptionId"></param> 
-        /// <param name="proposalId"></param> 
-        /// <returns></returns>            
+        /// <param name="subscriptionId"></param>
+        /// <param name="proposalId"></param>
+        /// <returns></returns>
         public void RejectProposalDemand (string subscriptionId, string proposalId)
         {
             // verify the required parameter 'subscriptionId' is set
@@ -454,7 +452,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         /// Publishes Offer 
         /// </summary>
         /// <param name="body"></param>
-        /// <returns>string</returns>            
+        /// <returns>string</returns>
         public string SubscribeOffer (Offer body)
         {
             // verify the required parameter 'body' is set
@@ -481,8 +479,8 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
                 throw new ApiException ((int)response.StatusCode, "Error calling SubscribeOffer: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
                 throw new ApiException ((int)response.StatusCode, "Error calling SubscribeOffer: " + response.ErrorMessage, response.ErrorMessage);
-
-            return JsonConvert.DeserializeObject(response.Content, typeof(String)) as String;
+    
+            return (string) ApiClient.Deserialize(response.Content, typeof(string), response.Headers);
         }
     
         /// <summary>
@@ -523,8 +521,8 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         /// <summary>
         ///  
         /// </summary>
-        /// <param name="subscriptionId"></param> 
-        /// <returns></returns>            
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
         public void UnsubscribeOffer (string subscriptionId)
         {
             // verify the required parameter 'subscriptionId' is set

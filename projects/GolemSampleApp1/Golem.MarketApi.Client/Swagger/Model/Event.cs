@@ -11,20 +11,20 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class Demand : DemandOfferBase {
+  public class Event {
     /// <summary>
-    /// Gets or Sets DemandId
+    /// Gets or Sets EventType
     /// </summary>
-    [DataMember(Name="demandId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demandId")]
-    public string DemandId { get; set; }
+    [DataMember(Name="eventType", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "eventType")]
+    public string EventType { get; set; }
 
     /// <summary>
-    /// Gets or Sets RequestorId
+    /// Gets or Sets EventDate
     /// </summary>
-    [DataMember(Name="requestorId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "requestorId")]
-    public string RequestorId { get; set; }
+    [DataMember(Name="eventDate", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "eventDate")]
+    public DateTime? EventDate { get; set; }
 
 
     /// <summary>
@@ -33,11 +33,9 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class Demand {\n");
-      sb.Append("  DemandId: ").Append(DemandId).Append("\n");
-      sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
-      sb.Append("  Properties: ").Append(Properties).Append("\n");
-      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
+      sb.Append("class Event {\n");
+      sb.Append("  EventType: ").Append(EventType).Append("\n");
+      sb.Append("  EventDate: ").Append(EventDate).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
@@ -46,7 +44,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public  new string ToJson() {
+    public string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

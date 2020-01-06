@@ -11,12 +11,12 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Extensions;
 
-namespace Golem.MarketApi.Client.Swagger.Client
+namespace IO.Swagger.Client
 {
     /// <summary>
     /// API client is mainly responible for making the HTTP call to the API backend.
     /// </summary>
-    public partial class ApiClient
+    public class ApiClient
     {
         private readonly Dictionary<String, String> _defaultHeaderMap = new Dictionary<String, String>();
   
@@ -24,7 +24,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
         /// Initializes a new instance of the <see cref="ApiClient" /> class.
         /// </summary>
         /// <param name="basePath">The base path.</param>
-        public ApiClient(String basePath= "https://api.golem.network/market-api/v1")
+        public ApiClient(String basePath="/market-api/v1")
         {
             BasePath = basePath;
             RestClient = new RestClient(BasePath);
@@ -89,7 +89,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
 
             // add file parameter, if any
             foreach(var param in fileParams)
-                request.AddFile(param.Value.Name, param.Value.Writer, param.Value.FileName, param.Value.ContentLength, param.Value.ContentType);
+                request.AddFile(param.Value.Name, param.Value.Writer, param.Value.FileName, param.Value.ContentType);
 
             if (postBody != null) // http body (model) parameter
                 request.AddParameter("application/json", postBody, ParameterType.RequestBody);
@@ -116,7 +116,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
         /// <returns>Escaped string.</returns>
         public string EscapeString(string str)
         {
-            return HttpUtility.UrlEncode(str);
+            return RestSharp.Contrib.HttpUtility.UrlEncode(str);
         }
     
         /// <summary>

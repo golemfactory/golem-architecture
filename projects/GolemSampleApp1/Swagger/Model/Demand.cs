@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Golem.MarketApi.Client.Swagger.Model {
+namespace IO.Swagger.Model {
 
   /// <summary>
   /// 
@@ -36,8 +36,6 @@ namespace Golem.MarketApi.Client.Swagger.Model {
       sb.Append("class Demand {\n");
       sb.Append("  DemandId: ").Append(DemandId).Append("\n");
       sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
-      sb.Append("  Properties: ").Append(Properties).Append("\n");
-      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

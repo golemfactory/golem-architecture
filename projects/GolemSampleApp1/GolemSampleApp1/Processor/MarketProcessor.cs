@@ -51,7 +51,7 @@ namespace GolemSampleApp1.Processor
                 Console.WriteLine($"{demand}");
                 Console.WriteLine("Subscribing to market...\n");
 
-                var demandSubscriptionId = this.RequestorClient.Subscribe(demand);
+                var demandSubscriptionId = this.RequestorClient.SubscribeDemand(demand);
 
                 Console.WriteLine($"Demand sent to market, SubscriptionId:{demandSubscriptionId}");
 
@@ -59,11 +59,11 @@ namespace GolemSampleApp1.Processor
 
                 // Collect proposals until they arrive finally...
 
-                List<OfferEvent> proposals = null;
+                List<ProposalEvent> proposals = null;
 
                 do
                 {
-                    proposals = this.RequestorClient.Collect(demandSubscriptionId, 1000, 10).Select(prop => prop as OfferEvent).ToList();  // Timeout and maxCount should be ints!!!!
+                    proposals = this.RequestorClient.CollectOffers(demandSubscriptionId, 1000, 10).Select(prop => prop as ProposalEvent).ToList();  // Timeout and maxCount should be ints!!!!
                     if(proposals.Count() == 0)
                     {
                         Console.WriteLine("No proposals received, keep listening...");
@@ -96,7 +96,7 @@ namespace GolemSampleApp1.Processor
 
                 // -- close the offer subscription
                 Console.WriteLine("\nClosing subscription...");
-                this.RequestorClient.Unsubscribe(demandSubscriptionId);
+                this.RequestorClient.UnsubscribeDemand(demandSubscriptionId);
 
                 Console.WriteLine("Subscription closed.\n");
 
@@ -112,11 +112,11 @@ namespace GolemSampleApp1.Processor
         }
 
 
-        protected string Negotiate_AsItIs(string demandSubscriptionId, string offerSubscriptionId, OfferEvent offerProposal)
+        protected string Negotiate_AsItIs(string demandSubscriptionId, string offerSubscriptionId, ProposalEvent offerProposal)
         {
             // -- Create Agreement 
 
-            var selectedProposal = this.RequestorClient.GetProposal(demandSubscriptionId, offerProposal.Offer.Id);
+            var selectedProposal = this.RequestorClient.GetProposalOffer(demandSubscriptionId, offerProposal.Proposal.ProposalId);
 
             Console.WriteLine("\nSelected Offer proposal:");
 
@@ -124,10 +124,10 @@ namespace GolemSampleApp1.Processor
 
             Console.WriteLine("Creating Agreement...");
 
-            var agreement = new Agreement()
+            var agreement = new AgreementProposal()
             {
-                ProposalId = offerProposal.Offer.Id,
-                ExpirationDate = DateTime.Now.AddMinutes(1)
+                ProposalId = offerProposal.Proposal.ProposalId,
+                ValidTo = DateTime.Now.AddMinutes(1)
             };
 
             this.RequestorClient.CreateAgreement(agreement);
@@ -142,7 +142,7 @@ namespace GolemSampleApp1.Processor
 
             try
             {
-                this.RequestorClient.WaitForApproval(agreementId);
+                this.RequestorClient.WaitForApproval(agreementId, 10000);
                 Console.WriteLine("Agreement approved!");
 
                 return agreementId;
@@ -165,7 +165,7 @@ namespace GolemSampleApp1.Processor
         protected void Negotiate_AsItShouldBe(string demandSubscriptionId, string offerSubscriptionId, Proposal offerProposal)
         {
 
-            string curOfferProposalId = offerProposal.Id;
+            string curOfferProposalId = offerProposal.ProposalId;
 
             var demandProposal = new Proposal()
             {
@@ -173,21 +173,21 @@ namespace GolemSampleApp1.Processor
                 Constraints = Resources.Transcoding_Demand_Negotiate
             };
 
-            var curDemandProposalId = this.RequestorClient.CreateProposal(demandSubscriptionId, curOfferProposalId, demandProposal);
+            var curDemandProposalId = this.RequestorClient.CreateProposalDemand(demandProposal, curOfferProposalId, demandSubscriptionId);
 
             // ---- now we should observe the offer counter proposal with price - on Requestor side
 
-            var offerProposals = this.RequestorClient.Collect(demandSubscriptionId, 1000, 10);
+            var offerProposals = this.RequestorClient.CollectOffers(demandSubscriptionId, 1000, 10);
 
-            var newOfferProposal = offerProposals.Select(prop => prop as OfferEvent).Where(prop => prop.Offer.PrevProposalId == curDemandProposalId).FirstOrDefault();
+            var newOfferProposal = offerProposals.Select(prop => prop as ProposalEvent).Where(prop => prop.Proposal.PrevProposalId == curDemandProposalId).FirstOrDefault();
 
             if(newOfferProposal!= null)
             {
                 // Accept proposal and send agreement
 
-                var agreement = new Agreement()
+                var agreement = new AgreementProposal()
                 {
-                    ProposalId = newOfferProposal.Offer.Id
+                    ProposalId = newOfferProposal.Proposal.ProposalId
                 };
 
                 this.RequestorClient.CreateAgreement(agreement);
