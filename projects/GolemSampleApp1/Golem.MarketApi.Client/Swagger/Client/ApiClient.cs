@@ -67,6 +67,8 @@ namespace Golem.MarketApi.Client.Swagger.Client
             Dictionary<String, FileParameter> fileParams, String[] authSettings)
         {
 
+            Console.WriteLine($"doing {method} on {path}");
+
             var request = new RestRequest(path, method);
    
             UpdateParamsForAuth(queryParams, headerParams, authSettings);
