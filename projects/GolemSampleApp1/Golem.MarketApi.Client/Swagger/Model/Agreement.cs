@@ -61,22 +61,22 @@ namespace Golem.MarketApi.Client.Swagger.Model
     /// <summary>
     /// Gets or Sets ProposedSignature
     /// </summary>
-    [DataMember(Name="proposed_signature", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "proposed_signature")]
+    [DataMember(Name="proposedSignature", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "proposedSignature")]
     public string ProposedSignature { get; set; }
 
     /// <summary>
     /// Gets or Sets ApprovedSignature
     /// </summary>
-    [DataMember(Name="approved_signature", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "approved_signature")]
+    [DataMember(Name="approvedSignature", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "approvedSignature")]
     public string ApprovedSignature { get; set; }
 
     /// <summary>
     /// Gets or Sets CommittedSignature
     /// </summary>
-    [DataMember(Name="committed_signature", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "committed_signature")]
+    [DataMember(Name="committedSignature", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "committedSignature")]
     public string CommittedSignature { get; set; }
 
 

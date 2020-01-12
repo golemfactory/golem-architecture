@@ -11,7 +11,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class PropertyQuery : Event {
+  public class PropertyQuery {
     /// <summary>
     /// Gets or Sets IssuerProperties
     /// </summary>
@@ -52,7 +52,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public  new string ToJson() {
+    public string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

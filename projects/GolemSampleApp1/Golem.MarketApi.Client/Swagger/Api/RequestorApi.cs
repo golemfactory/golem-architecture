@@ -14,13 +14,13 @@ namespace Golem.MarketApi.Client.Swagger.Api
     public interface IRequestorApi
     {
         /// <summary>
-        /// Cancels agreement. 
+        /// Cancels agreement. Causes the awaiting &#x60;waitForApproval&#x60; call to return with &#x60;Cancelled&#x60; response. 
         /// </summary>
         /// <param name="agreementId"></param>
         /// <returns></returns>
         void CancelAgreement (string agreementId);
         /// <summary>
-        ///  
+        /// Reads Market responses to published Demand. This is a blocking operation. It will not return until there is at least one new event.  **Note**: When &#x60;collectOffers&#x60; is waiting, simultaneous call to &#x60;unsubscribeDemand&#x60; on the same &#x60;subscriptionId&#x60; should result in \&quot;Subscription does not exist\&quot; error returned from &#x60;collectOffers&#x60;.  **Note**: Specification requires this endpoint to support list of specific Proposal Ids to listen for messages related only to specific Proposals. This is not covered yet. 
         /// </summary>
         /// <param name="subscriptionId"></param>
         /// <param name="timeout"></param>
@@ -28,13 +28,13 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <returns>List&lt;ProposalEvent&gt;</returns>
         List<ProposalEvent> CollectOffers (string subscriptionId, int? timeout, int? maxEvents);
         /// <summary>
-        /// Sends Agreement draft to the Provider. Confirms Agreement self-created via &#x60;POST /agreements&#x60;
+        /// Sends Agreement draft to the Provider. Signs Agreement self-created via &#x60;createAgreement&#x60; and sends it to the Provider. 
         /// </summary>
         /// <param name="agreementId"></param>
         /// <returns></returns>
         void ConfirmAgreement (string agreementId);
         /// <summary>
-        /// Creates Agreement from selected Proposal. Moves given Proposal to &#x60;Approved&#x60; state.
+        /// Creates Agreement from selected Proposal. Initiates the Agreement handshake phase.  Formulates an Agreement artifact from the Proposal indicated by the received Proposal Id.  The Approval Expiry Date is added to Agreement artifact and implies the effective timeout on the whole Agreement Confirmation sequence.  A successful call to &#x60;createAgreement&#x60; shall immediately be followed by a &#x60;confirmAgreement&#x60; and &#x60;waitForApproval&#x60; call in order to listen for responses from the Provider.  **Note**: Moves given Proposal to &#x60;Approved&#x60; state. 
         /// </summary>
         /// <param name="body"></param>
         /// <returns>string</returns>
@@ -54,29 +54,29 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <returns>Agreement</returns>
         Agreement GetAgreement (string agreementId);
         /// <summary>
-        /// Fetches Proposal (ie. Offer) with given proposal id. 
+        /// Fetches Proposal (Offer) with given id. 
         /// </summary>
         /// <param name="subscriptionId"></param>
         /// <param name="proposalId"></param>
         /// <returns>Proposal</returns>
         Proposal GetProposalOffer (string subscriptionId, string proposalId);
         /// <summary>
-        ///  
+        /// Handles dynamic property query. The Market Matching Mechanism, when resolving the match relation for the specific Demand-Offer pair, is to detect the “dynamic” properties required (via constraints) by the other side. At this point, it is able to query the issuing node for those properties and submit the other side’s requested properties as the context of the query.  **Note**: The property query responses may be submitted in “chunks”, ie. the responder may choose to resolve ‘quick’/lightweight’ properties faster and provide response sooner, while still working on more time-consuming properties in the background. Therefore the response contains both the resolved properties, as well as list of properties which responder knows still require resolution.  **Note**: This method must be implemented for Market API Capability Level 2. 
         /// </summary>
         /// <param name="body"></param>
         /// <param name="subscriptionId"></param>
         /// <param name="queryId"></param>
         /// <returns></returns>
-        void PostQueryResponseDemands (PropertyQueryResponse body, string subscriptionId, string queryId);
+        void PostQueryReplyDemands (PropertyQueryReply body, string subscriptionId, string queryId);
         /// <summary>
-        /// Rejects Proposal (ie. Offer) 
+        /// Rejects Proposal (Offer). Effectively ends a Negotiation chain - it explicitly indicates that the sender will not create another counter-Proposal. 
         /// </summary>
         /// <param name="subscriptionId"></param>
         /// <param name="proposalId"></param>
         /// <returns></returns>
         void RejectProposalOffer (string subscriptionId, string proposalId);
         /// <summary>
-        /// Publishes Demand 
+        /// Publishes Requestor capabilities via Demand. Demand object can be considered an \&quot;open\&quot; or public Demand, as it is not directed at a specific Provider, but rather is sent to the market so that the matching mechanism implementation can associate relevant Offers.  **Note**: it is an \&quot;atomic\&quot; operation, ie. as soon as Subscription is placed, the Demand is published on the market. 
         /// </summary>
         /// <param name="body"></param>
         /// <returns>string</returns>
@@ -88,13 +88,13 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <returns></returns>
         void TerminateAgreement (string agreementId);
         /// <summary>
-        ///  
+        /// Stop subscription for previously published Demand. Stop receiving Proposals.  **Note**: this will terminate all pending &#x60;collectOffers&#x60; calls on this subscription. This implies, that client code should not &#x60;unsubscribeDemand&#x60; before it has received all expected/useful inputs from &#x60;collectOffers&#x60;. 
         /// </summary>
         /// <param name="subscriptionId"></param>
         /// <returns></returns>
         void UnsubscribeDemand (string subscriptionId);
         /// <summary>
-        /// Waits for Agreement approval by the Provider. 
+        /// Waits for Agreement approval by the Provider. This is a blocking operation. The call may be aborted by Requestor caller code. After the call is aborted, another &#x60;waitForApproval&#x60; call can be raised on the same Agreement Id.  It returns one of the following options: * &#x60;Ok&#x60; - Indicates that the Agreement has been approved by the Provider.   - The Provider is now ready to accept a request to start an Activity     as described in the negotiated agreement.   - The Requestor’s corresponding &#x60;waitForApproval&#x60; call returns Ok after     this on the Provider side.  * &#x60;Rejected&#x60; - Indicates that the Provider has called &#x60;rejectAgreement&#x60;,   which effectively stops the Agreement handshake. The Requestor may attempt   to return to the Negotiation phase by sending a new Proposal.  * &#x60;Cancelled&#x60; - Indicates that the Requestor himself has called  &#x60;cancelAgreement&#x60;, which effectively stops the Agreement handshake. 
         /// </summary>
         /// <param name="agreementId"></param>
         /// <param name="timeout"></param>
@@ -156,7 +156,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
         public ApiClient ApiClient {get; set;}
     
         /// <summary>
-        /// Cancels agreement. 
+        /// Cancels agreement. Causes the awaiting &#x60;waitForApproval&#x60; call to return with &#x60;Cancelled&#x60; response. 
         /// </summary>
         /// <param name="agreementId"></param> 
         /// <returns></returns>            
@@ -191,7 +191,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
         }
     
         /// <summary>
-        ///  
+        /// Reads Market responses to published Demand. This is a blocking operation. It will not return until there is at least one new event.  **Note**: When &#x60;collectOffers&#x60; is waiting, simultaneous call to &#x60;unsubscribeDemand&#x60; on the same &#x60;subscriptionId&#x60; should result in \&quot;Subscription does not exist\&quot; error returned from &#x60;collectOffers&#x60;.  **Note**: Specification requires this endpoint to support list of specific Proposal Ids to listen for messages related only to specific Proposals. This is not covered yet. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
         /// <param name="timeout"></param> 
@@ -230,7 +230,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
         }
     
         /// <summary>
-        /// Sends Agreement draft to the Provider. Confirms Agreement self-created via &#x60;POST /agreements&#x60;
+        /// Sends Agreement draft to the Provider. Signs Agreement self-created via &#x60;createAgreement&#x60; and sends it to the Provider. 
         /// </summary>
         /// <param name="agreementId"></param> 
         /// <returns></returns>            
@@ -265,7 +265,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
         }
     
         /// <summary>
-        /// Creates Agreement from selected Proposal. Moves given Proposal to &#x60;Approved&#x60; state.
+        /// Creates Agreement from selected Proposal. Initiates the Agreement handshake phase.  Formulates an Agreement artifact from the Proposal indicated by the received Proposal Id.  The Approval Expiry Date is added to Agreement artifact and implies the effective timeout on the whole Agreement Confirmation sequence.  A successful call to &#x60;createAgreement&#x60; shall immediately be followed by a &#x60;confirmAgreement&#x60; and &#x60;waitForApproval&#x60; call in order to listen for responses from the Provider.  **Note**: Moves given Proposal to &#x60;Approved&#x60; state. 
         /// </summary>
         /// <param name="body"></param>
         /// <returns>string</returns>
@@ -378,7 +378,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         }
     
         /// <summary>
-        /// Fetches Proposal (ie. Offer) with given proposal id. 
+        /// Fetches Proposal (Offer) with given id. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
         /// <param name="proposalId"></param> 
@@ -417,20 +417,20 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         }
     
         /// <summary>
-        ///  
+        /// Handles dynamic property query. The Market Matching Mechanism, when resolving the match relation for the specific Demand-Offer pair, is to detect the “dynamic” properties required (via constraints) by the other side. At this point, it is able to query the issuing node for those properties and submit the other side’s requested properties as the context of the query.  **Note**: The property query responses may be submitted in “chunks”, ie. the responder may choose to resolve ‘quick’/lightweight’ properties faster and provide response sooner, while still working on more time-consuming properties in the background. Therefore the response contains both the resolved properties, as well as list of properties which responder knows still require resolution.  **Note**: This method must be implemented for Market API Capability Level 2. 
         /// </summary>
         /// <param name="body"></param>
         /// <param name="subscriptionId"></param> 
         /// <param name="queryId"></param> 
         /// <returns></returns>            
-        public void PostQueryResponseDemands (PropertyQueryResponse body, string subscriptionId, string queryId)
+        public void PostQueryReplyDemands (PropertyQueryReply body, string subscriptionId, string queryId)
         {
             // verify the required parameter 'body' is set
-            if (body == null) throw new ApiException(400, "Missing required parameter 'body' when calling PostQueryResponseDemands");
+            if (body == null) throw new ApiException(400, "Missing required parameter 'body' when calling PostQueryReplyDemands");
             // verify the required parameter 'subscriptionId' is set
-            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling PostQueryResponseDemands");
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling PostQueryReplyDemands");
             // verify the required parameter 'queryId' is set
-            if (queryId == null) throw new ApiException(400, "Missing required parameter 'queryId' when calling PostQueryResponseDemands");
+            if (queryId == null) throw new ApiException(400, "Missing required parameter 'queryId' when calling PostQueryReplyDemands");
             
             var path = "/demands/{subscriptionId}/propertyQuery/{queryId}";
             path = path.Replace("{format}", "json");
@@ -452,15 +452,15 @@ path = path.Replace("{" + "queryId" + "}", ApiClient.ParameterToString(queryId))
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling PostQueryResponseDemands: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling PostQueryReplyDemands: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling PostQueryResponseDemands: " + response.ErrorMessage, response.ErrorMessage);
+                throw new ApiException ((int)response.StatusCode, "Error calling PostQueryReplyDemands: " + response.ErrorMessage, response.ErrorMessage);
     
             return;
         }
     
         /// <summary>
-        /// Rejects Proposal (ie. Offer) 
+        /// Rejects Proposal (Offer). Effectively ends a Negotiation chain - it explicitly indicates that the sender will not create another counter-Proposal. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
         /// <param name="proposalId"></param> 
@@ -499,7 +499,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         }
     
         /// <summary>
-        /// Publishes Demand 
+        /// Publishes Requestor capabilities via Demand. Demand object can be considered an \&quot;open\&quot; or public Demand, as it is not directed at a specific Provider, but rather is sent to the market so that the matching mechanism implementation can associate relevant Offers.  **Note**: it is an \&quot;atomic\&quot; operation, ie. as soon as Subscription is placed, the Demand is published on the market. 
         /// </summary>
         /// <param name="body"></param>
         /// <returns>string</returns>            
@@ -569,7 +569,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         }
     
         /// <summary>
-        ///  
+        /// Stop subscription for previously published Demand. Stop receiving Proposals.  **Note**: this will terminate all pending &#x60;collectOffers&#x60; calls on this subscription. This implies, that client code should not &#x60;unsubscribeDemand&#x60; before it has received all expected/useful inputs from &#x60;collectOffers&#x60;. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
         /// <returns></returns>            
@@ -604,7 +604,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
         }
     
         /// <summary>
-        /// Waits for Agreement approval by the Provider. 
+        /// Waits for Agreement approval by the Provider. This is a blocking operation. The call may be aborted by Requestor caller code. After the call is aborted, another &#x60;waitForApproval&#x60; call can be raised on the same Agreement Id.  It returns one of the following options: * &#x60;Ok&#x60; - Indicates that the Agreement has been approved by the Provider.   - The Provider is now ready to accept a request to start an Activity     as described in the negotiated agreement.   - The Requestor’s corresponding &#x60;waitForApproval&#x60; call returns Ok after     this on the Provider side.  * &#x60;Rejected&#x60; - Indicates that the Provider has called &#x60;rejectAgreement&#x60;,   which effectively stops the Agreement handshake. The Requestor may attempt   to return to the Negotiation phase by sending a new Proposal.  * &#x60;Cancelled&#x60; - Indicates that the Requestor himself has called  &#x60;cancelAgreement&#x60;, which effectively stops the Agreement handshake. 
         /// </summary>
         /// <param name="agreementId"></param> 
         /// <param name="timeout"></param>
@@ -637,7 +637,7 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
             else if (((int)response.StatusCode) == 0)
                 throw new ApiException ((int)response.StatusCode, "Error calling WaitForApproval: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (string) ApiClient.Deserialize(response.Content, typeof(string), response.Headers);
+            return JsonConvert.DeserializeObject(response.Content, typeof(String)) as String;
         }
     
     }

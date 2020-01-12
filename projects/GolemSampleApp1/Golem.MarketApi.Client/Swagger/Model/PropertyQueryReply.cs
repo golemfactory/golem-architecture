@@ -5,27 +5,13 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace IO.Swagger.Model {
+namespace Golem.MarketApi.Client.Swagger.Model {
 
   /// <summary>
   /// 
   /// </summary>
   [DataContract]
-  public class Event {
-    /// <summary>
-    /// Gets or Sets EventType
-    /// </summary>
-    [DataMember(Name="eventType", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "eventType")]
-    public string EventType { get; set; }
-
-    /// <summary>
-    /// Gets or Sets EventDate
-    /// </summary>
-    [DataMember(Name="eventDate", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "eventDate")]
-    public DateTime? EventDate { get; set; }
-
+  public class PropertyQueryReply {
 
     /// <summary>
     /// Get the string presentation of the object
@@ -33,9 +19,7 @@ namespace IO.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class Event {\n");
-      sb.Append("  EventType: ").Append(EventType).Append("\n");
-      sb.Append("  EventDate: ").Append(EventDate).Append("\n");
+      sb.Append("class PropertyQueryReply {\n");
       sb.Append("}\n");
       return sb.ToString();
     }

@@ -5,26 +5,19 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace IO.Swagger.Model {
+namespace Golem.MarketApi.Client.Swagger.Model {
 
   /// <summary>
   /// 
   /// </summary>
   [DataContract]
-  public class DemandOfferBase {
+  public class PropertyQueryEvent : Event {
     /// <summary>
-    /// Gets or Sets Properties
+    /// Gets or Sets PropertyQuery
     /// </summary>
-    [DataMember(Name="properties", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "properties")]
-    public Object Properties { get; set; }
-
-    /// <summary>
-    /// Gets or Sets Constraints
-    /// </summary>
-    [DataMember(Name="constraints", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "constraints")]
-    public string Constraints { get; set; }
+    [DataMember(Name="propertyQuery", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "propertyQuery")]
+    public PropertyQuery PropertyQuery { get; set; }
 
 
     /// <summary>
@@ -33,9 +26,8 @@ namespace IO.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class DemandOfferBase {\n");
-      sb.Append("  Properties: ").Append(Properties).Append("\n");
-      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
+      sb.Append("class PropertyQueryEvent {\n");
+      sb.Append("  PropertyQuery: ").Append(PropertyQuery).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
@@ -44,7 +36,7 @@ namespace IO.Swagger.Model {
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public string ToJson() {
+    public  new string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 
