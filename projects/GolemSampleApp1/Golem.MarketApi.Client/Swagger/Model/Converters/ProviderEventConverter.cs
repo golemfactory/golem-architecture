@@ -20,6 +20,10 @@ namespace Golem.MarketApi.Client.Swagger.Model.Converters
             {
                 return item.ToObject<ProposalEvent>();
             }
+            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "propertyQuery")
+            {
+                return item.ToObject<PropertyQueryEvent>();
+            }
             if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "newAgreement")
             {
                 return item.ToObject<AgreementEvent>();

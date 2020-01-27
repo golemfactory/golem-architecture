@@ -101,6 +101,11 @@ namespace GolemSampleProvider1.Processor
                         var agreementEvent = provEvent as AgreementEvent;
                         this.ProviderClient.ApproveAgreement(agreementEvent.Agreement.AgreementId);
 
+                        var agreementDetail = this.ProviderClient.GetAgreement(agreementEvent.Agreement.AgreementId);
+
+                        Console.WriteLine("\nApproved agreement:");
+                        Console.WriteLine(agreementDetail);
+
 
                         //* this is prototype code, should be removed, as there should be proper mappers for MarketAPI Models to Golem.Provider.Entities
 
