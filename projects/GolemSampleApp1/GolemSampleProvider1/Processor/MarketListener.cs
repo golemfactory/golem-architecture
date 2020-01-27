@@ -98,6 +98,10 @@ namespace GolemSampleProvider1.Processor
                     else if (provEvent is NewAgreementEvent)
                     {
                         Console.WriteLine("\nApproving proposed agreement...");
+                        // Console.Write("Hit any key to continue");
+                        // Console.ReadKey();
+                        // Console.WriteLine();
+
                         var agreementEvent = provEvent as NewAgreementEvent;
                         this.ProviderClient.ApproveAgreement(agreementEvent.AgreementId);
 
