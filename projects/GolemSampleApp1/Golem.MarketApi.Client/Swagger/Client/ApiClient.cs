@@ -192,7 +192,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
                 return DateTime.Parse(content,  null, System.Globalization.DateTimeStyles.RoundtripKind);
             }
 
-            if (type == typeof(String) || type.Name.StartsWith("System.Nullable")) // return primitive type
+            if (type.Name.StartsWith("System.Nullable")) // return primitive type
             {
                 return ConvertType(content, type); 
             }
