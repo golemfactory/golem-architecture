@@ -16,15 +16,15 @@ namespace Golem.MarketApi.Client.Swagger.Model.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JObject item = JObject.Load(reader);
-            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "demand")
+            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "ProposalEvent")
             {
                 return item.ToObject<ProposalEvent>();
             }
-            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "propertyQuery")
+            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "PropertyQueryEvent")
             {
                 return item.ToObject<PropertyQueryEvent>();
             }
-            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "newAgreement")
+            if (item.ContainsKey("eventType") && item["eventType"].Value<string>() == "AgreementEvent")
             {
                 return item.ToObject<AgreementEvent>();
             }
