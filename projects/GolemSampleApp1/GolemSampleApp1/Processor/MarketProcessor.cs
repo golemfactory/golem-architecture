@@ -122,6 +122,46 @@ namespace GolemSampleApp1.Processor
 
             Console.WriteLine($"{selectedProposal}");
 
+
+            Console.WriteLine("Negotiating...");
+
+
+            var demandProposal = new Proposal()
+            {
+                Properties = "{}",
+                Constraints = Resources.Transcoding_Demand_Negotiate
+            };
+
+            var curDemandProposalId = this.RequestorClient.CreateProposalDemand(demandProposal, demandSubscriptionId, offerProposal.Proposal.ProposalId);
+
+            // ---- now we should observe the offer counter proposal with price - on Requestor side
+
+            List<ProposalEvent> offerProposals = null;
+
+            ProposalEvent newOfferProposal = null;
+
+            do
+            {
+                var offerEvents = this.RequestorClient.CollectOffers(demandSubscriptionId, 1000, 10).ToList();
+                offerProposals = offerEvents.Select(prop => prop as ProposalEvent).ToList();  // Timeout and maxCount should be ints!!!!
+                if (offerProposals.Count() == 0)
+                {
+                    Console.WriteLine("No proposals received, keep listening...");
+                }
+
+                newOfferProposal = offerProposals.Select(prop => prop as ProposalEvent).Where(prop => prop.Proposal.PrevProposalId == curDemandProposalId).FirstOrDefault();
+
+
+            }
+            while (offerProposals.Count() == 0 || newOfferProposal == null);
+
+            Console.WriteLine($"Received counter offer proposal in negotiation:");
+
+            Console.WriteLine($"{newOfferProposal}");
+
+
+            // -- Now propose agreement!
+
             Console.WriteLine("Creating Agreement...");
 
             var agreement = new AgreementProposal()
@@ -142,8 +182,30 @@ namespace GolemSampleApp1.Processor
 
             try
             {
-                this.RequestorClient.WaitForApproval(agreementId, 10000);
-                Console.WriteLine("Agreement approved!");
+                String result = "";
+                while ((result = this.RequestorClient.WaitForApproval(agreementId, 10000)) == "Timeout")
+                {
+                    Console.WriteLine("Waiting for Agreement approval...");
+
+                }
+
+                switch(result)
+                {
+                    case "Ok":
+                        Console.WriteLine("Agreement approved!");
+                        break;
+                    case "Rejected":
+                        Console.WriteLine("Agreement rejected!");
+                        break;
+                    case "Cancelled":
+                        Console.WriteLine("Agreement cancelled!");
+                        break;
+                    default:
+                        Console.WriteLine($"Unknown response {result} !!!");
+                        break;
+
+
+                }
 
                 return agreementId;
             }

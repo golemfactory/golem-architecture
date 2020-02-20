@@ -338,8 +338,8 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
                 throw new ApiException ((int)response.StatusCode, "Error calling CreateProposalDemand: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
                 throw new ApiException ((int)response.StatusCode, "Error calling CreateProposalDemand: " + response.ErrorMessage, response.ErrorMessage);
-    
-            return (string) ApiClient.Deserialize(response.Content, typeof(string), response.Headers);
+
+            return JsonConvert.DeserializeObject(response.Content, typeof(String)) as String;
         }
 
         /// <summary>

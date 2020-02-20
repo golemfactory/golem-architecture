@@ -92,7 +92,7 @@ namespace GolemSampleProvider1.Processor
                         Console.WriteLine($"{pricedProposal}");
                         Console.WriteLine("Sending counter-Offer...\n");
 
-                        var offerProposalId = this.ProviderClient.CreateProposalOffer(pricedProposal, demandProposal.Proposal.ProposalId, offerSubscriptionId);
+                        var offerProposalId = this.ProviderClient.CreateProposalOffer(pricedProposal, offerSubscriptionId, demandProposal.Proposal.ProposalId);
 
                     }
                     else if (provEvent is AgreementEvent)
