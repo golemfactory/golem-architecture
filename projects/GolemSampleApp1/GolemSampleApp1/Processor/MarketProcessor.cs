@@ -55,6 +55,13 @@ namespace GolemSampleApp1.Processor
 
                 Console.WriteLine($"Demand sent to market, SubscriptionId:{demandSubscriptionId}");
 
+                Console.Write("Fetching all Demand subscriptions...");
+
+                var demandSubscriptions = this.RequestorClient.GetDemands();
+
+                Console.WriteLine($" there are {demandSubscriptions.Count} active Demand subscriptions.");
+
+
                 Console.WriteLine("Collecting proposals...");
 
                 // Collect proposals until they arrive finally...

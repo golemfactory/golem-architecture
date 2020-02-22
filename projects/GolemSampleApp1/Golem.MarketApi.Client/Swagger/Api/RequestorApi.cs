@@ -54,6 +54,11 @@ namespace Golem.MarketApi.Client.Swagger.Api
         /// <returns>Agreement</returns>
         Agreement GetAgreement (string agreementId);
         /// <summary>
+        /// Fetches all active Demands which have been published by the Requestor. 
+        /// </summary>
+        /// <returns>List&lt;&gt;</returns>
+        List<Demand> GetDemands();
+        /// <summary>
         /// Fetches Proposal (Offer) with given id. 
         /// </summary>
         /// <param name="subscriptionId"></param>
@@ -376,7 +381,38 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
     
             return (Agreement) ApiClient.Deserialize(response.Content, typeof(Agreement), response.Headers);
         }
-    
+
+        /// <summary>
+        /// Fetches all active Demands which have been published by the Requestor. 
+        /// </summary>
+        /// <returns>List&lt;&gt;</returns>
+        public List<Demand> GetDemands()
+        {
+
+            var path = "/demands";
+            path = path.Replace("{format}", "json");
+
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+
+
+            // authentication setting, if any
+            String[] authSettings = new String[] { "ApiKeyAuth" };
+
+            // make the HTTP request
+            IRestResponse response = (IRestResponse)ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException((int)response.StatusCode, "Error calling GetDemands: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException((int)response.StatusCode, "Error calling GetDemands: " + response.ErrorMessage, response.ErrorMessage);
+
+            return (List<Demand>)ApiClient.Deserialize(response.Content, typeof(List<Demand>), response.Headers);
+        }
+
         /// <summary>
         /// Fetches Proposal (Offer) with given id. 
         /// </summary>

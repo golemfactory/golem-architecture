@@ -46,6 +46,13 @@ namespace GolemSampleProvider1.Processor
 
                 Console.WriteLine($"Offer sent to market, SubscriptionId: {offerSubscriptionId}");
 
+                Console.Write("Fetching all Offer subscriptions...");
+
+                var offerSubscriptions = this.ProviderClient.GetOffers();
+
+                Console.WriteLine($" there are {offerSubscriptions.Count} active Offer subscriptions.");
+
+
                 Console.WriteLine("Collecting proposals...");
 
 
