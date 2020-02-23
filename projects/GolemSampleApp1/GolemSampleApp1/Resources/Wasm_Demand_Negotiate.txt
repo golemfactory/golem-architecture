@@ -1,0 +1,4 @@
+﻿(&
+    (golem.inf.mem.gib>0.5)
+    (golem.inf.storage.gib>1)
+)

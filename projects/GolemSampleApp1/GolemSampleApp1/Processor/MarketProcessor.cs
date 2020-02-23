@@ -1,6 +1,7 @@
 ﻿using Golem.MarketApi.Client.Swagger.Api;
 using Golem.MarketApi.Client.Swagger.Client;
 using Golem.MarketApi.Client.Swagger.Model;
+using GolemSampleApp1.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,14 @@ namespace GolemSampleApp1.Processor
 
         public ProviderApi ProviderClient { get; protected set; }
 
-        public MarketProcessor(ApiClient client)
+        public DemandProvider DemandProvider { get; protected set; }
+
+        public MarketProcessor(ApiClient client, DemandProvider.ScenarioEnum scenario)
         {
             this.ApiClient = client;
             this.RequestorClient = new RequestorApi(client);
             this.ProviderClient = new ProviderApi(client);
+            this.DemandProvider = new DemandProvider(scenario);
         }
 
         public string Run()
@@ -37,14 +41,16 @@ namespace GolemSampleApp1.Processor
 
             // -- start requestor interaction
 
+
+
             Console.WriteLine("Transcoding Demand Subscription - Simple Demo");
 
             try
             {
                 var demand = new Demand()
                 {
-                    Properties = "{}",
-                    Constraints = Resources.Transcoding_Demand_Start
+                    Properties = this.DemandProvider.GetDemandProperties(DemandProvider.NegotiationStageEnum.Start),
+                    Constraints = this.DemandProvider.GetDemandConstraints(DemandProvider.NegotiationStageEnum.Start)
                 };
 
                 Console.WriteLine("Demand composed:");
@@ -135,8 +141,8 @@ namespace GolemSampleApp1.Processor
 
             var demandProposal = new Proposal()
             {
-                Properties = "{}",
-                Constraints = Resources.Transcoding_Demand_Negotiate
+                Properties = this.DemandProvider.GetDemandProperties(DemandProvider.NegotiationStageEnum.Negotiate),
+                Constraints = this.DemandProvider.GetDemandConstraints(DemandProvider.NegotiationStageEnum.Negotiate)
             };
 
             var curDemandProposalId = this.RequestorClient.CreateProposalDemand(demandProposal, demandSubscriptionId, offerProposal.Proposal.ProposalId);
@@ -238,8 +244,8 @@ namespace GolemSampleApp1.Processor
 
             var demandProposal = new Proposal()
             {
-                Properties = "{}",
-                Constraints = Resources.Transcoding_Demand_Negotiate
+                Properties = this.DemandProvider.GetDemandProperties(DemandProvider.NegotiationStageEnum.Negotiate),
+                Constraints = this.DemandProvider.GetDemandConstraints(DemandProvider.NegotiationStageEnum.Negotiate)
             };
 
             var curDemandProposalId = this.RequestorClient.CreateProposalDemand(demandProposal, curOfferProposalId, demandSubscriptionId);

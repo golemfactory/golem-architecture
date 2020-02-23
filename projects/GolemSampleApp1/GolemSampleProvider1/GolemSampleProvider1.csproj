@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommandLineParser.Core" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Golem.ActivityApi.Client\Golem.ActivityApi.Client.csproj" />
     <ProjectReference Include="..\Golem.MarketApi.Client\Golem.MarketApi.Client.csproj" />
     <ProjectReference Include="..\Golem.Provider\Golem.Provider.csproj" />
@@ -28,6 +32,9 @@
 
   <ItemGroup>
     <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="start_with_ltg.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
