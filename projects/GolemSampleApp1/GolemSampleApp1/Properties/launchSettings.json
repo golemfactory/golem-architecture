@@ -2,7 +2,7 @@
   "profiles": {
     "GolemSampleApp1": {
       "commandName": "Project",
-      "commandLineArgs": "--scenario Wasm --activity-url http://mypc:6000/activity-api/v1/ --app-key ba5508aba59041f7affe232d5d310aa8 --market-url http://mypc:5001/market-api/v1/"
+      "commandLineArgs": "--scenario Transcoding --activity-url http://mypc:5001/activity-api/v1/ --app-key ba5508aba59041f7affe232d5d310aa8 --market-url http://mypc:5001/market-api/v1/"
     }
   }
 }

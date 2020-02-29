@@ -91,7 +91,7 @@ namespace GolemSampleApp1 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {}.
+        ///   Looks up a localized string similar to {&quot;golem.node.geo.country_code&quot;:&quot;GB&quot;}.
         /// </summary>
         internal static string Transcoding_Props_Negotiate {
             get {
@@ -100,7 +100,7 @@ namespace GolemSampleApp1 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {}.
+        ///   Looks up a localized string similar to {&quot;golem.node.geo.country_code&quot;:&quot;GB&quot;}.
         /// </summary>
         internal static string Transcoding_Props_Start {
             get {

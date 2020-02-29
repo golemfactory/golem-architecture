@@ -204,8 +204,14 @@ namespace GolemSampleApp1.Processor
 
                 switch(result)
                 {
-                    case "Ok":
+                    case "Approved":
                         Console.WriteLine("Agreement approved!");
+
+
+                        var agreementApproved = this.RequestorClient.GetAgreement(agreementId);
+
+                        Console.WriteLine("Agreement: " + agreementApproved);
+
                         break;
                     case "Rejected":
                         Console.WriteLine("Agreement rejected!");

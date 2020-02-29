@@ -43,6 +43,10 @@ namespace GolemSampleApp1
 
             parser.Parse(args);
 
+            Console.WriteLine($"Running scenario: {scenario}...");
+            Console.WriteLine("");
+
+
             // Build client proxies
 
             var marketClient = new Golem.MarketApi.Client.Swagger.Client.ApiClient(marketUrl);
