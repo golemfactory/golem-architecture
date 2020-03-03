@@ -11,20 +11,20 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class Demand {
+  public class Demand : DemandOfferBase {
     /// <summary>
-    /// Gets or Sets Properties
+    /// Gets or Sets DemandId
     /// </summary>
-    [DataMember(Name="properties", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "properties")]
-    public Object Properties { get; set; }
+    [DataMember(Name="demandId", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "demandId")]
+    public string DemandId { get; set; }
 
     /// <summary>
-    /// Gets or Sets Constraints
+    /// Gets or Sets RequestorId
     /// </summary>
-    [DataMember(Name="constraints", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "constraints")]
-    public string Constraints { get; set; }
+    [DataMember(Name="requestorId", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "requestorId")]
+    public string RequestorId { get; set; }
 
 
     /// <summary>
@@ -34,6 +34,8 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     public override string ToString()  {
       var sb = new StringBuilder();
       sb.Append("class Demand {\n");
+      sb.Append("  DemandId: ").Append(DemandId).Append("\n");
+      sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
       sb.Append("  Properties: ").Append(Properties).Append("\n");
       sb.Append("  Constraints: ").Append(Constraints).Append("\n");
       sb.Append("}\n");
@@ -44,7 +46,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public string ToJson() {
+    public  new string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

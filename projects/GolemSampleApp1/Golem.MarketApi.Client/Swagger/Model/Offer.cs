@@ -11,20 +11,20 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class Offer {
+  public class Offer : DemandOfferBase {
     /// <summary>
-    /// Gets or Sets Properties
+    /// Gets or Sets OfferId
     /// </summary>
-    [DataMember(Name="properties", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "properties")]
-    public Object Properties { get; set; }
+    [DataMember(Name="offerId", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "offerId")]
+    public string OfferId { get; set; }
 
     /// <summary>
-    /// Gets or Sets Constraints
+    /// Gets or Sets ProviderId
     /// </summary>
-    [DataMember(Name="constraints", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "constraints")]
-    public string Constraints { get; set; }
+    [DataMember(Name="providerId", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "providerId")]
+    public string ProviderId { get; set; }
 
 
     /// <summary>
@@ -32,19 +32,21 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// </summary>
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
-      var sb = new StringBuilder();
-      sb.Append("class Offer {\n");
-      sb.Append("  Properties: ").Append(Properties).Append("\n");
-      sb.Append("  Constraints: ").Append(Constraints).Append("\n");
-      sb.Append("}\n");
-      return sb.ToString();
+        var sb = new StringBuilder();
+        sb.Append("class Offer {\n");
+        sb.Append("  OfferId: ").Append(OfferId).Append("\n");
+        sb.Append("  ProviderId: ").Append(ProviderId).Append("\n");
+        sb.Append("  Properties: ").Append(Properties).Append("\n");
+        sb.Append("  Constraints: ").Append(Constraints).Append("\n");
+        sb.Append("}\n");
+        return sb.ToString();
     }
 
     /// <summary>
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public string ToJson() {
+    public  new string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

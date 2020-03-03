@@ -3,9 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GolemSampleApp1", "GolemSampleApp1\GolemSampleApp1.csproj", "{9CB9E129-2827-4CF7-BF28-A745569FA84E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GolemSampleApp1", "GolemSampleApp1\GolemSampleApp1.csproj", "{9CB9E129-2827-4CF7-BF28-A745569FA84E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.MarketApi.Client", "Golem.MarketApi.Client\Golem.MarketApi.Client.csproj", "{4B4EC600-5616-40B0-A628-9697A011994C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.MarketApi.Client", "Golem.MarketApi.Client\Golem.MarketApi.Client.csproj", "{4B4EC600-5616-40B0-A628-9697A011994C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GolemSampleProvider1", "GolemSampleProvider1\GolemSampleProvider1.csproj", "{D29CD31F-45CA-4661-9002-0336A5EA6020}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.Provider", "Golem.Provider\Golem.Provider.csproj", "{CEFDC810-293D-400A-9D41-11102B6F4FF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.ActivityApi.Client", "Golem.ActivityApi.Client\Golem.ActivityApi.Client.csproj", "{06032E22-81A8-4476-9607-2549DFC6A394}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Provider.Tests", "Golem.Provider.Tests\Golem.Provider.Tests.csproj", "{BD2A5122-DAD9-4ECD-A010-9316B5DC0734}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +29,22 @@ Global
 		{4B4EC600-5616-40B0-A628-9697A011994C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B4EC600-5616-40B0-A628-9697A011994C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B4EC600-5616-40B0-A628-9697A011994C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D29CD31F-45CA-4661-9002-0336A5EA6020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D29CD31F-45CA-4661-9002-0336A5EA6020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D29CD31F-45CA-4661-9002-0336A5EA6020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D29CD31F-45CA-4661-9002-0336A5EA6020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEFDC810-293D-400A-9D41-11102B6F4FF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEFDC810-293D-400A-9D41-11102B6F4FF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEFDC810-293D-400A-9D41-11102B6F4FF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEFDC810-293D-400A-9D41-11102B6F4FF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06032E22-81A8-4476-9607-2549DFC6A394}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06032E22-81A8-4476-9607-2549DFC6A394}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06032E22-81A8-4476-9607-2549DFC6A394}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06032E22-81A8-4476-9607-2549DFC6A394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD2A5122-DAD9-4ECD-A010-9316B5DC0734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD2A5122-DAD9-4ECD-A010-9316B5DC0734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD2A5122-DAD9-4ECD-A010-9316B5DC0734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD2A5122-DAD9-4ECD-A010-9316B5DC0734}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

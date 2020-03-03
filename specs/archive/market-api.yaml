@@ -1,0 +1,577 @@
+swagger: '2.0'
+info:
+  description: Market API
+  version: 1.0.0
+  title: Golem Market API
+host: api.golem.network
+basePath: /market-api/v1
+tags:
+  - name: requestor
+    description: Requestor Part
+  - name: provider
+    description: Provider part
+schemes:
+  - https
+  - http
+paths:
+  /offers:
+    post:
+      tags:
+        - provider
+      summary: ''
+      description: ''
+      operationId: subscribe
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Offer description
+          required: true
+          schema:
+            $ref: '#/definitions/Offer'
+      responses:
+        '201':
+          description: OK
+          schema:
+            type: string
+            description: 'Offer ID'
+        '400':
+          description: Bad offer desciption
+
+  '/offers/{subscriptionId}':
+    parameters:
+      - name: subscriptionId
+        type: string
+        in: path
+        required: true
+    delete:
+      tags:
+        - provider
+      operationId: unsubscribe
+      responses:
+        '204':
+          description: Delete
+        '404':
+          description: Subscription not found
+
+  '/offers/{subscriptionId}/proposals/{proposalId}':
+    parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        type: string
+      - name: proposalId
+        in: path
+        required: true
+        type: string
+    get:
+      tags:
+        - provider
+      summary: Fetches agreement proposal from proposal id.
+      operationId: getProposal
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AgreementProposal'
+    delete:
+      tags:
+        - provider
+      summary: Rejects offer
+      operationId: rejectProposal
+      responses:
+        204:
+          description: OK
+
+  '/offers/{subscriptionId}/proposals/{proposalId}/offer':
+    parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        type: string
+      - name: proposalId
+        in: path
+        required: true
+        type: string
+    post:
+      tags:
+        - provider
+      summary: Creates agreement proposal
+      operationId: createProposal
+      parameters:
+        - in: body
+          name: proposal
+          schema:
+            $ref: '#/definitions/Proposal'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+            description: "Proposal ID"
+
+
+
+  '/offers/{subscriptionId}/events':
+    parameters:
+      - name: subscriptionId
+        type: string
+        in: path
+        required: true
+      - name: timeout
+        type: number
+        format: float
+        in: query
+      - name: maxEvents
+        type: integer
+        format: int64
+        in: query
+    get:
+      tags:
+        - provider
+      operationId: collect
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProviderEvent'
+
+
+  '/offers/{subscriptionId}/propertyQuery/{queryId}':
+    post:
+      tags:
+        - provider
+      operationId: queryResponse
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          type: string
+        - name: queryId
+          in: path
+          required: true
+          type: string
+        - name: propertyValues
+          in: body
+          schema:
+            $ref: '#/definitions/PropertyQueryResponse'
+      responses:
+        '200':
+          description: OK
+
+  /demands:
+    post:
+      tags:
+        - requestor
+      summary: ''
+      description: ''
+      operationId: subscribe
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Demand description
+          required: true
+          schema:
+            $ref: '#/definitions/Demand'
+      responses:
+        '201':
+          description: Offer published
+          schema:
+            type: string
+        '400':
+          description: Bad offer desciption
+  '/demands/{subscriptionId}':
+    parameters:
+      - name: subscriptionId
+        type: string
+        in: path
+        required: true
+    delete:
+      tags:
+        - requestor
+      operationId: unsubscribe
+      responses:
+        '204':
+          description: Delete
+        '404':
+          description: Subscription not found
+  '/demands/{subscriptionId}/events':
+    parameters:
+      - name: subscriptionId
+        type: string
+        in: path
+        required: true
+      - name: timeout
+        type: number
+        format: float
+        in: query
+      - name: maxEvents
+        type: integer
+        format: int64
+        in: query
+    get:
+      tags:
+        - requestor
+      operationId: collect
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RequestorEvent'
+  '/demands/{subscriptionId}/proposals/{proposalId}':
+    parameters: 
+      - name: subscriptionId
+        in: path
+        required: true
+        type: string
+      - name: proposalId
+        in: path
+        required: true
+        type: string
+    get:
+      tags:
+        - requestor
+      summary: Fetches agreement proposal from proposal id.
+      operationId: getProposal
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AgreementProposal'
+    delete:
+      tags:
+        - requestor
+      summary: Rejects offer
+      operationId: rejectProposal
+      responses:
+        204:
+          description: OK
+
+  '/demands/{subscriptionId}/proposals/{proposalId}/demand':
+    parameters: 
+      - name: subscriptionId
+        in: path
+        required: true
+        type: string
+      - name: proposalId
+        in: path
+        required: true
+        type: string
+    post:
+      tags:
+        - requestor
+      summary: Creates agreement proposal
+      operationId: createProposal
+      parameters:
+        - in: body
+          name: demandProposal
+          schema:
+            $ref: '#/definitions/Proposal'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+            description: "Proposal ID"
+
+
+  '/demands/{subscriptionId}/propertyQuery/{queryId}':
+    post:
+      tags:
+        - requestor
+      operationId: queryResponse
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          type: string
+        - name: queryId
+          in: path
+          required: true
+          type: string
+        - name: propertyValues
+          in: body
+          schema:
+            $ref: '#/definitions/PropertyQueryResponse'
+      responses:
+        '200':
+          description: OK
+
+  /agreements:
+    post:
+      tags:
+        - requestor
+      summary: Creates new agreement from proposal
+      operationId: createAgreement
+      parameters:
+        - name: agreement
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Agreement'
+      responses:
+        201:
+          description: Created
+  /agreements/{agreementId}:
+    parameters:
+      - name: agreementId
+        in: path
+        type: string
+        required: true
+    delete:
+      tags:
+        - requestor
+      summary: Cancels agreement.
+      operationId: cancelAgreement
+      responses:
+        204:
+          description: Agreement canceled
+  /agreements/{agreementId}/reject:
+    parameters:
+      - name: agreementId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - provider
+      summary: Rejects agreement.
+      operationId: rejectAgreement
+      responses:
+        204:
+          description: Agreement rejected
+  /agreements/{agreementId}/confirm:
+    parameters:
+      - name: agreementId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - requestor
+      operationId: confirmAgreement
+      summary: approves 
+      responses:
+         200:
+             description: OK
+  /agreements/{agreementId}/wait:
+    parameters:
+      - name: agreementId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - requestor
+      operationId: waitForApproval
+      responses:
+        200:
+          description: OK
+  /agreements/{agreementId}/approve:
+    parameters:
+      - name: agreementId
+        in: path
+        type: string
+        required: true
+    post:
+      tags:
+        - provider
+      operationId: approveAgreement
+      responses:
+        200:
+          description: OK
+
+definitions:
+  Attachment:
+    properties:
+      name:
+        type: string
+        description: Attachment name
+      contentType:
+        type: string
+        description: Attachment mime type
+      sha256:
+        type: string
+        description: hex encoded sha256 of attachment binary content
+
+  RequestorEvent:
+    required:
+      - eventType
+      - providerId
+    discriminator: eventType
+#      propertyName: eventType
+#      mapping:
+#        offer: '#/definitions/OfferEvent'
+#        propertyQuery: '#/definitions/RequestorPropertyQuery'
+    properties:
+      eventType:
+        type: string
+      providerId:
+        type: string
+
+  ProviderEvent:
+    required:
+      - eventType
+      - requestorId
+    discriminator: eventType
+#      propertyName: eventType
+#      mapping:
+#        demand: '#/definitions/DemandEvent'
+#        propertyQuery: '#/definitions/ProviderPropertyQuery'
+#        newAgreement: '#/definitions/NewAgreementEvent'
+    properties:
+      eventType:
+        type: string
+      requestorId:
+        type: string
+    example:
+      eventType: DemandEvent
+      requestorId: 1172812402961
+      demand:
+        golem:
+          arch: x86
+
+  AgreementProposal:
+    type: object
+    required:
+      - id
+      - demand
+      - offer
+    properties:
+      id:
+        type: string
+      demand:
+        $ref: '#/definitions/Proposal'
+      offer:
+        $ref: '#/definitions/Proposal'
+
+  Proposal:
+      type: object
+      required: 
+        - properties
+        - constraints
+      properties:
+        id: 
+          type: string
+        properties:
+          type: object
+        constraints:
+          type: string
+        prevProposalId:
+          type: string
+        attachments:
+          type: array
+          item:      
+            ref: '#/definitons/Attachment'
+
+  DemandEvent:
+    allOf:
+      - $ref: '#/definitions/ProviderEvent'
+      - type: object
+        properties:
+          demand:
+            $ref: '#/definitions/Proposal'
+
+  OfferEvent:
+    allOf:
+      - $ref: '#/definitions/RequestorEvent'
+      - type: object
+        properties:
+          offer:
+            $ref: '#/definitions/Proposal'
+
+  NewAgreementEvent:
+    allOf:
+      - $ref: '#/definitions/ProviderEvent'
+      - type: object
+        properties:
+          agreementId:
+            type: string
+          requestorId:
+            type: string
+          demand:
+            $ref: '#/definitions/Demand'
+          providerId:
+            type: string
+          offer:
+            $ref: '#/definitions/Offer'
+
+  RequestorPropertyQuery:
+    allOf:
+      - $ref: '#/definitions/RequestorEvent'
+      - type: object
+        properties:
+          requestorDesc:
+            type: object
+          queryId:
+            type: string
+          queriedProps:
+            type: array
+            items:
+              type: string
+
+  ProviderPropertyQuery:
+    allOf:
+      - $ref: '#/definitions/ProviderEvent'
+      - type: object
+        properties:
+          requestorDesc:
+            type: object
+          queryId:
+            type: string
+          queriedProps:
+            type: array
+            items:
+              type: string
+
+  PropertyQueryResponse:
+    type: object
+
+  Demand:
+    type: object
+    required:
+      - properties
+      - constraints
+    properties:
+      properties:
+        type: object
+      constraints:
+        type: string
+
+  Offer:
+    type: object
+    required:
+      - properties
+      - constraints
+    properties:
+      properties:
+        type: object
+      constraints:
+        type: string
+
+  Agreement:
+    type: object
+    required: 
+      - proposalId
+      - expirationDate
+    properties:
+      proposalId:
+        type: string
+      expirationDate:
+        type: string
+        format: date-time
+
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'

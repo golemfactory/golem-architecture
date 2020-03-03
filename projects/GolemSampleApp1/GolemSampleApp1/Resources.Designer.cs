@@ -67,7 +67,6 @@ namespace GolemSampleApp1 {
         ///    (golem.com.payment.scheme=&quot;after&quot;)
         ///    (golem.usage.vector=[&quot;golem.usage.duration_sec&quot;])
         ///    (golem.com.pricing.model=&quot;linear&quot;)
-        ///    (golem.com.pricing.est{[30]}&lt;100)
         ///).
         /// </summary>
         internal static string Transcoding_Demand_Negotiate {
@@ -78,12 +77,11 @@ namespace GolemSampleApp1 {
         
         /// <summary>
         ///   Looks up a localized string similar to (&amp;
-        ///    (golem.srv.comp.container.docker.image=&quot;golemfactory/ffmpeg&quot;)
+        ///    (golem.srv.comp.container.docker.image=golemfactory/ffmpeg)
         ///    (golem.srv.comp.container.docker.benchmark{golemfactory/ffmpeg}&gt;300)
-        ///    (golem.com.payment.scheme=&quot;after&quot;)
-        ///    (golem.usage.vector=[&quot;golem.usage.duration_sec&quot;])
-        ///    (golem.com.pricing.model=&quot;linear&quot;)
-        ///    (golem.com.pricing.est{[30]}&lt;125)
+        ///    (golem.com.payment.scheme=after)
+        ///    (golem.usage.vector=[golem.usage.duration_sec])
+        ///    (golem.com.pricing.model=linear)
         ///).
         /// </summary>
         internal static string Transcoding_Demand_Start {
@@ -93,90 +91,62 @@ namespace GolemSampleApp1 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {
-        ///	&quot;golem&quot;: {
-        ///		&quot;srv&quot;:{
-        ///			&quot;comp&quot;:{
-        ///				&quot;container&quot;:{
-        ///					&quot;docker&quot;:{
-        ///						&quot;image&quot;:[&quot;golemfactory/ffmpeg&quot;],
-        ///						&quot;benchmark{golemfactory/ffmpeg}&quot;:7,
-        ///						&quot;benchmark{*}&quot;:null
-        ///					}
-        ///				}
-        ///			}
-        ///		},
-        ///		&quot;inf&quot;:{
-        ///			&quot;cpu&quot;:{
-        ///				&quot;cores&quot;:4,
-        ///				&quot;threads&quot;:8
-        ///			},
-        ///			&quot;mem&quot;:{
-        ///				&quot;gib&quot;:16
-        ///			},
-        ///			&quot;storage&quot;:{
-        ///				&quot;gib&quot;:30
-        ///			}
-        ///		},
-        ///		&quot;com&quot;:{
-        ///			&quot;payment&quot;:{
-        ///				&quot;scheme&quot;:&quot;after&quot;
-        ///			},
-        ///			&quot;pricing&quot;:{
-        ///				&quot;model&quot;:&quot;linear&quot;,
-        ///				&quot;est{*}&quot;:null
-        ///			}
-        ///		},
-        ///		&quot;usage&quot;:{
-        ///			&quot;vector&quot;:[&quot;golem.us [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;golem.node.geo.country_code&quot;:&quot;GB&quot;}.
         /// </summary>
-        internal static string Transcoding_Offer_Generic {
+        internal static string Transcoding_Props_Negotiate {
             get {
-                return ResourceManager.GetString("Transcoding_Offer_Generic", resourceCulture);
+                return ResourceManager.GetString("Transcoding_Props_Negotiate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {
-        ///	&quot;golem&quot;: {
-        ///		&quot;srv&quot;:{
-        ///			&quot;comp&quot;:{
-        ///				&quot;container&quot;:{
-        ///					&quot;docker&quot;:{
-        ///						&quot;image&quot;:[&quot;golemfactory/ffmpeg&quot;],
-        ///						&quot;benchmark{golemfactory/ffmpeg}&quot;:7,
-        ///						&quot;benchmark{*}&quot;:null
-        ///					}
-        ///				}
-        ///			}
-        ///		},
-        ///		&quot;inf&quot;:{
-        ///			&quot;cpu&quot;:{
-        ///				&quot;cores&quot;:4,
-        ///				&quot;threads&quot;:8
-        ///			},
-        ///			&quot;mem&quot;:{
-        ///				&quot;gib&quot;:16
-        ///			},
-        ///			&quot;storage&quot;:{
-        ///				&quot;gib&quot;:30
-        ///			}
-        ///		},
-        ///		&quot;com&quot;:{
-        ///			&quot;payment&quot;:{
-        ///				&quot;scheme&quot;:&quot;after&quot;
-        ///			},
-        ///			&quot;pricing&quot;:{
-        ///				&quot;model&quot;:&quot;linear&quot;,
-        ///				&quot;coeffs&quot;:[0.3, 0],
-        ///				&quot;est{*}&quot;:null
-        ///			}
-        ///		},
-        ///		&quot;usage&quot;:{ [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {&quot;golem.node.geo.country_code&quot;:&quot;GB&quot;}.
         /// </summary>
-        internal static string Transcoding_Offer_Priced {
+        internal static string Transcoding_Props_Start {
             get {
-                return ResourceManager.GetString("Transcoding_Offer_Priced", resourceCulture);
+                return ResourceManager.GetString("Transcoding_Props_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (&amp;
+        ///    (golem.inf.mem.gib&gt;0.5)
+        ///    (golem.inf.storage.gib&gt;1)
+        ///).
+        /// </summary>
+        internal static string Wasm_Demand_Negotiate {
+            get {
+                return ResourceManager.GetString("Wasm_Demand_Negotiate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (&amp;
+        ///    (golem.inf.mem.gib&gt;0.5)
+        ///    (golem.inf.storage.gib&gt;1)
+        ///).
+        /// </summary>
+        internal static string Wasm_Demand_Start {
+            get {
+                return ResourceManager.GetString("Wasm_Demand_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {}.
+        /// </summary>
+        internal static string Wasm_Props_Negotiate {
+            get {
+                return ResourceManager.GetString("Wasm_Props_Negotiate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {}.
+        /// </summary>
+        internal static string Wasm_Props_Start {
+            get {
+                return ResourceManager.GetString("Wasm_Props_Start", resourceCulture);
             }
         }
     }

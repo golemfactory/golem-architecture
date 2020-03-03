@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GolemSampleApp1": {
+      "commandName": "Project",
+      "commandLineArgs": "--scenario Transcoding --activity-url http://mypc:5001/activity-api/v1/ --app-key ba5508aba59041f7affe232d5d310aa8 --market-url http://mypc:5001/market-api/v1/"
+    }
+  }
+}

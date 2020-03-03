@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using RestSharp;
 using Golem.MarketApi.Client.Swagger.Client;
 using Golem.MarketApi.Client.Swagger.Model;
+using Golem.MarketApi.Client.Swagger.Model.Converters;
+using Newtonsoft.Json;
 
 namespace Golem.MarketApi.Client.Swagger.Api
 {
@@ -12,65 +14,84 @@ namespace Golem.MarketApi.Client.Swagger.Api
     public interface IProviderApi
     {
         /// <summary>
-        ///  
+        /// Approves Agreement proposed by the Reqestor. This is a blocking operation.  It returns one of the following options: * &#x60;Ok&#x60; - Indicates that the approved Agreement has been successfully delivered to the Requestor and acknowledged.   - The Requestor side has been notified about the Provider’s commitment     to the Agreement.   - The Provider is now ready to accept a request to start an Activity     as described in the negotiated agreement.   - The Requestor’s corresponding ConfirmAgreement call returns Ok after     the one on the Provider side.  * &#x60;Cancelled&#x60; - Indicates that before delivering the approved Agreement, the Requestor has called &#x60;cancelAgreement&#x60;, thus invalidating the Agreement. The Provider may attempt to return to the Negotiation phase by sending a new Proposal.  **Note**: It is expected from the Provider node implementation to “ring-fence” the resources required to fulfill the Agreement before the ApproveAgreement is sent. However, the resources should not be fully committed until &#x60;Ok&#x60; response is received from the &#x60;approveAgreement&#x60; call.  **Note**: Mutually exclusive with &#x60;rejectAgreement&#x60;. 
         /// </summary>
         /// <param name="agreementId"></param>
         /// <returns></returns>
         void ApproveAgreement (string agreementId);
         /// <summary>
-        ///  
+        /// Reads Market responses to published Offer. This is a blocking operation. It will not return until there is at least one new event.  **Note**: When &#x60;collectDemands&#x60; is waiting, simultaneous call to &#x60;unsubscribeOffer&#x60; on the same &#x60;subscriptionId&#x60; should result in \&quot;Subscription does not exist\&quot; error returned from &#x60;collectDemands&#x60;.  **Note**: Specification requires this endpoint to support list of specific Proposal Ids to listen for messages related only to specific Proposals. This is not covered yet. 
         /// </summary>
         /// <param name="subscriptionId"></param>
-        /// <returns>List&lt;Proposal&gt;</returns>
-        List<Proposal> Collect (string subscriptionId);
+        /// <param name="timeout"></param>
+        /// <param name="maxEvents"></param>
+        /// <returns>List&lt;&gt;</returns>
+        List<Event> CollectDemands (string subscriptionId, int? timeout, int? maxEvents);
         /// <summary>
-        /// Creates agreement proposal 
+        /// Responds with a bespoke Offer to received Demand. Creates and sends a modified version of original Offer (a counter-proposal) adjusted to previously received Proposal (ie. Demand). Changes Proposal state to &#x60;Draft&#x60;. Returns created Proposal id. 
         /// </summary>
+        /// <param name="body"></param>
         /// <param name="subscriptionId"></param>
         /// <param name="proposalId"></param>
-        /// <param name="proposal"></param>
         /// <returns>string</returns>
-        string CreateProposal (string subscriptionId, string proposalId, Proposal proposal);
+        string CreateProposalOffer (Proposal body, string subscriptionId, string proposalId);
         /// <summary>
-        /// Fetches agreement proposal from proposal id. 
+        /// Fetches agreement with given agreement id. 
+        /// </summary>
+        /// <param name="agreementId"></param>
+        /// <returns>Agreement</returns>
+        Agreement GetAgreement (string agreementId);
+        /// <summary>
+        /// Fetches all active Offers which have been published by the Provider. 
+        /// </summary>
+        /// <returns>List&lt;&gt;</returns>
+        List<Offer> GetOffers();
+        /// <summary>
+        /// Fetches Proposal (Demand) with given id. 
         /// </summary>
         /// <param name="subscriptionId"></param>
         /// <param name="proposalId"></param>
-        /// <returns>AgreementProposal</returns>
-        AgreementProposal GetProposal (string subscriptionId, string proposalId);
+        /// <returns>Proposal</returns>
+        Proposal GetProposalDemand (string subscriptionId, string proposalId);
         /// <summary>
-        ///  
+        /// Handles dynamic property query. The Market Matching Mechanism, when resolving the match relation for the specific Demand-Offer pair, is to detect the “dynamic” properties required (via constraints) by the other side. At this point, it is able to query the issuing node for those properties and submit the other side’s requested properties as the context of the query.  **Note**: The property query responses may be submitted in “chunks”, ie. the responder may choose to resolve ‘quick’/lightweight’ properties faster and provide response sooner, while still working on more time-consuming properties in the background. Therefore the response contains both the resolved properties, as well as list of properties which responder knows still require resolution.  **Note**: This method must be implemented for Market API Capability Level 2. 
         /// </summary>
-        /// <param name="subscrptionId"></param>
+        /// <param name="body"></param>
+        /// <param name="subscriptionId"></param>
         /// <param name="queryId"></param>
-        /// <param name="propertyValues"></param>
         /// <returns></returns>
-        void QueryResponse (string subscrptionId, string queryId, PropertyQueryResponse propertyValues);
+        void PostQueryReplyOffers (PropertyQueryReply body, string subscriptionId, string queryId);
         /// <summary>
-        /// Rejects offer 
-        /// </summary>
-        /// <param name="subscriptionId"></param>
-        /// <param name="proposalId"></param>
-        /// <returns></returns>
-        void RejectOffer (string subscriptionId, string proposalId);
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <param name="body">Offer description</param>
-        /// <returns>string</returns>
-        string Subscribe (Offer body);
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <param name="subscriptionId"></param>
-        /// <returns></returns>
-        void Unsubscribe (string subscriptionId);
-        /// <summary>
-        ///  
+        /// Rejects Agreement proposed by the Requestor. The Requestor side is notified about the Provider’s decision to reject a negotiated agreement. This effectively stops the Agreement handshake.  **Note**: Mutually exclusive with &#x60;approveAgreement&#x60;. 
         /// </summary>
         /// <param name="agreementId"></param>
         /// <returns></returns>
-        void WaitForApproval (string agreementId);
+        void RejectAgreement (string agreementId);
+        /// <summary>
+        /// Rejects Proposal (Demand). Effectively ends a Negotiation chain - it explicitly indicates that the sender will not create another counter-Proposal. 
+        /// </summary>
+        /// <param name="subscriptionId"></param>
+        /// <param name="proposalId"></param>
+        /// <returns></returns>
+        void RejectProposalDemand (string subscriptionId, string proposalId);
+        /// <summary>
+        /// Publishes Provider capabilities via Offer. Offer object can be considered an \&quot;open\&quot; or public Offer, as it is not directed at a specific Requestor, but rather is sent to the market so that the matching mechanism implementation can associate relevant Demands.  **Note**: it is an \&quot;atomic\&quot; operation, ie. as soon as Subscription is placed, the Offer is published on the market. 
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns>string</returns>
+        string SubscribeOffer (Offer body);
+        /// <summary>
+        /// Terminates approved Agreement. 
+        /// </summary>
+        /// <param name="agreementId"></param>
+        /// <returns></returns>
+        void TerminateAgreement (string agreementId);
+        /// <summary>
+        /// Stop subscription for previously published Offer. Stop receiving Proposals.  **Note**: this will terminate all pending &#x60;collectDemands&#x60; calls on this subscription. This implies, that client code should not &#x60;unsubscribeOffer&#x60; before it has received all expected/useful inputs from &#x60;collectDemands&#x60;. 
+        /// </summary>
+        /// <param name="subscriptionId"></param>
+        /// <returns></returns>
+        void UnsubscribeOffer (string subscriptionId);
     }
   
     /// <summary>
@@ -127,17 +148,15 @@ namespace Golem.MarketApi.Client.Swagger.Api
         public ApiClient ApiClient {get; set;}
     
         /// <summary>
-        ///  
+        /// Approves Agreement proposed by the Reqestor. This is a blocking operation.  It returns one of the following options: * &#x60;Ok&#x60; - Indicates that the approved Agreement has been successfully delivered to the Requestor and acknowledged.   - The Requestor side has been notified about the Provider’s commitment     to the Agreement.   - The Provider is now ready to accept a request to start an Activity     as described in the negotiated agreement.   - The Requestor’s corresponding ConfirmAgreement call returns Ok after     the one on the Provider side.  * &#x60;Cancelled&#x60; - Indicates that before delivering the approved Agreement, the Requestor has called &#x60;cancelAgreement&#x60;, thus invalidating the Agreement. The Provider may attempt to return to the Negotiation phase by sending a new Proposal.  **Note**: It is expected from the Provider node implementation to “ring-fence” the resources required to fulfill the Agreement before the ApproveAgreement is sent. However, the resources should not be fully committed until &#x60;Ok&#x60; response is received from the &#x60;approveAgreement&#x60; call.  **Note**: Mutually exclusive with &#x60;rejectAgreement&#x60;. 
         /// </summary>
         /// <param name="agreementId"></param> 
         /// <returns></returns>            
         public void ApproveAgreement (string agreementId)
         {
-            
             // verify the required parameter 'agreementId' is set
             if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling ApproveAgreement");
             
-    
             var path = "/agreements/{agreementId}/approve";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
@@ -150,7 +169,7 @@ namespace Golem.MarketApi.Client.Swagger.Api
     
                                                     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
@@ -164,16 +183,16 @@ namespace Golem.MarketApi.Client.Swagger.Api
         }
     
         /// <summary>
-        ///  
+        /// Reads Market responses to published Offer. This is a blocking operation. It will not return until there is at least one new event.  **Note**: When &#x60;collectDemands&#x60; is waiting, simultaneous call to &#x60;unsubscribeOffer&#x60; on the same &#x60;subscriptionId&#x60; should result in \&quot;Subscription does not exist\&quot; error returned from &#x60;collectDemands&#x60;.  **Note**: Specification requires this endpoint to support list of specific Proposal Ids to listen for messages related only to specific Proposals. This is not covered yet. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
-        /// <returns>List&lt;Proposal&gt;</returns>            
-        public List<Proposal> Collect (string subscriptionId)
+        /// <param name="timeout"></param> 
+        /// <param name="maxEvents"></param> 
+        /// <returns>List&lt;Event&gt;</returns>
+        public List<Event> CollectDemands (string subscriptionId, int? timeout, int? maxEvents)
         {
-            
             // verify the required parameter 'subscriptionId' is set
-            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling Collect");
-            
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling CollectDemands");
     
             var path = "/offers/{subscriptionId}/events";
             path = path.Replace("{format}", "json");
@@ -185,39 +204,40 @@ namespace Golem.MarketApi.Client.Swagger.Api
             var fileParams = new Dictionary<String, FileParameter>();
             String postBody = null;
     
-                                                    
+             if (timeout != null) queryParams.Add("timeout", ApiClient.ParameterToString(timeout)); // query parameter
+ if (maxEvents != null) queryParams.Add("maxEvents", ApiClient.ParameterToString(maxEvents)); // query parameter
+                                        
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling Collect: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling CollectDemands: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling Collect: " + response.ErrorMessage, response.ErrorMessage);
+                throw new ApiException ((int)response.StatusCode, "Error calling CollectDemands: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (List<Proposal>) ApiClient.Deserialize(response.Content, typeof(List<Proposal>), response.Headers);
+            return (List<Event>) ApiClient.Deserialize(response.Content, typeof(List<Event>), response.Headers, new ProviderEventConverter());
         }
     
         /// <summary>
-        /// Creates agreement proposal 
+        /// Responds with a bespoke Offer to received Demand. Creates and sends a modified version of original Offer (a counter-proposal) adjusted to previously received Proposal (ie. Demand). Changes Proposal state to &#x60;Draft&#x60;. Returns created Proposal id. 
         /// </summary>
+        /// <param name="body"></param>
         /// <param name="subscriptionId"></param> 
         /// <param name="proposalId"></param> 
-        /// <param name="proposal"></param> 
         /// <returns>string</returns>            
-        public string CreateProposal (string subscriptionId, string proposalId, Proposal proposal)
+        public string CreateProposalOffer (Proposal body, string subscriptionId, string proposalId)
         {
-            
+            // verify the required parameter 'body' is set
+            if (body == null) throw new ApiException(400, "Missing required parameter 'body' when calling CreateProposalOffer");
             // verify the required parameter 'subscriptionId' is set
-            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling CreateProposal");
-            
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling CreateProposalOffer");
             // verify the required parameter 'proposalId' is set
-            if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling CreateProposal");
+            if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling CreateProposalOffer");
             
-    
-            var path = "/offers/{subscriptionId}/proposals/{proposalId}/offer";
+            var path = "/offers/{subscriptionId}/proposals/{proposalId}";
             path = path.Replace("{format}", "json");
             path = path.Replace("{" + "subscriptionId" + "}", ApiClient.ParameterToString(subscriptionId));
 path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(proposalId));
@@ -228,37 +248,100 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
             var fileParams = new Dictionary<String, FileParameter>();
             String postBody = null;
     
-                                                postBody = ApiClient.Serialize(proposal); // http body (model) parameter
+                                                postBody = ApiClient.Serialize(body); // http body (model) parameter
     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling CreateProposal: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling CreateProposalOffer: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling CreateProposal: " + response.ErrorMessage, response.ErrorMessage);
-    
-            return (string) ApiClient.Deserialize(response.Content, typeof(string), response.Headers);
+                throw new ApiException ((int)response.StatusCode, "Error calling CreateProposalOffer: " + response.ErrorMessage, response.ErrorMessage);
+
+            return JsonConvert.DeserializeObject(response.Content, typeof(String)) as String;
         }
-    
+
         /// <summary>
-        /// Fetches agreement proposal from proposal id. 
+        /// Fetches agreement with given agreement id. 
         /// </summary>
-        /// <param name="subscriptionId"></param> 
-        /// <param name="proposalId"></param> 
-        /// <returns>AgreementProposal</returns>            
-        public AgreementProposal GetProposal (string subscriptionId, string proposalId)
+        /// <param name="agreementId"></param>
+        /// <returns>Agreement</returns>
+        public Agreement GetAgreement (string agreementId)
         {
-            
+            // verify the required parameter 'agreementId' is set
+            if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling GetAgreement");
+    
+            var path = "/agreements/{agreementId}";
+            path = path.Replace("{format}", "json");
+            path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
+    
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+    
+                                                    
+            // authentication setting, if any
+            String[] authSettings = new String[] { "ApiKeyAuth" };
+    
+            // make the HTTP request
+            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+    
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException ((int)response.StatusCode, "Error calling GetAgreement: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException ((int)response.StatusCode, "Error calling GetAgreement: " + response.ErrorMessage, response.ErrorMessage);
+    
+            return (Agreement) ApiClient.Deserialize(response.Content, typeof(Agreement), response.Headers);
+        }
+
+        /// <summary>
+        /// Fetches all active Offers which have been published by the Provider. 
+        /// </summary>
+        /// <returns>List&lt;&gt;</returns>
+        public List<Offer> GetOffers()
+        {
+
+            var path = "/offers";
+            path = path.Replace("{format}", "json");
+
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+
+
+            // authentication setting, if any
+            String[] authSettings = new String[] { "ApiKeyAuth" };
+
+            // make the HTTP request
+            IRestResponse response = (IRestResponse)ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException((int)response.StatusCode, "Error calling GetOffers: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException((int)response.StatusCode, "Error calling GetOffers: " + response.ErrorMessage, response.ErrorMessage);
+
+            return (List<Offer>)ApiClient.Deserialize(response.Content, typeof(List<Offer>), response.Headers);
+        }
+
+        /// <summary>
+        /// Fetches Proposal (Demand) with given id. 
+        /// </summary>
+        /// <param name="subscriptionId"></param>
+        /// <param name="proposalId"></param>
+        /// <returns>Proposal</returns>
+        public Proposal GetProposalDemand (string subscriptionId, string proposalId)
+        {
             // verify the required parameter 'subscriptionId' is set
-            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling GetProposal");
-            
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling GetProposalDemand");
             // verify the required parameter 'proposalId' is set
-            if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling GetProposal");
-            
+            if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling GetProposalDemand");
     
             var path = "/offers/{subscriptionId}/proposals/{proposalId}";
             path = path.Replace("{format}", "json");
@@ -273,39 +356,38 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
     
                                                     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.GET, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling GetProposal: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling GetProposalDemand: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling GetProposal: " + response.ErrorMessage, response.ErrorMessage);
+                throw new ApiException ((int)response.StatusCode, "Error calling GetProposalDemand: " + response.ErrorMessage, response.ErrorMessage);
     
-            return (AgreementProposal) ApiClient.Deserialize(response.Content, typeof(AgreementProposal), response.Headers);
+            return (Proposal) ApiClient.Deserialize(response.Content, typeof(Proposal), response.Headers);
         }
     
         /// <summary>
-        ///  
+        /// Handles dynamic property query. The Market Matching Mechanism, when resolving the match relation for the specific Demand-Offer pair, is to detect the “dynamic” properties required (via constraints) by the other side. At this point, it is able to query the issuing node for those properties and submit the other side’s requested properties as the context of the query.  **Note**: The property query responses may be submitted in “chunks”, ie. the responder may choose to resolve ‘quick’/lightweight’ properties faster and provide response sooner, while still working on more time-consuming properties in the background. Therefore the response contains both the resolved properties, as well as list of properties which responder knows still require resolution.  **Note**: This method must be implemented for Market API Capability Level 2. 
         /// </summary>
-        /// <param name="subscrptionId"></param> 
-        /// <param name="queryId"></param> 
-        /// <param name="propertyValues"></param> 
-        /// <returns></returns>            
-        public void QueryResponse (string subscrptionId, string queryId, PropertyQueryResponse propertyValues)
+        /// <param name="body"></param>
+        /// <param name="subscriptionId"></param>
+        /// <param name="queryId"></param>
+        /// <returns></returns>
+        public void PostQueryReplyOffers (PropertyQueryReply body, string subscriptionId, string queryId)
         {
-            
-            // verify the required parameter 'subscrptionId' is set
-            if (subscrptionId == null) throw new ApiException(400, "Missing required parameter 'subscrptionId' when calling QueryResponse");
-            
+            // verify the required parameter 'body' is set
+            if (body == null) throw new ApiException(400, "Missing required parameter 'body' when calling PostQueryReplyOffers");
+            // verify the required parameter 'subscriptionId' is set
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling PostQueryReplyOffers");
             // verify the required parameter 'queryId' is set
-            if (queryId == null) throw new ApiException(400, "Missing required parameter 'queryId' when calling QueryResponse");
-            
+            if (queryId == null) throw new ApiException(400, "Missing required parameter 'queryId' when calling PostQueryReplyOffers");
     
             var path = "/offers/{subscriptionId}/propertyQuery/{queryId}";
             path = path.Replace("{format}", "json");
-            path = path.Replace("{" + "subscrptionId" + "}", ApiClient.ParameterToString(subscrptionId));
+            path = path.Replace("{" + "subscriptionId" + "}", ApiClient.ParameterToString(subscriptionId));
 path = path.Replace("{" + "queryId" + "}", ApiClient.ParameterToString(queryId));
     
             var queryParams = new Dictionary<String, String>();
@@ -314,37 +396,69 @@ path = path.Replace("{" + "queryId" + "}", ApiClient.ParameterToString(queryId))
             var fileParams = new Dictionary<String, FileParameter>();
             String postBody = null;
     
-                                                postBody = ApiClient.Serialize(propertyValues); // http body (model) parameter
+                                                postBody = ApiClient.Serialize(body); // http body (model) parameter
     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling QueryResponse: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling PostQueryReplyOffers: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling QueryResponse: " + response.ErrorMessage, response.ErrorMessage);
+                throw new ApiException ((int)response.StatusCode, "Error calling PostQueryReplyOffers: " + response.ErrorMessage, response.ErrorMessage);
     
             return;
         }
     
         /// <summary>
-        /// Rejects offer 
+        /// Rejects Agreement proposed by the Requestor. The Requestor side is notified about the Provider’s decision to reject a negotiated agreement. This effectively stops the Agreement handshake.  **Note**: Mutually exclusive with &#x60;approveAgreement&#x60;. 
+        /// </summary>
+        /// <param name="agreementId"></param> 
+        /// <returns></returns>            
+        public void RejectAgreement (string agreementId)
+        {
+            // verify the required parameter 'agreementId' is set
+            if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling RejectAgreement");
+            
+            var path = "/agreements/{agreementId}/reject";
+            path = path.Replace("{format}", "json");
+            path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
+    
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+    
+                                                    
+            // authentication setting, if any
+            String[] authSettings = new String[] { "ApiKeyAuth" };
+    
+            // make the HTTP request
+            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+    
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException ((int)response.StatusCode, "Error calling RejectAgreement: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException ((int)response.StatusCode, "Error calling RejectAgreement: " + response.ErrorMessage, response.ErrorMessage);
+    
+            return;
+        }
+    
+        /// <summary>
+        /// Rejects Proposal (Demand). Effectively ends a Negotiation chain - it explicitly indicates that the sender will not create another counter-Proposal. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
         /// <param name="proposalId"></param> 
         /// <returns></returns>            
-        public void RejectOffer (string subscriptionId, string proposalId)
+        public void RejectProposalDemand (string subscriptionId, string proposalId)
         {
-            
             // verify the required parameter 'subscriptionId' is set
-            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling RejectOffer");
-            
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling RejectProposalDemand");
             // verify the required parameter 'proposalId' is set
-            if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling RejectOffer");
-            
+            if (proposalId == null) throw new ApiException(400, "Missing required parameter 'proposalId' when calling RejectProposalDemand");
     
             var path = "/offers/{subscriptionId}/proposals/{proposalId}";
             path = path.Replace("{format}", "json");
@@ -359,30 +473,28 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
     
                                                     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling RejectOffer: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling RejectProposalDemand: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling RejectOffer: " + response.ErrorMessage, response.ErrorMessage);
+                throw new ApiException ((int)response.StatusCode, "Error calling RejectProposalDemand: " + response.ErrorMessage, response.ErrorMessage);
     
             return;
         }
     
         /// <summary>
-        ///  
+        /// Publishes Provider capabilities via Offer. Offer object can be considered an \&quot;open\&quot; or public Offer, as it is not directed at a specific Requestor, but rather is sent to the market so that the matching mechanism implementation can associate relevant Demands.  **Note**: it is an \&quot;atomic\&quot; operation, ie. as soon as Subscription is placed, the Offer is published on the market. 
         /// </summary>
-        /// <param name="body">Offer description</param> 
+        /// <param name="body"></param>
         /// <returns>string</returns>            
-        public string Subscribe (Offer body)
+        public string SubscribeOffer (Offer body)
         {
-            
             // verify the required parameter 'body' is set
-            if (body == null) throw new ApiException(400, "Missing required parameter 'body' when calling Subscribe");
-            
+            if (body == null) throw new ApiException(400, "Missing required parameter 'body' when calling SubscribeOffer");
     
             var path = "/offers";
             path = path.Replace("{format}", "json");
@@ -396,30 +508,63 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
                                                 postBody = ApiClient.Serialize(body); // http body (model) parameter
     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling Subscribe: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling SubscribeOffer: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling Subscribe: " + response.ErrorMessage, response.ErrorMessage);
-    
-            return (string) ApiClient.Deserialize(response.Content, typeof(string), response.Headers);
+                throw new ApiException ((int)response.StatusCode, "Error calling SubscribeOffer: " + response.ErrorMessage, response.ErrorMessage);
+
+            return JsonConvert.DeserializeObject(response.Content, typeof(String)) as String;
         }
     
         /// <summary>
-        ///  
+        /// Terminates approved Agreement. 
+        /// </summary>
+        /// <param name="agreementId"></param>
+        /// <returns></returns>
+        public void TerminateAgreement (string agreementId)
+        {
+            // verify the required parameter 'agreementId' is set
+            if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling TerminateAgreement");
+    
+            var path = "/agreements/{agreementId}/terminate";
+            path = path.Replace("{format}", "json");
+            path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
+    
+            var queryParams = new Dictionary<String, String>();
+            var headerParams = new Dictionary<String, String>();
+            var formParams = new Dictionary<String, String>();
+            var fileParams = new Dictionary<String, FileParameter>();
+            String postBody = null;
+    
+                                                    
+            // authentication setting, if any
+            String[] authSettings = new String[] { "ApiKeyAuth" };
+    
+            // make the HTTP request
+            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
+    
+            if (((int)response.StatusCode) >= 400)
+                throw new ApiException ((int)response.StatusCode, "Error calling TerminateAgreement: " + response.Content, response.Content);
+            else if (((int)response.StatusCode) == 0)
+                throw new ApiException ((int)response.StatusCode, "Error calling TerminateAgreement: " + response.ErrorMessage, response.ErrorMessage);
+    
+            return;
+        }
+    
+        /// <summary>
+        /// Stop subscription for previously published Offer. Stop receiving Proposals.  **Note**: this will terminate all pending &#x60;collectDemands&#x60; calls on this subscription. This implies, that client code should not &#x60;unsubscribeOffer&#x60; before it has received all expected/useful inputs from &#x60;collectDemands&#x60;. 
         /// </summary>
         /// <param name="subscriptionId"></param> 
         /// <returns></returns>            
-        public void Unsubscribe (string subscriptionId)
+        public void UnsubscribeOffer (string subscriptionId)
         {
-            
             // verify the required parameter 'subscriptionId' is set
-            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling Unsubscribe");
-            
+            if (subscriptionId == null) throw new ApiException(400, "Missing required parameter 'subscriptionId' when calling UnsubscribeOffer");
     
             var path = "/offers/{subscriptionId}";
             path = path.Replace("{format}", "json");
@@ -433,52 +578,15 @@ path = path.Replace("{" + "proposalId" + "}", ApiClient.ParameterToString(propos
     
                                                     
             // authentication setting, if any
-            String[] authSettings = new String[] {  };
+            String[] authSettings = new String[] { "ApiKeyAuth" };
     
             // make the HTTP request
             IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.DELETE, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
     
             if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling Unsubscribe: " + response.Content, response.Content);
+                throw new ApiException ((int)response.StatusCode, "Error calling UnsubscribeOffer: " + response.Content, response.Content);
             else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling Unsubscribe: " + response.ErrorMessage, response.ErrorMessage);
-    
-            return;
-        }
-    
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <param name="agreementId"></param> 
-        /// <returns></returns>            
-        public void WaitForApproval (string agreementId)
-        {
-            
-            // verify the required parameter 'agreementId' is set
-            if (agreementId == null) throw new ApiException(400, "Missing required parameter 'agreementId' when calling WaitForApproval");
-            
-    
-            var path = "/agreements/{agreementId}/wait";
-            path = path.Replace("{format}", "json");
-            path = path.Replace("{" + "agreementId" + "}", ApiClient.ParameterToString(agreementId));
-    
-            var queryParams = new Dictionary<String, String>();
-            var headerParams = new Dictionary<String, String>();
-            var formParams = new Dictionary<String, String>();
-            var fileParams = new Dictionary<String, FileParameter>();
-            String postBody = null;
-    
-                                                    
-            // authentication setting, if any
-            String[] authSettings = new String[] {  };
-    
-            // make the HTTP request
-            IRestResponse response = (IRestResponse) ApiClient.CallApi(path, Method.POST, queryParams, postBody, headerParams, formParams, fileParams, authSettings);
-    
-            if (((int)response.StatusCode) >= 400)
-                throw new ApiException ((int)response.StatusCode, "Error calling WaitForApproval: " + response.Content, response.Content);
-            else if (((int)response.StatusCode) == 0)
-                throw new ApiException ((int)response.StatusCode, "Error calling WaitForApproval: " + response.ErrorMessage, response.ErrorMessage);
+                throw new ApiException ((int)response.StatusCode, "Error calling UnsubscribeOffer: " + response.ErrorMessage, response.ErrorMessage);
     
             return;
         }
