@@ -50,7 +50,6 @@ Specifications of operating memory assigned to a service.
 | Property | Type | Description |
 |---|---|---|
 |**`golem.inf.mem.gib`**|`Number (float)`|Amount of RAM available (in GiB). |
-|**`golem.inf.mem.freq_mhz`**|`Number (float)`|RAM clock frequency (in MHz). |
 ---
 
 ## [`golem.inf.storage`](0-commons/golem/inf/storage.md)
@@ -62,9 +61,6 @@ Properties which describe storage properties of Golem service (hardware paramete
 | Property | Type | Description |
 |---|---|---|
 |**`golem.inf.storage.gib`**|`Number (float)`|Storage available in GiB |
-|**`golem.inf.storage.type`**|`String`|Disk type |
-|**`golem.inf.storage.write.mibs`**|`Number (float)`|Disk write speed in MiB/s |
-|**`golem.inf.storage.read.mibs`**|`Number (float)`|Disk read speed in MiB/s |
 ---
 
 ## [`golem.usage`](0-commons/golem/usage.md)
@@ -75,7 +71,7 @@ Namespace defining service usage aspects (usage vector and counters).
 
 | Property | Type | Description |
 |---|---|---|
-|**`golem.usage.vector`**|`List of Strings`|This property specifies the usage counters from which the service cost is calculated. |
+|**`golem.usage.vector`**|`List[String]`|This property specifies the usage counters from which the service cost is calculated. |
 |**`golem.usage.duration_sec`**|`Number (int32)`|Duration of Activity (in seconds). |
 |**`golem.usage.cpu_sec`**|`Number (int32)`|Duration of CPU time during Activity execution (in seconds). |
 ---
@@ -158,7 +154,7 @@ This namespace defines **pricing models** for Golem computation resources.
 | Property | Type | Description |
 |---|---|---|
 |**`golem.com.pricing.model`**|`String`|Type of pricing function describing the pricing model. |
-|**`golem.com.pricing.model.linear.coeffs`**|`List of Number`|Property to express coefficients for the linear pricing function. |
+|**`golem.com.pricing.model.linear.coeffs`**|`List[Number]`|Property to express coefficients for the linear pricing function. |
 ---
 
 ## [`com.term`](3-commercial/com/term.md)
