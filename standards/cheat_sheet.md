@@ -31,6 +31,7 @@ This page contains an aggregated summary of all namespaces and properties specif
        * [docker](2-service/srv/comp/container/docker.md)
      * [vm](2-service/srv/comp/vm.md)
      * [wasm](2-service/srv/comp/wasm.md)
+   * [runtime](2-service/srv/runtime.md)
 ###	3-commercial
  * com
    * [payment](3-commercial/com/payment.md)
@@ -40,8 +41,6 @@ This page contains an aggregated summary of all namespaces and properties specif
      * [model](3-commercial/com/pricing/model.md)
    * term
      * [term](3-commercial/com/term/term.md)
- * term
-   * [term](3-commercial/term/term.md)
 
 # Category: 0-commons
 
@@ -102,6 +101,18 @@ Specifications of GPU computing power assigned to a service.
 |**`golem.inf.gpu.model`**|`String`|GPU card model name. |
 |**`golem.inf.gpu.count`**|`Number (int32)`|Number of GPU cards. |
 |**`golem.inf.gpu.gib`**|`Number (float)`|GPU RAM available (in GiB) |
+---
+
+## [`golem.inf.mem`](0-commons/golem/inf/mem.md)
+
+Specifications of operating memory assigned to a service. 
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.inf.mem.gib`**|`Number (float)`|Amount of RAM available (in GiB). |
+|**`golem.inf.mem.freq_mhz`**|`Number (float)`|RAM clock frequency (in MHz). |
 ---
 
 ## [`golem.inf.net`](0-commons/golem/inf/net.md)
@@ -274,7 +285,19 @@ This namespace defines properties used to indicate ability to host and execute a
 |**`golem.srv.comp.wasm.emscripten.caps`**|`List of String`|Indicates the runtime capabilities of the Emscripten-compliant runtime. |
 |**`golem.srv.comp.wasm.wasi.version`**|`Version`|Indicates the version of WASI API supported by the runtime. |
 |**`golem.srv.comp.wasm.wasi.caps`**|`List of String`|Indicates the runtime capabilities of the WASI-compliant runtime. |
-|**`golem.srv.comp.wasm.task_package`**|`List of String`|Indicates WebAssembly packages which are to be hosted by the Provider. The Offer may either declare specific images as available, or indicate the whole property as dynamic, so that the actual image required by the Requestor is specified by the Demand. In the latter scenario, during the negotiation phase the Provider shall decide whether the image indicated in Demand is trustworthy (eg. by checking an internal whitelist). |
+|**`golem.srv.comp.wasm.task_package`**|`String`|Indicates WebAssembly package which is to be hosted by the Provider. The Demand indicates the requested package by specifying the package URL and hash value. The hash value shall be validated by the Provider. |
+---
+
+## [`srv.runtime`](2-service/srv/runtime.md)
+
+Specification of ExeUnit/Runtime to host the resources provided. 
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.srv.runtime.name`**|`String`|Indicates the ExeUnit/Runtime required/provided.  |
+|**`golem.srv.runtime.version`**|`Version`|Version of the ExeUnit/Runtime required/provided. |
 ---
 
 # Category: 3-commercial
@@ -299,6 +322,7 @@ Namespace with properties defining payment parameters.
 
 | Property | Type | Description |
 |---|---|---|
+|**`golem.com.payment.platform`**|`String`|Payment Platform to be used for settlement of the Agreement. |
 |**`golem.com.payment.eth_address_credit`**|`String`|Beneficiary (Provider's) ethereum address - GNT payments are expected on this address. |
 ---
 
@@ -324,5 +348,16 @@ This namespace defines **pricing models** for Golem computation resources.
 |**`golem.com.pricing.model`**|`String`|Type of pricing function describing the pricing model. |
 |**`golem.com.pricing.model.fixed.price`**|`Number`|Property to express a scalar fixed price for an Activity. |
 |**`golem.com.pricing.model.linear.coeffs`**|`List of Number`|Property to express coefficients for the linear pricing function. |
+---
+
+## [`com.term.term`](3-commercial/com/term/term.md)
+
+Namespace defining time-related contract aspects of a Golem service.  
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.com.term.expiration_dt`**|`DateTime`|Indicates the expiration time of the entity to which it refers (Demand or Offer). |
 ---
 
