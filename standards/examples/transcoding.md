@@ -37,11 +37,11 @@ golem.com.pricing.est{*}
 
 # constraints
 (&
-    (golem.srv.comp.container.docker.image="golemfactory/ffmpeg")
+    (golem.srv.comp.container.docker.image=golemfactory/ffmpeg)
     (golem.srv.comp.container.docker.benchmark{golemfactory/ffmpeg}>300)
-    (golem.com.payment.scheme="after")
-    (golem.usage.vector=["golem.usage.duration_sec"])
-    (golem.com.pricing.model="linear")
+    (golem.com.payment.scheme=after)
+    (golem.usage.vector=[golem.usage.duration_sec])
+    (golem.com.pricing.model=linear)
     (golem.com.pricing.est{[30]}<125)
 )
 
@@ -83,12 +83,12 @@ golem.srv.app.transcode.bitrate_kibs=1522
 
 # constraints
 (&
-    (golem.srv.app.transcode.input_container="avi")
-    (golem.srv.app.transcode.input_video_codecs="H264")
-    (golem.srv.app.transcode.output_video_codecs="DivX")
-    (golem.com.payment.scheme="after")
-    (golem.usage.vector=["golem.usage.duration_sec"])
-    (golem.com.pricing.model="linear")
+    (golem.srv.app.transcode.input_container=avi)
+    (golem.srv.app.transcode.input_video_codecs=H264)
+    (golem.srv.app.transcode.output_video_codecs=DivX)
+    (golem.com.payment.scheme=after)
+    (golem.usage.vector=[golem.usage.duration_sec])
+    (golem.com.pricing.model=linear)
     (golem.com.pricing.est{[30]}<125)
 )
 

@@ -4,5 +4,4 @@
     (golem.com.payment.scheme="after")
     (golem.usage.vector=["golem.usage.duration_sec"])
     (golem.com.pricing.model="linear")
-    (golem.com.pricing.est{[30]}<100)
 )

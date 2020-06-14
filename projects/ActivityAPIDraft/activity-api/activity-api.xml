@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>activity-api</name>
+    </assembly>
+    <members>
+        <member name="M:activity_api.Controllers.ControlController.CreateActivity(System.String)">
+            <summary>
+            Creates new Activity based on given Agreement.
+            </summary>
+            <param name="agreementId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ControlController.Exec(System.String,activity_api.Model.ExeScriptRequest)">
+            <summary>
+            Executes an ExeScript batch within a given Activity.
+            </summary>
+            <param name="activityId"></param>
+            <param name="script"></param>
+            <returns>ExeScript batch Id</returns>
+        </member>
+        <member name="M:activity_api.Controllers.ControlController.GetExecBatchResults(System.String,System.String,System.Int32)">
+            <summary>
+            Queries for ExeScript batch results.
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ControlController.DestroyActivity(System.String)">
+            <summary>
+            Destroys given Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ProviderGatewayController.CollectActivityEvents(System.Int32)">
+            <summary>
+            Queries for ExeScript batch results.
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="timeout"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ProviderGatewayController.PutActivityStateDetails(System.String,activity_api.Model.ActivityStateDetails)">
+            <summary>
+            Pass activity state (which may include error details)
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="commandResult"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.ProviderGatewayController.PutExeScriptResult(System.String,System.String,activity_api.Model.ExeScriptCommandResult)">
+            <summary>
+            Pass result of individual ExeScript command executed within the batch.
+            </summary>
+            <param name="activityId"></param>
+            <param name="batchId"></param>
+            <param name="commandResult"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.StateController.GetState(System.Int32)">
+            <summary>
+            Get state of specified Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.StateController.GetCurrentUsage(System.Int32)">
+            <summary>
+            Get usage of specified Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:activity_api.Controllers.StateController.GetRunningCommand(System.Int32)">
+            <summary>
+            Get running command for a specified Activity.
+            </summary>
+            <param name="activityId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:activity_api.Filters.BasePathFilter">
+            <summary>
+            BasePath Document Filter sets BasePath property of Swagger and removes it from the individual URL paths
+            </summary>
+        </member>
+        <member name="M:activity_api.Filters.BasePathFilter.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="basePath">BasePath to remove from Operations</param>
+        </member>
+        <member name="P:activity_api.Filters.BasePathFilter.BasePath">
+            <summary>
+            Gets the BasePath of the Swagger Doc
+            </summary>
+            <returns>The BasePath of the Swagger Doc</returns>
+        </member>
+        <member name="M:activity_api.Filters.BasePathFilter.Apply(Swashbuckle.AspNetCore.Swagger.SwaggerDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
+            <summary>
+            Apply the filter
+            </summary>
+            <param name="swaggerDoc">SwaggerDocument</param>
+            <param name="context">FilterContext</param>
+        </member>
+        <member name="P:activity_api.Model.ActivityState.Reason">
+            <summary>
+            Reason for Activity termination (specified when Activity in Terminated state).
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.ActivityState.ErrorMessage">
+            <summary>
+            If error caused state change - error message shall be provided.
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.ActivityStateDetails.CurrentUsage">
+            <summary>
+            Current usage vector
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.CreateActivityProviderEvent.AgreementId">
+            <summary>
+            ID Agreement within which the Activity is being created.
+            </summary>
+        </member>
+        <member name="P:activity_api.Model.ExecProviderEvent.BatchId">
+            <summary>
+            Batch Id
+            </summary>
+        </member>
+    </members>
+</doc>

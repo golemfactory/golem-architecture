@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.ActivityApi.Client", "Golem.ActivityApi.Client\Golem.ActivityApi.Client.csproj", "{7897C136-D2B0-492D-9D35-12AD7B7BE724}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.MarketApi.Client", "Golem.MarketApi.Client\Golem.MarketApi.Client.csproj", "{6CB37E23-C021-4047-BBBB-FECD81474726}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.Provider", "Golem.Provider\Golem.Provider.csproj", "{E950AA28-1B13-4270-93BD-F303642AEC3A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GolemSampleProvider1", "GolemSampleProvider1\GolemSampleProvider1.csproj", "{E4906161-D486-4BD0-B0B2-0BC3ED2D4DBA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Golem.Provider.Tests", "Golem.Provider.Tests\Golem.Provider.Tests.csproj", "{3AF905EC-1242-4724-89E3-08E7D2DE9FA7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7897C136-D2B0-492D-9D35-12AD7B7BE724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7897C136-D2B0-492D-9D35-12AD7B7BE724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7897C136-D2B0-492D-9D35-12AD7B7BE724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7897C136-D2B0-492D-9D35-12AD7B7BE724}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CB37E23-C021-4047-BBBB-FECD81474726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CB37E23-C021-4047-BBBB-FECD81474726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB37E23-C021-4047-BBBB-FECD81474726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CB37E23-C021-4047-BBBB-FECD81474726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E950AA28-1B13-4270-93BD-F303642AEC3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E950AA28-1B13-4270-93BD-F303642AEC3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E950AA28-1B13-4270-93BD-F303642AEC3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E950AA28-1B13-4270-93BD-F303642AEC3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4906161-D486-4BD0-B0B2-0BC3ED2D4DBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4906161-D486-4BD0-B0B2-0BC3ED2D4DBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4906161-D486-4BD0-B0B2-0BC3ED2D4DBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4906161-D486-4BD0-B0B2-0BC3ED2D4DBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AF905EC-1242-4724-89E3-08E7D2DE9FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AF905EC-1242-4724-89E3-08E7D2DE9FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AF905EC-1242-4724-89E3-08E7D2DE9FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AF905EC-1242-4724-89E3-08E7D2DE9FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9453F1E-ED6D-40BC-A841-4269D42B94B6}
+	EndGlobalSection
+EndGlobal

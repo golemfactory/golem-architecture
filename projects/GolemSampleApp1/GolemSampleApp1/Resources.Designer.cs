@@ -67,7 +67,6 @@ namespace GolemSampleApp1 {
         ///    (golem.com.payment.scheme=&quot;after&quot;)
         ///    (golem.usage.vector=[&quot;golem.usage.duration_sec&quot;])
         ///    (golem.com.pricing.model=&quot;linear&quot;)
-        ///    (golem.com.pricing.est{[30]}&lt;100)
         ///).
         /// </summary>
         internal static string Transcoding_Demand_Negotiate {
@@ -78,105 +77,16 @@ namespace GolemSampleApp1 {
         
         /// <summary>
         ///   Looks up a localized string similar to (&amp;
-        ///    (golem.srv.comp.container.docker.image=&quot;golemfactory/ffmpeg&quot;)
+        ///    (golem.srv.comp.container.docker.image=golemfactory/ffmpeg)
         ///    (golem.srv.comp.container.docker.benchmark{golemfactory/ffmpeg}&gt;300)
-        ///    (golem.com.payment.scheme=&quot;after&quot;)
-        ///    (golem.usage.vector=[&quot;golem.usage.duration_sec&quot;])
-        ///    (golem.com.pricing.model=&quot;linear&quot;)
-        ///    (golem.com.pricing.est{[30]}&lt;125)
+        ///    (golem.com.payment.scheme=after)
+        ///    (golem.usage.vector=[golem.usage.duration_sec])
+        ///    (golem.com.pricing.model=linear)
         ///).
         /// </summary>
         internal static string Transcoding_Demand_Start {
             get {
                 return ResourceManager.GetString("Transcoding_Demand_Start", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {
-        ///	&quot;golem&quot;: {
-        ///		&quot;srv&quot;:{
-        ///			&quot;comp&quot;:{
-        ///				&quot;container&quot;:{
-        ///					&quot;docker&quot;:{
-        ///						&quot;image&quot;:[&quot;golemfactory/ffmpeg&quot;],
-        ///						&quot;benchmark{golemfactory/ffmpeg}&quot;:7,
-        ///						&quot;benchmark{*}&quot;:null
-        ///					}
-        ///				}
-        ///			}
-        ///		},
-        ///		&quot;inf&quot;:{
-        ///			&quot;cpu&quot;:{
-        ///				&quot;cores&quot;:4,
-        ///				&quot;threads&quot;:8
-        ///			},
-        ///			&quot;mem&quot;:{
-        ///				&quot;gib&quot;:16
-        ///			},
-        ///			&quot;storage&quot;:{
-        ///				&quot;gib&quot;:30
-        ///			}
-        ///		},
-        ///		&quot;com&quot;:{
-        ///			&quot;payment&quot;:{
-        ///				&quot;scheme&quot;:&quot;after&quot;
-        ///			},
-        ///			&quot;pricing&quot;:{
-        ///				&quot;model&quot;:&quot;linear&quot;,
-        ///				&quot;est{*}&quot;:null
-        ///			}
-        ///		},
-        ///		&quot;usage&quot;:{
-        ///			&quot;vector&quot;:[&quot;golem.us [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Transcoding_Offer_Generic {
-            get {
-                return ResourceManager.GetString("Transcoding_Offer_Generic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {
-        ///	&quot;golem&quot;: {
-        ///		&quot;srv&quot;:{
-        ///			&quot;comp&quot;:{
-        ///				&quot;container&quot;:{
-        ///					&quot;docker&quot;:{
-        ///						&quot;image&quot;:[&quot;golemfactory/ffmpeg&quot;],
-        ///						&quot;benchmark{golemfactory/ffmpeg}&quot;:7,
-        ///						&quot;benchmark{*}&quot;:null
-        ///					}
-        ///				}
-        ///			}
-        ///		},
-        ///		&quot;inf&quot;:{
-        ///			&quot;cpu&quot;:{
-        ///				&quot;cores&quot;:4,
-        ///				&quot;threads&quot;:8
-        ///			},
-        ///			&quot;mem&quot;:{
-        ///				&quot;gib&quot;:16
-        ///			},
-        ///			&quot;storage&quot;:{
-        ///				&quot;gib&quot;:30
-        ///			}
-        ///		},
-        ///		&quot;com&quot;:{
-        ///			&quot;payment&quot;:{
-        ///				&quot;scheme&quot;:&quot;after&quot;
-        ///			},
-        ///			&quot;pricing&quot;:{
-        ///				&quot;model&quot;:&quot;linear&quot;,
-        ///				&quot;coeffs&quot;:[0.3, 0],
-        ///				&quot;est{*}&quot;:null
-        ///			}
-        ///		},
-        ///		&quot;usage&quot;:{ [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Transcoding_Offer_Priced {
-            get {
-                return ResourceManager.GetString("Transcoding_Offer_Priced", resourceCulture);
             }
         }
     }
