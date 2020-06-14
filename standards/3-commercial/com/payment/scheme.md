@@ -5,11 +5,11 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 Scheme of payments made for computing resources consumed.
 
 ### Value enum
-|Value| Description |
-|---|---|
-|"before"| Payment is expected before any Activity is started as part of the Agreement. |
-|"after"| Payment is expected after an Activity is completed. |
-|"payu"| "pay-as-you-use" - payments are expected in regular intervals while Activity is ongoing. |
+| Value    | Description                                                                              |
+| -------- | ---------------------------------------------------------------------------------------- |
+| "before" | Payment is expected before any Activity is started as part of the Agreement.             |
+| "after"  | Payment is expected after an Activity is completed.                                      |
+| "payu"   | "pay-as-you-use" - payments are expected in regular intervals while Activity is ongoing. |
 
 ### **Examples**
 * `golem.com.payment.scheme="before"` - The Provider declares the `"before"` payment scheme.

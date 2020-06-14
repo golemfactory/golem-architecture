@@ -13,24 +13,13 @@ where `usage_vector` is a vector of usage counter values (numbers) accumulated d
 The `p(u)` can be ultimately any function, however this namespace defines a set of sub-classes of relatively **simple yet useful** pricing functions which can be described by concise sets of attributes/parameters. 
 
 ### Value enum
-|Value| Description |
-|---|---|
-|"fixed"| Fixed price for one-off Activity. |
-|"linear"| Price is a linear function of vector of counters. |
-|"stepped"| Price is specified for... |
-| ... | ... |
+| Value    | Description                                       |
+| -------- | ------------------------------------------------- |
+| "linear" | Price is a linear function of vector of counters. |
+| ...      | ...                                               |
 
 
-## `golem.com.pricing.model.fixed.price : Number`
-Property to express a scalar fixed price for an Activity.
-
-**Note:** The fixed price ignores any usage vectors, and probably applies to services where eg. no usage counters apply.
-
-### **Examples**
-* `golem.com.pricing.model.fixed.price=200` - Declares fixed price of 200 GNT for Activity.
-
-
-## `golem.com.pricing.model.linear.coeffs : List of Number`
+## `golem.com.pricing.model.linear.coeffs : List[Number]`
 Property to express coefficients for the linear pricing function.
 
 A linear pricing function is a function of following form:
