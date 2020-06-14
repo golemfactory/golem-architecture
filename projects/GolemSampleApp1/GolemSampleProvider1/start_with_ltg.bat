@@ -1,0 +1,2 @@
+curl -X POST "http://mypc:5001/admin/import-key" -H "accept: application/json" -H "Content-Type: application/json-patch+json" -d "[ { \"key\": \"45910305c4f3437fb3dd64031975b817\", \"nodeId\": \"0x07c492fe0a903c582b59dab769876df686641670\" }]"
+dotnet GolemSampleProvider1.dll --activity-url http://mypc:6001/activity-api/v1/ --app-key 45910305c4f3437fb3dd64031975b817 --market-url http://mypc:5001/market-api/v1/ --exe-unit-path ..\..\..\exe-unit

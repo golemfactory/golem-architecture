@@ -89,5 +89,65 @@ namespace GolemSampleApp1 {
                 return ResourceManager.GetString("Transcoding_Demand_Start", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;golem.node.geo.country_code&quot;:&quot;GB&quot;}.
+        /// </summary>
+        internal static string Transcoding_Props_Negotiate {
+            get {
+                return ResourceManager.GetString("Transcoding_Props_Negotiate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;golem.node.geo.country_code&quot;:&quot;GB&quot;}.
+        /// </summary>
+        internal static string Transcoding_Props_Start {
+            get {
+                return ResourceManager.GetString("Transcoding_Props_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (&amp;
+        ///    (golem.inf.mem.gib&gt;0.5)
+        ///    (golem.inf.storage.gib&gt;1)
+        ///).
+        /// </summary>
+        internal static string Wasm_Demand_Negotiate {
+            get {
+                return ResourceManager.GetString("Wasm_Demand_Negotiate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (&amp;
+        ///    (golem.inf.mem.gib&gt;0.5)
+        ///    (golem.inf.storage.gib&gt;1)
+        ///).
+        /// </summary>
+        internal static string Wasm_Demand_Start {
+            get {
+                return ResourceManager.GetString("Wasm_Demand_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {}.
+        /// </summary>
+        internal static string Wasm_Props_Negotiate {
+            get {
+                return ResourceManager.GetString("Wasm_Props_Negotiate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {}.
+        /// </summary>
+        internal static string Wasm_Props_Start {
+            get {
+                return ResourceManager.GetString("Wasm_Props_Start", resourceCulture);
+            }
+        }
     }
 }

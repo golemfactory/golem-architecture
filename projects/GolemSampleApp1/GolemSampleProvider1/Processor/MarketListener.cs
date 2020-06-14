@@ -42,22 +42,29 @@ namespace GolemSampleProvider1.Processor
                 Console.WriteLine($"{genericOffer}");
                 Console.WriteLine("Subscribing to market...\n");
 
-                var offerSubscriptionId = this.ProviderClient.Subscribe(genericOffer);
+                var offerSubscriptionId = this.ProviderClient.SubscribeOffer(genericOffer);
 
                 Console.WriteLine($"Offer sent to market, SubscriptionId: {offerSubscriptionId}");
+
+                Console.Write("Fetching all Offer subscriptions...");
+
+                var offerSubscriptions = this.ProviderClient.GetOffers();
+
+                Console.WriteLine($" there are {offerSubscriptions.Count} active Offer subscriptions.");
+
 
                 Console.WriteLine("Collecting proposals...");
 
 
                 // Collect proposals until they arrive finally...
 
-                List<ProviderEvent> proposals = null;
+                List<Event> proposals = null;
 
                 while (true) // repeat until Agreement proposal received and approved
                 {
                     do
                     {
-                        proposals = this.ProviderClient.Collect(offerSubscriptionId, 1000, 10);  // Timeout and maxCount should be ints (are floats now)!!!!
+                        proposals = this.ProviderClient.CollectDemands(offerSubscriptionId, 1000, 10);  // Timeout and maxCount should be ints (are floats now)!!!!
                         if (proposals.Count() == 0)
                         {
                             Console.WriteLine("No proposals received, keep listening...");
@@ -78,9 +85,9 @@ namespace GolemSampleProvider1.Processor
 
                     var provEvent = proposals.First();
 
-                    if (provEvent is DemandEvent)
+                    if (provEvent is ProposalEvent)
                     {
-                        var demandProposal = proposals[0] as DemandEvent;
+                        var demandProposal = proposals[0] as ProposalEvent;
 
                         var pricedProposal = new Proposal()
                         {
@@ -92,35 +99,36 @@ namespace GolemSampleProvider1.Processor
                         Console.WriteLine($"{pricedProposal}");
                         Console.WriteLine("Sending counter-Offer...\n");
 
-                        var offerProposalId = this.ProviderClient.CreateProposal(offerSubscriptionId, demandProposal.Demand.Id, pricedProposal);
+                        var offerProposalId = this.ProviderClient.CreateProposalOffer(pricedProposal, offerSubscriptionId, demandProposal.Proposal.ProposalId);
 
                     }
-                    else if (provEvent is NewAgreementEvent)
+                    else if (provEvent is AgreementEvent)
                     {
                         Console.WriteLine("\nApproving proposed agreement...");
-                        // Console.Write("Hit any key to continue");
-                        // Console.ReadKey();
-                        // Console.WriteLine();
+                        var agreementEvent = provEvent as AgreementEvent;
+                        this.ProviderClient.ApproveAgreement(agreementEvent.Agreement.AgreementId);
 
-                        var agreementEvent = provEvent as NewAgreementEvent;
-                        this.ProviderClient.ApproveAgreement(agreementEvent.AgreementId);
+                        var agreementDetail = this.ProviderClient.GetAgreement(agreementEvent.Agreement.AgreementId);
+
+                        Console.WriteLine("\nApproved agreement:");
+                        Console.WriteLine(agreementDetail);
 
 
                         //* this is prototype code, should be removed, as there should be proper mappers for MarketAPI Models to Golem.Provider.Entities
 
                         var agreementEntity = new Golem.Provider.Entities.Agreement()
                         {
-                            AgreementId = agreementEvent.AgreementId,
+                            AgreementId = agreementEvent.Agreement.AgreementId,
                             Demand = new Golem.Provider.Entities.Demand()
                             {
-                                Id = agreementEvent.AgreementId,
-                                Constraints = agreementEvent.Demand.Constraints,
-                                Properties = agreementEvent.Demand.Properties as Dictionary<string, string>
+                                Id = agreementEvent.Agreement.AgreementId,
+                                Constraints = agreementEvent.Agreement.Demand.Constraints,
+                                Properties = agreementEvent.Agreement.Demand.Properties as Dictionary<string, string>
                             },
                             Offer = new Golem.Provider.Entities.Offer()
                             {
-                                Constraints = agreementEvent.Offer.Constraints,
-                                Properties = agreementEvent.Offer.Properties as Dictionary<string, string>
+                                Constraints = agreementEvent.Agreement.Offer.Constraints,
+                                Properties = agreementEvent.Agreement.Offer.Properties as Dictionary<string, string>
                             }
                         };
 
@@ -133,7 +141,7 @@ namespace GolemSampleProvider1.Processor
                 }
 
                 Console.WriteLine("\nClosing subscription...");
-                this.ProviderClient.Unsubscribe(offerSubscriptionId);
+                this.ProviderClient.UnsubscribeOffer(offerSubscriptionId);
 
                 Console.WriteLine("Subscription closed.\n");
 

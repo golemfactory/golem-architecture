@@ -135,4 +135,28 @@
     (golem.com.pricing.model=linear)
 )</value>
   </data>
+  <data name="Transcoding_Props_Negotiate" xml:space="preserve">
+    <value>{"golem.node.geo.country_code":"GB"}</value>
+  </data>
+  <data name="Transcoding_Props_Start" xml:space="preserve">
+    <value>{"golem.node.geo.country_code":"GB"}</value>
+  </data>
+  <data name="Wasm_Demand_Negotiate" xml:space="preserve">
+    <value>(&amp;
+    (golem.inf.mem.gib&gt;0.5)
+    (golem.inf.storage.gib&gt;1)
+)</value>
+  </data>
+  <data name="Wasm_Demand_Start" xml:space="preserve">
+    <value>(&amp;
+    (golem.inf.mem.gib&gt;0.5)
+    (golem.inf.storage.gib&gt;1)
+)</value>
+  </data>
+  <data name="Wasm_Props_Negotiate" xml:space="preserve">
+    <value>{}</value>
+  </data>
+  <data name="Wasm_Props_Start" xml:space="preserve">
+    <value>{}</value>
+  </data>
 </root>

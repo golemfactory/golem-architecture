@@ -1,4 +1,6 @@
-﻿using GolemSampleApp1.Processor;
+﻿using CommandLineParser.Core;
+using GolemSampleApp1.Processor;
+using GolemSampleApp1.Providers;
 using System;
 using System.Collections.Generic;
 
@@ -8,10 +10,55 @@ namespace GolemSampleApp1
     {
         static void Main(string[] args)
         {
-            var marketClient = new Golem.MarketApi.Client.Swagger.Client.ApiClient("http://localhost:5001/market-api/v1");
-            var activityClient = new Golem.ActivityApi.Client.Swagger.Client.ApiClient("http://localhost:5001/activity-api/v1");
+            // CLI parameters
 
-            var processor = new MarketProcessor(marketClient);
+            var parser = new FluentCommandLineParser();
+
+            string apiKey = null;
+            string marketUrl = null;
+            string activityUrl = null;
+            DemandProvider.ScenarioEnum scenario = DemandProvider.ScenarioEnum.Transcoding;
+
+            parser.Setup<string>("app-key").WithDescription("Use API Key for authorization to Golem APIs")
+                .Callback(val => apiKey = val)
+                .SetDefault(null);
+
+            parser.Setup<string>("market-url").WithDescription("Market API URL base")
+                .Callback(val => marketUrl = val)
+                .SetDefault("http://localhost:5001/market-api/v1");
+
+            parser.Setup<string>("activity-url").WithDescription("Activity API URL base")
+                .Callback(val => activityUrl = val)
+                .SetDefault("http://localhost:5001/activity-api/v1");
+
+            parser.Setup<DemandProvider.ScenarioEnum>("scenario").WithDescription("Choose scenario (Transcoding, Wasm)")
+                .Callback(val => scenario = val)
+                .SetDefault(DemandProvider.ScenarioEnum.Transcoding);
+
+            parser.SetupHelp("?", "help")
+                .Callback(text => {
+                    Console.WriteLine(text);
+                    Environment.Exit(0);
+                });
+
+            parser.Parse(args);
+
+            Console.WriteLine($"Running scenario: {scenario}...");
+            Console.WriteLine("");
+
+
+            // Build client proxies
+
+            var marketClient = new Golem.MarketApi.Client.Swagger.Client.ApiClient(marketUrl);
+            var activityClient = new Golem.ActivityApi.Client.Swagger.Client.ApiClient(activityUrl);
+
+            if (apiKey != null)
+            {
+                marketClient.AddDefaultHeader("Authorization", $"Bearer {apiKey}");
+                activityClient.AddDefaultHeader("Authorization", $"Bearer {apiKey}");
+            }
+
+            var processor = new MarketProcessor(marketClient, scenario);
 
             var agreementId = processor.Run();
 

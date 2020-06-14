@@ -13,25 +13,20 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   [DataContract]
   public class AgreementProposal {
     /// <summary>
-    /// Gets or Sets Id
+    /// id of the proposal to be promoted to the Agreement
     /// </summary>
-    [DataMember(Name="id", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    /// <value>id of the proposal to be promoted to the Agreement</value>
+    [DataMember(Name="proposalId", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "proposalId")]
+    public string ProposalId { get; set; }
 
     /// <summary>
-    /// Gets or Sets Demand
+    /// End of validity period. Agreement needs to be accepted, rejected or cancellled before this date; otherwise will expire 
     /// </summary>
-    [DataMember(Name="demand", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demand")]
-    public Proposal Demand { get; set; }
-
-    /// <summary>
-    /// Gets or Sets Offer
-    /// </summary>
-    [DataMember(Name="offer", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "offer")]
-    public Proposal Offer { get; set; }
+    /// <value>End of validity period. Agreement needs to be accepted, rejected or cancellled before this date; otherwise will expire </value>
+    [DataMember(Name="validTo", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "validTo")]
+    public DateTime? ValidTo { get; set; }
 
 
     /// <summary>
@@ -41,9 +36,8 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     public override string ToString()  {
       var sb = new StringBuilder();
       sb.Append("class AgreementProposal {\n");
-      sb.Append("  Id: ").Append(Id).Append("\n");
-      sb.Append("  Demand: ").Append(Demand).Append("\n");
-      sb.Append("  Offer: ").Append(Offer).Append("\n");
+      sb.Append("  ProposalId: ").Append(ProposalId).Append("\n");
+      sb.Append("  ValidTo: ").Append(ValidTo).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

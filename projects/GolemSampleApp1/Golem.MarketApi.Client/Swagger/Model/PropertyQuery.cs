@@ -11,13 +11,13 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class ProviderPropertyQuery : ProviderEvent {
+  public class PropertyQuery {
     /// <summary>
-    /// Gets or Sets RequestorDesc
+    /// Gets or Sets IssuerProperties
     /// </summary>
-    [DataMember(Name="requestorDesc", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "requestorDesc")]
-    public Object RequestorDesc { get; set; }
+    [DataMember(Name="issuerProperties", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "issuerProperties")]
+    public Object IssuerProperties { get; set; }
 
     /// <summary>
     /// Gets or Sets QueryId
@@ -27,11 +27,11 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     public string QueryId { get; set; }
 
     /// <summary>
-    /// Gets or Sets QueriedProps
+    /// Gets or Sets QueriedProperties
     /// </summary>
-    [DataMember(Name="queriedProps", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "queriedProps")]
-    public List<string> QueriedProps { get; set; }
+    [DataMember(Name="queriedProperties", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "queriedProperties")]
+    public List<string> QueriedProperties { get; set; }
 
 
     /// <summary>
@@ -40,10 +40,10 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class ProviderPropertyQuery {\n");
-      sb.Append("  RequestorDesc: ").Append(RequestorDesc).Append("\n");
+      sb.Append("class PropertyQuery {\n");
+      sb.Append("  IssuerProperties: ").Append(IssuerProperties).Append("\n");
       sb.Append("  QueryId: ").Append(QueryId).Append("\n");
-      sb.Append("  QueriedProps: ").Append(QueriedProps).Append("\n");
+      sb.Append("  QueriedProperties: ").Append(QueriedProperties).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }
@@ -52,7 +52,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// Get the JSON string presentation of the object
     /// </summary>
     /// <returns>JSON string presentation of the object</returns>
-    public  new string ToJson() {
+    public string ToJson() {
       return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 

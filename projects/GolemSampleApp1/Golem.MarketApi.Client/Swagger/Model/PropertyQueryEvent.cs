@@ -11,13 +11,13 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class DemandEvent : ProviderEvent {
+  public class PropertyQueryEvent : Event {
     /// <summary>
-    /// Gets or Sets Demand
+    /// Gets or Sets PropertyQuery
     /// </summary>
-    [DataMember(Name="demand", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "demand")]
-    public Proposal Demand { get; set; }
+    [DataMember(Name="propertyQuery", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "propertyQuery")]
+    public PropertyQuery PropertyQuery { get; set; }
 
 
     /// <summary>
@@ -26,8 +26,8 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class DemandEvent {\n");
-      sb.Append("  Demand: ").Append(Demand).Append("\n");
+      sb.Append("class PropertyQueryEvent {\n");
+      sb.Append("  PropertyQuery: ").Append(PropertyQuery).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

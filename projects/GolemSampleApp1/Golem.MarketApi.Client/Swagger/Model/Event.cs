@@ -11,7 +11,7 @@ namespace Golem.MarketApi.Client.Swagger.Model {
   /// 
   /// </summary>
   [DataContract]
-  public class ProviderEvent {
+  public class Event {
     /// <summary>
     /// Gets or Sets EventType
     /// </summary>
@@ -20,11 +20,11 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     public string EventType { get; set; }
 
     /// <summary>
-    /// Gets or Sets RequestorId
+    /// Gets or Sets EventDate
     /// </summary>
-    [DataMember(Name="requestorId", EmitDefaultValue=false)]
-    [JsonProperty(PropertyName = "requestorId")]
-    public string RequestorId { get; set; }
+    [DataMember(Name="eventDate", EmitDefaultValue=false)]
+    [JsonProperty(PropertyName = "eventDate")]
+    public DateTime? EventDate { get; set; }
 
 
     /// <summary>
@@ -33,9 +33,9 @@ namespace Golem.MarketApi.Client.Swagger.Model {
     /// <returns>String presentation of the object</returns>
     public override string ToString()  {
       var sb = new StringBuilder();
-      sb.Append("class ProviderEvent {\n");
+      sb.Append("class Event {\n");
       sb.Append("  EventType: ").Append(EventType).Append("\n");
-      sb.Append("  RequestorId: ").Append(RequestorId).Append("\n");
+      sb.Append("  EventDate: ").Append(EventDate).Append("\n");
       sb.Append("}\n");
       return sb.ToString();
     }

@@ -24,7 +24,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
         /// Initializes a new instance of the <see cref="ApiClient" /> class.
         /// </summary>
         /// <param name="basePath">The base path.</param>
-        public ApiClient(String basePath="https://api.golem.network/market-api/v1")
+        public ApiClient(String basePath= "https://api.golem.network/market-api/v1")
         {
             BasePath = basePath;
             RestClient = new RestClient(BasePath);
@@ -259,6 +259,10 @@ namespace Golem.MarketApi.Client.Swagger.Client
                 // determine which one to use
                 switch(auth)
                 {
+                    case "ApiKeyAuth":
+                        headerParams["X-API-KEY"] = GetApiKeyWithPrefix("X-API-KEY");
+                        
+                        break;
                     default:
                         //TODO show warning about security definition not found
                         break;
