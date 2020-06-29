@@ -73,18 +73,16 @@ Current flow
 
 ```json
 [
-    ...
-    {"transfer" {
+    {"transfer": {
             "from": "http://some-site/data.zip",
             "to": "container:/app//in/data.zip"
         }
     },
-    {"run" {
+    {"run": {
             "entry_point": "/bin/7z",
-            "args" ["x", "/app/in/data.zip"]
+            "args": ["x", "/app/in/data.zip"]
         }
     }
-    ....
 ]
 ```
 
@@ -92,13 +90,11 @@ Could be replaced with:
 
 ```json
 [
-    ...
-    {"transfer" {
+    {"transfer": {
             "from": "http://some-site/data.zip",
             "to": "container:/app//in/",
             "format": "zip"
         }
     }
-    ....
 ]
 ```
