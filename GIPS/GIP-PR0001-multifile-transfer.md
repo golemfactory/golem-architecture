@@ -6,6 +6,7 @@
 |category| exe-unit/transports |
 |status| Draft |
 |created| 2020-06-29 |
+|discusion| [pull request](https://github.com/golemfactory/golem-architecture/pull/11)
 
 # Abstract
 
@@ -16,14 +17,14 @@ This document describes a extension for `transfer` command for transfering sets 
 There are many situations in which sending a large number of single `transfer` operations for individual files is inconvenient.
 
 In particular when:
-- we do not know the exact names of the output files (e.g. we want to download everything that went to the results directory).
-  Now it requires downloading the file list and ordering transfers or executing `run` to create a zip file inside the container with the entire contents of the catalog and ordering the transfer.
-- ...
 
+- we do not know the exact names of the output files (e.g. we want to download everything that went to the
+ results directory). Now it requires downloading the file list and ordering transfers or executing `run` to create a zip file inside the container with the entire contents of the catalog and ordering the transfer.
+- ...
 
 # Specification
 
-### Transfer Command
+## Transfer Command
 
 New transfer command arguments:
 
@@ -47,7 +48,7 @@ ANT compatible pattern (see [ANT Patterns](http://ant.apache.org/manual/dirtasks
 2. char `?` matches one character (excluding path separator).
 3. chars `**` matches zero or more characters (including path separator)
 
-### Proposed formats
+## Proposed formats
 
 In standart implementation we expect to have following codecs:
 
@@ -56,8 +57,17 @@ In standart implementation we expect to have following codecs:
 - `tar.xz` - tar with lzma compression.
 - `zip.0` - zip store only compression.
 
+## Suported format cedes negotioation
 
-### Examples
+Exe unit should expose property `golem.activity.caps.transfer.format` with list of suported coedcs.
+
+Example:
+
+```ini
+golem.activity.caps.transfer.format=["zip","zip.0","tar.gz","tar.xz"]
+```
+
+## Examples
 
 Current flow
 
