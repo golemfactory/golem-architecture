@@ -6,11 +6,11 @@
 |category| exe-unit/transports |
 |status| Draft |
 |created| 2020-06-29 |
-|discusion| [pull request](https://github.com/golemfactory/golem-architecture/pull/11)
+|discussion| [pull request](https://github.com/golemfactory/golem-architecture/pull/11)
 
 # Abstract
 
-This document describes a extension for `transfer` command for transfering sets of files.
+This document describes a extension for `transfer` command for transferring sets of files.
 
 # Motivation
 
@@ -30,7 +30,7 @@ New transfer command arguments:
 
 - `format` (`str`) - describes format for encoding/decoding directory structure.
 - `depth` (`int?`) - defines recursion level:
-  - `0` - no recursion subdirectories shold be skiped.
+  - `0` - no recursion subdirectories should be skipped.
   - `null` (or not set) infinite recursion.
 - `fileset`: (`object|[object]|?`) - defines filtering rule for encoded/decoded files.
 
@@ -38,7 +38,7 @@ Format for `fileset`:
 
 - `desc` (str?) optional human readable annotation. should not be interpreted by __exe-unit__
 - `includes` (`str|[str]|?`) - optional pattern or list of patterns. if not set if matches any file
-- `excludes` (`str|[str]|?`) - optiobal pattern or list of patterns for file exclusion.
+- `excludes` (`str|[str]|?`) - optional pattern or list of patterns for file exclusion.
 
 Pattern format:
 
@@ -50,16 +50,16 @@ ANT compatible pattern (see [ANT Patterns](http://ant.apache.org/manual/dirtasks
 
 ## Proposed formats
 
-In standart implementation we expect to have following codecs:
+In standard implementation we expect to have following codecs:
 
 - `zip`
 - `tar.gz` - tar with gzip compression
 - `tar.xz` - tar with lzma compression.
 - `zip.0` - zip store only compression.
 
-## Suported format cedes negotioation
+## Supported format cedes negotiation
 
-Exe unit should expose property `golem.activity.caps.transfer.format` with list of suported coedcs.
+Exe unit should expose property `golem.activity.caps.transfer.format` with list of supported codecs.
 
 Example:
 
