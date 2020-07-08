@@ -8,6 +8,9 @@ Specification of ExeUnit/Runtime to host the resources provided.
 ## Specific Properties
 
 ## `golem.srv.runtime.name : String` 
+
+### Describes: Offer
+
 Indicates the ExeUnit/Runtime required/provided. 
 ### Value enum
 | Value      | Description                                        |
@@ -20,6 +23,9 @@ Indicates the ExeUnit/Runtime required/provided.
 * `golem.srv.runtime.name="wasmtime"` - declares that `wasmtime` is available as runtime on the provider node.
   
 ## `golem.srv.runtime.version : Version` 
+
+### Describes: Offer
+
 Version of the ExeUnit/Runtime required/provided.
 
 ### **Examples**

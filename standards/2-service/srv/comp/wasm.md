@@ -10,12 +10,16 @@ This namespace defines properties used to indicate ability to host and execute a
 
 ## `golem.srv.comp.wasm.wasi.version : Version` 
 
+### Describes: Offer
+
 Indicates the version of WASI API supported by the runtime.
 
 ### **Examples**
 * `golem.srv.comp.wasm.wasi.version:Version="0.1.0"` - Declares WASI v0.1.0 as supported. Note the implied `Version` property type.
 
 ## `golem.srv.comp.wasm.task_package : String` 
+
+### Describes: Demand
 
 Indicates WebAssembly package which is to be hosted by the Provider. The Demand indicates the requested package by specifying the package URL and hash value. The hash value shall be validated by the Provider.
 

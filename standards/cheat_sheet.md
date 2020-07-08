@@ -37,9 +37,10 @@ Namespace that describes Activity API capabilities, which can be perceived as "s
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.activity.caps.transfer.protocol`**|`List[String]`|Indicates the data transmission protocols available for TRANSFER operation on this Provider/ExeUnit. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.activity.caps.transfer.format`**|`List[String]`|Offer|Indicates the transferred file format which can be decoded (eg. decompressed) by the Provider/ExeUnit. This indicates possible archive file formats which can be transferred and seamlessly unpacked on Provider side (eg. without the need to explicitly perform additional decompression activities). |
+|**`golem.activity.caps.transfer.protocol`**|`List[String]`|Offer|Indicates the data transmission protocols available for TRANSFER operation on this Provider/ExeUnit. |
 ---
 
 ## [`golem.inf.cpu`](0-commons/golem/inf/cpu.md)
@@ -48,9 +49,9 @@ Specifications of CPU computing power assigned to a service.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.inf.cpu.cores`**|`Number (int32)`|Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from multiple CPUs. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.inf.cpu.cores`**|`Number (int32)`|Offer|Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from multiple CPUs. |
 ---
 
 ## [`golem.inf.mem`](0-commons/golem/inf/mem.md)
@@ -59,9 +60,9 @@ Specifications of operating memory assigned to a service.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.inf.mem.gib`**|`Number (float)`|Amount of RAM available (in GiB). |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.inf.mem.gib`**|`Number (float)`|Offer|Amount of RAM available (in GiB). |
 ---
 
 ## [`golem.inf.storage`](0-commons/golem/inf/storage.md)
@@ -70,9 +71,9 @@ Properties which describe storage properties of Golem service (hardware paramete
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.inf.storage.gib`**|`Number (float)`|Storage available in GiB |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.inf.storage.gib`**|`Number (float)`|Offer|Storage available in GiB |
 ---
 
 ## [`golem.usage`](0-commons/golem/usage.md)
@@ -81,11 +82,11 @@ Namespace defining service usage aspects (usage vector and counters).
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.usage.vector`**|`List[String]`|This property specifies the usage counters from which the service cost is calculated. |
-|**`golem.usage.duration_sec`**|`Number (int32)`|Duration of Activity (in seconds). |
-|**`golem.usage.cpu_sec`**|`Number (int32)`|Duration of CPU time during Activity execution (in seconds). |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.usage.vector`**|`List[String]`|Offer|This property specifies the usage counters from which the service cost is calculated. |
+|**`golem.usage.duration_sec`**|`Number (int32)`||Duration of Activity (in seconds). |
+|**`golem.usage.cpu_sec`**|`Number (int32)`||Duration of CPU time during Activity execution (in seconds). |
 ---
 
 # Category: 1-node
@@ -96,9 +97,9 @@ Namespace defining identity aspects of a Golem node.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.node.id.name`**|`String`|Name of the Golem Node's owning party. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.node.id.name`**|`String`|Demand/Offer|Name of the Golem Node's owning party. |
 ---
 
 # Category: 2-service
@@ -114,10 +115,10 @@ This namespace defines properties used to indicate ability to host and execute a
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.srv.comp.wasm.wasi.version`**|`Version`|Indicates the version of WASI API supported by the runtime. |
-|**`golem.srv.comp.wasm.task_package`**|`String`|Indicates WebAssembly package which is to be hosted by the Provider. The Demand indicates the requested package by specifying the package URL and hash value. The hash value shall be validated by the Provider. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.srv.comp.wasm.wasi.version`**|`Version`|Offer|Indicates the version of WASI API supported by the runtime. |
+|**`golem.srv.comp.wasm.task_package`**|`String`|Demand|Indicates WebAssembly package which is to be hosted by the Provider. The Demand indicates the requested package by specifying the package URL and hash value. The hash value shall be validated by the Provider. |
 ---
 
 ## [`srv.runtime`](2-service/srv/runtime.md)
@@ -126,10 +127,10 @@ Specification of ExeUnit/Runtime to host the resources provided.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.srv.runtime.name`**|`String`|Indicates the ExeUnit/Runtime required/provided.  |
-|**`golem.srv.runtime.version`**|`Version`|Version of the ExeUnit/Runtime required/provided. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.srv.runtime.name`**|`String`|Offer|Indicates the ExeUnit/Runtime required/provided.  |
+|**`golem.srv.runtime.version`**|`Version`|Offer|Version of the ExeUnit/Runtime required/provided. |
 ---
 
 # Category: 3-commercial
@@ -140,10 +141,10 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.com.payment.scheme`**|`String`|Scheme of payments made for computing resources consumed. |
-|**`golem.com.payment.scheme.payu.interval_sec`**|`Number`|For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.com.payment.scheme`**|`String`|Offer|Scheme of payments made for computing resources consumed. |
+|**`golem.com.payment.scheme.payu.interval_sec`**|`Number`|Offer|For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
 ---
 
 ## [`com.payment`](3-commercial/com/payment.md)
@@ -152,9 +153,9 @@ Namespace with properties defining payment parameters.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.com.payment.platform`**|`String`|Payment Platform to be used for settlement of the Agreement. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.com.payment.platform`**|`String`|Offer|Payment Platform to be used for settlement of the Agreement. |
 ---
 
 ## [`com.pricing.model`](3-commercial/com/pricing/model.md)
@@ -163,10 +164,10 @@ This namespace defines **pricing models** for Golem computation resources.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.com.pricing.model`**|`String`|Type of pricing function describing the pricing model. |
-|**`golem.com.pricing.model.linear.coeffs`**|`List[Number]`|Property to express coefficients for the linear pricing function. |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.com.pricing.model`**|`String`|Offer|Type of pricing function describing the pricing model. |
+|**`golem.com.pricing.model.linear.coeffs`**|`List[Number]`|Offer|Property to express coefficients for the linear pricing function. |
 ---
 
 ## [`com.term`](3-commercial/com/term.md)
@@ -175,8 +176,8 @@ Namespace defining time-related contract aspects of a Golem service.
 
 ### Properties
 
-| Property | Type | Description |
-|---|---|---|
-|**`golem.com.term.expiration_dt`**|`DateTime`|Indicates the expiration time of the entity to which it refers (Demand or Offer). |
+| Property | Type | Applies to | Description |
+|---|---|---|---|
+|**`golem.com.term.expiration_dt`**|`DateTime`|Demand/Offer|Indicates the expiration time of the entity to which it refers (Demand or Offer). |
 ---
 

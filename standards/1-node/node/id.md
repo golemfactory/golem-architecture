@@ -9,6 +9,8 @@ Namespace defining identity aspects of a Golem node.
 
 ## `golem.node.id.name : String`
 
+### Describes: Demand/Offer
+
 Name of the Golem Node's owning party.
 
 ### **Examples**

@@ -2,6 +2,9 @@
 Namespace with properties defining payment parameters. 
 
 ## `golem.com.payment.platform : String`
+
+### Describes: Offer
+
 Payment Platform to be used for settlement of the Agreement.
 
 ### Value enum

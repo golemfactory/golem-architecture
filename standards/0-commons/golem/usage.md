@@ -4,6 +4,9 @@ Namespace defining service usage aspects (usage vector and counters).
 # Usage Vector Specification
 
 ## `golem.usage.vector : List[String]`
+
+### Describes: Offer
+
 This property specifies the usage counters from which the service cost is calculated.
 
 **Note:** This standard specifies a set of commonly applicable usage counters. It is expected from an execution environment on Provider node to support a certain set of usage counters (ie. be able to tally up the usage as the Activity is progressing). This implies that 

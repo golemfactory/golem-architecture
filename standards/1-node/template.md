@@ -9,6 +9,8 @@ _Dimension description, what aspects of Demand/Offer does it define._
 
 ## `Property 1 Name : Type`
 
+### Describes: [Demand/Offer]
+
 _Property description_
 
 ### **Examples**

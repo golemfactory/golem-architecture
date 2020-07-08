@@ -2,6 +2,9 @@
 This namespace defines **pricing models** for Golem computation resources. 
 
 ## `golem.com.pricing.model : String`
+
+### Describes: Offer
+
 Type of pricing function describing the pricing model.
 
 **Important:** The pricing models described by this namespace meet one fundamental condition: they need to be expressed by a 'pricing function':
@@ -20,6 +23,9 @@ The `p(u)` can be ultimately any function, however this namespace defines a set 
 
 
 ## `golem.com.pricing.model.linear.coeffs : List[Number]`
+
+### Describes: Offer
+
 Property to express coefficients for the linear pricing function.
 
 A linear pricing function is a function of following form:

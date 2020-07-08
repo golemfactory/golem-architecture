@@ -2,6 +2,9 @@
 Namespace defining time-related contract aspects of a Golem service. 
 
 ## `golem.com.term.expiration_dt : DateTime`
+
+### Describes: Demand/Offer
+
 Indicates the expiration time of the entity to which it refers (Demand or Offer).
 
 ### **Examples**
