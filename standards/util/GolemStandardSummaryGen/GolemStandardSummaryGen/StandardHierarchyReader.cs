@@ -12,6 +12,7 @@ namespace GolemStandardSummaryGen
     {
         public string[] FolderRoots { get; set; }
         public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)`\s*$");
+        public Regex DescribesLineRegex { get; } = new Regex(@"^###\s+Describes:\s*(?<describes>.*)$");
 
         public StandardHierarchyReader(string[] folderRoots)
         {
@@ -194,6 +195,16 @@ namespace GolemStandardSummaryGen
 
                         // skip any empty lines that follow.
                         while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
+
+                        match = this.DescribesLineRegex.Match(descLine);
+
+                        if(match.Success)
+                        {
+                            property.Describes = match.Groups["describes"].Value;
+
+                            // skip empty lines after the "Describes: " line
+                            while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
+                        }
 
                         // read and aggregate the description
                         do
