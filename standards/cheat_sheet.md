@@ -9,6 +9,7 @@ This page contains an aggregated summary of all namespaces and properties specif
    * activity
      * [caps](0-commons/golem/activity/caps.md)
    * [inf](0-commons/golem/inf.md)
+     * [cpu](0-commons/golem/inf/cpu.md)
      * [mem](0-commons/golem/inf/mem.md)
      * [storage](0-commons/golem/inf/storage.md)
    * [usage](0-commons/golem/usage.md)
@@ -39,6 +40,17 @@ Namespace that describes Activity API capabilities, which can be perceived as "s
 | Property | Type | Description |
 |---|---|---|
 |**`golem.activity.caps.transfer.protocol`**|`List[String]`|Indicates the data transmission protocols available for TRANSFER operation on this Provider/ExeUnit. |
+---
+
+## [`golem.inf.cpu`](0-commons/golem/inf/cpu.md)
+
+Specifications of CPU computing power assigned to a service. 
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+|**`golem.inf.cpu.cores`**|`Number (int32)`|Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from multiple CPUs. |
 ---
 
 ## [`golem.inf.mem`](0-commons/golem/inf/mem.md)
