@@ -3,7 +3,7 @@ Namespace defining service usage aspects (usage vector and counters).
 
 # Usage Vector Specification
 
-## `golem.usage.vector : List[String]`
+## `golem.usage.vector : List[String] [Fact]`
 
 ### Describes: Offer
 

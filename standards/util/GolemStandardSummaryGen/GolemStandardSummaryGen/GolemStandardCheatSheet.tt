@@ -57,11 +57,11 @@ This page contains an aggregated summary of all namespaces and properties specif
 #>
 ### Properties
 
-| Property | Type | Applies to | Description |
-|---|---|---|---|
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
 <#	foreach(var prop in ns.Properties)
 	{ #>
-|**`<#= prop.FullName #>`**|`<#= prop.Type #>`|<#= prop.Describes ?? "" #>|<#= prop.Description #>|
+|**`<#= prop.FullName #>`**|`<#= prop.Type #>`|<#= prop.Describes ?? "" #>|<#= prop.Category #>|<#= prop.Description #>|
 <#	}
 #>
 ---

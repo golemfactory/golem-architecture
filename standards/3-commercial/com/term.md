@@ -1,7 +1,7 @@
 # Golem Timeline-related Properties 
 Namespace defining time-related contract aspects of a Golem service. 
 
-## `golem.com.term.expiration_dt : DateTime`
+## `golem.com.term.expiration_dt : DateTime [Fact]`
 
 ### Describes: Demand/Offer
 

@@ -1,7 +1,7 @@
 # Payment Schemes
 Payment schemes, which describe the "protocols" of payment for services/resources published on Golem Network. The purpose of the standardized schemes is to put structure into typical scenarios of payment for consumed resources - these scenarios define de facto "protocols" of Provider-Requestor interaction in the aspect of paying for a Golem service. 
 
-## `golem.com.payment.scheme : String`
+## `golem.com.payment.scheme : String [Fact]`
 
 ### Describes: Offer
 
@@ -17,7 +17,7 @@ Scheme of payments made for computing resources consumed.
 ### **Examples**
 * `golem.com.payment.scheme="before"` - The Provider declares the `"before"` payment scheme.
 
-## `golem.com.payment.scheme.payu.interval_sec : Number`
+## `golem.com.payment.scheme.payu.interval_sec : Number [Fact]`
 
 ### Describes: Offer
 

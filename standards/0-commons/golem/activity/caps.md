@@ -12,7 +12,7 @@ Example segments can be:
 
 ## Specific Properties
 
-## `golem.activity.caps.transfer.format : List[String]`
+## `golem.activity.caps.transfer.format : List[String] [Fact]`
 
 ### Describes: Offer
 
@@ -30,7 +30,7 @@ Indicates the transferred file format which can be decoded (eg. decompressed) by
 * `golem.activity.caps.transfer.format=["zip"]` - Declares availability of ZIP codec for file transfer in Provider ExeUnit
 * `golem.activity.caps.transfer.format=["zip","tar.gz","tar.xz"]` - Declares availability of ZIP and TAR (gzip and lzma) codecs for file transfer
 
-## `golem.activity.caps.transfer.protocol : List[String]`
+## `golem.activity.caps.transfer.protocol : List[String] [Fact]`
 
 ### Describes: Offer
 

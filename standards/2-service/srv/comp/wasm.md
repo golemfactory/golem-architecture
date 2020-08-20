@@ -8,7 +8,7 @@ This namespace defines properties used to indicate ability to host and execute a
 
 ## Specific Properties
 
-## `golem.srv.comp.wasm.wasi.version : Version` 
+## `golem.srv.comp.wasm.wasi.version : Version [Fact]` 
 
 ### Describes: Offer
 
@@ -17,7 +17,7 @@ Indicates the version of WASI API supported by the runtime.
 ### **Examples**
 * `golem.srv.comp.wasm.wasi.version:Version="0.1.0"` - Declares WASI v0.1.0 as supported. Note the implied `Version` property type.
 
-## `golem.srv.comp.wasm.task_package : String` 
+## `golem.srv.comp.wasm.task_package : String [Fact]` 
 
 ### Describes: Demand
 

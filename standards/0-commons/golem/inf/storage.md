@@ -1,9 +1,9 @@
 # Golem Infrastructural Properties - Storage
 Properties which describe storage properties of Golem service (hardware parameters, disk categories, sizes, etc.)
 
-## `golem.inf.storage.gib : Number (float)`
+## `golem.inf.storage.gib : Number (float) [Negotiable]`
 
-### Describes: Offer
+### Describes: Demand/Offer
 
 Storage available in GiB
 

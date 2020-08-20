@@ -11,5 +11,6 @@ namespace GolemStandardSummaryGen.Model
         public string Type { get; set; }
         public string Describes { get; set; }
         public string Description { get; set; }
+        public string Category { get; set; }
     }
 }

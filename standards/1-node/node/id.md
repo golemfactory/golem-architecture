@@ -7,7 +7,7 @@ Namespace defining identity aspects of a Golem node.
   
 ## Specific Properties
 
-## `golem.node.id.name : String`
+## `golem.node.id.name : String [Fact]`
 
 ### Describes: Demand/Offer
 

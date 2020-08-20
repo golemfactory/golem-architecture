@@ -203,8 +203,8 @@ namespace GolemStandardSummaryGen
             
             #line default
             #line hidden
-            this.Write("### Properties\r\n\r\n| Property | Type | Applies to | Description |\r\n|---|---|---|--" +
-                    "-|\r\n");
+            this.Write("### Properties\r\n\r\n| Property | Type | Applies to | Category | Description |\r\n|---" +
+                    "|---|---|---|---|\r\n");
             
             #line 62 "C:\Users\MBarwicki\source\repos\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 	foreach(var prop in ns.Properties)
@@ -230,6 +230,13 @@ namespace GolemStandardSummaryGen
             
             #line 64 "C:\Users\MBarwicki\source\repos\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(prop.Describes ?? ""));
+            
+            #line default
+            #line hidden
+            this.Write("|");
+            
+            #line 64 "C:\Users\MBarwicki\source\repos\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(prop.Category));
             
             #line default
             #line hidden

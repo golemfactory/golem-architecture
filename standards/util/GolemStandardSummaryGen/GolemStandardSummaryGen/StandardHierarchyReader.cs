@@ -11,7 +11,7 @@ namespace GolemStandardSummaryGen
     public class StandardHierarchyReader
     {
         public string[] FolderRoots { get; set; }
-        public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)`\s*$");
+        public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s*\[(?<category>.*)\]`\s*$");
         public Regex DescribesLineRegex { get; } = new Regex(@"^###\s+Describes:\s*(?<describes>.*)$");
 
         public StandardHierarchyReader(string[] folderRoots)
@@ -184,7 +184,8 @@ namespace GolemStandardSummaryGen
                         {
                             Namespace = nsName,
                             Type = match.Groups["type"].Value,
-                            FullName = match.Groups["name"].Value.Trim()
+                            FullName = match.Groups["name"].Value.Trim(),
+                            Category = match.Groups["category"].Value.Trim()
                         };
 
                         if (!property.FullName.StartsWith(property.Namespace) &&
