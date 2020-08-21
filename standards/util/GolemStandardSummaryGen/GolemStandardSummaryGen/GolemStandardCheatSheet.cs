@@ -137,7 +137,7 @@ namespace GolemStandardSummaryGen
             
             #line 39 "C:\Users\MBarwicki\source\repos\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
 
-	foreach(var ns in category.Where(nsp => nsp.Properties.Any()))
+	foreach(var ns in category.Where(nsp => nsp.Properties.Any()).OrderBy(nspace=>nspace.Name))
 	{
 
             
@@ -176,7 +176,7 @@ namespace GolemStandardSummaryGen
             this.Write("### Included Namespaces\r\n\r\n");
             
             #line 51 "C:\Users\MBarwicki\source\repos\golem-architecture\standards\util\GolemStandardSummaryGen\GolemStandardSummaryGen\GolemStandardCheatSheet.tt"
-	foreach(var incNs in ns.IncludedNamespaces) 
+	foreach(var incNs in ns.IncludedNamespaces.OrderBy(name=>name)) 
 	{
 
             
