@@ -31,7 +31,7 @@ The address of GNT payment receiver (Provider) for **zk-GNT platform**..
 
 The semantics of `golem.com.payment.platform` namespace include the negotiation convention & patterns. 
 
-To ensure consistency and non-repudiability of Agreements, the Agreement negotiation must lead to confirmation of the 'Negotiable" properties by both sides. As the actual payment platform to be used for Agreement is a negotiable property, the Demand/Offer exchange must converge to situation where both parties indicate the agreed payment platform in their Demand/Offer.
+To ensure consistency and non-repudiability of Agreements, the Agreement negotiation must lead to confirmation of the "Negotiable" properties by both sides. As the actual payment platform to be used for Agreement is a negotiable property, the Demand/Offer exchange must converge to situation where both parties indicate the agreed payment platform in their Demand/Offer.
 
 An example negotiation scenario:
 
@@ -54,7 +54,7 @@ Constraints:
 ```
 ...and from the market matching, it receives `Offer 1`.
 
-(alternatively, the Demand may include constraints to filter only the preferred payment platform:)
+(alternatively, the Demand may include constraints to filter only the preferred payment platform: )
 ```
 Demand 1a
 
