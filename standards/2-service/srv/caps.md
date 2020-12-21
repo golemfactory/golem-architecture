@@ -3,18 +3,12 @@ Namespace that describes capabilities of a Golem service.
 
 ## Specific Properties
 
-## `golem.srv.caps.multi-activity : String [Fact]`
+## `golem.srv.caps.multi-activity : Boolean`
 
 ### Describes: Offer
 
-Indicates the that the Provider supports the multi-activity Agreements (TODO).
-
-### Value enum
-| Value | Description |
-| ----- | ----------- |
-|       |             |
-|       |             |
+Indicates the that the Provider supports the multi-activity Agreements.
 
 ### **Examples**
-* `golem.srv.caps.multi-activity="TODO"` - TODO
+* `golem.srv.caps.multi-activity=true` - The Provider supports multi-activity Agreements.
 

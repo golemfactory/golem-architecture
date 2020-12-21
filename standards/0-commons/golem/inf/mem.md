@@ -1,9 +1,9 @@
 # Golem Infrastructural Properties - Memory
 Specifications of operating memory assigned to a service.
 
-## `golem.inf.mem.gib : Number (float) [Negotiable]`
+## `golem.inf.mem.gib : Number (float)`
 
-### Describes: Demand/Offer
+### Describes: Offer
 
 Amount of RAM available (in GiB).
 

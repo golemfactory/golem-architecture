@@ -18,7 +18,7 @@ The WebAssembly package pointed at by `package URL` must follow the format speci
 
 ## Specific Properties
 
-## `golem.srv.comp.wasm.wasi.version : Version [Fact]` 
+## `golem.srv.comp.wasm.wasi.version : Version` 
 
 ### Describes: Offer
 

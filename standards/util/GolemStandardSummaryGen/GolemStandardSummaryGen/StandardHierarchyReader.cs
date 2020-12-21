@@ -11,7 +11,9 @@ namespace GolemStandardSummaryGen
     public class StandardHierarchyReader
     {
         public string[] FolderRoots { get; set; }
-        public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s*\[(?<category>.*)\]`\s*$");
+        public Regex PropertyLineNoCategoryRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s*`\s*$");
+
+        public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s* \[(?<category>.*)\]`\s*$");
         public Regex DescribesLineRegex { get; } = new Regex(@"^###\s+Describes:\s*(?<describes>.*)$");
 
         public StandardHierarchyReader(string[] folderRoots)
@@ -173,13 +175,18 @@ namespace GolemStandardSummaryGen
 
                     }
 
-                    // check if line matches the "property layout" regex
+                    // check if line matches the "property layout" regex (either one of two formats)
                     var match = this.PropertyLineRegex.Match(line);
+                    var matchNoCategory = this.PropertyLineNoCategoryRegex.Match(line);
 
-                    if(match.Success)
+                    if (match.Success || matchNoCategory.Success)
                     {
                         string descLine = "";
-                        
+
+                        // if no category found, but still a property line - process the no-category match
+                        if (!match.Success)
+                            match = matchNoCategory;
+
                         var property = new PropertySummary()
                         {
                             Namespace = nsName,

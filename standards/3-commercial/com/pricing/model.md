@@ -1,7 +1,7 @@
 # Pricing Models
 This namespace defines **pricing models** for Golem computation resources. 
 
-## `golem.com.pricing.model : String [Fact]`
+## `golem.com.pricing.model : String`
 
 ### Describes: Offer
 
@@ -22,7 +22,7 @@ The `p(u)` can be ultimately any function, however this namespace defines a set 
 | ...      | ...                                               |
 
 
-## `golem.com.pricing.model.linear.coeffs : List[Number] [Negotiable]`
+## `golem.com.pricing.model.linear.coeffs : List[Number]`
 
 ### Describes: Offer
 

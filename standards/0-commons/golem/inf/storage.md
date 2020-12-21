@@ -3,7 +3,7 @@ Properties which describe storage properties of Golem service (hardware paramete
 
 ## `golem.inf.storage.gib : Number (float) [Negotiable]`
 
-### Describes: Demand/Offer
+### Describes: Offer
 
 Storage available in GiB
 

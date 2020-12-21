@@ -6,4 +6,4 @@ The `golem` common namespace includes:
 
 * [golem.activity](golem/activity) - Specification of properties describing various aspects of Golem Activities (eg. **Activity API Capabilities**)
 * [golem.inf](golem/inf.md) - Specification of properties describing **hardware & infrastructure**.
-* [golem.usage](golem/usage.md) - Specification of Golem **Usage Counters**.
+* [golem.runtime](golem/runtime.md) - Specification of properties describing **ExeUnit runtimes**.

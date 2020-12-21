@@ -1,7 +1,7 @@
 # Payment
 Namespace with properties defining payment parameters. 
 
-## `golem.com.payment.chosen-platform : String [Negotiable]`
+## `golem.com.payment.chosen-platform : String`
 
 ### Describes: Demand/Offer
 
@@ -10,22 +10,21 @@ Payment Platform to be used for settlement of the Agreement.
 ### Value enum
 | Value     | Description                                          |
 | --------- | ---------------------------------------------------- |
-| "ngnt"    | Golem new GNT ERC-20 token on plain Ethereum         |
-| "zk-ngnt" | Golem new GNT zk-sync ERC-20 token on plain Ethereum |
+| "NGNT"    | Golem new GNT ERC-20 token on plain Ethereum         |
+| "ZK-NGNT" | Golem new GNT zk-sync ERC-20 token on plain Ethereum |
 |           |                                                      |
 
-## `golem.com.payment.platform.ngnt.address : String [Fact]`
+## `golem.com.payment.platform.NGNT.address : String`
 
 ### Describes: Demand/Offer
 
 The address of GNT payment receiver (Provider) for **plain GNT platform**.
 
-## `golem.com.payment.platform.zk-ngnt.address : String [Fact]`
+## `golem.com.payment.platform.ZK-NGNT.address : String [Fact]`
 
 ### Describes: Demand/Offer
 
 The address of GNT payment receiver (Provider) for **zk-GNT platform**..
-
 
 ## Payment platform negotiation convention
 
@@ -40,8 +39,8 @@ An example negotiation scenario:
 Offer 1
 
 Properties:
-golem.com.payment.platform.ngnt.address = "0xdeadbeef"
-golem.com.payment.platform.zk-ngnt.address = "0xdeadbeef"
+golem.com.payment.platform.NGNT.address = "0xdeadbeef"
+golem.com.payment.platform.ZK-NGNT.address = "0xdeadbeef"
 ```
 
 2. Requestor publishes a Demand with no constraints on payment platform (it wants to choose from Offers it receives)
@@ -59,7 +58,7 @@ Constraints:
 Demand 1a
 
 Constraints:
-(golem.com.payment.platform.ngnt.address=*)
+(golem.com.payment.platform.NGNT.address=*)
 ```
 
 3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform
@@ -67,7 +66,7 @@ Constraints:
 Demand 2 (Proposal)
 
 Properties:
-golem.com.payment.chosen-platform = "ngnt"
+golem.com.payment.chosen-platform = "NGNT"
 ```
 
 4. Provider responds with a counter-Offer, where it confirms the selected payment platform
@@ -75,27 +74,26 @@ golem.com.payment.chosen-platform = "ngnt"
 Offer 2 (Proposal)
 
 Properties:
-golem.com.payment.chosen-platform = "ngnt"
+golem.com.payment.chosen-platform = "NGNT"
 golem.com.payment.platform.ngnt.address = "0xdeadbeef"
 ```
 
-5. Requestor creates Agreement proposal from `Demand 2` and `Offer 2`, where `golem.com.payment.platform = "ngnt"` is repeated by both sides. 
+5. Requestor creates Agreement proposal from `Demand 2` and `Offer 2`, where `golem.com.payment.platform = "NGNT"` is repeated by both sides. 
 ```
 Agreement (Proposal)
 
 Demand
 
 Properties:
-golem.com.payment.chosen-platform = "ngnt"
+golem.com.payment.chosen-platform = "NGNT"
 
 Offer
 
 Properties:
-golem.com.payment.chosen-platform = "ngnt"
+golem.com.payment.chosen-platform = "NGNT"
 golem.com.payment.platform.ngnt.address = "0xdeadbeef"
 
 ```
 
-
 ### **Examples**
-* `golem.com.payment.chosen-platform="ngnt"` - specifies ERC-20 plain Ethereum as payment platform.
+* `golem.com.payment.chosen-platform="NGNT"` - specifies ERC-20 plain Ethereum as payment platform.
