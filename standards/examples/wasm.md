@@ -42,8 +42,8 @@ golem.com.term.expiration_dt
 golem.activity.caps.transfer.protocol=["http"]
 
 # Supported Payment model "payu" = *Pay* as you *U*se
-golem.com.payment.scheme="payu"
-golem.com.payment.scheme.payu.interval_sec=6
+golem.payment.scheme="payu"
+golem.payment.scheme.payu.interval_sec=6
 
 # Price = 0 + 0.01 * <exe unit duration in secs> + <exe unit cpu usage in cpu secs> * 0.01
 golem.com.pricing.model="linear"
@@ -54,17 +54,20 @@ golem.com.usage.vector=["golem.usage.duration_sec", "golem.usage.cpu_sec"]
 golem.inf.mem.gib=1
 # Storage for image + input files + output files is 10GB.
 golem.inf.storage.gib=10
+golem.inf.cpu.architecture="x86_64"
+golem.inf.cpu.cores=3
+golem.inf.cpu.threads=5
 
 # Offered runtime is wasmtime version 0.0.0
-golem.srv.runtime.name="wasmtime"
-golem.srv.runtime.version@v="0.0.0"
+golem.runtime.name="wasmtime"
+golem.runtime.version="0.2.1"
 
 # Optional provider node name
 golem.node.id.name="smok1"
 
 
 # constraints
-()
+(golem.srv.comp.expiration>1608555752242)
 ```
 
 ### Sample Demand
@@ -73,7 +76,7 @@ golem.node.id.name="smok1"
 # properties
 
 golem.node.id.name="test1"
-golem.com.term.expiration_dt="2020-06-15T23:20:50.52Z"
+golem.srv.comp.expiration=1608556352458
 golem.srv.comp.wasm.task_package="hash:sha3:44aba2d41021fac2a3b7af8a3ccfc0a3d4a435f9187ea7d5c162035b:http://54.231.6.186:4500/app-44aba2d4.yimg"
 
 # constraints
@@ -81,7 +84,7 @@ golem.srv.comp.wasm.task_package="hash:sha3:44aba2d41021fac2a3b7af8a3ccfc0a3d4a4
     (golem.inf.mem.gib>0.5)
     (golem.inf.storage.gib>1)
     (golem.com.pricing.model=linear)
-    (golem.srv.runtime.name=wasmtime)
+    (golem.runtime.name=wasmtime)
 )
 
 ```
