@@ -18,7 +18,7 @@ Payment Platform to be used for settlement of the Agreement.
 
 ### Describes: Demand/Offer
 
-Indicates the timeout period for the Requestor to accept incoming Debit Notes.
+Indicates the timeout period (in seconds) for the Requestor to accept incoming Debit Notes.
 
 ### Negotiation protocol
 
@@ -30,11 +30,6 @@ This property is *negotiable*, ie. both Requestor and Provider place it in the D
 The `golem.com.payment.debit-note.acceptance-timeout-negotiable` property is a way for the Provider to verify the Requestor is still 'active' and therefore can be expected to pay for the Agreement. Therefore the Provider may expect different value of Agreement expiration (in Demand), depending on whether the Requestor supports DebitNote accept timeout or not. If the Requestor doesn't set property, Provider will remove his property and compare Requestor's expiration to lower limit. If Requestor supports Debit Note accept timeout, the Provider uses higher Agreement expiration limit.
 
 During negotiation the Provider will adjust `golem.com.payment.debit-note.acceptance-timeout-negotiable`, if Requestor's deadline is lower than Provider's. If deadline is higher, Provider rejects such a Proposal.
-
-### **Examples**
-* `golem.inf.cpu.cores=4`
-
-
 
 ## `golem.com.payment.platform.NGNT.address : String`
 
