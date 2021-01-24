@@ -167,6 +167,7 @@ Namespace with properties defining payment parameters.
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
 |**`golem.com.payment.chosen-platform`**|`String`|Demand/Offer||Payment Platform to be used for settlement of the Agreement. |
+|**`golem.com.payment.debit-note.accept-timeout-negotiable`**|`Number (int32)`|Demand/Offer|Negotiable|Indicates the timeout period for the Requestor to accept incoming Debit Notes. |
 |**`golem.com.payment.platform.NGNT.address`**|`String`|Demand/Offer||The address of GNT payment receiver (Provider) for **plain GNT platform**. |
 |**`golem.com.payment.platform.ZK-NGNT.address`**|`String`|Demand/Offer|Fact|The address of GNT payment receiver (Provider) for **zk-GNT platform**.. |
 ---

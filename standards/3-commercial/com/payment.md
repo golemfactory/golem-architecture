@@ -14,6 +14,28 @@ Payment Platform to be used for settlement of the Agreement.
 | "ZK-NGNT" | Golem new GNT zk-sync ERC-20 token on plain Ethereum |
 |           |                                                      |
 
+## `golem.com.payment.debit-note.accept-timeout-negotiable : Number (int32) [Negotiable]` 
+
+### Describes: Demand/Offer
+
+Indicates the timeout period for the Requestor to accept incoming Debit Notes.
+
+### Negotiation protocol
+
+This property is *negotiable*, ie. both Requestor and Provider place it in the Demand/Offer in order to agree the value of the property they both intend to adhere to. The "negotiation" can be initiated by either side, and ends when two subsequent Demand/Offer Proposals include the same value of this property.
+
+*Provider* - expects, that the Requestor will accept every received Debit Note within the specified timeout period after the Debit Note has been received by the Requestor. When this property is not set in the Offer, this indicates the Provider will not check Debit Note acceptance timeouts.
+*Requestor* - declares that he will accept Debit Notes within specified time after they are received. When this property is not set in the Demand, this indicates the Requestor will not attempt to accept the incoming Debit Notes within specified timeline (though they may still accept the Debit Note later).
+
+The `golem.com.payment.debit-note.acceptance-timeout-negotiable` property is a way for the Provider to verify the Requestor is still 'active' and therefore can be expected to pay for the Agreement. Therefore the Provider may expect different value of Agreement expiration (in Demand), depending on whether the Requestor supports DebitNote accept timeout or not. If the Requestor doesn't set property, Provider will remove his property and compare Requestor's expiration to lower limit. If Requestor supports Debit Note accept timeout, the Provider uses higher Agreement expiration limit.
+
+During negotiation the Provider will adjust `golem.com.payment.debit-note.acceptance-timeout-negotiable`, if Requestor's deadline is lower than Provider's. If deadline is higher, Provider rejects such a Proposal.
+
+### **Examples**
+* `golem.inf.cpu.cores=4`
+
+
+
 ## `golem.com.payment.platform.NGNT.address : String`
 
 ### Describes: Demand/Offer
