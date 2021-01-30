@@ -10,11 +10,16 @@ Payment Platform to be used for settlement of the Agreement.
 ### Value enum
 | Value     | Description                                          |
 | --------- | ---------------------------------------------------- |
-| "NGNT"    | Golem new GNT ERC-20 token on plain Ethereum         |
-| "ZK-NGNT" | Golem new GNT zk-sync ERC-20 token on plain Ethereum |
+| "zksync-rinkeby-tglm" | L2 off-chain **tGLM** on zkSync rinkeby  |
+| "zksync-mainnet-glm" | L2 off-chain **GLM** on zkSync mainnet  |
+| "erc20-rinkeby-tglm"  | L1 on-chain **tGLM** ERC-20 on Ethereum rinkeby |
+| "erc20-mainnet-glm"  | L1 on-chain **GLM** ERC-20 on Ethereum mainnet |
 |           |                                                      |
 
-## `golem.com.payment.debit-note.accept-timeout-negotiable : Number (int32) [Negotiable]` 
+### **Examples**
+* `golem.com.payment.chosen-platform="erc20-mainnet-glm"` - specifies ERC-20 plain Ethereum as payment platform.
+
+## `golem.com.payment.debit-notes.accept-timeout? : Number (int32)` [[Negotiable]](/standards/README.md#negotiable-properties)
 
 ### Describes: Demand/Offer
 
@@ -26,27 +31,22 @@ This property is *negotiable*, ie. both Requestor and Provider place it in the D
 
 The semantics of the property is as follows:
 
-**Provider** - expects, that the Requestor will accept every received Debit Note within the specified timeout period after the Debit Note has been received by the Requestor. When this property is not set in the Offer, this indicates the Provider will not check Debit Note acceptance timeouts.
+**Provider** - expects, that the Requestor will accept every received Debit Note within the specified timeout period after the Debit Note creation `timestamp`. If this property is not set in the Offer, the Provider will not check Debit Note acceptance timeouts.
 
-**Requestor** - declares that he will accept Debit Notes within specified time after they are received. When this property is not set in the Demand, this indicates the Requestor will not attempt to accept the incoming Debit Notes within specified timeline (though they may still accept the Debit Note later).
+**Requestor** - declares that he will accept Debit Notes within specified time after they are created (as indicated by `timestamp` field in Debit Note struct). If this property is not set in the Demand, the Requestor will not attempt to accept the incoming Debit Notes within specified timeline (though they may still accept the Debit Note later).
 
 #### Notes
 
-The `golem.com.payment.debit-note.acceptance-timeout-negotiable` property is a way for the Provider to verify the Requestor is still 'active' and therefore can be expected to pay for the Agreement. Therefore the Provider may expect different value of Agreement expiration (in Demand), depending on whether the Requestor supports Debit Note accept timeout or not. If the Requestor doesn't set property, Provider will remove his property and compare Requestor's expiration to lower limit. If Requestor supports Debit Note accept timeout, the Provider uses higher Agreement expiration limit.
+The `golem.com.payment.debit-notes.accept-timeout?` property is a way for the Provider to verify the Requestor is still 'active' and therefore can be expected to pay for the Agreement. Therefore the Provider may expect a different value of Agreement `golem.srv.comp.expiration` (in Demand), depending on whether the Requestor supports Debit Note accept timeout or not. If the Requestor doesn't set property, the Provider will remove his property and compare Requestor's expiration to a lower limit. If Requestor supports Debit Note accept timeout, the Provider uses a higher Agreement expiration limit.
 
-During negotiation the Provider will adjust `golem.com.payment.debit-note.acceptance-timeout-negotiable`, if Requestor's deadline is lower than Provider's. If deadline is higher, Provider rejects such a Proposal.
+During negotiation the Provider will adjust `golem.com.payment.debit-notes.accept-timeout?`, if Requestor's deadline is lower than Provider's. If deadline is higher, Provider rejects such a Proposal.
 
-## `golem.com.payment.platform.NGNT.address : String`
-
-### Describes: Demand/Offer
-
-The address of GNT payment receiver (Provider) for **plain GNT platform**.
-
-## `golem.com.payment.platform.ZK-NGNT.address : String [Fact]`
+## `golem.com.payment.platform.<platform name>.address : String`
 
 ### Describes: Demand/Offer
 
-The address of GNT payment receiver (Provider) for **zk-GNT platform**..
+The address of GNT payment receiver (Provider) for indicated payment platform.
+
 
 ## Payment platform negotiation convention
 
@@ -61,8 +61,8 @@ An example negotiation scenario:
 Offer 1
 
 Properties:
-golem.com.payment.platform.NGNT.address = "0xdeadbeef"
-golem.com.payment.platform.ZK-NGNT.address = "0xdeadbeef"
+golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
+golem.com.payment.platform.zksync-mainnet-glm.address = "0xdeadbeef"
 ```
 
 2. Requestor publishes a Demand with no constraints on payment platform (it wants to choose from Offers it receives)
@@ -80,7 +80,7 @@ Constraints:
 Demand 1a
 
 Constraints:
-(golem.com.payment.platform.NGNT.address=*)
+(golem.com.payment.platform.erc20-mainnet-glm.address=*)
 ```
 
 3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform
@@ -88,7 +88,7 @@ Constraints:
 Demand 2 (Proposal)
 
 Properties:
-golem.com.payment.chosen-platform = "NGNT"
+golem.com.payment.chosen-platform = "erc20-mainnet-glm"
 ```
 
 4. Provider responds with a counter-Offer, where it confirms the selected payment platform
@@ -96,26 +96,8 @@ golem.com.payment.chosen-platform = "NGNT"
 Offer 2 (Proposal)
 
 Properties:
-golem.com.payment.chosen-platform = "NGNT"
-golem.com.payment.platform.ngnt.address = "0xdeadbeef"
+golem.com.payment.chosen-platform = "erc20-mainnet-glm"
+golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
 ```
 
-5. Requestor creates Agreement proposal from `Demand 2` and `Offer 2`, where `golem.com.payment.platform = "NGNT"` is repeated by both sides. 
-```
-Agreement (Proposal)
 
-Demand
-
-Properties:
-golem.com.payment.chosen-platform = "NGNT"
-
-Offer
-
-Properties:
-golem.com.payment.chosen-platform = "NGNT"
-golem.com.payment.platform.ngnt.address = "0xdeadbeef"
-
-```
-
-### **Examples**
-* `golem.com.payment.chosen-platform="NGNT"` - specifies ERC-20 plain Ethereum as payment platform.
