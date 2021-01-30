@@ -19,7 +19,7 @@ Payment Platform to be used for settlement of the Agreement.
 ### **Examples**
 * `golem.com.payment.chosen-platform="erc20-mainnet-glm"` - specifies ERC-20 plain Ethereum as payment platform.
 
-## `golem.com.payment.debit-notes.accept-timeout? : Number (int32)` [[Negotiable]](/standards/README.md#negotiable-properties)
+## `golem.com.payment.debit-notes.accept-timeout? : Number (int32)` [[Negotiable]](/standards/README.md#fact-vs-negotiable-properties)
 
 ### Describes: Demand/Offer
 
