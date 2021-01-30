@@ -9,7 +9,7 @@ CPU architecture.
 ### Value enum
 |Value| Description |
 |---|---|
-|"x86_32"| Intel x86 32-bit architecture |
+|"x86"| Intel x86 32-bit architecture |
 |"x86_64"| Intel x86 64-bit architecture |
 ### **Examples**
 * `golem.inf.cpu.architecture="x86_64"` - Declares x86 64-bit CPU available.
@@ -37,5 +37,6 @@ Total number of CPU threads assigned to service. It is a sum of CPU threads poss
 
 CPU capability flags. 
 For x86 architectures this property is populated with CPU features as returned by CPUID instruction.
+For full list, see here: https://github.com/golemfactory/ya-runtime-vm/blob/master/runtime/src/cpu.rs#L59 
 ### **Examples**
 * `golem.inf.cpu.capabilities=["fpu","sse","sse2","ssse3","sse4_1","sse4_2","ht","x86-64","avx","avx2"]`

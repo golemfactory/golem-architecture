@@ -25,4 +25,4 @@ Indicates the data transmission protocols available for TRANSFER operation on th
 | "gftp"  | Golem File Transfer Protocol - proprietary protocol allowing for transfer of data over the Golem P2P network |
 ### **Examples**
 * `golem.activity.caps.transfer.protocol:List=["https"]` - Declares availability of HTTPS protocol for data transfer
-* `golem.activity.caps.transfer.protocol=["http","https","gftp"]` - Declares availability of HTTP, HTTPS and "GFT" protocols for file transfer
+* `golem.activity.caps.transfer.protocol=["http","https","gftp"]` - Declares availability of HTTP, HTTPS and "GFTP" protocols for file transfer

@@ -27,9 +27,9 @@ golem.srv.comp.wasm.task_package
 golem.com.pricing.model
 golem.com.pricing.model.linear.coeffs
 golem.com.payment.platform
-golem.com.payment.scheme
-golem.com.payment.scheme.payu.interval_sec
-golem.com.term.expiration_dt
+golem.com.scheme
+golem.com.scheme.payu.interval_sec
+golem.srv.comp.expiration
 
 ```
 
@@ -42,8 +42,8 @@ golem.com.term.expiration_dt
 golem.activity.caps.transfer.protocol=["http"]
 
 # Supported Payment model "payu" = *Pay* as you *U*se
-golem.payment.scheme="payu"
-golem.payment.scheme.payu.interval_sec=6
+golem.com.scheme="payu"
+golem.com.scheme.payu.interval_sec=6
 
 # Price = 0 + 0.01 * <exe unit duration in secs> + <exe unit cpu usage in cpu secs> * 0.01
 golem.com.pricing.model="linear"

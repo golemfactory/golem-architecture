@@ -37,7 +37,7 @@ The semantics of the property is as follows:
 
 #### Notes
 
-The `golem.com.payment.debit-notes.accept-timeout?` property is a way for the Provider to verify the Requestor is still 'active' and therefore can be expected to pay for the Agreement. Therefore the Provider may expect a different value of Agreement `golem.srv.comp.expiration` (in Demand), depending on whether the Requestor supports Debit Note accept timeout or not. If the Requestor doesn't set property, the Provider will remove his property and compare Requestor's expiration to a lower limit. If Requestor supports Debit Note accept timeout, the Provider uses a higher Agreement expiration limit.
+The `golem.com.payment.debit-notes.accept-timeout?` property is a way for the Provider to verify the Requestor is still 'active' and therefore can be expected to pay for the Agreement. Therefore the Provider may choose different strategies, depending on whether the Requestor supports this mechanism. For example, the Provider's approach to Agreement's expiration, `golem.srv.comp.expiration` (in Demand), may differ as follows: if the Requestor doesn't set property, the Provider will remove his property and compare Requestor's expiration to a lower limit. If Requestor supports Debit Note accept timeout, the Provider uses a higher Agreement expiration limit.
 
 During negotiation the Provider will adjust `golem.com.payment.debit-notes.accept-timeout?`, if Requestor's deadline is lower than Provider's. If deadline is higher, Provider rejects such a Proposal.
 
@@ -47,14 +47,11 @@ During negotiation the Provider will adjust `golem.com.payment.debit-notes.accep
 
 The address of GNT payment receiver (Provider) for indicated payment platform.
 
+## Payment platform selection convention
 
-## Payment platform negotiation convention
+The semantics of `golem.com.payment.platform` namespace include the platform selection convention & patterns. 
 
-The semantics of `golem.com.payment.platform` namespace include the negotiation convention & patterns. 
-
-To ensure consistency and non-repudiability of Agreements, the Agreement negotiation must lead to confirmation of the "Negotiable" properties by both sides. As the actual payment platform to be used for Agreement is a negotiable property, the Demand/Offer exchange must converge to situation where both parties indicate the agreed payment platform in their Demand/Offer.
-
-An example negotiation scenario:
+An example selection scenario:
 
 1. Provider publishes an open Offer with multiple payment platform options 
 ```

@@ -25,3 +25,9 @@ Duration of Activity (in seconds).
 ## `golem.usage.cpu_sec : Number (int32)`
 Duration of CPU time during Activity execution (in seconds).
 
+## `golem.usage.gib : Number (float)`
+Maximum level ("high water mark") of RAM memory usage during activity execution (in GBytes).
+
+## `golem.usage.storage_gib : Number (float)`
+Maximum level ("high water mark") of storage usage during activity execution (in GBytes).
+

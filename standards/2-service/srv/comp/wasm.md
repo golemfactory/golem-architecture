@@ -8,7 +8,7 @@ This namespace defines properties used to indicate ability to host and execute a
 
 ### 'golem.srv.comp.image_uri' semantics
 
-For WASM platform the `golem.srv.comp.image_uri` property indicates WebAssembly package which is to be hosted by the Provider. The Demand indicates the requested package by specifying the package URL and hash value. **The hash value shall be validated by the Provider.**
+For WASM platform the `golem.srv.comp.image_uri` property indicates WebAssembly package which is to be executed by the Provider. The Demand indicates the requested package by specifying the package URL and hash value. **The hash value shall be validated by the Provider.**
 
 This property is a String value, which is a package address pointing to a WebAssembly package in the following format: 
 

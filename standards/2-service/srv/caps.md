@@ -5,7 +5,7 @@ Namespace that describes capabilities of a Golem service.
 
 ## `golem.srv.caps.multi-activity : Boolean`
 
-### Describes: Offer
+### Describes: Demand/Offer
 
 Indicates the that the Provider supports the multi-activity Agreements.
 
