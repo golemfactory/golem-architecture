@@ -15,7 +15,8 @@ Indicates the ExeUnit/Runtime required/provided.
 ### Value enum
 | Value      | Description                                        |
 | ---------- | -------------------------------------------------- |
-| "wasmtime" | Golem Factory's WASI runtime (based on `wasmtime`) |
+| "wasmtime" | Golem Factory's WASI runtime (based on `wasmtime`) https://github.com/golemfactory/ya-runtime-wasi |
+| "vm" | Golem Factory's VM runtime (based on `QEMU`) https://github.com/golemfactory/ya-runtime-vm |
 |            |                                                    |
 
 ### **Examples**
@@ -31,5 +32,4 @@ Version of the ExeUnit/Runtime required/provided.
 ### **Examples**
 
 * `golem.runtime.version="0.0.0"` - declares runtime version 0.0.0.
-
 
