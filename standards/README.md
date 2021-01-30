@@ -31,7 +31,7 @@ The Golem Standards repository consists of following sections/categories:
 
 ## Generic conventions
 
-### ["Fact" vs "Negotiable" properties](#negotiable-properties)
+### ["Fact" vs "Negotiable" properties]
 
 A property indicates a specific aspect of its issuer (Requestor or Provider) or an Agreement which is being negotiated between the parties. Properties can be generally split into following classes:
 - a **`Fact`** is a property which indicates an objective fact, an attribute of the issuer, a trait which cannot be adjusted or negotiated. Examples of facts can be: payment address, node id, etc.
