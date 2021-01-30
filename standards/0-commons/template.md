@@ -5,6 +5,8 @@ _property set description, purpose_
 
 _[Type] may include indication of "logical" format of numeric values. These refer to generic scalar types as specified for Protobuf (https://developers.google.com/protocol-buffers/docs/proto#scalar), eg. `Number (int32)`_
 
+### Describes: [Demand/Offer] _(indicates whether the property can be used in Demand, Offer or both)_
+
 _Property description_
 
 _Property value constraints, eg. , range of applicable values, regex defining accepted strings, etc._
@@ -12,10 +14,10 @@ _Property value constraints, eg. , range of applicable values, regex defining ac
 ### Value enum
 _Enum dictionaries where applicable_
 
-|Value| Description |
-|---|---|
-|foo|bar|
-|dblah|jinx|
+| Value | Description |
+| ----- | ----------- |
+| foo   | bar         |
+| dblah | jinx        |
 
 
 ### (Optional) **Examples**

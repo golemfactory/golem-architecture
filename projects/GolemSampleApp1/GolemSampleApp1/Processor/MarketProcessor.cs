@@ -182,6 +182,7 @@ namespace GolemSampleApp1.Processor
                 ProposalId = offerProposal.Proposal.ProposalId,
                 ValidTo = DateTime.Now.AddMinutes(1)
             };
+            Console.WriteLine($"agreement {agreement}");
 
             this.RequestorClient.CreateAgreement(agreement);
             var agreementId = agreement.ProposalId;
@@ -189,6 +190,10 @@ namespace GolemSampleApp1.Processor
             Console.WriteLine($"Agreement created with AgreementId: {agreementId}");
 
             Console.WriteLine("Confirm Agreement...");
+            Console.Write("Hit enter to continue");
+            Console.ReadLine();
+            Console.WriteLine();
+
             this.RequestorClient.ConfirmAgreement(agreementId);
 
             Console.WriteLine("Waiting for Agreement response...");

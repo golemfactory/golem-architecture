@@ -21,13 +21,10 @@ namespace GolemStandardSummaryGen
 
             generator.Process();
 
-            foreach(var category in namespaces.Values.GroupBy(ns => ns.Category))
-            {
-                foreach(var ns in category)
-                {
-
-                }
-            }
+            namespaces.Values.SelectMany(ns => ns.Properties.Select(prop => prop.FullName))
+                .OrderBy(propName => propName)
+                .ToList()
+                .ForEach(propName => Console.WriteLine(propName));
 
             Console.ReadKey();
 

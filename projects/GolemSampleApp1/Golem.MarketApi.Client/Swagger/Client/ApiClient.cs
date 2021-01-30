@@ -67,6 +67,8 @@ namespace Golem.MarketApi.Client.Swagger.Client
             Dictionary<String, FileParameter> fileParams, String[] authSettings)
         {
 
+            Console.WriteLine($"doing {method} on {path}");
+
             var request = new RestRequest(path, method);
    
             UpdateParamsForAuth(queryParams, headerParams, authSettings);
@@ -192,7 +194,7 @@ namespace Golem.MarketApi.Client.Swagger.Client
                 return DateTime.Parse(content,  null, System.Globalization.DateTimeStyles.RoundtripKind);
             }
 
-            if (type == typeof(String) || type.Name.StartsWith("System.Nullable")) // return primitive type
+            if (type.Name.StartsWith("System.Nullable")) // return primitive type
             {
                 return ConvertType(content, type); 
             }
