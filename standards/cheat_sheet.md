@@ -54,7 +54,7 @@ Specifications of CPU computing power assigned to a service.
 |**`golem.inf.cpu.architecture`**|`String`|Offer||CPU architecture. |
 |**`golem.inf.cpu.cores`**|`Number (int32)`|Offer||Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from multiple CPUs. |
 |**`golem.inf.cpu.threads`**|`Number (int32)`|Offer||Total number of CPU threads assigned to service. It is a sum of CPU threads possibly from multiple CPUs and cores. |
-|**`golem.inf.cpu.capabilities`**|`List[String]`|Offer||CPU capability flags.  For x86 architectures this property is populated with CPU features as returned by CPUID instruction. |
+|**`golem.inf.cpu.capabilities`**|`List[String]`|Offer||CPU capability flags.  For x86 architectures this property is populated with CPU features as returned by CPUID instruction. For full list, see here: https://github.com/golemfactory/ya-runtime-vm/blob/master/runtime/src/cpu.rs#L59  |
 ---
 
 ## [`golem.inf.mem`](0-commons/golem/inf/mem.md)
@@ -76,7 +76,7 @@ Properties which describe storage properties of Golem service (hardware paramete
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.inf.storage.gib`**|`Number (float)`|Offer|Negotiable|Storage available in GiB |
+|**`golem.inf.storage.gib`**|`Number (float) [Negotiable]`|Offer||Storage available in GiB |
 ---
 
 ## [`golem.runtime`](0-commons/golem/runtime.md)
@@ -87,8 +87,8 @@ Specification of ExeUnit/Runtime to host the resources provided.
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.runtime.name`**|`String`|Offer|Fact|Indicates the ExeUnit/Runtime required/provided.  |
-|**`golem.runtime.version`**|`Version`|Offer|Fact|Version of the ExeUnit/Runtime required/provided. |
+|**`golem.runtime.name`**|`String [Fact]`|Offer||Indicates the ExeUnit/Runtime required/provided.  |
+|**`golem.runtime.version`**|`Version [Fact]`|Offer||Version of the ExeUnit/Runtime required/provided. |
 ---
 
 # Category: 1-node
@@ -112,7 +112,7 @@ Namespace defining identity aspects of a Golem node.
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.node.id.name`**|`String`|Demand/Offer|Fact|Name of the Golem Node's owning party. |
+|**`golem.node.id.name`**|`String [Fact]`|Demand/Offer||Name of the Golem Node's owning party. |
 ---
 
 # Category: 2-service
@@ -125,7 +125,7 @@ Namespace that describes capabilities of a Golem service.
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.srv.caps.multi-activity`**|`Boolean`|Offer||Indicates the that the Provider supports the multi-activity Agreements. |
+|**`golem.srv.caps.multi-activity`**|`Boolean`|Demand/Offer||Indicates the that the Provider supports the multi-activity Agreements. |
 ---
 
 ## [`srv.comp`](2-service/srv/comp.md)
@@ -136,8 +136,8 @@ Generic properties describing the Computation Platform aspects.
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.srv.comp.expiration`**|`Number(int32)`|Demand/Offer||Indicates the expiration time of the entity to which it refers (Demand or Offer). This is expressed as  Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`) |
-|**`golem.srv.comp.task_package`**|`String`|Demand||Indicates the URI of a package/binary which is to be hosted by the Provider. This is a generic property, which, however, may be interpreted differently per each Computation Platform. Therefore, in a Computation Platform-specific namespace it is expected to specify the semantics of `golem.srv.comp.task_package` property for tat Platform. |
+|**`golem.srv.comp.expiration`**|`Number (int32)`|Demand||Indicates the expiration time of the Agreement which is being negotiated. This is expressed as  Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`) |
+|**`golem.srv.comp.task_package`**|`String`|Demand||Indicates the URI of a package/binary which is to be executed by the Provider. This is a generic property, which, however, may be interpreted differently per each Computation Platform. Therefore, in a Computation Platform-specific namespace it is expected to specify the semantics of `golem.srv.comp.task_package` property for that Platform. |
 ---
 
 ## [`srv.comp.wasm`](2-service/srv/comp/wasm.md)
@@ -167,9 +167,8 @@ Namespace with properties defining payment parameters.
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
 |**`golem.com.payment.chosen-platform`**|`String`|Demand/Offer||Payment Platform to be used for settlement of the Agreement. |
-|**`golem.com.payment.debit-note.accept-timeout-negotiable`**|`Number (int32)`|Demand/Offer|Negotiable|Indicates the timeout period for the Requestor to accept incoming Debit Notes. |
-|**`golem.com.payment.platform.NGNT.address`**|`String`|Demand/Offer||The address of GNT payment receiver (Provider) for **plain GNT platform**. |
-|**`golem.com.payment.platform.ZK-NGNT.address`**|`String`|Demand/Offer|Fact|The address of GNT payment receiver (Provider) for **zk-GNT platform**.. |
+|**`golem.com.payment.debit-notes.accept-timeout?`**|`Number (int32)`|Demand/Offer|Negotiable|Indicates the timeout period (in seconds) for the Requestor to accept incoming Debit Notes. |
+|**`golem.com.payment.platform.<platform name>.address`**|`String`|Demand/Offer||The address of GNT payment receiver (Provider) for indicated payment platform. |
 ---
 
 ## [`com.pricing.model`](3-commercial/com/pricing/model.md)
@@ -207,5 +206,7 @@ Namespace defining service usage aspects (usage vector and counters).
 |**`golem.com.usage.vector`**|`List[String]`|Offer||This property specifies the usage counters from which the service cost is calculated. |
 |**`golem.usage.duration_sec`**|`Number (int32)`|||Duration of Activity (in seconds). |
 |**`golem.usage.cpu_sec`**|`Number (int32)`|||Duration of CPU time during Activity execution (in seconds). |
+|**`golem.usage.gib`**|`Number (float)`|||Maximum level ("high water mark") of RAM memory usage during activity execution (in GBytes). |
+|**`golem.usage.storage_gib`**|`Number (float)`|||Maximum level ("high water mark") of storage usage during activity execution (in GBytes). |
 ---
 

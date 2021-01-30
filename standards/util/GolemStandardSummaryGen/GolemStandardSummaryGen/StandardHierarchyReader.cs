@@ -13,7 +13,7 @@ namespace GolemStandardSummaryGen
         public string[] FolderRoots { get; set; }
         public Regex PropertyLineNoCategoryRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s*`\s*$");
 
-        public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s* \[(?<category>.*)\]`\s*$");
+        public Regex PropertyLineRegex { get; } = new Regex(@"^##\s+`(?<name>.+)\s*:\s*(?<type>.*)\s*` .*\[+(?<category>.*)\]\].*$");
         public Regex DescribesLineRegex { get; } = new Regex(@"^###\s+Describes:\s*(?<describes>.*)$");
 
         public StandardHierarchyReader(string[] folderRoots)
