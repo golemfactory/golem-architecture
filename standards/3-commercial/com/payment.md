@@ -45,7 +45,7 @@ During negotiation the Provider will adjust `golem.com.payment.debit-notes.accep
 
 ### Describes: Demand/Offer
 
-The address of GNT payment receiver (Provider) for indicated payment platform.
+The address of GLM payment receiver (Provider) for indicated payment platform.
 
 ## Payment platform selection convention
 
