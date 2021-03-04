@@ -6,7 +6,7 @@
 |category| exe-unit/transports |
 |status| Draft |
 |created| 2021-03-04 |
-|discussion| [pull request](https://github.com/golemfactory/golem-architecture/pull/)
+|discussion| [pull request](https://github.com/golemfactory/golem-architecture/pull/15)
 
 # Abstract
 
