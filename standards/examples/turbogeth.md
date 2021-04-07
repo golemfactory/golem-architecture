@@ -39,7 +39,9 @@ Two negotiable properties to determine Debit Note and Payment intervals:
     ],
     "golem.com.scheme": "payu",
     "golem.com.scheme.payu.debit-note-interval-sec?": 60, // Debit Notes issues every minute
-    "golem.com.scheme.payu.payment-interval-sec?": 360,  // Expects Payments to be made within 5 minutes of Debit Note issue 
+    "golem.com.scheme.payu.payment-interval-sec?": 3600,  // Expects Payments to be made within 1 hour 
+                                                          // of Debit Note issue (this is plausible, 
+                                                          // as typical geth operation time would be days)
     "golem.com.usage.vector": [
         "golem.usage.duration_sec",
         "golem.usage.cpu_sec"
