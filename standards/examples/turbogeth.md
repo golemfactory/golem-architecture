@@ -1,6 +1,6 @@
 ## Turbogeth managed service
 
-This article contains examples of Demands & Offers which cover the a Managed Service example (turbogeth).
+This article contains examples of Demands & Offers which cover the Managed Service example (turbogeth).
 
 Compared to Standards v0.6.0, the sample includes a couple of extensions:
 
@@ -76,4 +76,3 @@ constraints: "(&
     (golem.com.pricing.model=linear)
     )"
 ```
-
