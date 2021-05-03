@@ -4,9 +4,12 @@ This article contains examples of Demands & Offers which cover the a Managed Ser
 
 Compared to Standards v0.6.0, the sample includes a couple of extensions:
 
-### Perpetual Agreement
+### Quasi-Perpetual vs Perpetual Agreement
 
-No `golem.srv.comp.expiration` property specified on the Demand side indicates no expected Agreement end date.
+The Agreement terms must be able to support Agreements enabling long-running services. This is governed by `golem.srv.comp.expiration` property, which indicates the demanded 'lifetime' of the Agreement. There are two approaches to enable long-term agreements:
+
+- (Tactical) Set `golem.srv.comp.expiration` far in the future (like 20 years :) ) to make sure Agreement does not expire until it is no longer required - this is already supported by Golem Standards v0.6.x.
+- (Strategic) No `golem.srv.comp.expiration` property specified on the Demand side indicates no expected Agreement end date.
 
 ### "Eth" Application Namespace
 
@@ -44,7 +47,9 @@ Two negotiable properties to determine Debit Note and Payment intervals:
                                                           // as typical geth operation time would be days)
     "golem.com.usage.vector": [
         "golem.usage.duration_sec",
-        "golem.usage.cpu_sec"
+        "golem.usage.cpu_sec",
+        "golem.usage.gib",
+        "golem.usage.storage_gib"
     ],
     "golem.inf.cpu.cores": 3,
     "golem.inf.mem.gib": 16,

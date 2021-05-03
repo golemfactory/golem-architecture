@@ -14,6 +14,12 @@ Generic properties describing the Computation Platform aspects.
 Indicates the expiration time of the Agreement which is being negotiated. This is expressed as 
 Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`)
 
+## Expiring vs Perpetual Agreements
+
+For scenarios where perpetual (non-expiring) Agreements are required, eg. long-running services, 
+the `golem.srv.comp.expiration` may remain **unspecified**. This indicates the intent of Demand issuer 
+to negotiate a *Perpetual* Agreement.
+
 ### **Examples**
 * `golem.srv.comp.expiration=1608556352458` - specifies the expiration timestamp of the Agreement.
 

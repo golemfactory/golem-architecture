@@ -55,5 +55,9 @@ There are a couple of reasons for the `Negotiable` property convention:
   - This 'confirmation' mechanism is designed to 'protect' the Providers, as their Offers are likely to include numerous 'terms of business' properties which determine the commercial terms of the Agreement. The Provider would like to ensure that the Requestor side is fully accepting those terms, and will properly fulfill them. As the Requestor repeats the Negotiable property values, the Provider assumes the terms of business are accepted and will be followed.
   - Note that if the issuer of a `Negotiable` property does not receive the 'confirmation' in the response - it may still choose to accept that proposal, yet there may be risk involved (eg. the other side may run an older version of agent software which does not support a particular property).
 
+### [Deprecated properties](#deprecated-properties)
+
+Properties (and usage conters) marked as `Deprecated` are still supported in the current version of the Standard, but will be removed in one of subsequent versions of the Standard. The deprecation rules as indicated in the [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy) shall be followed.
+
 ## Standard properties - Cheat sheet
 [Cheat sheet](cheat_sheet.md)

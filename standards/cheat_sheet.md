@@ -19,6 +19,8 @@ This page contains an aggregated summary of all namespaces and properties specif
    * [id](1-node/node/id.md)
 ###	2-service
  * srv
+   * app
+     * [eth](2-service/srv/app/eth.md)
    * [caps](2-service/srv/caps.md)
    * [comp](2-service/srv/comp.md)
      * [wasm](2-service/srv/comp/wasm.md)
@@ -117,6 +119,22 @@ Namespace defining identity aspects of a Golem node.
 
 # Category: 2-service
 
+## [`srv.app.eth`](2-service/srv/app/eth.md)
+
+This namespace defines properties describing Ethereum-related applications & services. 
+
+### Included Namespaces
+
+* [golem.activity](../../../0-commons/golem/activity.md)
+* [golem.inf](../../../0-commons/golem/inf.md)
+
+### Properties
+
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
+|**`golem.srv.app.eth.rpc-port`**|`Number (int32)`|Demand||For Ethereum node hosting services - indicates the Geth RPC endpoint port number requested by the Demand issuer. |
+---
+
 ## [`srv.caps`](2-service/srv/caps.md)
 
 Namespace that describes capabilities of a Golem service. 
@@ -193,6 +211,7 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 |---|---|---|---|---|
 |**`golem.com.scheme`**|`String`|Offer||Scheme of payments made for computing resources consumed. |
 |**`golem.com.scheme.payu.interval_sec`**|`Number`|Offer||For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
+|**`golem.com.scheme.payu.debit-note-interval-sec`**|`Number`|Demand/Offer|Negotiable, Experimental|For "pay-as-you-use" payment scheme, indicates interval of Debit Notes issued during the service usage. |
 ---
 
 ## [`com.usage`](3-commercial/com/usage.md)
@@ -204,9 +223,12 @@ Namespace defining service usage aspects (usage vector and counters).
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
 |**`golem.com.usage.vector`**|`List[String]`|Offer||This property specifies the usage counters from which the service cost is calculated. |
-|**`golem.usage.duration_sec`**|`Number (int32)`|||Duration of Activity (in seconds). |
-|**`golem.usage.cpu_sec`**|`Number (int32)`|||Duration of CPU time during Activity execution (in seconds). |
+|**`golem.usage.duration_sec`**|`Number (int32)`||Deprecated|Duration of Activity (in seconds). |
+|**`golem.usage.duration-sec`**|`Number (int32)`|||Duration of Activity (in seconds). Replacement for deprecated `golem.usage.duration_sec`. |
+|**`golem.usage.cpu_sec`**|`Number (int32)`||Deprecated|Duration of CPU time during Activity execution (in seconds). |
+|**`golem.usage.cpu-sec`**|`Number (int32)`|||Duration of CPU time during Activity execution (in seconds). Replacement for deprecated `golem.usage.cpu_sec`. |
 |**`golem.usage.gib`**|`Number (float)`|||Maximum level ("high water mark") of RAM memory usage during activity execution (in GBytes). |
-|**`golem.usage.storage_gib`**|`Number (float)`|||Maximum level ("high water mark") of storage usage during activity execution (in GBytes). |
+|**`golem.usage.storage_gib`**|`Number (float)`||Deprecated|Maximum level ("high water mark") of storage usage during activity execution (in GBytes). |
+|**`golem.usage.storage-gib`**|`Number (float)`|||Maximum level ("high water mark") of storage usage during activity execution (in GBytes). Replacement for deprecated `golem.usage.storage_gib`. |
 ---
 
