@@ -24,26 +24,28 @@ For "pay-as-you-use" payment scheme, indicates interval of invoices issued durin
 ### **Examples**
 * `golem.com.scheme.payu.interval_sec=3600` - The Provider expects the Requestor to pay for the usage in 1 hour intervals.
 
-## `golem.com.scheme.payu.debit-note-interval-sec? : Number` [[Negotiable, Experimental]](/standards/README.md#fact-vs-negotiable-properties)
+## `golem.com.scheme.payu.debit-notes.interval-sec? : Number` [[Negotiable, Experimental]](/standards/README.md#fact-vs-negotiable-properties)
 
 ### Describes: Demand/Offer
 
 For "pay-as-you-use" payment scheme, indicates interval of Debit Notes issued during the service usage.
 
 ### **Examples**
-* `golem.com.scheme.payu.debit-note-interval-sec?=60` - The Provider will be sending the Debit Notes in 60 second intervals.
+* `golem.com.scheme.payu.debit-notes.interval-sec?=60` - The Provider will be sending the Debit Notes in 60 second intervals.
 
 ## `golem.com.scheme.payu.payment-timeout-sec? : Number` [[Negotiable, Experimental]](/standards/README.md#fact-vs-negotiable-properties)
 
 ### Describes: Demand/Offer
 
-For "pay-as-you-use" payment scheme, indicates the maximum payment delay allowed after Debit Note or Invoice is issued. 
+For "pay-as-you-use" payment scheme, indicates the maximum payment delay allowed after Debit Note or Invoice is issued.
+The Debit Notes' `paymentDueDate` field must be set by the Providar in alignment with the negotiated `payment-timeout-sec` value.
 
 ## "Pay as you use" payment flexibility properties
 
 Note that the two properties:
-- `golem.com.scheme.payu.debit-note-interval-sec?`
+- `golem.com.scheme.payu.debit-notes.interval-sec?`
 - `golem.com.scheme.payu.payment-timeout-sec?`
+
 determine the boundary conditions within which the payer may select the optimal payments strategy. 
 
 It is natural for the Provider to expect payments as quickly as possible, on the other hand the Requestor will want to defer 
