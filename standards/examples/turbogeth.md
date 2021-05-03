@@ -46,10 +46,10 @@ Two negotiable properties to determine Debit Note and Payment intervals:
                                                           // of Debit Note issue (this is plausible, 
                                                           // as typical geth operation time would be days)
     "golem.com.usage.vector": [
-        "golem.usage.duration_sec",
-        "golem.usage.cpu_sec",
+        "golem.usage.duration-sec",
+        "golem.usage.cpu-sec",
         "golem.usage.gib",
-        "golem.usage.storage_gib"
+        "golem.usage.storage-gib"
     ],
     "golem.inf.cpu.cores": 3,
     "golem.inf.mem.gib": 16,
