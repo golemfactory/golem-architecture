@@ -25,7 +25,7 @@ Any "Ethereum-specific" properties would be maintained in this namespace. This s
 
 Two negotiable properties to determine Debit Note and Payment intervals:
 
-`golem.com.scheme.payu.debit-note-interval-sec?` - Debit Notes issue interval
+`golem.com.scheme.payu.debit-notes.interval-sec?` - Debit Notes issue interval
 `golem.com.scheme.payu.payment-interval-sec?` - Expects Payments to be made within specific interval after Debit Note is issued
 
 ### Sample Offer
@@ -41,7 +41,7 @@ Two negotiable properties to determine Debit Note and Payment intervals:
         0.0
     ],
     "golem.com.scheme": "payu",
-    "golem.com.scheme.payu.debit-note-interval-sec?": 60, // Debit Notes issues every minute
+    "golem.com.scheme.payu.debit-notes.interval-sec?": 60, // Debit Notes issues every minute
     "golem.com.scheme.payu.payment-interval-sec?": 3600,  // Expects Payments to be made within 1 hour 
                                                           // of Debit Note issue (this is plausible, 
                                                           // as typical geth operation time would be days)
