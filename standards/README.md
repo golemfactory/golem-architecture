@@ -57,7 +57,7 @@ There are a couple of reasons for the `Negotiable` property convention:
 
 ### [Deprecated properties](#deprecated-properties)
 
-Properties (and usage conters) marked as `Deprecated` are still supported in the current version of the Standard, but will be removed in one of subsequent versions of the Standard. The deprecation rules as indicated in the [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy) shall be followed.
+Properties (and usage conters) marked as `Deprecated` are still supported in the current version of the Standard, but will be removed in one of subsequent versions of the Standard. The deprecation rules as indicated in the [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy#deprecation-policy) shall be followed.
 
 ## Standard properties - Cheat sheet
 [Cheat sheet](cheat_sheet.md)
