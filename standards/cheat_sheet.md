@@ -132,7 +132,7 @@ This namespace defines properties describing Ethereum-related applications & ser
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.srv.app.eth.rpc-port`**|`Number (int32)`|Demand||For Ethereum node hosting services - indicates the Geth RPC endpoint port number requested by the Demand issuer. |
+|**`golem.srv.app.eth.network`**|`String`|Demand||For Ethereum node hosting services - indicates the Ethereum network that the Geth is requested to connect to. |
 ---
 
 ## [`srv.caps`](2-service/srv/caps.md)
@@ -212,7 +212,7 @@ Payment schemes, which describe the "protocols" of payment for services/resource
 |**`golem.com.scheme`**|`String`|Offer||Scheme of payments made for computing resources consumed. |
 |**`golem.com.scheme.payu.interval_sec`**|`Number`|Offer||For "pay-as-you-use" payment scheme, indicates interval of invoices issued during the service usage. |
 |**`golem.com.scheme.payu.debit-notes.interval-sec?`**|`Number`|Demand/Offer|Negotiable, Experimental|For "pay-as-you-use" payment scheme, indicates interval of Debit Notes issued during the service usage. |
-|**`golem.com.scheme.payu.payment-timeout-sec?`**|`Number`|Demand/Offer|Negotiable, Experimental|For "pay-as-you-use" payment scheme, indicates the maximum payment delay allowed after Debit Note or Invoice is issued.  |
+|**`golem.com.scheme.payu.payment-timeout-sec?`**|`Number`|Demand/Offer|Negotiable, Experimental|For "pay-as-you-use" payment scheme, indicates the maximum payment delay allowed after Debit Note or Invoice is issued. The Debit Notes' `paymentDueDate` field must be set by the Providar in alignment with the negotiated `payment-timeout-sec` value. |
 ---
 
 ## [`com.usage`](3-commercial/com/usage.md)

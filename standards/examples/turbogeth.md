@@ -15,7 +15,7 @@ The Agreement terms must be able to support Agreements enabling long-running ser
 
 Any "Ethereum-specific" properties would be maintained in this namespace. This sample includes:
 
-`golem.srv.app.eth.rpc-port` - Indication of RPC endpoint port exposed by the provisioned Geth service.
+`golem.srv.app.eth.network` - Indication of Ethereum [network](https://ethereum.org/en/developers/docs/networks/) that the Geth service shall connect to.
 
 ### Managed Turbogeth runtime
 
@@ -67,7 +67,7 @@ Two negotiable properties to determine Debit Note and Payment intervals:
 ```
 "properties": {
     "golem.node.id.name": "test1",
-    "golem.srv.app.eth.rpc-port": 9001,  // Indicates requested RPC endpoint port number
+    "golem.srv.app.eth.network": "mainnet",  // Indicates requested Ethereum network
 },
 constraints: "(&
     (golem.runtime.name=turbogeth-managed)

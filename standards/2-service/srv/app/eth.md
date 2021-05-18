@@ -8,12 +8,21 @@ This namespace defines properties describing Ethereum-related applications & ser
 
 ## Specific Properties
 
-## `golem.srv.app.eth.rpc-port : Number (int32)` 
+## `golem.srv.app.eth.network : String` 
 
 ### Describes: Demand
 
-For Ethereum node hosting services - indicates the Geth RPC endpoint port number requested by the Demand issuer.
+For Ethereum node hosting services - indicates the Ethereum network that the Geth is requested to connect to.
+
+### Value enum
+|Value| Description |
+|---|---|
+|"mainnet"| Ethereum Mainnet |
+|"rinkeby"| Ethereum Rinkeby Testnet |
+|"goerli"| Ethereum Goerli Testnet |
+|"kovan"| Ethereum Kovan Testnet |
+|"ropsten"| Ethereum Ropsten Testnet |
 
 ### **Examples**
-* `golem.srv.app.eth.rpc-port=9001` - Requestor requests so that the Ethereum node service publishes the RPC endpoint on port 9001.
+* `golem.srv.app.eth.network="mainnet"` - Requestor requests so that the Ethereum node service connects to Ethereum Mainnet.
 
