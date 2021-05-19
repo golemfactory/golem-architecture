@@ -116,21 +116,51 @@ namespace GolemStandardSummaryGen
                 IncludedNamespaces = new List<string>()
             };
 
-            Console.WriteLine($"Processing file: {fileName}");
-
-            using(var file = File.OpenRead(fileName))
-            using(var reader = new StreamReader(file))
+            if (fileName.ToLower().EndsWith(".md"))
             {
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
+                Console.WriteLine($"Processing file: {fileName}");
 
-                    // If namespace description not yet populated - check if this looks like the first header
-                    if (ns.Description == null)
+                using (var file = File.OpenRead(fileName))
+                using (var reader = new StreamReader(file))
+                {
+                    while (!reader.EndOfStream)
                     {
-                        if(line.StartsWith("# ")) // OK this looks like namespace file header
+                        var line = reader.ReadLine();
+
+                        // If namespace description not yet populated - check if this looks like the first header
+                        if (ns.Description == null)
                         {
-                            string descLine = "";
+                            if (line.StartsWith("# ")) // OK this looks like namespace file header
+                            {
+                                string descLine = "";
+
+                                // skip any empty lines that follow.
+                                while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
+
+                                // read and aggregate the description
+                                do
+                                {
+                                    ns.Description += descLine;
+                                    if (!String.IsNullOrWhiteSpace(descLine))
+                                    {
+                                        ns.Description += " ";
+                                    }
+                                }
+                                while (!reader.EndOfStream && !String.IsNullOrWhiteSpace(descLine = reader.ReadLine()) && !descLine.StartsWith("#"));
+
+                                // now add the namespace to the list
+
+                                if (!namespaces.ContainsKey(ns.Name))
+                                {
+                                    namespaces.Add(nsName, ns);
+                                }
+                            }
+                        }
+
+                        // check if line looks like Common Properties:
+                        if (line.StartsWith("## ") && line.ToLower().Contains("common properties"))
+                        {
+                            string descLine = null;
 
                             // skip any empty lines that follow.
                             while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
@@ -138,101 +168,74 @@ namespace GolemStandardSummaryGen
                             // read and aggregate the description
                             do
                             {
-                                ns.Description += descLine;
-                                if (!String.IsNullOrWhiteSpace(descLine))
+                                if (!String.IsNullOrWhiteSpace(descLine) && descLine.Trim().StartsWith("*"))
                                 {
-                                    ns.Description += " ";
+                                    ns.IncludedNamespaces.Add(descLine);
                                 }
                             }
                             while (!reader.EndOfStream && !String.IsNullOrWhiteSpace(descLine = reader.ReadLine()) && !descLine.StartsWith("#"));
 
-                            // now add the namespace to the list
+                        }
 
-                            if (!namespaces.ContainsKey(ns.Name))
+                        // check if line matches the "property layout" regex (either one of two formats)
+                        var match = this.PropertyLineRegex.Match(line);
+                        var matchNoCategory = this.PropertyLineNoCategoryRegex.Match(line);
+
+                        if (match.Success || matchNoCategory.Success)
+                        {
+                            string descLine = "";
+
+                            // if no category found, but still a property line - process the no-category match
+                            if (!match.Success)
+                                match = matchNoCategory;
+
+                            var property = new PropertySummary()
                             {
-                                namespaces.Add(nsName, ns);
-                            }
-                        }
-                    }
+                                Namespace = nsName,
+                                Type = match.Groups["type"].Value,
+                                FullName = match.Groups["name"].Value.Trim(),
+                                Category = match.Groups["category"].Value.Trim()
+                            };
 
-                    // check if line looks like Common Properties:
-                    if(line.StartsWith("## ") && line.ToLower().Contains("common properties"))
-                    {
-                        string descLine = null;
-
-                        // skip any empty lines that follow.
-                        while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
-
-                        // read and aggregate the description
-                        do
-                        {
-                            if (!String.IsNullOrWhiteSpace(descLine) && descLine.Trim().StartsWith("*"))
+                            if (!property.FullName.StartsWith(property.Namespace) &&
+                                !property.FullName.StartsWith("golem." + property.Namespace))
                             {
-                                ns.IncludedNamespaces.Add(descLine);
+                                Console.WriteLine($"Warning: property name {property.FullName} is not aligned with namespace {property.Namespace}");
                             }
-                        }
-                        while (!reader.EndOfStream && !String.IsNullOrWhiteSpace(descLine = reader.ReadLine()) && !descLine.StartsWith("#"));
 
-                    }
-
-                    // check if line matches the "property layout" regex (either one of two formats)
-                    var match = this.PropertyLineRegex.Match(line);
-                    var matchNoCategory = this.PropertyLineNoCategoryRegex.Match(line);
-
-                    if (match.Success || matchNoCategory.Success)
-                    {
-                        string descLine = "";
-
-                        // if no category found, but still a property line - process the no-category match
-                        if (!match.Success)
-                            match = matchNoCategory;
-
-                        var property = new PropertySummary()
-                        {
-                            Namespace = nsName,
-                            Type = match.Groups["type"].Value,
-                            FullName = match.Groups["name"].Value.Trim(),
-                            Category = match.Groups["category"].Value.Trim()
-                        };
-
-                        if (!property.FullName.StartsWith(property.Namespace) &&
-                            !property.FullName.StartsWith("golem." + property.Namespace) )
-                        {
-                            Console.WriteLine($"Warning: property name {property.FullName} is not aligned with namespace {property.Namespace}");
-                        }
-
-                        // skip any empty lines that follow.
-                        while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
-
-                        match = this.DescribesLineRegex.Match(descLine);
-
-                        if(match.Success)
-                        {
-                            property.Describes = match.Groups["describes"].Value;
-
-                            // skip empty lines after the "Describes: " line
+                            // skip any empty lines that follow.
                             while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
-                        }
 
-                        // read and aggregate the description
-                        do
-                        {
-                            property.Description += descLine;
-                            if (!String.IsNullOrWhiteSpace(descLine))
+                            match = this.DescribesLineRegex.Match(descLine);
+
+                            if (match.Success)
                             {
-                                property.Description += " ";
+                                property.Describes = match.Groups["describes"].Value;
+
+                                // skip empty lines after the "Describes: " line
+                                while (!reader.EndOfStream && String.IsNullOrWhiteSpace(descLine = reader.ReadLine())) ;
                             }
+
+                            // read and aggregate the description
+                            do
+                            {
+                                property.Description += descLine;
+                                if (!String.IsNullOrWhiteSpace(descLine))
+                                {
+                                    property.Description += " ";
+                                }
+                            }
+                            while (!reader.EndOfStream && !String.IsNullOrWhiteSpace(descLine = reader.ReadLine()) && !descLine.StartsWith("#"));
+
+                            // done processing the property, now add it to namespace
+
+                            this.AddPropertyToNamespaces(property, namespaces);
+
                         }
-                        while (!reader.EndOfStream && !String.IsNullOrWhiteSpace(descLine = reader.ReadLine()) && !descLine.StartsWith("#") );
-
-                        // done processing the property, now add it to namespace
-
-                        this.AddPropertyToNamespaces(property, namespaces);
-
                     }
                 }
+
             }
         }
-
     }
 }

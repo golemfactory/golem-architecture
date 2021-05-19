@@ -1,6 +1,6 @@
 # Golem Computation Resource Standards
 
-## Version 0.6.0
+## Version 0.7.0
 
 This repository defines a framework for the specification of Standards for Computing Resources available on Golem ecosystem. It is supplementary to Golem Demand & Offer Specification Language and is meant to prescriptively implement structure in a broad space of conceivable services.
 
@@ -54,6 +54,10 @@ There are a couple of reasons for the `Negotiable` property convention:
 - To establish a 'cross-check' mechanism to indicate the parties conform with compatible property sets. The reasoning is as follows: a party which includes `Negotiable` properties in their Proposal expects the other side to understand the semantics of those properties. Yet, the market matching mechanism does not include (intentionally) the validation of whether properties of a Demand are properly 'understood' by the Provider (and vice versa). Therefore the responder is expected to explicitly 'confirm' they are familiar with a received property - by repeating it in their counter-Proposal. 
   - This 'confirmation' mechanism is designed to 'protect' the Providers, as their Offers are likely to include numerous 'terms of business' properties which determine the commercial terms of the Agreement. The Provider would like to ensure that the Requestor side is fully accepting those terms, and will properly fulfill them. As the Requestor repeats the Negotiable property values, the Provider assumes the terms of business are accepted and will be followed.
   - Note that if the issuer of a `Negotiable` property does not receive the 'confirmation' in the response - it may still choose to accept that proposal, yet there may be risk involved (eg. the other side may run an older version of agent software which does not support a particular property).
+
+### [Deprecated properties](#deprecated-properties)
+
+Properties (and usage conters) marked as `Deprecated` are still supported in the current version of the Standard, but will be removed in one of subsequent versions of the Standard. The deprecation rules as indicated in the [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy#deprecation-policy) shall be followed.
 
 ## Standard properties - Cheat sheet
 [Cheat sheet](cheat_sheet.md)
