@@ -89,8 +89,9 @@ Specification of ExeUnit/Runtime to host the resources provided.
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.runtime.name`**|`String [Fact]`|Offer||Indicates the ExeUnit/Runtime required/provided.  |
-|**`golem.runtime.version`**|`Version [Fact]`|Offer||Version of the ExeUnit/Runtime required/provided. |
+|**`golem.runtime.capabilities`**|`List[String]`|Offer||Indicates the supported capabilities of the ExeUnit/Runtime offered on the market. |
+|**`golem.runtime.name`**|`String`|Offer||Indicates the ExeUnit/Runtime required/provided.  |
+|**`golem.runtime.version`**|`Version`|Offer||Version of the ExeUnit/Runtime required/provided. |
 ---
 
 # Category: 1-node
