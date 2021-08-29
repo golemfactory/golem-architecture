@@ -1,6 +1,6 @@
-## Turbogeth managed service
+## Erigon managed service
 
-This article contains examples of Demands & Offers which cover the Managed Service example (turbogeth).
+This article contains examples of Demands & Offers which cover the Managed Service example (Turbogeth).
 
 Compared to Standards v0.6.0, the sample includes a couple of extensions:
 
@@ -19,7 +19,7 @@ Any "Ethereum-specific" properties would be maintained in this namespace. This s
 
 ### Managed Turbogeth runtime
 
-`golem.runtime.name=turbogeth-managed` - Indicated a Managed Turbogeth service to be launched
+`golem.runtime.name=turbogeth-managed` - Indicates a Managed Turbogeth service to be launched
 
 ### PAYU payment scheme enhancements
 
