@@ -1,6 +1,6 @@
 # Golem Computation Resource Standards
 
-## Version 0.7.0
+## Version 0.7.1
 
 This repository defines a framework for the specification of Standards for Computing Resources available on Golem ecosystem. It is supplementary to Golem Demand & Offer Specification Language and is meant to prescriptively implement structure in a broad space of conceivable services.
 

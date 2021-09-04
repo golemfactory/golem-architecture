@@ -7,7 +7,23 @@ Specification of ExeUnit/Runtime to host the resources provided.
   
 ## Specific Properties
 
-## `golem.runtime.name : String [Fact]` 
+## `golem.runtime.capabilities : List[String]` 
+
+### Describes: Offer
+
+Indicates the supported capabilities of the ExeUnit/Runtime offered on the market.
+
+### Value enum
+| Value      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| "vpn" | VPN network capabilities are supported |
+|            |                                                    |
+
+### **Examples**
+
+* `golem.runtime.capabilities=["vpn"]` - declares runtime supporting VPN capabilities.
+
+## `golem.runtime.name : String` 
 
 ### Describes: Offer
 
@@ -23,7 +39,7 @@ Indicates the ExeUnit/Runtime required/provided.
 
 * `golem.runtime.name="wasmtime"` - declares that `wasmtime` is available as runtime on the provider node.
   
-## `golem.runtime.version : Version [Fact]` 
+## `golem.runtime.version : Version` 
 
 ### Describes: Offer
 
