@@ -12,7 +12,8 @@ Generic properties describing the Computation Platform aspects.
 ### Describes: Demand
 
 Indicates the expiration time of the Agreement which is being negotiated. This is expressed as 
-Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`)
+Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`).
+After this time both sides are allowed to terminate the Agreement; and Provider actually does that.
 
 ## Expiring vs Perpetual Agreements
 
