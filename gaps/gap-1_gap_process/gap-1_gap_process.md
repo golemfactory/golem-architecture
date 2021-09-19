@@ -20,10 +20,9 @@ The GAP process responds to a number of needs:
 
 ### GAP content & format
 
-- A GAP shall be raised as a ticket visible in `golem-architecture` repo in [GAP project](https://github.com/golemfactory/golem-architecture/projects/1).
-- A GAP ticket shall be titled along the lines of `GAP-draft Title`.
+- A GAP shall be raised as a pull request in `golem-architecture` repo titled along the lines of `GAP-draft Title`, including all the relevant artifacts (eg. GAP summary). 
 - A GAP summary `gap-draft_title.md` shall be provided (following a [template](../gap-template.md)) in `./gaps/gap-draft_title/`.
-- A pull request shall be raised with proposed GAP summary (and relevant artifacts) and attached to the GAP ticket.
+- The GAP pull request shall be included in [GAP project](https://github.com/golemfactory/golem-architecture/projects/1).
 
 ### GAP workflow
 
