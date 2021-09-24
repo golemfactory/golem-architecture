@@ -14,7 +14,7 @@ We are introducing a Golem Amendment Proposal process to establish governance ov
 The GAP process responds to a number of needs:
 - Establish governance over features, specification/standards amendments and process improvements managed by Golem Factory.
 - Ensure visibility of features in the Golem pipeline - this is especially valuable for interested parties outside of Golem Factory.
-- Provide ability for Golem community to submit proposals for features in a controlled, systematic manner.
+- Open the path to provide ability for Golem community to submit proposals for features in a controlled, systematic manner.
 
 ## Specification
 
