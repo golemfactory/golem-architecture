@@ -1,10 +1,10 @@
 ---
-gap: <to be assigned>
+gap: 3
 title: Mid Agreement payments
 description: Specification of Agreement standard for negotiating and describing continues payments during task execution.  
-author: nieznany.sprawiciel (@nieznanysprawiciel), stranger80 (@stranger80)>, shadeofblue (@shadeofblue)
+author: nieznany.sprawiciel (@nieznanysprawiciel), stranger80 (@stranger80), shadeofblue (@shadeofblue)
 status: Draft
-type: Standards
+type: Feature
 ---
 
 ## Abstract
@@ -76,7 +76,7 @@ if no value isn't handled properly.
 ## Test Cases
 TODO:
 
-## [Optional] Reference Implementation
+## Reference Implementation
 N/A
 
 ## Security Considerations
