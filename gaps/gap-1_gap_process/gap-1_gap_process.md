@@ -2,7 +2,7 @@
 gap: 1
 title: GAP Process
 description: Specification of Golem Amendment Proposal process.
-author: stranger80 (@stranger80)>
+author: stranger80 (@stranger80)
 status: Draft
 type: Meta
 ---
