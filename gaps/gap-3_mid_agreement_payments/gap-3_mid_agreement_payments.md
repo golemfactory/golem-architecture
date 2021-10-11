@@ -37,13 +37,26 @@ after it was accepted. This specification describes, how Requestor and Provider 
 
 ### Deprecation
 
-`golem.com.scheme.payu.interval_sec` - Replaced by negotiable `golem.com.scheme.payu.debit-note-interval-sec?`. Provider
+`golem.com.scheme.payu.interval_sec` - Replaced by negotiable `golem.com.scheme.payu.debit-note.interval-sec?`. Provider
 using mid-agreement payments specification can't set `interval_sec` property.
 
-**Note:** We encourage using `golem.com.scheme.payu.debit-note-interval-sec?` property in new implementations,
+**Note:** We encourage using `golem.com.scheme.payu.debit-note.interval-sec?` property in new implementations,
 even when parties don't need mid-agreement payments.
 
+### Impact analysis
 
+Following modifications need to be applied to components in Golem suite:
+
+- `yagna`
+  - payment module - confirm that DebitNote `due_date` logic is implemented to ensure accepted DebitNotes are paid in time
+- `ya-provider` 
+  - logic to support negotiation of `golem.com.scheme.payu.debit-note-interval-sec?` and `golem.com.scheme.payu.payment-timeout-sec?` properties
+  - logic of `golem.com.scheme.payu.debit-note.interval-sec?` to ensure DebitNotes are generated based on negotiated time interval
+  - logic of `golem.com.scheme.payu.payment-timeout-sec?` to validate payments are made according to negotiated terms
+- `yapapi`/`yajsapi` 
+  - logic to support negotiation of `golem.com.scheme.payu.debit-note.interval-sec?` and `golem.com.scheme.payu.payment-timeout-sec?` properties
+  
+  
 ## Rationale
 
 ### Debit Note interval and payment timeout relative to Agreement approve timestamp
@@ -54,12 +67,12 @@ and then sends it to Requestor.
 
 We considered malicious Provider, that tries to break Agreement, not from his fault, by waiting with
 sending Debit Note, and stealing this way time required for making transaction on blockchain.
-The conclusion was, that we need absolut timestamp for computing payment timeout, which both parties
+The conclusion was, that we need absolute timestamp for computing payment timeout, which both parties
 can agree on.
 
 ### Deprecation of `golem.com.scheme.payu.interval_sec`
 
-This property was used by Provider for declaring  interval between Debit Notes. Since more Debit Notes means
+This property was used by Provider for declaring the interval between Debit Notes. Since more Debit Notes means
 more transactions, it is crucial for Requestor to negotiate higher intervals. On the other side Provider wants
 to be paid as often as possible. That's why the choice of this value can't be left
 in Provider's hands and these 2 parties have to negotiate it.
