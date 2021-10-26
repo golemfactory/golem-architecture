@@ -1,5 +1,5 @@
 ---
-gap: <to be assigned>
+gap: 4
 title: Computation Manifest
 description:
 author: mf (@mfranciszkiewicz)
