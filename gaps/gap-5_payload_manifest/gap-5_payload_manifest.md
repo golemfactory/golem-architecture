@@ -1,5 +1,5 @@
 ---
-gap: <to be assigned>
+gap: 5
 title: Computation Payload Manifest
 description: Replacement for the `golem.srv.comp.task_package` property
 author: mf (@mfranciszkiewicz)
@@ -20,7 +20,7 @@ signature.
 The main motivation behind the proposed changes is to provide a source of trust for the executed Payload. The Manifest 
 may include a default, safe set of actions Requestors can execute on a Provider's machine, approved by a trusted 
 Authority. This source of trust allows for implementing high-risk features, such as Internet access for Runtimes, where 
-all traffic is router via Provider's OS. In order to prevent unwanted actions in a public network on Provider's behalf, 
+all traffic is routed via Provider's OS. In order to prevent unwanted actions in a public network on Provider's behalf, 
 she must remain in control of all the actions executed by the Requestor.
 
 The secondary objective is to provide multiple locations of Payloads, targeting different hardware architectures and 
