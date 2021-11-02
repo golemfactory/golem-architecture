@@ -89,7 +89,12 @@ from the ground up using properties only.
     The `match` property could be one of:
 
       - `"strict"`: byte-to-byte argument equality (**default**)
-      - `"regex"`: treat arguments as regular expressions (UTF-8 Unicode mode)
+      - `"regex"`: treat arguments as regular expressions
+
+        Syntax: Perl-compatible regular expressions (UTF-8 Unicode mode),
+        w/o the support for look around and backreferences (among others);
+        for more information read the documentation of the Rust
+        [regex](https://docs.rs/regex/latest/regex/) crate.
 
 5. `golem.srv.comp.manifest.net` (sub-namespace)
 
@@ -165,7 +170,7 @@ from the ground up using properties only.
     }
     ```
 
-1. Imploded JSON (optional)
+2. Imploded JSON (optional)
 
     ```json
     {
@@ -193,7 +198,7 @@ from the ground up using properties only.
     }
     ```
 
-2. YAML
+3. YAML
 
     ```yaml
     ---
