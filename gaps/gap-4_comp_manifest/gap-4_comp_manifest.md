@@ -35,11 +35,12 @@ Computation Manifest can take one of the following forms:
 - `golem.srv.comp.manifest` namespace properties, an extension to
   Golem Computation Resource Standards.
 
-The Computation Manifest is expected be included in a Computation Payload
+The Computation Manifest is expected to be included in a Computation Payload
 Manifest ([GAP](https://github.com/golemfactory/golem-architecture/pull/28))
 file, where its hash is co-signed with Payload hashes. If a Computation
-Manifest is included in the Demand (and thus, Agreement), it's role is to
-derive the properties from and override the initially sourced Manifest
+Manifest is included in the Demand (and thus, Agreement), its role is to
+derive the properties from and override the initially sourced Manifest.
+
 ### GCRS `golem.srv.comp.manifest` namespace
 
 Intended for overriding an external Manifest but allows defining a new Manifest
@@ -226,6 +227,7 @@ approved by the signing authority (e.g. Golem Factory). The prevalent case of
 sourcing would be to download the Manifest included within a Computation
 Payload. This way, in most common cases, Requestors won't need to provide a
 custom Computation Manifest.
+
 ### Usefulness of the new property set
 
 Because some Providers may be equipped with a custom set of filters, they may
