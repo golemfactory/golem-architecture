@@ -28,12 +28,13 @@ after it was accepted. This specification describes, how Requestor and Provider 
 | `golem.com.scheme.payu.payment-timeout-sec?` | Number (uint32) [Negotiable] | Maximum time to receive payment for any Debit Note. This time is counted from Debit Note’s issue date. |
 
 - Requestor can ignore Debit Note, if it came before expected interval
-  - If Requestor is spammed with Debit Notes by Provider, he is allowed to break Agreement from Provider's fault
+  - If Requestor is spammed with Debit Notes by Provider, he is allowed to break Agreement stating (in TerminateAgreement) that the **Reason** for termination is Provider's perceived misconduct. He should set `golem.requestor.code` field in **Reason** structure to `ToManyDebitNotes`.
 - In the mechanism suggested above a Debit Note shall have PaymentDueDate set, and the values must be set so that they correspond with the agreed `payment-interval-sec` value.
   - Intervals are relative to the agreement timestamp
 - It is up to payment driver implementation to decide, when we can treat Debit Note as paid.
   - Requestor's payment driver must ensure, that transaction will be confirmed in given timestamp. 
   - Provider can check `DebitNoteSettledEvent` timestamp to know, if Debit Note was paid in time.
+    - Provider is allowed to terminate Agreement, if he didn't get payment. He should set `golem.provider.code` field in **Reason** structure to `DebitNoteNotPaid`.
 
 ### Deprecation
 
@@ -55,6 +56,7 @@ Following modifications need to be applied to components in Golem suite:
   - logic of `golem.com.scheme.payu.payment-timeout-sec?` to validate payments are made according to negotiated terms
 - `yapapi`/`yajsapi` 
   - logic to support negotiation of `golem.com.scheme.payu.debit-note.interval-sec?` and `golem.com.scheme.payu.payment-timeout-sec?` properties
+  - logic to ensure, that Provider doesn't overwhelm Requestor with big amount of DebitNotes
   
   
 ## Rationale
