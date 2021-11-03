@@ -64,7 +64,7 @@ A fortnightly (once per 2 weeks) Tech Council session is an opportunity for part
   - other, unusual actions.   
 
 ## Rationale
-This proposal is a response to Tech Council approach whereby all Tech Council members were meeting weekly and viewing/reading/explaining the status of all items on Kanban board. This approach was inefficient and led to 
+This proposal is a response to Tech Council approach whereby all Tech Council members were meeting weekly and viewing/reading/explaining the status of all items on Kanban board. This approach was inefficient.
 
 ## Backwards Compatibility
 There is no backward compatibility issue - we are proposing to improve the process and leave no dependencies on its previous shape.  
