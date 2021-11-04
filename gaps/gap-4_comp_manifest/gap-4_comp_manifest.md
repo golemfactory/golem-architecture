@@ -19,8 +19,8 @@ computations they may execute on a Provider's machine.
 The need for a Computation Manifest originates from the upcoming Internet
 access feature, where each outbound request is routed via Provider's host
 operating system. In order to prevent unwanted / illegal behavior on Provider's
-behalf, she needs to remain in control of actions that Requestors can execute
-on her machine.
+behalf, they need to remain in control of actions that Requestors can execute
+on their machine.
 
 With Computation Manifests, Requestors constrain themselves to
 a certain set of allowed actions, to be negotiated with and approved by a
