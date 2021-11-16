@@ -35,21 +35,53 @@ Computation Manifest can take one of the following forms:
 - `golem.srv.comp.manifest` namespace properties, an extension to
   Golem Computation Resource Standards.
 
-The Computation Manifest is expected to be included in a Computation Payload
-Manifest ([GAP](https://github.com/golemfactory/golem-architecture/pull/28))
-file, where its hash is co-signed with Payload hashes. If a Computation
-Manifest is included in the Demand (and thus, Agreement), its role is to
-derive the properties from and override the initially sourced Manifest.
+The Computation Manifest is expected to be included in a Payload
+Manifest ([GAP-5](https://github.com/golemfactory/golem-architecture/pull/28))
+embedded or linked in an Agreement, where its hash is co-signed with Payload 
+hashes. If a Computation Manifest is defined in a Demand (and thus, 
+Agreement) via GCRS properties, its role is to override those properties in 
+the original Manifest.
+
+The process of signing and verifying a Computation Manifest remains out of 
+scope of this GAP. Computation Manifests are meant to be signed externally, 
+i.e. either as a part of an Agreement or a Computation Payload Manifest.
+
+### Development cycle
+
+Computation Manifest is an optional component of a Payload Manifest, 
+created by an application developer. Payload Manifests may be signed by any 
+willing entity, who is free to establish and govern their own signing 
+process; i.e., that entity may choose to sign any submitted manifest or 
+involve extra preliminary steps, e.g.:
+
+- manifest correctness / semantic validation
+- opinionated security checks
+- developer identity verification
+- charging fees
+
+Initially, Golem Factory may enact as a trusted authority by
+verifying and signing application manifests created by chosen developers.
+This process is out of scope of this GAP.
+
+Computation Manifests can optionally be specified or extended by Requestors
+in their Demands. CMs defined solely via properties will lack the signature of
+a trusted authority, unless the Requestor is considered as one and the 
+Agreement is signed with his trusted key counterpart.
+
+Positive verification of a Payload Manifest signature requires Providers to 
+add the public key of an entity to their trusted key storage. The storage is 
+initialized with a default set of trusted keys, including the one of 
+Golem Factory.
 
 ### GCRS `golem.srv.comp.manifest` namespace
 
-Intended for overriding an external Manifest but allows defining a new Manifest
+Intended for overriding an external Manifest. Allows defining new Manifests
 from the ground up using properties only.
 
 1. `golem.srv.comp.manifest.version : String`
 
-    Specifies a version (Semantic Versioning 2.0 specification) of the manifest,
-    **defaults** to "0.1.0"
+    Specifies a version (Semantic Versioning 2.0 specification) of the 
+    manifest, **defaults** to "0.1.0"
 
 2. `golem.srv.comp.manifest.script` (sub-namespace)
 
@@ -72,19 +104,20 @@ from the ground up using properties only.
       Command context (e.g. `env`) or argument matching mode need to be
       specified for a command.
 
-      E.g. `["{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"MYVAR\": \"42\", \"match\": \"strict\" }}}"]`
+      E.g. `["{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"MYVAR\": \"42\" }, \"match\": \"strict\" }}"]`
 
     - mix of both
 
     `"deploy"`, `"start"` and `"terminate'` commands are always allowed.
-    These values become the **default** if no `manifest.script.command` property
-    has been set in the Demand, but the `manifest` namespace is present.
+    These values become the **default** if no `manifest.script.command` 
+    property has been set in the Demand, but the `manifest` namespace is 
+    present.
 
 4. `golem.srv.comp.manifest.script.match : String`
 
-    Selects a default way of comparing command arguments stated in the manifest
-    and the ones received in the ExeScript, unless stated otherwise in a
-    command JSON object.
+    Selects a default way of comparing command arguments stated in the 
+    manifest and the ones received in the ExeScript, unless stated 
+    otherwise in a command JSON object.
 
     The `match` property could be one of:
 
