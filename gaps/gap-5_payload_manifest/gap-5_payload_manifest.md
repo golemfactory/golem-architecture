@@ -104,12 +104,16 @@ Reserved for future use. Specifies signer's public key when it's not possible to
 
 ### Base64 encoding
 
-Base64-encoded JSON manifest enables straightforward checksum calculation, without concern for JSON property ordering.
+Base64-encoded JSON manifest enables straightforward checksum calculation, 
+without concern for JSON property ordering.
 
 ## Backwards Compatibility
 
-The `golem.srv.comp.payload` namespace will be built from the `golem.srv.comp.task_package` property for compatibility 
-reasons.
+Providers need to declare that they support payload manifests by setting 
+the `golem.srv.caps.payload-manifest` property to `true`.
+
+The `golem.srv.comp.task_package` property will still be supported for 
+compatibility reasons, until it's removed (2 minor versions).
 
 ## Test Cases
 
