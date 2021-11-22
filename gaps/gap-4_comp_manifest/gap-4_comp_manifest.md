@@ -101,12 +101,16 @@ from the ground up using properties only.
 
     - UTF-8 encoded JSON strings
 
-      Command context (e.g. `env`) or argument matching mode need to be
+      Command context (e.g. `env`) or argument / property matching mode need to be
       specified for a command.
 
-      E.g. `["{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"MYVAR\": \"42\" }, \"match\": \"strict\" }}"]`
+      E.g.:
+      - `["{\"run\": { \"value\": \"/bin/date -R\", \"env\": { \"VAR\": \"42\" } }"]`
+      - `["{\"run\": { \"value\": \"/bin/date\", \"env\": { \"VAR\": \"4[0-9]+\" }, \"match\": \"regex\"}"]`
+      - `["{\"run\": { \"value\": \"/bin/date -R\", \"env\": { \"VAR\": { \"value\": \"4[0-9]+\", \"match\": \"regex\" } }"]`
+      - `["{\"run\": { \"value\": \"/bin/[a-zA-Z0-9]*\", \"match\": \"regex\" }"]`
 
-    - mix of both
+    - a combination of both
 
     `"deploy"`, `"start"` and `"terminate'` commands are always allowed.
     These values become the **default** if no `manifest.script.command` 
@@ -115,33 +119,60 @@ from the ground up using properties only.
 
 4. `golem.srv.comp.manifest.script.match : String`
 
-    Selects a default way of comparing command arguments stated in the 
-    manifest and the ones received in the ExeScript, unless stated 
+    Selects a default way of comparing arguments and parameters of commands 
+    stated in the manifest and the ones received in an ExeScript, unless set 
     otherwise in a command JSON object.
-
-    The `match` property could be one of:
-
-      - `"strict"`: byte-to-byte argument equality (**default**)
-      - `"regex"`: treat arguments as regular expressions
-
-        Syntax: Perl-compatible regular expressions (UTF-8 Unicode mode),
-        w/o the support for look around and backreferences (among others);
-        for more information read the documentation of the Rust
-        [regex](https://docs.rs/regex/latest/regex/) crate.
 
 5. `golem.srv.comp.manifest.net` (sub-namespace)
 
     Applies constraints to networking. Currently, outgoing requests to the
-    public Internet network are covered.
+    public network (Internet) are covered.
 
 6. `golem.srv.comp.manifest.net.inet.out.protocols : List[String]`
 
-    List of allowed outbound protocols. Currently **fixed at** `["http", "https"]`.
+    List of allowed outbound protocols. Currently, **fixed at** 
+    `["http", "https", "ws", "wss"]`.
 
 7. `golem.srv.comp.manifest.net.inet.out.urls : List[String]`
 
-    List of allowed external URLs that outbound requests can be sent to.
-    E.g. `["http://golemfactory.s3.amazonaws.com/file1", "http://golemfactory.s3.amazonaws.com/file2"]`
+    List of allowed external URLs that outbound requests can be sent to, in form of:
+
+    - UTF-8 encoded strings
+
+      E.g.: `["http://golemfactory.s3.amazonaws.com/file1", "http://golemfactory.s3.amazonaws.com/file2"]`
+   
+    - UTF-8 encoded JSON strings
+      
+      E.g.: `["{\"value\": \"http://golemfactory.s3.amazonaws.com/file[0-9]+\", \"match\": \"regex\" }"]`
+
+    - a combination of both
+   
+8. `golem.srv.comp.manifest.net.inet.out.match : String`
+
+    Selects a default way of comparing URLs stated in the manifest 
+    and the ones received in an ExeScript, unless set otherwise 
+    in a URL JSON object.
+
+#### Value matching
+
+It's possible to set a namespace-wide matching mode via `script.match` or
+`inet.out.match` properties, which affect the way the `commands` or `urls` 
+are compared, respectively.
+
+The `match` property could be one of:
+
+  - `"strict"`: byte-to-byte value equality (**default**)
+  - `"regex"`: treat values as regular expressions
+
+    Syntax: Perl-compatible regular expressions (UTF-8 Unicode mode),
+    w/o the support for look around and back-references (among others);
+    for more information read the documentation of the Rust
+    [regex](https://docs.rs/regex/latest/regex/) crate.
+  
+Each command or URL provided as a string-encoded JSON object can
+override the namespace-wide matching mode, as shown in the property 
+descriptions above. Each nested object is allowed to override the matching 
+mode on a higher level.
 
 #### Example
 
@@ -150,7 +181,7 @@ from the ground up using properties only.
   "golem.srv.comp.manifest.script.match": "regex",
   "golem.srv.comp.manifest.script.commands": [
     "run /bin/cat /etc/motd",
-    "{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"MYVAR\": \"42\", \"match\": \"strict\" }}}"
+    "{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"VAR\": \"42\" }, \"match\": \"strict\" }}"
   ],
   "golem.srv.comp.manifest.net.inet.out.protocols": [
     "http",
@@ -179,7 +210,7 @@ from the ground up using properties only.
             "run": {
               "args": "/bin/date -R",
               "env": {
-                "MYVAR": "42"
+                "VAR": "42"
               },
               "match": "strict"
             }
@@ -214,7 +245,7 @@ from the ground up using properties only.
           "run": {
             "args": "/bin/date -R",
             "env": {
-              "MYVAR": "42"
+              "VAR": "42"
             },
             "match": "strict"
           }
@@ -242,7 +273,7 @@ from the ground up using properties only.
       - run:
           args: "/bin/date -R"
           env:
-            MYVAR: '42'
+            VAR: '42'
           match: strict
     net:
       inet:
