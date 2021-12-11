@@ -17,7 +17,7 @@ The purpose is to ensure the Tech Council operates efficiently, with as few sync
 
 The main purpose of this proposed process is to make proceedings of Tech Council items more efficient and asynchronous (eg. have them raised and reviewed offline, and only use Tech Council sessions to discuss questions on items which have been already digested by participants). 
 
-This is why responsibilities of the Facilitator also must include upfront facilitation of Tech Council session agenda, so that the participants aregiven an early heads-up and are able to prepare for the session (eg. by reading and reviewing items proposed on the agenda).
+This is why the responsibilities of the Facilitator also must include upfront facilitation of the Tech Council session agenda so that the participants are given an early heads-up and are able to prepare for the session (eg. by reading and reviewing items proposed on the agenda).
 
 This section specifies the rules for Tech Council proceedings, by defining key elements and workflow.
 
