@@ -54,7 +54,7 @@ The newly raised topics shall be reviewed by the **Facilitator** and included in
 
 A fortnightly (once per 2 weeks) Tech Council session is an opportunity for participants to address the questions which have been raised against the Tech Council items. 
 
-- A Tech Council session **agenda** is prepared by the **Facilitator** and announced to all participants **at least 2 days prior** to the scheduled session.
+- A Tech Council session **agenda** is prepared by the **Facilitator** and announced to all participants **at least 2 days prior** to the scheduled session, via email & #tech-council channel for all interested parties to be able to join.
 - The **agenda** lists items with respective **authors**, requesting **authors** to be present for the session.
 - The session should cover the items listed in the proposed **agenda**, aiming to:
   - approve the item (by pushing it to next stage of its workflow as per its Kanban)
