@@ -24,7 +24,7 @@ This section specifies the rules for Tech Council proceedings, by defining key e
 ### Tech Council Members
 
 Two roles of Tech Council members are specified:
-- **Participant** - participant of Tech Council proceedings and sessions
+- **Participant** - participant of Tech Council proceedings and sessions (note that any Golem Factory team member may participate in Tech Council sessions & discussions).
 - **Facilitator** - responsible for:
   - reviewing and managing the Kanban board and GAP board
   - preparing agenda for Tech Council sessions
