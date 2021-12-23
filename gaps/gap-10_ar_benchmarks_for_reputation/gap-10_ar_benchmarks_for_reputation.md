@@ -1,12 +1,11 @@
 ---
-gap: <to be assigned>
-title: <The GAP title is a few words, not a complete sentence>
-description: <Description is one full (short) sentence>
-author: <a list of the author's or authors' name(s) and/or username(s), or name(s) and email(s), e.g. (use with the parentheses or triangular brackets): FirstName LastName (@GitHubUsername), FirstName LastName <foo@bar.com>, FirstName (@GitHubUsername) and GitHubUsername (@GitHubUsername)>
+gap: 10
+title: AR benchmarks for reputation
+description: Share benchmarks gathered by the Golem Factory as indicators of the provider quality, to be used in requestor agents.
+author: Jan Betley (@johny-b)
 status: Draft
-type: <Feature, Standards, Meta>
-requires (*optional): <GAP number(s)>
-replaces (*optional): <GAP number(s)>
+type: Feature
+requires: GAP-14
 ---
 
 This is the template to be used for new GAP submissions. Note this has been heavily inspired by Ethereum [EIP template](https://github.com/ethereum/EIPs/blob/master/eip-template.md).
