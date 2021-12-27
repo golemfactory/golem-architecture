@@ -34,6 +34,13 @@ While "local" reputation is part of 2, 3 fully includes everything related to th
 * the aggregated indices (e.g. average prices for all nodes with a given set of parameters)
 
 ## Motivation
+
+### Examples
+
+Few examples of possible future indices:
+
+[TODO]
+
 ### Current and future node indices APIs
 
 There are already few examples of node indices APIs that are in progress or planned:
@@ -126,40 +133,89 @@ So, what do we really want to achieve?
 
 ## Specification
 
-[TODO]
+Decisions:
 
-1. Decide we want to have a python library that:
-    *   is enough for GAP-10
-    *   is enough for some `golem stats` things
-    *   is open for every other API that is sufficiently similiar to either of these
-    *   can be extended for different apis
-2. Decide that we'll consider moving parts of the logic to `yagna` only when the python prototype will be good enough.
-3. Implement this library along works spawned by GAP-10
-    *   in yapapi or not?
-    *   good enough docs to implement the `golem stats` part
-4. Implement a `golem stats` api (another GAP?)
+1. There is value in treating "node indices API" as a general concept [TODO]
+2. Golem Factory intends to manage the ecosystem of the node indices API by providing and maintaining:
+    
+    * A description of a list of recommended APIs
+    * Sample implementations of client libraries
+    * Example usages of client libraries together with particular APIs
+    * Specifications and/or guides on writing such APIs
 
-The technical specification should describe the syntax and semantics of any new feature. 
+3. In the near future Golem Factory will **not** define a general node indices API interface and will **not** make any attempt to implement a complex client library.
+   All efforts will be directly connected to specific needs, expressed in other GAPs.
+   On the other hand, every GAP describing changes to the node indices API ecosystem should reference this GAP, with a particular emphasis on compliance with p. 1 and 2 above.
+
+4. First efforts towards implemeting such APIs will be specified in:
+    
+    * GAP-10 - reputation based on provider benchmarks
+    * GAP-XX - data from the Golem Stats
+
+5. First client library will be implemented together with GAP-10. Details:
+    
+    * An async python library
+    * A standalone part of `yapapi`
+    * A "general" client library, i.e.
+      
+      * Should implement no logic related in any way to "provider benchmarks"
+      * Sufficiently similiar APIs should work out of the box
+      * Easy to extend (e.g. it should be obvious what changes are necessary for GAP-XX)
 
 ## Rationale
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work.
+
+[TODO]
 
 ## Backwards Compatibility
-All GAPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The GAP **must** explain how the author proposes to deal with these incompatibilities.
+
+N/A
 
 ## Test Cases
-Test cases are very useful in summarizing the scope and specifics of a GAP.  If the test suite is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/` directory.
+
+N/A
 
 ## [Optional] Reference Implementation
-An optional section that contains a reference/example implementation that people can use to assist in understanding or implementing this specification.  If the implementation is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/`.
+
+N/A
 
 ## Security Considerations
-* open/closed source
-* quality of APIs hosted by the Golem Factory
-* quality of all other APIs
-* defamation? injustice? challenge?
 
-All GAPs must contain a section that discusses the security implications/considerations relevant to the proposed change. Include information that might be important for security discussions, surfaces risks and can be used throughout the life cycle of the proposal. E.g. include security-relevant design decisions, concerns, important discussions, implementation-specific guidance and pitfalls, an outline of threats and risks and how they are being addressed. 
+There are few different topics to consider:
+
+1.  Is the code that collects the data open or closed?
+   
+    Open source has obvious advantages, but in this case closing it might often be a better decision. The reasoning:
+   
+    * Data provided by node indices APIs will be used in market strategies, so there will be a direct relationship 
+      between "value of index X for node Y" and "market gains of node Y".
+    * This we should expect a strong incentive for node operators to have nodes with as good scores as possible
+    * This is what we want, but only with an additional assumption: that the score can't be cheated
+    * Creating a data gathering tool that can't be cheated in any way might be impossible, but there are many ways to make it harder
+    * Closing the source seems to be a good first step
+
+    As a crude example: let's say we're benchmarking providers (as a general case of GAP-10). If the VM image hash used for benchmarking is always the same and known to the public,
+    a dishonest provider might be allocating high resources to runtimes with this image and low resources to other.
+
+2.  Bugs in APIs hosted and/or recommended by the Golem Factory
+
+    *   From the API consumer POV.
+    
+        Making wrong market decisions equals wasting money. If it's caused by incorrect indices recommended by the Golem Factory, the money-wasting market participant might expect some
+        compensation from the Golem Factory. One day we'll almost surely have to face that claims (because we want to recommend APIs and some APIs will have bugs).
+        That's why it's important to have an unequivocal terms & conditions.
+    
+    *   From the node operator POV
+
+        What should a node operator do if they think some node indices API is reporting incorrect values for their node?
+        For sure we don't want them to fill a defamation lawsuit. 
+        Again, we should ensure we have a correct terms & conditions, but maybe one day we'll also have to consider some "appeal" institution.
+        Also, this is closely related to the open/closed problem from p.1 - open code is easier to defend.
+
+3.  Malicious APIs
+
+    We might expect one day to have to deal with malicious APIs, that pretend to provide some useful information (e.g. reputation), but their de facto purpose is to
+    improve market gains of some nodes (at the expense of the API consumers and other nodes).
+    We should never recommend APIs using any code we can't access. Also: we might want to touch this in the t&c.
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
