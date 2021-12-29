@@ -16,9 +16,9 @@ We - the Golem Factory - should decide about our role in shaping the ecosystem o
 
 * `node_id` - either `provider_id` or `requestor_id`
 * `node` - participant of the Golem marketplace identified by `node_id`
-* `indice` - any scalar information about a particular `node` or a group of `nodes`
+* `indices` - any scalar information about a particular `node` or a group of `nodes`
 * `node indices API` - API that could be queried for `indices`. Examples:
-    *   an API that could be queried for "last time online" indice for a given `provider_id`
+    *   an API that could be queried for "last time online" index for a given `provider_id`
     *   an API that could be queried for "total amount of all debit notes issued in the last hour"
 
 ## Node indices API vs the "reputation" 
@@ -34,14 +34,12 @@ While "local" reputation is part of 2, 3 fully includes everything related to th
 * the node-based indices that really can't be labelled as "reputation" (e.g. how often it is rented, average price etc)
 * the aggregated indices (e.g. average prices for all nodes with a given set of parameters)
 
-## Motivation
-
-### Examples
+## Examples
 
 `Node indices API` might be providing just any information about nodes on the Golem market, but we can safely restrict our attention only to
-types of information that can really be utilized in a market strategy. Few examples of possible node indice APIs:
+types of information that can really be utilized in a market strategy. Few examples of those:
 
-*   Average duration of the agreement for a given `node_id` - we might be looking for a long agreement and prefer nodes that take have a history of long agreements
+*   Average duration of the agreement for a given `node_id` - we might be looking for a long agreement and prefer nodes that have a history of long agreements
 *   Total amount sent to a given `provider_id` - requestor might want to work with "experienced" providers
 *   Current/past average prices - provider might want to adjust their offer to the current market situation
 *   Node rating provided by the Golem Factory - we might want to work with "good" nodes and trust the Golem Factory scoring methods
@@ -49,15 +47,17 @@ types of information that can really be utilized in a market strategy. Few examp
 *   Average traffic on the Golem Market in a given hour of a day - because we expect to find more cheap providers when there's not much going on
 *   How many times given `node_id` shows up in posts on www.reddit.com/r/CheatedOnGolem/ - that's quite obscure, but still - why not?
 
+## Motivation
+
 ### Current and future node indices APIs
 
 There are already few examples of node indices APIs that are in progress or planned:
 
 * [Benchmark-based provider reputation (GAP-10)](https://github.com/golemfactory/golem-architecture/pull/33)
-* [Golem Stats](https://stats.golem.network). This "API" is currently used e.g. by the [community-created provider agent](https://gist.github.com/sv3t0sl4v/28f896752edc9e20347ffc6d8cefe74c)
+* [Golem Stats](https://stats.golem.network). This API is currently used e.g. by the [community-created provider agent](https://gist.github.com/sv3t0sl4v/28f896752edc9e20347ffc6d8cefe74c)
 * All the future efforts related to the reputation
 
-And from the other side:
+And looking at this topic from a different perspective:
 
 * Every known marketplace uses sort of similiar "API"s (be it stars on Google, reviews on Steam, or guild-issued titles on the medieval real world marketplace).
 * This sort of information has a real value, so we should expect there to be an incentive to provide such APIs commercially (someday, hopefully).
@@ -78,7 +78,7 @@ Consider few different approaches:
   >>> my_api = NodeIndicesApi("http://golem.network/api/provider_benchmark")
   >>> my_api.indices
   {"bogomips": "[description what we really measure]"}
-  >>> my_api.bogompis(provider_id="123abcd")
+  >>> my_api.bogomips(provider_id="123abcd")
   [("2021-12-23T15:32:24", 100),
    ("2021-12-24T15:33:25", 107)]
   >>> my_api.bogomips().median
@@ -117,7 +117,7 @@ So, what do we really want to achieve?
 
 2. We want to encourage others to create & maintain their own APIs.
 
-    There was already some effort done in similiar directions in the community (e.g. [gc_listoffers](https://github.com/krunch3r76/gc__listoffers)).
+    There was already some effort done in a similiar direction in the community (e.g. [gc_listoffers](https://github.com/krunch3r76/gc__listoffers)).
     The shorter is the path between "I have some data to share" and "This data is easily available in the requestor (or provider) agent", the better
     chance developers will take part in it.
     It's worth noting that there are possibly useful indices that can be computed costlessly (e.g. "how long this provider is on the market", "how many
@@ -136,7 +136,7 @@ So, what do we really want to achieve?
 
 4. We want to allocate our resources well
 
-  In short, `yagna`-side implementation is probably not worth it, at least for now.
+    In short, `yagna`-side implementation is probably not worth it, at least for now.
 
 
 ## Specification
@@ -199,18 +199,18 @@ There are few different topics to consider:
       between "value of index X for node Y" and "market gains of node Y".
     * Because of this we should expect a strong incentive for node operators to have nodes with as good scores as possible
     * This is what we want, but only with an additional assumption: that the score can't be cheated
-    * Creating a data gathering tool that can't be cheated in any way might be impossible, but there are many ways to make it harder
+    * Creating a data gathering tool that can't be cheated in any way might be impossible, but there are many ways to make cheating harder
     * Closing the source seems to be a good first step
 
     As a crude example: let's say we're benchmarking providers (as a generalization of GAP-10). If the VM image hash used for benchmarking is always the same and known to the public,
-    a dishonest provider might be allocating high resources to runtimes using this image and low resources to other.
+    a dishonest provider might be allocating high resources to runtimes using this image and low resources otherwise.
 
 2.  Bugs in APIs hosted and/or recommended by the Golem Factory
 
     *   From the API consumer POV.
     
         Making wrong market decisions equals wasting money. If it's caused by incorrect indices recommended by the Golem Factory, the money-wasting market participant might expect some
-        compensation from the Golem Factory. One day we'll almost surely have to face that claims (because we decided to recommend APIs and some APIs will surely have bugs).
+        compensation from the Golem Factory. One day we'll almost surely have to face such claims (because we decided to recommend APIs and some APIs will surely have bugs).
         That's why it's important to have an unequivocal terms & conditions.
     
     *   From the node operator POV
@@ -218,7 +218,7 @@ There are few different topics to consider:
         What should a node operator do if they think some node indices API is reporting incorrect values for their node?
         For sure we don't want them to fill a defamation lawsuit. 
         Again, we should ensure we have a correct terms & conditions, but maybe one day we'll also have to consider some "appeal" institution.
-        Also, this is closely related to the open/closed problem from p.1 - indices calculated with an open code are easier to explain/defend.
+        Also, this is related to the open/closed problem from p.1 - indices calculated with an open code are easier to explain/defend.
 
 3.  Malicious APIs
 
