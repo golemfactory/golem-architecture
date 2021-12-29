@@ -1,7 +1,7 @@
 ---
 gap: 14
 title: Node indices APIs
-description: Discuss place of the future APIs providing per-node indices in the Golem ecosystem.
+description: Discuss the place in the Golem ecosystem of the future APIs providing per-node indices.
 author: Jan Betley (@johny-b)
 status: Draft
 type: Meta
@@ -9,7 +9,8 @@ type: Meta
 
 ## Abstract
 External information about market participants is an important factor in the decision making process on every market.
-We - the Golem Factory - should decide about our role in shaping the ecosystem of [TODO]
+First attempts to provide & use this sort of data on the Golem market were already made, other are being actively developed (GAP-10).
+We - the Golem Factory - should decide about our role in shaping the ecosystem of such data providers.
 
 ## Definitions
 
@@ -37,16 +38,23 @@ While "local" reputation is part of 2, 3 fully includes everything related to th
 
 ### Examples
 
-Few examples of possible future indices:
+`Node indices API` might be providing just any information about nodes on the Golem market, but we can safely restrict our attention only to
+types of information that can really be utilized in a market strategy. Few examples of possible node indice APIs:
 
-[TODO]
+*   Average duration of the agreement for a given `node_id` - we might be looking for a long agreement and prefer nodes that take have a history of long agreements
+*   Total amount sent to a given `provider_id` - requestor might want to work with "experienced" providers
+*   Current/past average prices - provider might want to adjust their offer to the current market situation
+*   Node rating provided by the Golem Factory - we might want to work with "good" nodes and trust the Golem Factory scoring methods
+*   All scores of the benchmark performed by the Golem Factory for a given node, with timestamps - ditto, but we only trust Golem Factory benchmarking method, not aggregation
+*   Average traffic on the Golem Market in a given hour of a day - because we expect to find more cheap providers when there's not much going on
+*   How many times given `node_id` shows up in posts on www.reddit.com/r/CheatedOnGolem/ - that's quite obscure, but still - why not?
 
 ### Current and future node indices APIs
 
 There are already few examples of node indices APIs that are in progress or planned:
 
 * [Benchmark-based provider reputation (GAP-10)](https://github.com/golemfactory/golem-architecture/pull/33)
-* [Golem stats](https://stats.golem.network)
+* [Golem Stats](https://stats.golem.network). This "API" is currently used e.g. by the [community-created provider agent](https://gist.github.com/sv3t0sl4v/28f896752edc9e20347ffc6d8cefe74c)
 * All the future efforts related to the reputation
 
 And from the other side:
@@ -87,7 +95,7 @@ Consider few different approaches:
 
   ```
   yagna ext-api add provider-benchmark "http://golem.network/api/provider\_benchmark"
-  # (or maybe even without the above line for APIs recommended by the Golem Factory?)
+  # (or maybe this line is redundant for APIs recommended by the Golem Factory?)
 
   curl http://localhost:7777/provider-benchmark/bogomips/median  # 137
   ```
@@ -104,7 +112,7 @@ So, what do we really want to achieve?
 1. We want to maximize the adoption of the few early node indices APIs.
 
     Every early adopter of e.g. the provider benchmarks [GAP-10](https://github.com/golemfactory/golem-architecture/pull/33) will be priceless.
-    If we go in the "here is some poorly documented API, have fun" direction, we'll have only little adopters. If we provide a nice, convenient
+    If we go in the "here is some poorly documented API, have fun" direction, we won't have many adopters. If we provide a nice, convenient
     library, there will be more.
 
 2. We want to encourage others to create & maintain their own APIs.
@@ -135,10 +143,10 @@ So, what do we really want to achieve?
 
 Decisions:
 
-1. There is value in treating "node indices API" as a general concept [TODO]
+1. There is value in treating "node indices API" as a single general concept.
 2. Golem Factory intends to manage the ecosystem of the node indices API by providing and maintaining:
     
-    * A description of a list of recommended APIs
+    * A list of recommended APIs
     * Sample implementations of client libraries
     * Example usages of client libraries together with particular APIs
     * Specifications and/or guides on writing such APIs
@@ -155,16 +163,17 @@ Decisions:
 5. First client library will be implemented together with GAP-10. Details:
     
     * An async python library
-    * A standalone part of `yapapi`
+    * A standalone part of the `yapapi`
     * A "general" client library, i.e.
       
-      * Should implement no logic related in any way to "provider benchmarks"
+      * Should implement no logic directly referencing "provider benchmarks"
       * Sufficiently similiar APIs should work out of the box
-      * Easy to extend (e.g. it should be obvious what changes are necessary for GAP-XX)
+      * Easy to extend (e.g. it should be obvious what changes are necessary for GAP-XX (Golem Stats))
 
 ## Rationale
 
-[TODO]
+Basic rationale is included in the `Motivation` section.
+It might be extended here after the initial discussions & acceptance.
 
 ## Backwards Compatibility
 
@@ -188,20 +197,20 @@ There are few different topics to consider:
    
     * Data provided by node indices APIs will be used in market strategies, so there will be a direct relationship 
       between "value of index X for node Y" and "market gains of node Y".
-    * This we should expect a strong incentive for node operators to have nodes with as good scores as possible
+    * Because of this we should expect a strong incentive for node operators to have nodes with as good scores as possible
     * This is what we want, but only with an additional assumption: that the score can't be cheated
     * Creating a data gathering tool that can't be cheated in any way might be impossible, but there are many ways to make it harder
     * Closing the source seems to be a good first step
 
-    As a crude example: let's say we're benchmarking providers (as a general case of GAP-10). If the VM image hash used for benchmarking is always the same and known to the public,
-    a dishonest provider might be allocating high resources to runtimes with this image and low resources to other.
+    As a crude example: let's say we're benchmarking providers (as a generalization of GAP-10). If the VM image hash used for benchmarking is always the same and known to the public,
+    a dishonest provider might be allocating high resources to runtimes using this image and low resources to other.
 
 2.  Bugs in APIs hosted and/or recommended by the Golem Factory
 
     *   From the API consumer POV.
     
         Making wrong market decisions equals wasting money. If it's caused by incorrect indices recommended by the Golem Factory, the money-wasting market participant might expect some
-        compensation from the Golem Factory. One day we'll almost surely have to face that claims (because we want to recommend APIs and some APIs will have bugs).
+        compensation from the Golem Factory. One day we'll almost surely have to face that claims (because we decided to recommend APIs and some APIs will surely have bugs).
         That's why it's important to have an unequivocal terms & conditions.
     
     *   From the node operator POV
@@ -209,13 +218,13 @@ There are few different topics to consider:
         What should a node operator do if they think some node indices API is reporting incorrect values for their node?
         For sure we don't want them to fill a defamation lawsuit. 
         Again, we should ensure we have a correct terms & conditions, but maybe one day we'll also have to consider some "appeal" institution.
-        Also, this is closely related to the open/closed problem from p.1 - open code is easier to defend.
+        Also, this is closely related to the open/closed problem from p.1 - indices calculated with an open code are easier to explain/defend.
 
 3.  Malicious APIs
 
-    We might expect one day to have to deal with malicious APIs, that pretend to provide some useful information (e.g. reputation), but their de facto purpose is to
+    We might expect one day to have to deal with malicious APIs that pretend to provide some useful information (e.g. reputation), but their hidden de facto purpose is to
     improve market gains of some nodes (at the expense of the API consumers and other nodes).
-    We should never recommend APIs using any code we can't access. Also: we might want to touch this in the t&c.
+    We should never recommend APIs using any code we can't access. Also: we might want to touch this in the T&C.
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
