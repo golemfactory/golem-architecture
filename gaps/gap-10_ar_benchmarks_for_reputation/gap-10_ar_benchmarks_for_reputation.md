@@ -8,18 +8,57 @@ type: Feature
 requires: GAP-14
 ---
 
-This is the template to be used for new GAP submissions. Note this has been heavily inspired by Ethereum [EIP template](https://github.com/ethereum/EIPs/blob/master/eip-template.md).
-
-The GAP number will be assigned by an editor. A GAP summary document shall be submitted by opening a pull request with GAP-related files placed in `./gaps/gap-draft_title/` directory. To submit your GAP, please use an abbreviated title in the filename, `gap-draft_title.md`.
 
 ## Abstract
-Abstract is a multi-sentence (short paragraph) technical summary. This should be a very terse and human-readable version of the specification section. Someone should be able to read only the abstract to get the gist of what this specification does.
+
+[TODO]
 
 ## Motivation
-The motivation section should describe the "why" of this GAP. What problem does it solve? What benefit does it provide to the Golem ecosystem? What use cases does this GAP address?
+Golem Factory is currently maintainig Artificial Requestors on the mainnet and will continue doing so in the foreseeable future.
+The computations commisioned by the ARs could be used for gathering performance data about the providers.
 
+[TODO]
 ## Specification
-The technical specification should describe the syntax and semantics of any new feature. 
+
+General note: the purpose of this GAP is to design a product of a MVP quality that will be easy to improve/extend. 
+That's why we don't put much effort into e.g. determining the best benchmarking commands, best measurements aggregates, or full security.
+
+The information flow looks as follows:
+1.  AR gathers some data about a provider
+2.  AR saves the data somewhere where it can be accessed by a node indices API
+3.  Node indices API can be queried for per-provider and population indices
+4.  Responses from the node indices API are consumed in the requestor code
+
+Details:
+
+### Benchmarking
+
+NOTE: Things related to AR operations are not part of this GAP. Only AR logic regarding the provider benchmarks is discussed here.
+
+1.  AR benchmarking is done with a `yapapi`-based requestor script
+2.  This script resides in a **private** repository, and no low-level details should be shared publicly.
+    Reasoning behind this is stated in the *Security Considerations* in the GAP-14.
+3.  Measurement details:
+    *   The output of an AR task running on the provider is a single number - [the BogoMips index](https://en.wikipedia.org/wiki/BogoMips).
+    *   Failed runs are ignored.
+    *   AR should put maximum effort into benchmarking all providers with the same address at the same time - this way we'll somehow guard against overprovisioning.
+4.  BogoMips score together with `provider_id` is saved in the database.
+
+### Storage
+
+A `(id, timestamp, provider_id, bogomips)` table in the database behind the GolemStats.
+
+### API
+
+* `/indices` - definition of all other endpoints
+* `/bogomips_rating/[PROVIDER_ID]` - some aggregated scalar value. E.g. average of all measurements in the last 2 weeks standarized to (0, 1) range.
+* `/bogomips/[PROVIDER_ID]` - a list of all pairs (bogomips, timestamp) for a given provider.
+* `/bogomips/median` - a global median measurement
+
+### API client
+
+A `yapapi` library described in GAP-14.
+    
 
 ## Rationale
 The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work.
