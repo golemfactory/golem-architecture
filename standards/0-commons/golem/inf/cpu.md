@@ -14,6 +14,33 @@ CPU architecture.
 ### **Examples**
 * `golem.inf.cpu.architecture="x86_64"` - Declares x86 64-bit CPU available.
 
+## `golem.inf.cpu.vendor : String`
+
+### Describes: Offer
+
+CPU vendor.
+
+### **Examples**
+* `golem.inf.cpu.vendor="AuthenticAMD"`
+
+## `golem.inf.cpu.brand : String`
+
+### Describes: Offer
+
+CPU brand, human-readable.
+
+### **Examples**
+* `golem.inf.cpu.brand="AMD Ryzen 9 5900X 12-Core Processor"`
+
+## `golem.inf.cpu.model : String`
+
+### Describes: Offer
+
+CPU stepping, family and model.
+
+### **Examples**
+* `golem.inf.cpu.model="Stepping 0 Family 35 Model 65"`
+
 ## `golem.inf.cpu.cores : Number (int32)`
 
 ### Describes: Offer
