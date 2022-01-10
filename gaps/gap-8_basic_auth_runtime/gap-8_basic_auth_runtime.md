@@ -82,15 +82,19 @@ An example can be found [here](https://github.com/golemfactory/ya-runtime-sdk/bl
 The configuration `struct` / `enum` should be de-serializable from all variants of configuration files (i.e., all service types) and contain the following information:
 
 - service binary location
-- nginx access log location
 - nginx `.htpasswd` file location
-- HTTP URIs reserved for the service (regex?)
+- HTTP URI root reserved for the service (regex)
+- HTTP test URI and method (with a fallback to root service URI)
+- nginx log format regex w/ capture groups for the authenticated user and URI
+- nginx access log location (with a fallback to default location: `/var/log/nginx/access.log`)
+- log rotation regex (with a fallback to access log name as a prefix)
 
 #### Background jobs
 
 1. Nginx log parser
    
-   Monitors the nginx access log file and counts the number of requests made by the current user.
+   Monitors the nginx access log file and counts the number of requests made by the current user. The parser must
+   be aware of and support reading rotated logs.
 
 2. Daemon counter updater
    
@@ -102,7 +106,9 @@ The configuration `struct` / `enum` should be de-serializable from all variants 
 1. `deploy`
 
 - **in background**, start an instance of `erigolem` / `lighthouse` (if not running)
-  and wait until the application is ready to accept commands.
+  and wait until the application is ready to accept commands
+- service startup is managed via the filesystem - i.e. lock or pid files; TBD by the runtime developer
+
 
 2. `start`
 
@@ -127,13 +133,13 @@ The configuration `struct` / `enum` should be de-serializable from all variants 
 5. `offer-template`
 
 - if the server supports HTTPS, include a `https` runtime capability in an offer
-- (optional) in case of self-signed certificates, add a property containing
-  the certificate (name TBD)
+- (optional) in case of self-signed certificates, add a `cert` string property in the runtime property namespace,
+  containing the certificate
 
 6. `test`
 
 - executes the managed service binary and tries to parse the standard output of a sample command, e.g.`<binary> --version`
-- (optional) performs (idempotent) requests to REST API endpoints of supported services
+- performs (idempotent) requests to the test API URIs of supported services via HTTPS; starts services when needed
 - (optional) performs a public IP check
 
 ### Deployment
@@ -150,7 +156,7 @@ Each service should be assigned its own runtime name and use the common `ya-runt
     "description": "The Basic-Auth runtime for the Erigon service",
     "extra-args": [
       "--runtime-managed-image",
-👉    "--runtime-arg", "ya-runtime-erigon"
+      "--runtime-arg", "erigon"
     ]
   }
 ]
@@ -163,6 +169,8 @@ depending on the installation method, located at:
 
 ## Rationale
 
+### Request counters
+
 Parsing access logs for the purpose of gathering statistics is the least complex of other possible solutions:
 
 - authentication endpoint (extra authentication server)
@@ -171,6 +179,15 @@ Parsing access logs for the purpose of gathering statistics is the least complex
 - reverse proxy server
 
 The chosen approach may prove to perform poorly when access is offered to hundreds or thousands of users.
+
+### Self-signed certificates
+
+HTTP authentication credentials are sent with each API call and need to be encrypted. A decision was made to 
+support self-signed certificates to increase potential provider adoption. 
+
+In future runtime iterations, both plain-text HTTP communication and the use of self-signed certificates should be 
+discouraged or even disallowed; i.e. the `test` command should fail if the certificate is self-signed or the runtime is
+able to perform plain HTTP API calls.
 
 ## Backwards Compatibility
 
@@ -184,7 +201,7 @@ TBD
 
 - the provider needs to properly configure TLS certificates so that the authentication credentials 
   cannot be sniffed (i.e. they won't be sent as plain text)
-- self-signed certificates need to be included in the offer in order to prevent Man In The Middle attacks
+- (optional) self-signed certificates need to be included in the offer in order to prevent Man In The Middle attacks
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
