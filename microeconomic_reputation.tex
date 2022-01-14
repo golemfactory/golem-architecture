@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{amsfonts} 
+\title{Strategies and reputation - a microeconomic description of the Golem marketplace}
+\author{Jan Betley}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+This document provides a simple microeconomic model of the Golem marketplace. 
+Following questions are answered within the model:
+
+\begin{itemize}
+    \item What do we exactly mean by the "reputation"?
+    \item What is the exact problem we hope to solve with the reputation mechanism?
+    \item What are the other, non-reputation approaches to the main problem?
+    \item How to measure the quality of our solutions? I.e. how to know if we succeeded?
+\end{itemize}
+
+
+The problem is approached from the highest point of view - no specific solutions are proposed, only general classes of solutions are discussed.
+With an exception of a few details/examples this document describes just a "general" marketplace (replace "provider/requestor" with "seller/buyer").
+
+\section{Definitions}
+
+\textbf{Agent} - A decision-making entity (person, company, etc.).
+\newline
+\textbf{Utility} - A total happiness of an agent.
+\newline
+\textbf{Utility function} - A function $U: StateOfTheWorld -> \mathbb{R}$, defined for a particular agent, that represents the agents utility in a given situation.
+\newline
+\textbf{Expected utility} - For every possible decision an agent can make ($D$) and every possible state of the world $w$, there is some probability $P: (D, w) \rightarrow [0, 1]$  that given decision will lead to the given state of the world.
+Agents don't have the full knowledge about $P$, they know only some information $I$ and an estimation of $P$ based on this information: $P_I: (D, w) \rightarrow [0, 1]$. The expected utility $E: (I, U, D) -> \mathbb{R}$ is defined as follows:
+
+$$
+E(I, U, D) = \sum_{w \in all\_possible\_world\_states}U(w) * P_I(D, w)
+$$
+
+In other words, for a decision $D$, the expected utility of this decision is "how happy an agent expects to be if they do $D$".
+\newline
+
+\textbf{Golem} - All of the environment that influences the utility of agents using Golem - the protocol, software, state of the marketplace etc.
+\newline
+
+\section{Additional assumptions}
+
+Expected utility maximization
+Utility/money trade 
+Goal of the Golem Factory ... (a normal product, "how much would people be willing to pay for the product")
+Full information
+
+
+\end{document}
