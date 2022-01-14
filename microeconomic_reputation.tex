@@ -1,5 +1,7 @@
 \documentclass{article}
-\usepackage{amsfonts} 
+\usepackage{amsfonts}
+\usepackage{hyperref}
+
 \title{Strategies and reputation - a microeconomic description of the Golem marketplace}
 \author{Jan Betley}
 
@@ -10,10 +12,10 @@ This document provides a simple microeconomic model of the Golem marketplace.
 Following questions are answered within the model:
 
 \begin{itemize}
-    \item What do we exactly mean by the "reputation"?
-    \item What is the exact problem we hope to solve with the reputation mechanism?
-    \item What are the other, non-reputation approaches to the main problem?
-    \item How to measure the quality of our solutions? I.e. how to know if we succeeded?
+\item What do we exactly mean by the "reputation"?
+\item What is the exact problem we hope to solve with the reputation mechanism?
+\item What are the other, non-reputation approaches to the main problem?
+\item How to measure the quality of our solutions? I.e. how to know if we succeeded?
 \end{itemize}
 
 
@@ -26,7 +28,7 @@ With an exception of a few details/examples this document describes just a "gene
 \newline
 \textbf{Utility} - A total happiness of an agent.
 \newline
-\textbf{Utility function} - A function $U: StateOfTheWorld -> \mathbb{R}$, defined for a particular agent, that represents the agents utility in a given situation.
+\textbf{Utility function $U$} - A function $U: StateOfTheWorld -> \mathbb{R}$, defined for a particular agent, that represents the agents utility in a given situation.
 \newline
 \textbf{Expected utility} - For every possible decision an agent can make ($D$) and every possible state of the world $w$, there is some probability $P: (D, w) \rightarrow [0, 1]$  that given decision will lead to the given state of the world.
 Agents don't have the full knowledge about $P$, they know only some information $I$ and an estimation of $P$ based on this information: $P_I: (D, w) \rightarrow [0, 1]$. The expected utility $E: (I, U, D) -> \mathbb{R}$ is defined as follows:
@@ -35,18 +37,34 @@ $$
 E(I, U, D) = \sum_{w \in all\_possible\_world\_states}U(w) * P_I(D, w)
 $$
 
-In other words, for a decision $D$, the expected utility of this decision is "how happy an agent expects to be if they do $D$".
+We'll usually use a shorter notation $E(I, U, D) = E_A(D)$ to describe "expected utility of agent A, who has information $I$ and utility function $D$".
+
+In other words, for agent $A$ and decision $D$, $E_A(D)$ is "how happy agent $A$ expects to be if they do $D$".
 \newline
 
-\textbf{Golem} - All of the environment that influences the utility of agents using Golem - the protocol, software, state of the marketplace etc.
+\textbf{Golem} - [TODO better definition?] Everything that influences the utility resulting from the interactions with the Golem Network protocol - the protocol itself, available software, state of the market etc.
 \newline
 
 \section{Additional assumptions}
 
-Expected utility maximization
-Utility/money trade 
-Goal of the Golem Factory ... (a normal product, "how much would people be willing to pay for the product")
-Full information
+\begin{enumerate}
+\item The \href{https://en.wikipedia.org/wiki/Expected_utility_hypothesis}{expected utility hipotesis}: every agent tries to maximize their expected utility.
 
+\item Every agent can costlessy access and analyze all of the publicly available information about Golem. Thanks to this assumption we can remove $I$ from the equations - we no longer
+    care about "what agent knows", but only about "what really is". This is a major simplification that might not be a good approximation of the "real world" Golem market, but we
+    accept it for the sake of the brevity of this document. Also "truth about Golem is known" is an ideal world we would like to live in.
+
+\item The expected utility and money are interchangeable, that is - for every agent $A$ and a pair of decisions $(D_1, D_2): E_A(D_1) < E_A(D_2)$, there is an amount of money X that
+    can be given to the agent so that $E_A(D_1) + U_A(X) = E_A(D_2)$. This way we can treat utilities as if they were money, and thus compare them between different agents.
+
+\item Lets define the value of Golem as:
+
+$$
+        V_G = \sum_{A \in all\_agents\_using\_Golem}E_A(USE\_GOLEM)
+$$
+(Note that - because of assumptions 1 and 2 - $E_A$ is always positive, decision "use Golem" is only made by agents who profit from it).
+
+We assume that maximization of $V_G$ is one of the goals of the Golem Factory - and from the point of view of this document, the only goal.
+\end{enumerate}
 
 \end{document}
