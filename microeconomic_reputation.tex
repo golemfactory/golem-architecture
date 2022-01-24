@@ -8,6 +8,7 @@
 \begin{document}
 \maketitle
 \section{Introduction}
+\subsection{Abstract}
 This document provides a simple microeconomic model of the Golem marketplace. 
 Following questions are answered within the model:
 
@@ -22,7 +23,7 @@ Following questions are answered within the model:
 The problem is approached from the highest point of view - no specific solutions are proposed, only general classes of solutions are discussed.
 With an exception of a few details/examples this document describes just a "general" marketplace (replace "provider/requestor" with "seller/buyer").
 
-\section{Definitions}
+\subsection{Definitions}
 
 \textbf{Agent} - A decision-making entity (person, company, etc.).
 \newline
@@ -45,10 +46,10 @@ In other words, for agent $A$ and decision $D$, $E_A(D)$ is "how happy agent $A$
 \textbf{Golem} - [TODO better definition?] Everything that influences the utility resulting from the interactions with the Golem Network protocol - the protocol itself, available software, state of the market etc.
 \newline
 
-\section{Additional assumptions}
+\subsection{Additional assumptions}
 
 \begin{enumerate}
-\item The \href{https://en.wikipedia.org/wiki/Expected_utility_hypothesis}{expected utility hipotesis}: every agent tries to maximize their expected utility.
+\item The Expected Utility Hypothesis\footnote{\href{https://en.wikipedia.org/wiki/Expected\_utility\_hypothesis}{https://en.wikipedia.org/wiki/Expected\_utility\_hypothesis}}: every agent tries to maximize their expected utility.
 
 \item Every agent can costlessy access and analyze all of the publicly available information about Golem. Thanks to this assumption we can remove $I$ from the equations - we no longer
     care about "what agent knows", but only about "what really is". This is a major simplification that might not be a good approximation of the "real world" Golem market, but we
@@ -57,7 +58,7 @@ In other words, for agent $A$ and decision $D$, $E_A(D)$ is "how happy agent $A$
 \item The expected utility and money are interchangeable, that is - for every agent $A$ and a pair of decisions $(D_1, D_2): E_A(D_1) < E_A(D_2)$, there is an amount of money X that
     can be given to the agent so that $E_A(D_1) + U_A(X) = E_A(D_2)$. This way we can treat utilities as if they were money, and thus compare them between different agents.
 
-\item Lets define the value of Golem as:
+\item Lets define the Golem Value as:
 
 $$
         V_G = \sum_{A \in all\_agents\_using\_Golem}E_A(USE\_GOLEM)
@@ -66,5 +67,7 @@ $$
 
 We assume that maximization of $V_G$ is one of the goals of the Golem Factory - and from the point of view of this document, the only goal.
 \end{enumerate}
+
+\section{Dissolving the Golem Value}
 
 \end{document}
