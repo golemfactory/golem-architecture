@@ -95,7 +95,7 @@ suffered by the provider because of the requestor not fulfilling their part of t
 
 $E_R(a)$ can be split in a similar way, and by putting this in the $V_G$ equation we get:
 
-[TODO - define $E_N$, $E_G$ and $E_L$ and use them further]
+[TODO - define $E_N$, $E_G$ and $E_L$ and use them further, note the $E_L$ conflict]
 
 \begin{equation}
 \begin{split}
@@ -141,8 +141,18 @@ Keeping that in mind, the rest of the document is aimed at the third direction f
 
 \subsection{Honest strategy}
 
-The algorithm behind agent decisions is called a strategy. We can define an "honesty factor" of the provider strategy as 
-the average value of $E_{PN}(a)/(E_{PN} + E_{PG})$ for all agreements this provider participates in (and similarly for the requestor).
+The algorithm behind agent decisions is called a strategy. We can define an "dishonesty factor" of the provider strategy $S$
+
+\begin{equation}
+    H_S = E(a) - E_N(a) / E_N(a)
+\end{equation}
+
+for an agrement $a$ for which 
+
+(this assumes the other side fulfills their part of the agreement
+That is: the bigger is the expected
+
+the average value of $E_N(a)/(E_{PN} + E_{PG})$ for all agreements this provider participates in (and similarly for the requestor).
 I.e. the more agent expects to gain against the agreement, the more dishonest they are.
 
 Note: agents' intentions don't matter here - there's no difference if the agent breaks the agreement on purpose or accidentally.
@@ -168,7 +178,16 @@ There are few different ways to reduce the profitability of dishonest strategies
 \item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is "proven"}
 \end{itemize}
 
-Neither of them has anything to do with the "reputation":
+Neither of them has anything to do with the "reputation". So, what exactly is the reputation?
+
+Imagine an honest agent who can considers signing an agreement $a$. The decision algorithm can be rougly summarized as
+\begin{enumerate}
+\item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E(\not a)$}
+\item{Calculate the expected value of the decision to sign the agreement: $E_N(a) - E_L(a)$}
+\item{Sign the agreement if $E_N(a) - E_L(a) > E(\not a)$}
+\end{enumerate}
+
+$E_L(a)$ directly depends on the "honesty factor" of an agent we consider signing agreement with: the more honest they are, the lower is $E_L(a)$.
 
 \begin{conclusion}
 
@@ -183,5 +202,12 @@ Neither of them has anything to do with the "reputation":
 \end{itemize}
 
 \end{conclusion}
+
+
+\section{Final notes}
+
+1. "How good is reputation" == "estimate honesty factor"
+2. "How useful is reputation" is "utilization of the honesty factor estimation"
+--> Two separate topics: provide the information and ensure the information is used.
 
 \end{document}
