@@ -11,6 +11,13 @@
 \begin{document}
 \maketitle
 \section{Introduction}
+\subsection{Reader notes}
+
+Every important statement is labelled as \underline{Conclusion} - consider skimming through them if you're not interested in the reasoning.
+
+This document is quite formal, but please don't expect clean, bulletproof implications only. The purpose of this document is to
+present the topic and conclusions while maintaining resonable level of brievity.
+
 \subsection{Abstract}
 This document provides a simple microeconomic model of the Golem marketplace. 
 Following questions are answered within the model:
@@ -141,21 +148,19 @@ Keeping that in mind, the rest of the document is aimed at the third direction f
 
 \subsection{Honest strategy}
 
-The algorithm behind agent decisions is called a strategy. We can define an "dishonesty factor" of the provider strategy $S$
+The algorithm behind agent decisions is called a strategy. We define the honesty of the strategy $S$ from the POV of another agent $A$ as:\footnote{Different agents 
+might consider different strategies dishonest. E.g. strategy "try to steal data X, otherwise do your best" is dishonest only from the POV of agents who 
+are in possession of data X}
 
 \begin{equation}
-    H_S = E(a) - E_N(a) / E_N(a)
+    H_A(S) = E(a_S) / E_N(a_S)
 \end{equation}
 
-for an agrement $a$ for which 
+Where $a_S$ is the agreement agent $A$ can sign with an agent that uses strategy $S$.
+We can average this over all agents $A$ on the market to get some general "honesty index" of a strategy.
 
-(this assumes the other side fulfills their part of the agreement
-That is: the bigger is the expected
-
-the average value of $E_N(a)/(E_{PN} + E_{PG})$ for all agreements this provider participates in (and similarly for the requestor).
-I.e. the more agent expects to gain against the agreement, the more dishonest they are.
-
-Note: agents' intentions don't matter here - there's no difference if the agent breaks the agreement on purpose or accidentally.
+The honesty of an agent is the honesty of the strategy they're using. 
+Agents' intentions don't matter here - there's no difference if the agent breaks the agreement on purpose or accidentally.
 
 Agent always tries to maximize their own utility (the "expected utility maximization" assumption), in other words: agent always selects the most profitable strategy.
 Let's now paraphrase the third goal from the previous section as:
@@ -173,21 +178,23 @@ The final purpose of the reputation system on Golem is to make honest strategies
 There are few different ways to reduce the profitability of dishonest strategies:
 
 \begin{itemize}
-\item{Make dishonest strategies not available at all, e.g. make debit note acceptance force payment.}
+\item{Make dishonest strategies not available at all, e.g. ensure debit note acceptance forces payment.}
 \item{Make dishonest strategies hard to implement, e.g. hide/obfuscate some important components of Golem.}
-\item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is "proven"}
+\item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is proven.}
 \end{itemize}
 
 Neither of them has anything to do with the "reputation". So, what exactly is the reputation?
 
-Imagine an honest agent who can considers signing an agreement $a$. The decision algorithm can be rougly summarized as
+Imagine an honest agent who considers signing an agreement $a$ with agent $A$. The decision algorithm can be rougly summarized as
 \begin{enumerate}
-\item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E(\not a)$}
-\item{Calculate the expected value of the decision to sign the agreement: $E_N(a) - E_L(a)$}
-\item{Sign the agreement if $E_N(a) - E_L(a) > E(\not a)$}
+\item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E(\neg a)$}
+\item{Calculate the expected value of the decision to sign the agreement $E(a)$. 
+    By the definition of the honesty factor (eq. 8) it depends on the nominal value of the agreement 
+    and the estimated honesty factor of the other agent's strategy: $E(a) = E_N(a) * H(S_A)$}
+\item{Sign the agreement if $E_N(a) * H(S_A) > E(\neg a)$}
 \end{enumerate}
 
-$E_L(a)$ directly depends on the "honesty factor" of an agent we consider signing agreement with: the more honest they are, the lower is $E_L(a)$.
+This leads us to a simple observation: the less honest agent is, the better $E_N$ they have to offer to find someone who'll trade with them, and thus to:
 
 \begin{conclusion}
 
@@ -195,8 +202,8 @@ $E_L(a)$ directly depends on the "honesty factor" of an agent we consider signin
 
 \begin{itemize}
     \item{Make some additional information available to the market participants}
-    \item{This information can be used to estimate the "honesty factor" of an agent, and thus improves the accuracy of the total agreement value estimation}
-    \item{The better the total agreement value estimation, the less profitable it is to trade with dishonest agents}
+    \item{This information can be used to estimate the "honesty index" of an agent, and thus improves the accuracy of the total agreement value estimation}
+    \item{The more accurate is the total agreement value estimation, the less profitable it is to trade with dishonest agents}
     \item{The less profitable it is to trade with dishonest agents, the fewer/worse agreements they have}
     \item{The fewer/worse agreements dishonest agents have, the less profitable are dishonest strategies}
 \end{itemize}
