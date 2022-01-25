@@ -3,6 +3,8 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 
+\newtheorem{conclusion}{Conclusion}[section]
+
 \title{Strategies and reputation - a microeconomic description of the Golem marketplace}
 \author{Jan Betley}
 
@@ -93,6 +95,8 @@ suffered by the provider because of the requestor not fulfilling their part of t
 
 $E_R(a)$ can be split in a similar way, and by putting this in the $V_G$ equation we get:
 
+[TODO - define $E_N$, $E_G$ and $E_L$ and use them further]
+
 \begin{equation}
 \begin{split}
     V_G = \sum_{a \in all\_agreements}(E_{PN}(a) + E_{PG}(a) - E_{PL}(a) + E_{RN}(a) + E_{RG}(a) - E_{RL}(a)) \\
@@ -115,7 +119,7 @@ $E_L(a) = (E_{PL}(a)- E_{RG}(a)) + (E_{RL}(a)- E_{PG}(a))$, and rewrite the equa
 
 \begin{equation}
 \begin{split}
-    V_G = \sum_{a \in all\_agreements}(E_{PN}(a) + E_{PG}(a) - E_L(a)) \\
+    V_G = \sum_{a \in all\_agreements}(E_{PN}(a) + E_{RN}(a) - E_L(a)) \\
           - \sum_{A \in all\_agents\_using\_Golem}C_A
 \end{split}
 \end{equation}
@@ -135,10 +139,49 @@ Or - what is important from the POV of this document - if we implement complex s
 
 Keeping that in mind, the rest of the document is aimed at the third direction from the above list.
 
-\subsection{Reputation vs the alternatives}
-The goal: make such a system that honest strategies are more profitable than dishonest.
-The metric: ??
+\subsection{Honest strategy}
 
-The reputation: make such a system that honest strategies are most profitable because of the market balance.
+The algorithm behind agent decisions is called a strategy. We can define an "honesty factor" of the provider strategy as 
+the average value of $E_{PN}(a)/(E_{PN} + E_{PG})$ for all agreements this provider participates in (and similarly for the requestor).
+I.e. the more agent expects to gain against the agreement, the more dishonest they are.
+
+Note: agents' intentions don't matter here - there's no difference if the agent breaks the agreement on purpose or accidentally.
+
+Agent always tries to maximize their own utility (the "expected utility maximization" assumption), in other words: agent always selects the most profitable strategy.
+Let's now paraphrase the third goal from the previous section as:
+
+\begin{conclusion}
+
+The final purpose of the reputation system on Golem is to make honest strategies more profitable than dishonest strategies.
+
+\label{main purpose conclusion}
+\end{conclusion}
+
+
+\subsection{Defining reputation}
+
+There are few different ways to reduce the profitability of dishonest strategies:
+
+\begin{itemize}
+\item{Make dishonest strategies not available at all, e.g. make debit note acceptance force payment.}
+\item{Make dishonest strategies hard to implement, e.g. hide/obfuscate some important components of Golem.}
+\item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is "proven"}
+\end{itemize}
+
+Neither of them has anything to do with the "reputation":
+
+\begin{conclusion}
+
+"Reputation system" is an attempt to solve the problem defined in the conclusion \ref{main purpose conclusion} in the following way:
+
+\begin{itemize}
+    \item{Make some additional information available to the market participants}
+    \item{This information can be used to estimate the "honesty factor" of an agent, and thus improves the accuracy of the total agreement value estimation}
+    \item{The better the total agreement value estimation, the less profitable it is to trade with dishonest agents}
+    \item{The less profitable it is to trade with dishonest agents, the fewer/worse agreements they have}
+    \item{The fewer/worse agreements dishonest agents have, the less profitable are dishonest strategies}
+\end{itemize}
+
+\end{conclusion}
 
 \end{document}
