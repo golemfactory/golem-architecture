@@ -155,7 +155,7 @@ Decisions:
    All efforts will be directly connected to specific needs, expressed in other GAPs.
    On the other hand, every GAP describing changes to the node indices API ecosystem should reference this GAP, with a particular emphasis on compliance with p. 1 and 2 above.
 
-4. First efforts towards implemeting such APIs will be specified in:
+4. First efforts towards implementing such APIs will be specified in:
     
     * GAP-10 - reputation based on provider benchmarks
     * GAP-XX - data from the Golem Stats
