@@ -13,7 +13,7 @@
 \section{Introduction}
 \subsection{Reader notes}
 
-Every important statement is labelled as \underline{Conclusion} - consider skimming through them if you're not interested in the reasoning.
+Every important statement is labelled as a \underline{Conclusion} - consider skimming through them if you're not interested in the reasoning.
 
 This document is quite formal, but please don't expect clean, bulletproof implications only. The purpose of this document is to
 present the topic and conclusions while maintaining resonable level of brievity.
@@ -81,6 +81,11 @@ We assume that maximization of $V_G$ is one of the goals of the Golem Factory - 
 \section{The purpose of the reputation}
 \subsection{Dissolving the Golem Value}
 
+TODO - NOTATION:
+$V_A(a)$, $V_P(a)$, $V_R(a)$
+$E_A(a)$, $E_P(a)$, $V_R(a)$
+
+
 Let's define $E_P(a)$ and $E_R(a)$ as the expected utility of action "take part in agreement $a$ as (respectively) provider/requestor", and $C_A$ as the cost of
 the participation in the Golem market for agent $A$ that is not related to any particular agreement 
 (e.g. opprotunity cost\footnote{\href{https://en.wikipedia.org/wiki/Opportunity\_cost}{https://en.wikipedia.org/wiki/Opportunity\_cost}} of the hardware offered on the market, 
@@ -91,6 +96,7 @@ or the cost of writing the requestor agent). Now, we can rewrite the $V_G$ equat
 \end{equation}
 
 Let's split $E_P(a)$ into few separate parts:
+
 
 \begin{equation}
     E_P(a) = E_{PN}(a) + E_{PG}(a) - E_{PL}(a)
@@ -103,9 +109,10 @@ Where
 \item{$E_{PL}(a)$ are unexpected loses suffered by the provider because of the requestor not fulfilling their part of the agreement (e.g. by not paying the due amount)}
 \end{itemize}
 
-$E_R(a)$ can be split in a similar way, and by putting this in the $V_G$ equation we get:
+$E_R(a)$ can be split in a similar way\footnote{
+    When a statement refers to either a provider or a requestor we'll be also using symbols $E_{AN}$, $E_{AG}$ and $E_{AL}$.
+}, and by putting this in the $V_G$ equation we get:
 
-[TODO - define $E_{AN}$, $E_{AG}$ and $E_{AL}$ and use them when talking about "provider or requestor"]
 
 \begin{equation}
 \begin{split}
@@ -124,7 +131,7 @@ $E_R(a)$ can be split in a similar way, and by putting this in the $V_G$ equatio
 
 Important note here is that both $\sum_{a \in all\_agreements}(E_{PL}(a)- E_{RG}(a))$ and $\sum_{a \in all\_agreements}(E_{PL}(a)- E_{RG}(a))$ are positive: 
 when someone breaks the agreement, the harm done to the victim is usually greater then the offenders gain\footnote{TODO: examples/proof/justification?}.
-Let's thus define the "expected value of the agreement $a$ value lost due to the participants not fulfilling their part of the agreement", 
+Let's thus define the "expected value lost in agreement $a$ due to the participants breaking the terms of it" as 
 $E_L(a) = (E_{PL}(a)- E_{RG}(a)) + (E_{RL}(a)- E_{PG}(a))$, and rewrite the equation one last time:
 
 \begin{equation}
@@ -151,19 +158,20 @@ Keeping that in mind, the rest of the document is aimed at the third direction f
 
 \subsection{Honest strategy}
 
-The algorithm behind agent decisions is called a strategy. We define the honesty of the strategy $S$ from the POV of another agent $A$ as:\footnote{Different agents 
-might consider different strategies dishonest. E.g. strategy "try to steal data X, otherwise do your best" is dishonest only from the POV of agents who 
-are in possession of data X}
+Let's define the fulfillment level of the agreement $a$ from the point of view of agent $A$ as:
 
 \begin{equation}
-    H_A(S) = E(a_S) / E_N(a_S)
+    F_A(a) = \frac{V_A(a)}{V_{AN}(a)}
 \end{equation}
 
-Where $a_S$ is the agreement agent $A$ can sign with an agent that uses strategy $S$.
-We can average this over all agents $A$ on the market to get some general "honesty index" of a strategy.
+That is: if we received everything we agreed on, $F_A(a) = 1$. If all our agreement-related costs are covered, but we got nothing more, $F_A(a) = 0$.
+If we lost on the agreement, $F_A(a) < 0$.\footnote{Values over 1 are also possible, but not really important, as they would be rare exceptions only.}.
+When estimating the total value of the agreement, we also estimate the fulfillment level $EF_A(a) = E_A(a) / V_{AN}(a)$.
 
-The honesty of an agent is the honesty of the strategy they're using. 
-Agents' intentions don't matter here - there's no difference if the agent breaks the agreement on purpose or accidentally.
+The higher $F_A(a)$ we got, the more "honest" was the behaviour of the agent we've traded with.
+The algorithm behind agent decisions is called a strategy. The more honestly agent behaves, the more honest is the strategy.\footnote{
+This is not a precise definition, but we don't need a precise definition here.}
+Agent's intentions don't matter here - there's no difference if an agent breaks an agreement on purpose or accidentally.
 
 Agent always tries to maximize their own utility (the "expected utility maximization" assumption), in other words: agent always selects the most profitable strategy.
 Let's now paraphrase the third goal from the previous section as:
@@ -181,7 +189,7 @@ The final purpose of the reputation system on Golem is to make honest strategies
 There are few different ways to reduce the profitability of dishonest strategies:
 
 \begin{itemize}
-\item{Make dishonest strategies not available at all, e.g. ensure debit note acceptance forces payment.}
+\item{Make dishonest strategies not available at all, e.g. ensure that debit note acceptance forces payment.}
 \item{Make dishonest strategies hard to implement, e.g. hide/obfuscate some important components of Golem.}
 \item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is proven.}
 \end{itemize}
@@ -192,8 +200,8 @@ Imagine an honest agent who considers signing an agreement $a$ with agent $A$. T
 \begin{enumerate}
 \item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E(\neg a)$}
 \item{Calculate the expected value of the decision to sign the agreement $E(a)$. 
-    By the definition of the honesty factor (eq. 8) it depends on the nominal value of the agreement 
-    and the estimated honesty factor of the other agent's strategy: $E(a) = E_N(a) * H(S_A)$}
+    According to eq. 8 it depends on the nominal value of the agreement 
+    and the estimated fulfillment level of the agreement: $E(a) = V_N(a) * F_A(a)$}
 \item{Sign the agreement if $E_N(a) * H(S_A) > E(\neg a)$}
 \end{enumerate}
 
@@ -222,5 +230,8 @@ This leads us to a simple observation: the less honest agent is, the better $E_N
 
 E.g. what if there is only a single requestor? Or there are less providers the necessary?
 --> We must take care about the market.
+
+"Fulfillment levels" could be different for providers /requestors (and compensated by $V_N$).
+Possible balance: super-honest providers and equally dishonest requestors.
 
 \end{document}
