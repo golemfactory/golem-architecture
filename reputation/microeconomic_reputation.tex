@@ -238,16 +238,24 @@ This leads us to a simple observation: the higher dishonesty we expect, the bett
 \end{conclusion}
 
 
-\section{Final notes}
+\section{Final conclusions [TODO - title]}
 
-1. "How good is reputation" == "estimate honesty factor"
-2. "How useful is reputation" is "utilization of the honesty factor estimation"
---> Two separate topics: provide the information and ensure the information is used.
+1. How well we estimate the "dishonesty index" <- some measure, error etc
+2. Consequences: for a given error X:
+    *   following dishonest might win with honest
+    *   following dishonest loses to honest
+3. Consequences: $V_L$ is a monotonic function of the estimation error.
 
-E.g. what if there is only a single requestor? Or there are less providers the necessary?
---> We must take care about the market.
+\begin{conclusion}
+The quality of the reputation system is upper capped by the quality of information available.
+\end{conclusion}
 
-"Fulfillment levels" could be different for providers /requestors (and compensated by $V_N$).
-Possible balance: super-honest providers and equally dishonest requestors.
+\begin{conclusion}
+The quality of the reputation system depends on the correct utilization of the information.
+\end{conclusion}
+
+\begin{conclusion}
+The quality of the reputation system depends on the usefulness of the dishonesty-penalizing strategy
+\end{conclusion}
 
 \end{document}
