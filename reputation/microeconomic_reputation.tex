@@ -48,7 +48,7 @@ Agents don't have the full knowledge about $P$, they know only some information 
 E(I, U, D) = \sum_{w \in all\_possible\_world\_states}U(w) * P_I(D, w)
 \end{equation}
 
-We'll usually use a shorter notation $E(I, U, D) = E_A(D)$ to describe "expected utility of agent A, who has information $I$ and utility function $D$".
+We'll be also using a shorter notation, $E(I, U, D) = E_A(D)$ to describe "expected utility of the decision $D$, for agent A, who has information $I$ and utility function $U$".
 
 In other words, for agent $A$ and decision $D$, $E_A(D)$ is "how happy agent $A$ expects to be if they do $D$".
 \newline
@@ -78,7 +78,7 @@ In other words, for agent $A$ and decision $D$, $E_A(D)$ is "how happy agent $A$
 We assume that maximization of $V_G$ is one of the goals of the Golem Factory - and from the point of view of this document, the only goal.
 \end{enumerate}
 
-\section{The purpose of the reputation}
+\section{The "reputation" and its purpose}
 \subsection{Notation}
 
 We'll be using a bunch of different symbols, but they follow a clear common pattern, so please don't be frightened.
@@ -91,9 +91,6 @@ I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their h
 \item{$V_{AL}(a)$ is the value lost by agent $A$ because of the other side breaching the agreement $a$.}
 \item{$V_{AG}(a)$ is the value gained by agent $A$ when they break the agreement $a$.}
 \item{$V_{PL}$, $V_{RL}$, $V_{PG}$, $V_{RG}$ are $V_{AL}$/$V_{AG}$ from the POV of provider/requestor.}
-\item{$E_{[whatever]}(a)$ is the estimated value of $V_{[whatever]}(a)$, when we're not certain about the outcome. 
-E.g. agent $A$ signs an agreement $a$ because they calculated high enough $E_A(a)$. 
-Only after the agreement ends the agent knows the final $V_A(a)$ (and thus knows if signing it was a good decision).}
 \item{$C_A$ is the cost of the participation in the Golem market for agent $A$ that is not related to any particular agreement 
 (e.g. opportunity cost\footnote{\href{https://en.wikipedia.org/wiki/Opportunity\_cost}{https://en.wikipedia.org/wiki/Opportunity\_cost}} of the hardware offered on the market, 
 or the cost of writing the requestor agent).}
@@ -162,25 +159,28 @@ Keeping that in mind, the rest of the document is aimed at the third direction f
 
 \subsection{Honest strategy}
 
-Let's assume $A$ is an agent who never breaks an agreement, \footnote{This assumption only simplifies the description, but we don't really need it}
-i.e.  $V_AG(a) = 0$, so $V_A(a) = V_{AN}(a) - V_{AL}(a)$. [TODO]
+Fo an agreement $a$ between agents $A_1$ and $A_2$ let's define the "dishonesty index" of agent $A_2$ as:
 
-% Let's define the fulfillment level of the agreement $a$ from the point of view of agent $A$ as:
-% 
-% \begin{equation}
-%     F_A(a) = \frac{V_A(a)}{V_{AN}(a)}
-% \end{equation}
-% 
-% That is: if we received everything we agreed on, $F_A(a) = 1$. If all our agreement-related costs are covered, but we got nothing more, $F_A(a) = 0$.
-% If we lost on the agreement, $F_A(a) < 0$.\footnote{Values over 1 are also possible, but not really important, as they would be rare exceptions only.}.
-% 
-% The higher is the $F_A(a)$, the more "honest" was the behaviour of the agent who was trading with $A$.
-% The algorithm behind agent decisions is called a strategy. The more honestly agent behaves, the more honest is the strategy.\footnote{
-% This is not a precise definition, but we don't need a precise definition here.}
-% Agent's intentions don't matter here - there's no difference if an agent breaks an agreement on purpose or accidentally.
-% 
-% Agent always tries to maximize their own utility (the "expected utility maximization" assumption), in other words: agent always selects the most profitable strategy.
-% Let's now paraphrase the third goal from the previous section as:
+\begin{equation}
+    D_{A_2}(a) = \frac{V_{A_1L}(a)}{V_{A_1N}(a)}
+\end{equation}
+
+ 
+That is: if $A_1$ received everything that was agreed, $D_{A_2}(a) = 0$. If all agreement-related costs of $A_1$ are covered, but they got nothing more, $D_{A_2}(a) = 1$.
+If $A_1$ lost on the agreement, $D_{A_2} > 1$.\footnote{Values below 0 are also possible, e.g. paying more than agreed is also "against the agreement".}
+
+The value of $V_{A_1L}(a)$ (so also the dishonesty index) depends on the decision made by agent $A_1$. 
+In an usual case the "visible decision" will by caused by the algorithm implemented in the provider/requestor agent,
+but this is just an effect of the agent's "real decision" about the implementation.\footnote{In an extreme case we can imagine 
+a human operator who directly interacts with the Golem protocol. This is also just the real life case, e.g. when someone decides to turn off the rented hardware.}
+
+The agent's core decision-making process is called a "strategy". The better agent fulfills their part of the agreements, the more "honest" is the strategy.
+So, in other words: when agent $A$ signs an agreement $a$ with an agent using a dishonest strategy, the expected value of $V_{AL}(a)$ is high.
+When the other side is fully honest, $V_{AL}(a) = 0$. 
+Note that agent's intentions don't matter here - there's no difference if an agent breaks an agreement on purpose or accidentally.
+ 
+Agent always tries to maximize their own utility (the "expected utility maximization" assumption), in other words: agent always selects the most profitable strategy.
+Let's now paraphrase the third goal from the previous section as:
 
 \begin{conclusion}
 
@@ -190,9 +190,9 @@ The final purpose of the reputation system on Golem is to make honest strategies
 \end{conclusion}
 
 
-\subsection{Defining reputation}
+\subsection{Non-reputation solutions}
 
-There are few different ways to reduce the profitability of dishonest strategies:
+Let's consider few directions towards the goal defined in the previous section:
 
 \begin{itemize}
 \item{Make dishonest strategies not available at all, e.g. ensure that debit note acceptance forces payment.}
@@ -200,15 +200,25 @@ There are few different ways to reduce the profitability of dishonest strategies
 \item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is proven.}
 \end{itemize}
 
-Neither of them has anything to do with the "reputation". So, what exactly is the reputation?
+It's important to note that - while they have the same purpose as the reputation - they have nothing else to do with anything we call the "reputation".
 
-Imagine an honest agent who considers signing an agreement $a$ with agent $A$. The decision algorithm can be rougly summarized as
+\begin{conclusion}
+Golem Factory works on the reputation system because we believe it's the best way to achieve goal defined in Conclusion \ref{main purpose conclusion}.
+\end{conclusion}
+
+\subsection{Defining reputation}
+
+$V_{whatever}$ is a determined, known value. When trading on the Golem market, some values are known from the start (e.g. $V_{AN}(a)$), 
+and other only post factum (e.g. $V_{AL}(a)$, so also $V_A(a)$).
+When making decisions under uncertainity, we're using expected values - they will be written as $E(...)$, e.g. $E(V_A(a))$.
+
+Imagine an honest agent $A_1$ who considers signing an agreement $a$ with agent $A_2$. The decision algorithm can be rougly summarized as
 \begin{enumerate}
-\item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E(\neg a)$}
-\item{Calculate the expected value of the decision to sign the agreement $E(a)$. 
-    According to eq. 8 it depends on the nominal value of the agreement 
-    and the estimated fulfillment level of the agreement: $E(a) = V_N(a) * F_A(a)$}
-\item{Sign the agreement if $E_N(a) * H(S_A) > E(\neg a)$}
+\item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E_{A_1}(\neg a)$}
+\item{Calculate the expected value of the decision to sign the agreement $E_{A_1}(a)$.
+    Using the eq. 8 we can express this value as a function of the nominal value of the agreement and the
+    estimated dishonesty index: $E_{A_1}(a) = V_{A_1N}(a) - V_{A_1N}(a) * E(D_{A_2}(a))$}
+\item{Sign the agreement if $E_{A_1}(a) > E_{A_1}(\neg a)$}
 \end{enumerate}
 
 This leads us to a simple observation: the less honest agent is, the better $E_N$ they have to offer to find someone who'll trade with them, and thus to:
@@ -219,7 +229,7 @@ This leads us to a simple observation: the less honest agent is, the better $E_N
 
 \begin{itemize}
     \item{Make some additional information available to the market participants}
-    \item{This information can be used to estimate the "honesty index" of an agent, and thus improves the accuracy of the total agreement value estimation}
+    \item{This information can be used to estimate the "dishonesty index" of an agent, and thus improves the accuracy of the total agreement value estimation}
     \item{The more accurate is the total agreement value estimation, the less profitable it is to trade with dishonest agents}
     \item{The less profitable it is to trade with dishonest agents, the fewer/worse agreements they have}
     \item{The fewer/worse agreements dishonest agents have, the less profitable are dishonest strategies}
