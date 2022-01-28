@@ -84,16 +84,16 @@ We assume that maximization of $V_G$ is one of the goals of the Golem Factory - 
 We'll be using a bunch of different symbols, but they follow a clear common pattern, so please don't be frightened.
 
 \begin{itemize}
-\item{$V_A(a)$ is the total value of the agreement $a$ from the POV of agent $A$. As per assumption 3, this is "utility expressed as money".\footnote{
-I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their hapiness changes as if they were given $X$ money".}}
-\item{$V_P(a)$/$V_R(a)$ are agreement values from the POV of (respectively) provider/requestor.}
-\item{$V_{PN}(a)$/$V_{RN}(a)$ are nominal (i.e. negotiated) values of the agreement. They equal $V_P(a)$/$V_R(a)$ if neither side breached the agreement $a$.}
-\item{$V_{AL}(a)$ is the value lost by agent $A$ because of the other side breaching the agreement $a$.}
-\item{$V_{AG}(a)$ is the value gained by agent $A$ when they break the agreement $a$.}
-\item{$V_{PL}$, $V_{RL}$, $V_{PG}$, $V_{RG}$ are $V_{AL}$/$V_{AG}$ from the POV of provider/requestor.}
-\item{$C_A$ is the cost of the participation in the Golem market for agent $A$ that is not related to any particular agreement 
+\item $V_A(a)$ is the total value of the agreement $a$ from the POV of agent $A$. As per assumption 3, this is "utility expressed as money".\footnote{
+I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their hapiness changes as if they were given $X$ money".}
+\item $V_P(a)$/$V_R(a)$ are agreement values from the POV of (respectively) provider/requestor.
+\item $V_{PN}(a)$/$V_{RN}(a)$ are nominal (i.e. negotiated) values of the agreement. They equal $V_P(a)$/$V_R(a)$ if neither side breached the agreement $a$.
+\item $V_{AL}(a)$ is the value lost by agent $A$ because of the other side breaching the agreement $a$.
+\item $V_{AG}(a)$ is the value gained by agent $A$ when they break the agreement $a$.
+\item $V_{PL}$, $V_{RL}$, $V_{PG}$, $V_{RG}$ are $V_{AL}$/$V_{AG}$ from the POV of provider/requestor.
+\item $C_A$ is the cost of the participation in the Golem market for agent $A$ that is not related to any particular agreement 
 (e.g. the opportunity cost\footnote{\href{https://en.wikipedia.org/wiki/Opportunity\_cost}{https://en.wikipedia.org/wiki/Opportunity\_cost}} of the hardware offered on the market, 
-or the cost of writing the requestor agent).}
+or the cost of writing the requestor agent).
 \end{itemize}
 
 \subsection{Dissolving the Golem Value}
@@ -131,7 +131,7 @@ Important note here is that both $\sum_{a \in all\_agreements}(V_{PL}(a)- V_{RG}
 when someone breaks the agreement, the harm done to the victim is usually greater then the offenders gain\footnote{TODO: examples/proof/justification?}.
 Let's thus define one more symbol:
 \begin{itemize}
-\item{$V_L(a) = (V_{PL}(a)- V_{RG}(a)) + (V_{RL}(a)- V_{PG}(a))$ - the total value lost because of agents breaking the terms of agreement $a$.}
+\item $V_L(a) = (V_{PL}(a)- V_{RG}(a)) + (V_{RL}(a)- V_{PG}(a))$ - the total value lost because of agents breaking the terms of agreement $a$.
 \end{itemize}
 and use it to rewrite the main equation one last time:
 
@@ -195,9 +195,9 @@ The final purpose of the reputation system on Golem is to make honest strategies
 Let's consider few directions towards the goal defined in the previous section:
 
 \begin{itemize}
-\item{Make dishonest strategies not available at all, e.g. ensure that debit note acceptance forces payment.}
-\item{Make dishonest strategies hard to implement, e.g. hide/obfuscate some important components of Golem.}
-\item{Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is proven.}
+\item Make dishonest strategies not available at all, e.g. ensure that debit note acceptance forces payment.
+\item Make dishonest strategies hard to implement, e.g. hide/obfuscate some important components of Golem.
+\item Add some mechanics that directly penalize dishonesty, e.g. require deposits and confiscate them when dishonesty is proven.
 \end{itemize}
 
 It's important to note that - while they have the same purpose as the reputation - they have nothing else to do with anything we call the "reputation".
@@ -214,11 +214,11 @@ When making decisions under uncertainity, we're using expected values - they wil
 
 Imagine an honest agent $A_1$ who considers signing an agreement $a$ with agent $A_2$. The decision algorithm can be rougly summarized as
 \begin{enumerate}
-\item{Calculate the expected value of the decision \textbf{not} to sign the agreement, $E_{A_1}(\neg a)$}
-\item{Calculate the expected value of the decision to sign the agreement $E_{A_1}(a)$.
+\item Calculate the expected value of the decision \textbf{not} to sign the agreement, $E_{A_1}(\neg a)$
+\item Calculate the expected value of the decision to sign the agreement $E_{A_1}(a)$.
     Using the eq. 8 we can express this value as a function of the nominal value of the agreement and the
-    estimated dishonesty index: $E_{A_1}(a) = V_{A_1N}(a) - V_{A_1N}(a) * E(D_{A_2}(a))$}
-\item{Sign the agreement if $E_{A_1}(a) > E_{A_1}(\neg a)$}
+    estimated dishonesty index: $E_{A_1}(a) = V_{A_1N}(a) - V_{A_1N}(a) * E(D_{A_2}(a))$
+\item Sign the agreement if $E_{A_1}(a) > E_{A_1}(\neg a)$
 \end{enumerate}
 
 This leads us to a simple observation: the higher dishonesty we expect, the better $E_N$ we need to sign the agreement, and thus to:
@@ -228,11 +228,11 @@ This leads us to a simple observation: the higher dishonesty we expect, the bett
 "Reputation system" is an attempt to solve the problem defined in the conclusion \ref{main purpose conclusion} in the following way:
 
 \begin{itemize}
-    \item{Make some additional information available to the market participants}
-    \item{This information can be used to estimate the "dishonesty index" of an agent, and thus improves the accuracy of the total agreement value estimation}
-    \item{The more accurate is the total agreement value estimation, the less profitable it is to trade with dishonest agents}
-    \item{The less profitable it is to trade with dishonest agents, the fewer/worse agreements they have}
-    \item{The fewer/worse agreements dishonest agents have, the less profitable are dishonest strategies}
+    \item Make some additional information available to the market participants
+    \item This information can be used to estimate the "dishonesty index" of an agent, and thus improves the accuracy of the total agreement value estimation
+    \item The more accurate is the total agreement value estimation, the less profitable it is to trade with dishonest agents
+    \item The less profitable it is to trade with dishonest agents, the fewer/worse agreements they have
+    \item The fewer/worse agreements dishonest agents have, the less profitable are dishonest strategies
 \end{itemize}
 
 \end{conclusion}
