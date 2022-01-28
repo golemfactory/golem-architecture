@@ -240,26 +240,67 @@ This leads us to a simple observation: the higher dishonesty we expect, the bett
 
 \section{Summary \& discussion}
 
-\subsection{Reputation system components}
+\subsection{Agreement value estimation}
 The mechanics described in the last conclusion work only when we can estimate the total value of the agreement.
 It's worth noting that such measure is useful also for other purposes, such as estimating the total income from a provider node,
 or just determining if Golem is worth using at all.
 
 \begin{conclusion}
-aaa
 
-\label{agreement estimation value}
+Any reputation system requires a reasonable way of estimating the "expected dishonesty index" of an agent, 
+or more generally - the total agreement value.
+
+\label{agreement value estimation}
 \end{conclusion}
 
-\begin{conclusion}
-zzz
+\subsection{Optimal strategies}
 
-\label{default strategies}
+Different agents have different utilities and thus different strategies. 
+Also, the market changes because of agents leaving/entering it. We should not expect there to be a single best strategy,
+rather a constant mix of strategies governed only by a single rule: as the time passes, profitable strategies become more common.
+
+E.g. consider a market where the optimal strategy for the provider is to be less honest than the average market honesty.
+We should expect the average honesty to fall, and if this is still true for the lower average honesty, our reputation system is in a death spiral towards
+the zero-honesty of all providers. Note that this situation is hard to recover from: if all providers are equally dishonest, there's no incentive for requestors
+to use the dishonesty-penalizing strategies, so there will never be any incentive for a provider to increase their honesty.
+
+But this works also the other way. If at a given moment the optimal strategy is to be \textbf{more} honest than the average, 
+we'll see the average honesty growing. In fact, that should be our exact goal, but the weaker version is enough:
+
+\begin{conclusion}
+Reputation will work only on a market where the honesty of the optimal strategy always exceeds some treshold.
+\label{required honesty level}
 \end{conclusion}
 
+\subsection{Market balance}
+How to ensure this condition from Conclusion \ref{required honesty level} is satisfied? The general answer is: by influencing supply/demand balance.
+
+E.g. let's say we want to increase the average honesty of the requestors. There are two ways to do this:
+
+\begin{itemize}
+    \item By influencing the supply:
+        \begin{enumerate}
+            \item Add high-quality (e.g. cheap) dishonesty-penalizing providers to the market
+            \item Requestors want to trade with the new providers, so they have an incentive to become more honest
+            \item As the requestors' strategy has changed, the new balance will be preserved even after we remove the providers added in 1
+        \end{enumerate}
+    \item By influencing the demand:
+        \begin{enumerate}
+        \item Add high-quality (e.g. accepting high prices) honest requestors to the market.
+        \item Providers prefere to trade with the new requestors, so:
+            \begin{enumerate}
+                \item They have an incentive to use honesty-based strategies.
+                \item There are honest requestors available, so providers trade less with the dishonest requestors.
+            \end{enumerate}
+        \item Buying becomes more expensive for the dishonest requestors, so they have an incentive to become more honest.
+        \item As the providers' strategy has changed (2.1), the new balance will be preserved even after we remove the requestors added in 1.
+        \end{enumerate}
+\end{itemize}
+
 \begin{conclusion}
-xxx
-\label{market balance}
+Condition described in Conclusion \ref{required honesty level} is not an emergent phenomenon we should expect to see only after providing
+the informaion required for Conclusion \ref{agreement value estimation}. It must be actively shaped by the market interventions,
+and will be always vulnerable to a sufficiently strong intervention against it.
 \end{conclusion}
 
 \subsection{Plan for the Golem Factory}
@@ -274,7 +315,7 @@ NOTE: this section should \textbf{not} be treated as something final, but rather
 }.
 
 \begin{enumerate}
-    \item Implement a way to calculate the "expected total agreement value" (Conclusion \ref{agreement estimation value})
+    \item Implement a way to calculate the "expected total agreement value" (Conclusion \ref{agreement value estimation})
         \begin{enumerate}
             \item Gather and share relevant information about providers/requestors
             \item Implement some ways to estimate the total agreement value from the available information.
@@ -294,7 +335,7 @@ NOTE: this section should \textbf{not} be treated as something final, but rather
             \item Gather data $(estimation\_method, estimated\_value, final\_value)$.
             \item Control the quality of the estimation methods, improve them when it degrades.
         \end{enumerate}
-    \item Implement market strategies that reasonably utilize the calculated "expected total agreement value" (Conclusion \ref{default strategies}). 
+    \item Implement market strategies that reasonably utilize the calculated "expected total agreement value". 
         Example strategies:
         \begin{enumerate}
             \item For the provider - if I expect to be paid $X\%$ of the invoice, I multiply the offer price for this requestor by $\frac{1}{X}$
