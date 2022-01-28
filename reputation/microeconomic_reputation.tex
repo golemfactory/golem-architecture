@@ -13,7 +13,7 @@
 \section{Introduction}
 \subsection{Reader notes}
 
-Every important statement is labelled as a \underline{Conclusion} - consider skimming through them if you're not interested in the reasoning.
+The most important statements are labelled as \underline{Conclusions} - consider skimming through them if you're not interested in the reasoning.
 
 This document is quite formal, but please don't expect clean, bulletproof implications only. The purpose of this document is to
 present the topic and conclusions while maintaining resonable level of brievity.
@@ -23,14 +23,14 @@ This document provides a simple microeconomic model of the Golem marketplace.
 Following questions are answered within the model:
 
 \begin{itemize}
+\item What is the exact problem we hope to solve with the reputation system?
 \item What do we exactly mean by the "reputation"?
-\item What is the exact problem we hope to solve with the reputation mechanism?
 \item What are the other, non-reputation approaches to the main problem?
 \item How to measure the quality of our solutions? I.e. how to know if we succeeded?
+\item How to split the "reputation" into separate subproblems?
 \end{itemize}
 
-
-The problem is approached from the highest point of view - no specific solutions are proposed, only general classes of solutions are discussed.
+The topic is approached from the highest point of view - no specific solutions are proposed, only general classes of solutions are discussed.
 With an exception of a few details/examples this document describes just a "general" marketplace (replace "provider/requestor" with "seller/buyer").
 
 \subsection{Definitions}
@@ -85,7 +85,11 @@ We'll be using a bunch of different symbols, but they follow a clear common patt
 
 \begin{itemize}
 \item $V_A(a)$ is the total value of the agreement $a$ from the POV of agent $A$. As per assumption 3, this is "utility expressed as money".\footnote{
-I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their hapiness changes as if they were given $X$ money".}
+I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their hapiness changes as if they were given $X$ money".}, i.e.:
+    \begin{itemize}
+        \item For the provider it is the utility of the money received decreased by the utility cost of the hardware/electricity/etc.
+        \item For the requestor it is the utility of the resources obtained decreased by the utility cost of the money spent
+    \end{itemize}
 \item $V_P(a)$/$V_R(a)$ are agreement values from the POV of (respectively) provider/requestor.
 \item $V_{PN}(a)$/$V_{RN}(a)$ are nominal (i.e. negotiated) values of the agreement. They equal $V_P(a)$/$V_R(a)$ if neither side breached the agreement $a$.
 \item $V_{AL}(a)$ is the value lost by agent $A$ because of the other side breaching the agreement $a$.
@@ -212,12 +216,10 @@ $V_{whatever}$ is a determined, known value. When trading on the Golem market, s
 and other only post factum (e.g. $V_{AL}(a)$, so also $V_A(a)$).
 When making decisions under uncertainity, we're using expected values - they will be written as $E(...)$, e.g. $E(V_A(a))$.
 
-Imagine an honest agent $A_1$ who considers signing an agreement $a$ with agent $A_2$. The decision algorithm can be rougly summarized as
+Imagine an honest agent $A_1$ who considers signing an agreement $a$ with agent $A_2$. The decision algorithm can be rougly summarized as:
 \begin{enumerate}
 \item Calculate the expected value of the decision \textbf{not} to sign the agreement, $E_{A_1}(\neg a)$
-\item Calculate the expected value of the decision to sign the agreement $E_{A_1}(a)$.
-    Using the eq. 8 we can express this value as a function of the nominal value of the agreement and the
-    estimated dishonesty index: $E_{A_1}(a) = V_{A_1N}(a) - V_{A_1N}(a) * E(D_{A_2}(a))$
+\item Calculate the expected value of the decision to sign the agreement $E_{A_1}(a) = V_{A_1N}(a) - E(V_{A_1L}(a))$
 \item Sign the agreement if $E_{A_1}(a) > E_{A_1}(\neg a)$
 \end{enumerate}
 
@@ -257,15 +259,19 @@ or more generally - the total agreement value.
 
 Different agents have different utilities and thus different strategies. 
 Also, the market changes because of agents leaving/entering it. We should not expect there to be a single best strategy,
-rather a constant mix of strategies governed only by a single rule: as the time passes, profitable strategies become more common.
+but rather a constant mix of strategies governed only by a single rule: as the time passes, profitable strategies become more common.
 
-E.g. consider a market where the optimal strategy for the provider is to be less honest than the average market honesty.
-We should expect the average honesty to fall, and if this is still true for the lower average honesty, our reputation system is in a death spiral towards
+E.g. consider a market where the optimal strategy for the provider is to be less honest than the current average market honesty.
+We should expect the average honesty to fall, and if this is still true for the lower average honesty, our reputation system might be in a death spiral towards
 the zero-honesty of all providers. Note that this situation is hard to recover from: if all providers are equally dishonest, there's no incentive for requestors
 to use the dishonesty-penalizing strategies, so there will never be any incentive for a provider to increase their honesty.
 
 But this works also the other way. If at a given moment the optimal strategy is to be \textbf{more} honest than the average, 
-we'll see the average honesty growing. In fact, that should be our exact goal, but the weaker version is enough:
+we'll see the average honesty growing. In fact, that could be our goal, but the weaker version is enough\footnote{
+    Perfect honesty will not be achieved by the means of reputation without the perfect agreement value estimation (Conclusion \ref{agreement value estimation}),
+    and thus we should settle for a lower goal. Also perfect honesty (at least the way we defined it, that is - without a reference to the intentions)
+    is not really possible because of random events.
+}:
 
 \begin{conclusion}
 Reputation will work only on a market where the honesty of the optimal strategy always exceeds some treshold.
@@ -273,49 +279,56 @@ Reputation will work only on a market where the honesty of the optimal strategy 
 \end{conclusion}
 
 \subsection{Market balance}
-How to ensure this condition from Conclusion \ref{required honesty level} is satisfied? The general answer is: by influencing supply/demand balance.
-
-E.g. let's say we want to increase the average honesty of the requestors. There are two ways to do this:
+How to ensure the condition from Conclusion \ref{required honesty level} is satisfied? The general answer is: by influencing supply/demand balance.
+E.g. let's say we have a market where:
+\begin{itemize}
+    \item supply and demand are reasonably balanced
+    \item agent honesty varies, so honesty-based strategies are common
+\end{itemize}
+and we want to increase the average honesty of the requestors. There are two ways we can approach this:
 
 \begin{itemize}
     \item By influencing the supply:
         \begin{enumerate}
-            \item Add high-quality (e.g. cheap) dishonesty-penalizing providers to the market
-            \item Requestors want to trade with the new providers, so they have an incentive to become more honest
-            \item As the requestors' strategy has changed, the new balance will be preserved even after we remove the providers added in 1
+            \item Add to the market high-quality (e.g. cheap) providers who strongly penalize dishonesty.
+            \item Requestors want to trade with the new providers, so they have an incentive to become more honest.
+            \item As the requestors' strategy has changed, the new balance will be preserved even after we remove the providers added in 1.
         \end{enumerate}
     \item By influencing the demand:
         \begin{enumerate}
-        \item Add high-quality (e.g. accepting high prices) honest requestors to the market.
-        \item Providers prefere to trade with the new requestors, so:
-            \begin{enumerate}
-                \item They have an incentive to use honesty-based strategies.
-                \item There are honest requestors available, so providers trade less with the dishonest requestors.
-            \end{enumerate}
-        \item Buying becomes more expensive for the dishonest requestors, so they have an incentive to become more honest.
-        \item As the providers' strategy has changed (2.1), the new balance will be preserved even after we remove the requestors added in 1.
+            \item Add to the market high-quality (e.g. accepting high prices) honest requestors.
+            \item There are more honest requestors available, so providers trade less with the dishonest requestors.
+            \item Buying becomes more expensive for the dishonest requestors, so they have an incentive to become more honest.
+            \item As the requestor' strategy has changed, the new balance will be preserved even after we remove the requestors added in 1.
         \end{enumerate}
 \end{itemize}
 
+On the other hand, to decrease the requestors' honesty below some treshold, it's enough e.g. to add to the market enough providers who don't care about
+requestors' honesty at all.
+
+As the market changes, so will the average honesty - it's our role to care about its value\footnote{
+    Note that the bigger is the market, the more stable are the market equilibriums. We should hope that one day it will be big enough
+    to make all the changes negligible.}:
+
 \begin{conclusion}
-Condition described in Conclusion \ref{required honesty level} is not an emergent phenomenon we should expect to see only after providing
-the informaion required for Conclusion \ref{agreement value estimation}. It must be actively shaped by the market interventions,
+Condition described in Conclusion \ref{required honesty level} is not a phenomenon we should expect to naturally emerge when the information
+required for Conclusion \ref{agreement value estimation} is available. It must be actively shaped by the market interventions,
 and will be always vulnerable to a sufficiently strong intervention against it.
 \end{conclusion}
 
 \subsection{Plan for the Golem Factory}
 
 NOTE: this section should \textbf{not} be treated as something final, but rather as a feed for thoughts/discussions\footnote{
-    Four elements of the reputation system are specified here. For a better grap of their purpose, consider following exercise:
+    Four elements of the reputation system are specified here. For a better grip of their purpose, consider following exercise:
     \begin{itemize}
         \item Imagine any working reputation system you know (e.g. stars on Amazon).
-        \item Find their counterparts in this other system.
+        \item Find counterparts of this four elements in the other system.
         \item Consider the consequences if they went missing.
     \end{itemize}
 }.
 
 \begin{enumerate}
-    \item Implement a way to calculate the "expected total agreement value" (Conclusion \ref{agreement value estimation})
+    \item Implement a way to calculate the "expected total agreement value".
         \begin{enumerate}
             \item Gather and share relevant information about providers/requestors
             \item Implement some ways to estimate the total agreement value from the available information.
@@ -326,9 +339,9 @@ NOTE: this section should \textbf{not} be treated as something final, but rather
                         or "I expect provider to have $X\%$ performance of the average provider with the same offer, doing the same task".
                 \end{enumerate}
             \item Make this modular/clean enough - we should make it easy for the Golem market participants 
-                to implement their own estimation methods, better suiting their needs, or utilizing other information they have access to.
+                to implement their own estimation methods, better suiting their needs, or utilizing the other information they have access to.
         \end{enumerate}
-    \item Implement the evaluation of the "expected total agreement value". The market balance will be changing, dishonest agents have an incentive
+    \item Implement the evaluation of the "total agreement value" estimations. The market balance will be changing, dishonest agents have an incentive
         to worsen the estimations - we must know if our reputation system is working well enough.
         \begin{enumerate}
             \item Spawn our own providers and requestors, make them estimate agreement values (using methods from the previous point).
@@ -338,11 +351,14 @@ NOTE: this section should \textbf{not} be treated as something final, but rather
     \item Implement market strategies that reasonably utilize the calculated "expected total agreement value". 
         Example strategies:
         \begin{enumerate}
-            \item For the provider - if I expect to be paid $X\%$ of the invoice, I multiply the offer price for this requestor by $\frac{1}{X}$
+            \item For the provider - if I expect to be paid $X\%$ of the invoice, I multiply the offer price for this requestor by $\frac{1}{X}$.\footnote{
+                Actually, this particular strategy is not good enough because it's vulnerable to the Pascal's mugging
+                (\href{https://en.wikipedia.org/wiki/Pascal\%27s\_mugging}{https://en.wikipedia.org/wiki/Pascal's\_mugging}) counterstrategy. 
+                E.g. imagine we estimate the requestor will pay only 1\% of the invoice, but the offer us a billion GLMs - this doesn't look like a good deal at all.}
             \item For the requestor - if I expect there to be a $X\%$ chance the provider will break the agreement before finishing computations,
                 I multiply their offer score by $1 - X$.
         \end{enumerate}
-    \item Take care about the market balance, by maintaining artificial providers/requestors (Conclusion \ref{market balance}).
+    \item Take care about the market balance by maintaining artificial providers/requestors with appropriate strategies.
 \end{enumerate}
 
 
