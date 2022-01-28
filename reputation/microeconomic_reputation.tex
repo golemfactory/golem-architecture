@@ -238,24 +238,71 @@ This leads us to a simple observation: the higher dishonesty we expect, the bett
 \end{conclusion}
 
 
-\section{Final conclusions [TODO - title]}
+\section{Summary \& discussion}
 
-1. How well we estimate the "dishonesty index" <- some measure, error etc
-2. Consequences: for a given error X:
-    *   following dishonest might win with honest
-    *   following dishonest loses to honest
-3. Consequences: $V_L$ is a monotonic function of the estimation error.
+\subsection{Reputation system components}
+The mechanics described in the last conclusion work only when we can estimate the total value of the agreement.
+It's worth noting that such measure is useful also for other purposes, such as estimating the total income from a provider node,
+or just determining if Golem is worth using at all.
 
 \begin{conclusion}
-The quality of the reputation system is upper capped by the quality of information available.
+aaa
+
+\label{agreement estimation value}
 \end{conclusion}
 
 \begin{conclusion}
-The quality of the reputation system depends on the correct utilization of the information.
+zzz
+
+\label{default strategies}
 \end{conclusion}
 
 \begin{conclusion}
-The quality of the reputation system depends on the usefulness of the dishonesty-penalizing strategy
+xxx
+\label{market balance}
 \end{conclusion}
+
+\subsection{Plan for the Golem Factory}
+
+NOTE: this section should \textbf{not} be treated as something final, but rather as a feed for thoughts/discussions\footnote{
+    Four elements of the reputation system are specified here. For a better grap of their purpose, consider following exercise:
+    \begin{itemize}
+        \item Imagine any working reputation system you know (e.g. stars on Amazon).
+        \item Find their counterparts in this other system.
+        \item Consider the consequences if they went missing.
+    \end{itemize}
+}.
+
+\begin{enumerate}
+    \item Implement a way to calculate the "expected total agreement value" (Conclusion \ref{agreement estimation value})
+        \begin{enumerate}
+            \item Gather and share relevant information about providers/requestors
+            \item Implement some ways to estimate the total agreement value from the available information.
+                Note that this might be a very rough estimation, e.g.:
+                \begin{enumerate}
+                    \item For the provider - "(When signing the agreement) I expect to be paid $X\%$ of the final invoice".
+                    \item For the requestor - "I expect there is $X\%$ chance provider will break the agreement before finishing", 
+                        or "I expect provider to have $X\%$ performance of the average provider with the same offer, doing the same task".
+                \end{enumerate}
+            \item Make this modular/clean enough - we should make it easy for the Golem market participants 
+                to implement their own estimation methods, better suiting their needs, or utilizing other information they have access to.
+        \end{enumerate}
+    \item Implement the evaluation of the "expected total agreement value". The market balance will be changing, dishonest agents have an incentive
+        to worsen the estimations - we must know if our reputation system is working well enough.
+        \begin{enumerate}
+            \item Spawn our own providers and requestors, make them estimate agreement values (using methods from the previous point).
+            \item Gather data $(estimation\_method, estimated\_value, final\_value)$.
+            \item Control the quality of the estimation methods, improve them when it degrades.
+        \end{enumerate}
+    \item Implement market strategies that reasonably utilize the calculated "expected total agreement value" (Conclusion \ref{default strategies}). 
+        Example strategies:
+        \begin{enumerate}
+            \item For the provider - if I expect to be paid $X\%$ of the invoice, I multiply the offer price for this requestor by $\frac{1}{X}$
+            \item For the requestor - if I expect there to be a $X\%$ chance the provider will break the agreement before finishing computations,
+                I multiply their offer score by $1 - X$.
+        \end{enumerate}
+    \item Take care about the market balance, by maintaining artificial providers/requestors (Conclusion \ref{market balance}).
+\end{enumerate}
+
 
 \end{document}
