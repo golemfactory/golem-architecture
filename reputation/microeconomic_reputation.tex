@@ -91,7 +91,9 @@ I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their h
         \item For the requestor it is the utility of the resources obtained decreased by the utility cost of the money spent
     \end{itemize}
 \item $V_P(a)$/$V_R(a)$ are agreement values from the POV of (respectively) provider/requestor.
-\item $V_{PN}(a)$/$V_{RN}(a)$ are nominal (i.e. negotiated) values of the agreement. They equal $V_P(a)$/$V_R(a)$ if neither side breached the agreement $a$.
+\item $V_{PN}(a)$/$V_{RN}(a)$ are nominal (i.e. negotiated) values of the agreement\footnote{
+   Note that this doesn't translate directly to the agreement amount. E.g. when agreed amount is positive but so low it doesn't cover provider's costs the $V_{PN}$ is negative.
+}. They equal $V_P(a)$/$V_R(a)$ if neither side breached the agreement $a$.
 \item $V_{AL}(a)$ is the value lost by agent $A$ because of the other side breaching the agreement $a$.
 \item $V_{AG}(a)$ is the value gained by agent $A$ when they break the agreement $a$.
 \item $V_{PL}$, $V_{RL}$, $V_{PG}$, $V_{RG}$ are $V_{AL}$/$V_{AG}$ from the POV of provider/requestor.
@@ -266,71 +268,52 @@ or just determining if Golem is worth using at all.
 
 \begin{conclusion}
 
-Any reputation system requires a reasonable way of estimating the "expected dishonesty index" of an agent, 
-or more generally - the total agreement value.
+The value of the reputation system depends on how well the reputation-related information improves the "total agreement value" estimation.
 
 \label{agreement value estimation}
 \end{conclusion}
 
-\subsection{Optimal strategies}
+Note that the same reputation system might be valuable for some agreements and useless for other agreements, or even valuable for some agents and useless for others.
+
+\subsection{Optimal strategy dynamics}
 
 Different agents have different utilities and thus different strategies. 
 Also, the market changes because of agents leaving/entering it. We should not expect there to be a single best strategy,
-but rather a constant mix of strategies governed only by a single rule: as the time passes, profitable strategies become more common.
+but rather a constant mix of strategies governed only by a single law: as the time passes, profitable strategies become more common.
 
-E.g. consider a market where the optimal strategy for the provider is to be less honest than the current average market honesty.
-We should expect the average honesty to fall, and if this is still true for the lower average honesty, our reputation system might be in a death spiral towards
-the zero-honesty of all providers. Note that this situation is hard to recover from: if all providers are equally dishonest, there's no incentive for requestors
-to use the dishonesty-penalizing strategies, so there will never be any incentive for a provider to increase their honesty.
-
-But this works also the other way. If at a given moment the optimal strategy is to be \textbf{more} honest than the average, 
-we'll see the average honesty growing. In fact, that could be our goal, but the weaker version is enough\footnote{
-    Perfect honesty will not be achieved by the means of reputation without the perfect agreement value estimation (Conclusion \ref{agreement value estimation}),
-    and thus we should settle for a lower goal. Also perfect honesty (at least the way we defined it, that is - without a reference to the intentions)
-    is not really possible because of random events.
-}:
+As an example, let's assume we have some reputation-related information available to the requestors (e.g. provider benchmarks). 
+If the number of requestors utilizing this information grows, the incentive for providers to have a high value of the benchmark increases.
+If number of such requestors is falling, we should expect more providers not caring about their benchmark values.
 
 \begin{conclusion}
-Reputation will work only on a market where the honesty of the optimal strategy always exceeds some treshold.
-\label{required honesty level}
+
+The higher is the adoption of the reputation system (i.e. the more important role it plays in the agents' decisions), the more it influences agents' strategies -
+and thus works better.
+
+\label{adoption level}
 \end{conclusion}
 
-\subsection{Market balance}
-How to ensure the condition from Conclusion \ref{required honesty level} is satisfied? The general answer is: by influencing supply/demand balance.
-E.g. let's say we have a market where:
-\begin{itemize}
-    \item supply and demand are reasonably balanced
-    \item agent honesty varies, so honesty-based strategies are common
-\end{itemize}
-and we want to increase the average honesty of the requestors. There are two ways we can approach this:
+\subsection{Market interventions}
 
+And how to increase the adoption of the reputation system?
+This is a sort of an egg/chicken dillema. Why be honest, when no one cares about honesty? And why care about honesty, when everyone is equally dishonest? \footnote{
+    This sounds extreme from the POV of the "current" market, where most of the providers use the default, honest software, but this is a lower bound
+    towards which our market will be heading without a sufficiently good reputation system.}
+
+The answer is: by market interventions. If we put on the market enough high quality honest agents, who strongly penalize dishonesty 
+(i.e. don't want to trade with dishonest agents), we'll see the balance changing. 
+As the new agents are high quality, everyone will want to trade with them, and this creates two incentives:
 \begin{itemize}
-    \item By influencing the supply:
-        \begin{enumerate}
-            \item Add to the market high-quality (e.g. cheap) providers who strongly penalize dishonesty.
-            \item Requestors want to trade with the new providers, so they have an incentive to become more honest.
-            \item As the requestors' strategy has changed, the new balance will be preserved even after we remove the providers added in 1.
-        \end{enumerate}
-    \item By influencing the demand:
-        \begin{enumerate}
-            \item Add to the market high-quality (e.g. accepting high prices) honest requestors.
-            \item There are more honest requestors available, so providers trade less with the dishonest requestors.
-            \item Buying becomes more expensive for the dishonest requestors, so they have an incentive to become more honest.
-            \item As the requestor' strategy has changed, the new balance will be preserved even after we remove the requestors added in 1.
-        \end{enumerate}
+    \item Our new agents are honest, so there is a reason to use the honesty index as a part of the market strategy (e.g. to find them).
+    \item Our new agents require honesty, so there is a reason to be more honest than the average.
 \end{itemize}
 
-On the other hand, to decrease the requestors' honesty below some treshold, it's enough e.g. to add to the market enough providers who don't care about
-requestors' honesty at all.
-
-As the market changes, so will the average honesty - it's our role to care about its value\footnote{
-    Note that the bigger is the market, the more stable are the market equilibriums. We should hope that one day it will be big enough
-    to make all the changes negligible.}:
+The important thing to note here is that - as both sides change their strategies - the new balance should be preserved even after we remove the new agents from the market.\footnote{
+    This statement might require a more careful analysys (e.g. are there any implicit assumptions about the strategies that should be stated explicitly?).
+}. This works also the other way: even a very good reputation system will be vulnerable to a sufficiently strong market intervention against it.
 
 \begin{conclusion}
-Condition described in Conclusion \ref{required honesty level} is not a phenomenon we should expect to naturally emerge when the information
-required for Conclusion \ref{agreement value estimation} is available. It must be actively shaped by the market interventions,
-and will be always vulnerable to a sufficiently strong intervention against it.
+Development/maintenance of the reputation system involves active market interventions that will increase its adoption.
 \end{conclusion}
 
 \subsection{Plan for the Golem Factory}
@@ -345,11 +328,10 @@ NOTE: this section should \textbf{not} be treated as something final, but rather
 }.
 
 \begin{enumerate}
-    \item Implement a way to calculate the "expected total agreement value".
+    \item Provide ways to estimate the agent's honesty-related behaviour:
         \begin{enumerate}
-            \item Gather and share relevant information about providers/requestors
-            \item Implement some ways to estimate the total agreement value from the available information.
-                Note that this might be a very rough estimation, e.g.:
+            \item Gather and share relevant information about providers/requestors.
+            \item Implement some ways of utilizing this information in a way that can be directly used in a market strategy, e.g.
                 \begin{enumerate}
                     \item For the provider - "(When signing the agreement) I expect to be paid $X\%$ of the final invoice".
                     \item For the requestor - "I expect there is $X\%$ chance provider will break the agreement before finishing", 
@@ -358,24 +340,27 @@ NOTE: this section should \textbf{not} be treated as something final, but rather
             \item Make this modular/clean enough - we should make it easy for the Golem market participants 
                 to implement their own estimation methods, better suiting their needs, or utilizing the other information they have access to.
         \end{enumerate}
-    \item Implement the evaluation of the "total agreement value" estimations. The market balance will be changing, dishonest agents have an incentive
+    \item Implement the evaluation of the estimations. The market balance will be changing, dishonest agents have an incentive
         to worsen the estimations - we must know if our reputation system is working well enough.
         \begin{enumerate}
-            \item Spawn our own providers and requestors, make them estimate agreement values (using methods from the previous point).
+            \item Spawn our own providers and requestors, make them calculate values from the previous point.
             \item Gather data $(estimation\_method, estimated\_value, final\_value)$.
             \item Control the quality of the estimation methods, improve them when it degrades.
         \end{enumerate}
-    \item Implement market strategies that reasonably utilize the calculated "expected total agreement value". 
-        Example strategies:
+    \item Implement some reasonable market strategies, e.g.:
         \begin{enumerate}
             \item For the provider - if I expect to be paid $X\%$ of the invoice, I multiply the offer price for this requestor by $\frac{1}{X}$.\footnote{
-                Actually, this particular strategy is not good enough because it's vulnerable to the Pascal's mugging
+                This particular strategy is not good enough because it's vulnerable to the Pascal's mugging
                 (\href{https://en.wikipedia.org/wiki/Pascal\%27s\_mugging}{https://en.wikipedia.org/wiki/Pascal's\_mugging}) counterstrategy. 
                 E.g. imagine we estimate the requestor will pay only 1\% of the invoice, but the offer us a billion GLMs - this doesn't look like a good deal at all.}
             \item For the requestor - if I expect there to be a $X\%$ chance the provider will break the agreement before finishing computations,
                 I multiply their offer score by $1 - X$.
         \end{enumerate}
-    \item Take care about the market balance by maintaining artificial providers/requestors with appropriate strategies.
+    \item Take care about the adoption of the reputation system:
+        \begin{itemize}
+            \item Indirectly - e.g. by setting default provider strategies in yagna, or by implementing high quality example requestor-side strategies.
+            \item Directly - by maintaining artificial providers/requestors with appropriate strategies.
+        \end{itemize}
 \end{enumerate}
 
 
