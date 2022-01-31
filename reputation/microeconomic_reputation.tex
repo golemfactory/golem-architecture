@@ -132,7 +132,24 @@ By placing them in the previous equation, we get:
 \end{equation}
 
 Important note here is that both $\sum_{a \in all\_agreements}(V_{PL}(a)- V_{RG}(a))$ and $\sum_{a \in all\_agreements}(V_{RL}(a)- V_{PG}(a))$ are positive: 
-when someone breaks the agreement, the harm done to the victim is usually greater then the offenders gain\footnote{TODO: examples/proof/justification?}.
+when someone breaks the agreement, the harm done to the victim is usually greater then the offenders gain\footnote{
+    Two different justifications behind this statement:
+    \begin{itemize}
+        \item From the requestor victim POV: the rented computer power is only a component in something bigger the requestor tries to build.
+            When they don't get this component, the total loss is the value of this bigger thing that is not working.
+            
+            Imagine e.g. a factory. When cut off the electricity, the factory owner loses all the goods factory would have produced, and their value
+            is much higher than the value of the electricity (e.g. because it must be enough to cover all the other non-electricity costs).
+
+            Or a more Golem-like example: imagine an online shop with an Amazon-based database. If the database goes offline the total loss is all the
+            sales that could have taken place while the shop was not working.
+        \item From the provider victim POV: people tend to have a strong loss aversion
+            (\href{https://en.wikipedia.org/wiki/Loss\_aversion}{https://en.wikipedia.org/wiki/Loss\_aversion}).
+            The loss perceived by the provider when losing $X$ money will be on average more than the gain perceived by the requestor who saved $X$.
+    \end{itemize}
+}. Also the agreements on the "untrusted" market tend to have a lower $V_N$\footnote{
+    When an agent expects they might be cheated, they might implement some precautions/safeguards. They cost additional money that are spent even when
+    trading with an honest agent, and thus lower the agreement value.}.
 Let's thus define one more symbol:
 \begin{itemize}
 \item $V_L(a) = (V_{PL}(a)- V_{RG}(a)) + (V_{RL}(a)- V_{PG}(a))$ - the total value lost because of agents breaking the terms of agreement $a$.
