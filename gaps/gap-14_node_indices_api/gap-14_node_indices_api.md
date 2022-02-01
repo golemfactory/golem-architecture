@@ -72,20 +72,7 @@ Consider few different approaches:
 * Full indifference. We decide this is not a concern of Golem Factory, close this GAP & decide that e.g. GAP-10 should be implemented without any general reflection on other
   possible node indices APIs.
 
-* Implement model client libraries in `ya*apis`, things like:
-  
-  ```
-  >>> my_api = NodeIndicesApi("http://golem.network/api/provider_benchmark")
-  >>> my_api.indices
-  {"bogomips": "[description what we really measure]"}
-  >>> my_api.bogomips(provider_id="123abcd")
-  [("2021-12-23T15:32:24", 100),
-   ("2021-12-24T15:33:25", 107)]
-  >>> my_api.bogomips().median
-  137
-  >>> my_api.bogomips(start="2021-12-23").median
-  140
-  ```
+* Implement model client libraries in `ya*apis`, example in the [Sample client library interface](#sample-client-library-interface) section.
 
   Such libraries should come with a specification of the expected API interface - with an important caveat
   that it should be as non-demanding as possible. E.g. if one has only a single interesting number to share,
@@ -141,7 +128,7 @@ So, what do we really want to achieve?
 
 ## Specification
 
-Decisions:
+### Decisions
 
 1. There is value in treating "node indices API" as a single general concept.
 2. Golem Factory intends to manage the ecosystem of the node indices API by providing and maintaining:
@@ -151,24 +138,69 @@ Decisions:
     * Example usages of client libraries together with particular APIs
     * Specifications and/or guides on writing such APIs
 
-3. In the near future Golem Factory will **not** define a general node indices API interface and will **not** make any attempt to implement a complex client library.
-   All efforts will be directly connected to specific needs, expressed in other GAPs.
-   On the other hand, every GAP describing changes to the node indices API ecosystem should reference this GAP, with a particular emphasis on compliance with p. 1 and 2 above.
+3. In the near future Golem Factory will **not** make any attempt to define a full node indices API interface and will **not** make any attempt to implement a complex client library.
+4. This GAP specifies the capabilities of the first version of the API. It should be minimal, but useful and easy to extend in the future.
+5. The client library implemented together with the GAP-10 will be general (i.e. will be independent of the logic specific to GAP-10).
+6. Precise design of the API (in the minimal version described in the next section) will also be created together with the GAP-10.
 
-4. First efforts towards implementing such APIs will be specified in:
-    
-    * GAP-10 - reputation based on provider benchmarks
-    * GAP-XX - data from the Golem Stats
+### Minimal API capabilities
 
-5. First client library will be implemented together with GAP-10. Details:
+Each Node Indices API is defined by a single url. A GET request sent to this url returns a collection of all available indices and their definitions. 
+Definition of a particular indice includes:
+
+* General information:
     
-    * An async python library
-    * A standalone part of the `yapapi`
-    * A "general" client library, i.e.
-      
-      * Should implement no logic directly referencing "provider benchmarks"
-      * Sufficiently similiar APIs should work out of the box
-      * Easy to extend (e.g. it should be obvious what changes are necessary for GAP-XX (Golem Stats))
+    * Indice name (e.g. "provider\_benchmark").
+    * Indice description - a human-readable description explaining the purpose of the indice, collection methods etc.
+
+* Request specification. Each parameter from the following list is either required, optional or not allowed:
+
+    * provider\_id
+    * requestor\_id
+    * start (timestamp defining the beginning of the time range)
+    * stop (timestamp defining the end of time range)
+
+* Response specification:
+
+    * The type of data returned. In the first version this will **always** be "float".
+    * The structure returned, one from:
+        
+        * A single scalar
+        * A list of (timestamp, scalar) pairs
+
+
+### Sample client library interface
+
+This is a draft that will be improved in GAP-10.
+  
+    ```
+    BASE_URL = 'http://some.where/golem/api'
+    client = NodeAPIClient(BASE_URL)
+    
+    metrics = await client.metrics()  # a GET request to BASE_URL
+    
+    metrics[0].name            # "market_bogomips_avg"
+    metrics[0].description     # "A single value describing the average bogomips score in the last 24 hours"
+    metrics[0].required_params # []
+    metrics[0].optional_params # []
+    await metrics[0].get()     # 123.78
+    await metrics[0].get(provider_id='abc') # InterfaceError("This metric doesn't accept provider_id parameter")
+    
+    metrics[1].name             # "node_bogomips_index"
+    metrics[1].description      # "An average bogomips index of a node in the last week"
+    metrics[1].required_params  # ["provider_id"]
+    metrics[1].optional_params  # []
+    await metrics[1].get()      # InterfaceError("This metric requires a provider_id parameter")
+    await metrics[1].get(provider_id='abc')  # 145.67
+    await metrics[1].get(provider_id='abc', start=datetime.now())  # InterfaceError("This metric doesn't accept start parameter")
+    
+    metrics[2].name             # "node_bogompis_measures"
+    metrics[2].description      # "All bogomips measures of a node in an optional timerange"
+    metrics[2].required_params  # ["provider_id"]
+    metrics[2].optional_params  # ["start", "stop"]
+    await metrics[2].get(provider_id="abc")  # [["2022-02-02", 130], ["2022-02-03", 140], ["2022-02-04", 170]]
+    await metrics[2].get(provider_id="abc", start="2022-02-03")  # [["2022-02-03", 140], ["2022-02-04", 170]]
+    ```
 
 ## Rationale
 
