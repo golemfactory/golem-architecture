@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+
+\begin{document}
+
+\section{The main concept}
+\subsection{Assumptions}
+
+This document is a proposal of an implementation of the reputation model described in the "Microeconomic Golem Reputation"\footnote{
+\href{https://github.com/golemfactory/golem-architecture/blob/jb/microeconomy-reputation/reputation/microeconomic\_reputation.pdf}
+     {https://github.com/golemfactory/golem-architecture/blob/jb/microeconomy-reputation/reputation/microeconomic\_reputation.pdf}
+[TODO - beter url when this is merged to some final location]}, and thus accepts all assumptions made there, most important being
+the expected utility maximization.
+    
+Additional assumptions:
+
+\begin{enumerate}
+    \item The ground truth about all invoices on the market (amount, sender, receiver) is known.
+    \item Obtaining \& parsing the data about invoices/payments costs no money and/or time.
+    \item The only information provider cares about is "how much I will be paid?" and the only information requestor cares about
+        is the quality of the services received.
+\end{enumerate}
+
+They are questionable even as approximations, we'll weaken them for the more "real-life" scenario in the further part of the document.
+
+\subsection{General idea}
+
+The full knowledge about invoices and payments gives us a crude approximation of the "reputation-like" information:
+\begin{enumerate}
+    \item Provider POV: the requestor who paid bigger part of their past invoices will more likely pay another invoice than another requestor
+        who paid less past invoices.
+    \item Requestor POV: the provider whose invoices are usually paid more likely provides high quality services than a provider who is paid
+        only rarely or never.
+\end{enumerate}
+
+Justification behind these statements:
+\begin{itemize}
+    \item Both first and second: agent's strategy rarely changes, so it's likely that when trading with us
+        they will behave similarly to the way they behaved in the similiar past situations.
+    \item Secod: if a requestor doesn't pay the provider, they are less likely to trade with them in the future (e.g. because of a provider's local history), 
+        and thus requestors more often pay providers they want to trade with, and those are more likely the providers we want to trade with.
+\end{itemize}
+
+\subsection{Detailed strategies}
+
+Provider strategy:
+\begin{enumerate}
+    \item Gather a local history, in a basic form (requestor\_id, amount\_due).
+
+\end{document}
