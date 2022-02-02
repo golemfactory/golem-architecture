@@ -19,12 +19,17 @@ Additional assumptions:
 
 \begin{enumerate}
     \item The ground truth about all invoices on the market (amount, sender, receiver) is known.
-    \item Obtaining \& parsing the data about invoices/payments costs no money and/or time.
+    \item Obtaining \& parsing the data about invoices/payments costs neither money nor time.
     \item The only information provider cares about is "how much I will be paid?" and the only information requestor cares about
         is the quality of the services received.
+    \item The market is balanced, i.e.: 
+        \begin{enumerate}
+            \item Good enough and sufficiently cheap provider will spend no more than X\% of time waiting for agreements, for a reasonable X (e.g. 10\%).
+            \item Requestor willing to pay a sufficient amount of money will find enough providers fast enough
+        \end{enumerate}
 \end{enumerate}
 
-They are questionable even as approximations, we'll weaken them for the more "real-life" scenario in the further part of the document.
+Some of them are questionable even as approximations - there is a further section discussing them.
 
 \subsection{General idea}
 
@@ -40,7 +45,7 @@ Justification behind these statements:
 \begin{itemize}
     \item Both first and second: agent's strategy rarely changes, so it's likely that when trading with us
         they will behave similarly to the way they behaved in the similiar past situations.
-    \item Secod: if a requestor doesn't pay the provider, they are less likely to trade with them in the future (e.g. because of a provider's local history), 
+    \item Second: if a requestor doesn't pay the provider, they are less likely to trade with them in the future (e.g. because of a provider's local history), 
         and thus requestors more often pay providers they want to trade with, and those are more likely the providers we want to trade with.
 \end{itemize}
 
@@ -48,6 +53,54 @@ Justification behind these statements:
 
 Provider strategy:
 \begin{enumerate}
-    \item Gather a local history, in a basic form (requestor\_id, amount\_due).
+    \item Gather a local history of all our contracts - (requestor\_id, invoice\_amount, paid\_amount) + additional details (e.g. agreement length, initial demand etc).
+    \item Send offers to the market with "base" prices, that will later (in the negotiation phase) be increased for untrusted requestors.
+    \item When a requestor responds to initial our offer:
+        \begin{itemize}
+            \item If this is a new requestor (i.e. one that didn't yet trade with anyone on the market, or didn't trade enough):
+                \begin{enumerate}
+                    \item Counteroffer with a "payment in advance" property
+                    \item If accepted, start with sending a debit note (for some fixed amount) with a short payment time
+                    \item Refuse to start an activity until the first debit note is paid
+                    \item Continue in the same manner, i.e. request upfront payments
+                \end{enumerate}
+            \item If this is a requestor we've already traded with, and they didn't pay all the due amount:
+                \begin{enumerate}
+                    \item Add the missing amount (possibly with some discounting factor) to the fixed amount
+                    \item If agreed, start with sending a debit note for the missing amount, with short payment time
+                    \item Refuse to start an activity until the debit note is paid
+                \end{enumerate}
+            \item In other cases, i.e. when requestor has some experience on the market and they either didn't trade with us or paid a full amount:
+                \begin{enumerate}
+                    \item Estimate the \% of the final invoice we expect the requestor to pay us. In the most primitive version this might be just the \%
+                        of their invoices they paid until now, although this can (and should) be done much better\footnote{E.g. if they didn't pay a provider that is
+                        never paid, there's a big chance this is an invalid provider who just does no work at all, but if they didn't pay a provider who's usually
+                        paid fully then probably something's wrong with the requestora.
+                        We should also include in the estimations few other types of the information, e.g.
+                        \begin{itemize}
+                            \item Our own experiences with this requestor (i.e. requestor who dutifully paid us a lot will probably pay again).
+                            \item Expected agreement length, proposed payment interval etc.
+                        \end{itemize}}
+                    \item If we estimate $\sim$100\% of the invoice will be paid, accept the offer. 
+                    \item If we estimate less will be paid, reply with a counter-offer with higher prices, so that they compensate for the \% of the invoice
+                        we expect not to be paid.
+                \end{enumerate}
+        \end{itemize}
+\end{enumerate}
+
+Requestor strategy:
+[TODO]
+
+\subsection{The reputation deployment process}
+
+So we have defined some strategies for requestors/providers.
+Who will use them? How to encourage others to use similar strategies?
+
+
+\section{Discussion}
+\subsection{Assumption 1 - ground truth about invoices}
+\subsection{Assumption 2 - obtaining/parsing invoice data}
+\subsection{Assumption 3 - agents' utility functions}
+\subsection{Assumption 4 - market balance}
 
 \end{document}
