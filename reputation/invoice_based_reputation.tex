@@ -25,11 +25,11 @@ the expected utility maximization.
 Additional assumptions:
 
 \begin{enumerate}
-    \item The ground truth about all payments on the market (amount, sender, receiver) is known.
-    \item The ground truth about all invoices on the market (amount, sender, receiver) is known.
+    \item The ground truth about all payments on the market (timestamp, amount, sender, receiver) is known.
+    \item The ground truth about all invoices on the market (timestamp, amount, sender, receiver) is known.
     \item Obtaining \& parsing the data about invoices/payments costs neither money nor time.
-    \item The only information provider cares about is "how much I will be paid?" and the only information requestor cares about
-        is the quality of the services received.
+    \item The only thing provider cares about is "how much I will be paid?" and the only thing requestor cares about
+        are the quality of the services received and amount paid.
     \item The market is balanced, i.e.: 
         \begin{enumerate}
             \item Good enough and sufficiently cheap provider will spend no more than X\% of time waiting for agreements, for a reasonable X (e.g. 10\%).
@@ -53,8 +53,8 @@ good requestors pay, good providers are paid. In more detail:
 Justification behind these statements:
 \begin{itemize}
     \item Both first and second: agent's strategy rarely changes, so it's likely that when trading with us
-        they will behave similarly to the way they behaved in the similiar past situations.
-    \item Second: if a requestor doesn't pay the provider, they are less likely to trade with them in the future (e.g. because of a provider's local history), 
+        they will behave similarly to the way they behaved in the similar past situations.
+    \item Second: if a requestor doesn't pay the provider, they are less likely to trade with them in the future (e.g. because of the provider's local history), 
         and thus requestors more often pay providers they want to trade with, and those are more likely the providers we want to trade with.
 \end{itemize}
 
@@ -62,9 +62,9 @@ Justification behind these statements:
 
 Provider strategy:
 \begin{enumerate}
-    \item Gather a local history of all our contracts - (requestor\_id, invoice\_amount, paid\_amount) + additional details (e.g. agreement length, initial demand etc).
+    \item Gather a local history of all our contracts - (requestor id, invoice amount, paid amount) + additional details (e.g. agreement length, initial demand etc).
     \item Send offers to the market with "base" prices, that will later (in the negotiation phase) be increased for untrusted requestors.
-    \item When a requestor responds to initial our offer:
+    \item When a requestor responds to the our initial offer:
         \begin{itemize}
             \item If this is a new requestor (i.e. one that didn't yet trade with anyone on the market, or didn't trade enough):
                 \begin{enumerate}
@@ -99,12 +99,12 @@ Provider strategy:
 
 Requestor strategy:
 \begin{enumerate}
-    \item Gather similiar local history as the provider
+    \item Gather similar local history as the provider
     \item Sign agreements that require an advance payment only with providers you have a reason to trust 
         (e.g. because you traded with them before or because they have a good history on the market)
     \item Except for the previous point, just try to sign the most profitable agreements, including any information about the "provider quality" you have.
         This should include "high quality providers are paid more often than low quality providers", but also other things like "provider benchmarks" or
-        the history of requestor's experiences.
+        the history of the requestor's trades.
     \item When deciding about the amount to pay, consider a following tradeof. The less money I pay:
         \begin{itemize}
             \item (gain) The more money I still own.
@@ -135,7 +135,7 @@ The plan looks as follows:\footnote{This is a direct implementation of the Concl
 This is hard, and this must be solved well for this whole idea to work.
 There are two general directions:
 \begin{enumerate}
-    \item Add some mechanism that will enforce this ground truth, e.g.:
+    \item Implement some logic that will enforce this ground truth, e.g.:
         \begin{itemize}
             \item Put invoices on some additional chain
             \item Require invoices to be signed by both sides (?)
@@ -165,7 +165,7 @@ This looks like a fully centralized solution, but:
     \item Assumption 1 (payments ground truth) is true, because we pay in crypto.
     \item Assumption 4 (agents care only about money/service quality) is false\footnote{e.g. requestor would also want their data not to be stolen.}, but this is simply what this reputation system gives us - and it's quite a lot,
 hopefully enough for a "serious" start of the market.
-    \item Assumption 5 is fulfilled for any well-functioning market.
+    \item Assumption 5 is fulfilled for any functioning market.
 \end{itemize}
 
 \subsection{Misc random notes}
@@ -180,10 +180,9 @@ hopefully enough for a "serious" start of the market.
         \begin{itemize}
             \item Because of the transaction costs, building up reputation this way costs
             \item Provider-requestor clusters like this will be visible in the data. E.g. a provider who got paid by X different requestors surely looks better than
-                a provder who was paid by only one requestor, multiple times.
+                a provder who was paid multiple times by only one requestor.
         \end{itemize}
     \item Maybe debit notes would be better than invoices?
-    \item If a provider starts with a debit note for the past debt first (as in the provider strategy described above), we need a way not to count the
         same debt multiple times
     \item The obvious vulnerability is that if an estabilished requestor (i.e. not paying in advance), intends to leave the market, then there's no
         incentive for them to pay the last invoice(s). This is true, but not really important - estabilished requestors will be rarely deciding to leave the market.
