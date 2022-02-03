@@ -7,9 +7,13 @@
 \begin{document}
 
 \section{The main concept}
+
+General note: this is a crude description of an idea, not a "final" design I'm covinced will work.
+IOW, this document should be enough for discussions and future plans, not something we can now go and implement.
+
 \subsection{Assumptions}
 
-This document is a proposal of an implementation of the reputation model described in the "Microeconomic Golem Reputation"\footnote{
+This document proposes an implementation of the reputation model described in the "Microeconomic Golem Reputation"\footnote{
 \href{https://github.com/golemfactory/golem-architecture/blob/jb/microeconomy-reputation/reputation/microeconomic\_reputation.pdf}
      {https://github.com/golemfactory/golem-architecture/blob/jb/microeconomy-reputation/reputation/microeconomic\_reputation.pdf}
 [TODO - beter url when this is merged to some final location]}, and thus accepts all assumptions made there, most important being
@@ -89,7 +93,23 @@ Provider strategy:
 \end{enumerate}
 
 Requestor strategy:
-[TODO]
+\begin{enumerate}
+    \item Gather similiar local history as the provider
+    \item Sign agreements that require an advance payment only with providers you have a reason to trust 
+        (e.g. because you traded with them before or because they have a good history on the market)
+    \item Except for the previous point, just try to sign the most profitable agreements, including any information about the "provider quality" you have.
+        This should include "high quality providers are paid more often than low quality providers", but also other things like "provider benchmarks" or
+        the history of requestor's experiences.
+    \item When deciding about the amount to pay, consider following tradeof. The less money I pay:
+        \begin{itemize}
+            \item (gain) The more money is left on my account.
+            \item (loss) The more expensive deals I will have with other providers, especially if I decide not to pay a provider whose usually paid.
+            \item (loss) The more I will have to pay to trade with this provider again.
+        \end{itemize}
+        And pay any amount you consider best from your POV.\footnote{
+            This should somehow converge to "the worse is the provider, the less we want to pay" - and that's exactly what we want.
+        }
+\end{enumerate}
 
 \subsection{The reputation deployment process}
 
@@ -99,8 +119,13 @@ Who will use them? How to encourage others to use similar strategies?
 
 \section{Discussion}
 \subsection{Assumption 1 - ground truth about invoices}
-\subsection{Assumption 2 - obtaining/parsing invoice data}
+\subsection{Assumption 2 - obtaining/parsing invoice data cost}
 \subsection{Assumption 3 - agents' utility functions}
 \subsection{Assumption 4 - market balance}
-
+\subsection{Misc random notes}
+\begin{enumerate}
+    \item Maybe debit notes would be better than invoices?
+    \item If a provider starts with a debit note for the past debt first (as in the provider strategy described above), we need a way not to count the
+        same debt multiple times
+\end{enumerate}
 \end{document}
