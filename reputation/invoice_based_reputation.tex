@@ -3,8 +3,11 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 
+\title{Invoice - based reputation system}
+\author{Jan Betley\\ Golem Factory}
 
 \begin{document}
+\maketitle
 
 \section{The main concept}
 
@@ -22,6 +25,7 @@ the expected utility maximization.
 Additional assumptions:
 
 \begin{enumerate}
+    \item The ground truth about all payments on the market (amount, sender, receiver) is known.
     \item The ground truth about all invoices on the market (amount, sender, receiver) is known.
     \item Obtaining \& parsing the data about invoices/payments costs neither money nor time.
     \item The only information provider cares about is "how much I will be paid?" and the only information requestor cares about
@@ -37,7 +41,8 @@ Some of them are questionable even as approximations - there is a further sectio
 
 \subsection{General idea}
 
-The full knowledge about invoices and payments gives us a crude approximation of the "reputation-like" information:
+The full knowledge about invoices and payments gives us a crude approximation of the "reputation-like" information: 
+good requestors pay, good providers are paid. In more detail:
 \begin{enumerate}
     \item Provider POV: the requestor who paid bigger part of their past invoices will more likely pay another invoice than another requestor
         who paid less past invoices.
@@ -100,10 +105,10 @@ Requestor strategy:
     \item Except for the previous point, just try to sign the most profitable agreements, including any information about the "provider quality" you have.
         This should include "high quality providers are paid more often than low quality providers", but also other things like "provider benchmarks" or
         the history of requestor's experiences.
-    \item When deciding about the amount to pay, consider following tradeof. The less money I pay:
+    \item When deciding about the amount to pay, consider a following tradeof. The less money I pay:
         \begin{itemize}
-            \item (gain) The more money is left on my account.
-            \item (loss) The more expensive deals I will have with other providers, especially if I decide not to pay a provider whose usually paid.
+            \item (gain) The more money I still own.
+            \item (loss) The more expensive deals I will have with other providers, especially if I decide not to pay a provider who's usually paid.
             \item (loss) The more I will have to pay to trade with this provider again.
         \end{itemize}
         And pay any amount you consider best from your POV.\footnote{
@@ -111,21 +116,76 @@ Requestor strategy:
         }
 \end{enumerate}
 
-\subsection{The reputation deployment process}
+\subsection{The reputation system deployment process}
 
 So we have defined some strategies for requestors/providers.
 Who will use them? How to encourage others to use similar strategies?
-
+The plan looks as follows:\footnote{This is a direct implementation of the Conclusion 3.3 from the main reputation document}
+\begin{enumerate}
+    \item Implement provider/requestor strategies described above. Set them as default provider strategies and recommended requestor strategies.
+    \item Put on the market enough providers/requestors who use these strategies.
+    \item (Crucial assumption that should be analyzed) When a new agent enters the market, they use these (or similar) strategies, because they
+        are the most profitable. Thus, as the market grows, the adoption level of these strategies remains high.
+    \item Finally, we can remove the initial providers/requestors and the reputation system will still work.
+\end{enumerate}
 
 \section{Discussion}
-\subsection{Assumption 1 - ground truth about invoices}
-\subsection{Assumption 2 - obtaining/parsing invoice data cost}
-\subsection{Assumption 3 - agents' utility functions}
-\subsection{Assumption 4 - market balance}
+\subsection{Assumption 2 - ground truth about invoices}
+
+This is hard, and this must be solved well for this whole idea to work.
+There are two general directions:
+\begin{enumerate}
+    \item Add some mechanism that will enforce this ground truth, e.g.:
+        \begin{itemize}
+            \item Put invoices on some additional chain
+            \item Require invoices to be signed by both sides (?)
+        \end{itemize}
+    \item Drop this assumption, but modify the strategies so that "agreeing on the invoice amount" will be profitable for both sides, e.g.
+        \begin{itemize}
+            \item Both provider and requestor "report" invoices somewhere
+            \item For the requestor it's always (or usually?) better to report the same value that was reported by the provider
+            \item For the provider it's always (or usually?) better to have the invoice value confirmed by the requestor
+        \end{itemize}
+\end{enumerate}
+
+\subsection{Assumption 3 - obtaining/parsing invoice data cost}
+
+We'll need a node information API (GAP-14) that will gather the data and provide useful simple aggregates that will be consumed in strategies.
+
+This looks like a fully centralized solution, but:
+\begin{itemize}
+    \item If the invoices are gathered in a public location (e.g. a side chain) then there can be multiple different APIs aggregating the same information.
+    \item If the invoices are gathered in a database without a public access, then there could be some other entity who also gathers invoice data.
+\end{itemize}
+
+\subsection{Other assumptions}
+
+\begin{itemize}
+
+    \item Assumption 1 (payments ground truth) is true, because we pay in crypto.
+    \item Assumption 4 (agents care only about money/service quality) is false\footnote{e.g. requestor would also want their data not to be stolen.}, but this is simply what this reputation system gives us - and it's quite a lot,
+hopefully enough for a "serious" start of the market.
+    \item Assumption 5 is fulfilled for any well-functioning market.
+\end{itemize}
+
 \subsection{Misc random notes}
 \begin{enumerate}
+    \item There is a malicious strategy available:
+        \begin{enumerate}
+            \item Put my own providers and requestors on the market
+            \item Trade between them only until their reputation grows enough
+            \item Use requestors to steal from other providers, use providers to steal from other requestors
+        \end{enumerate}
+        This is an important problem, but hopefully solvable:
+        \begin{itemize}
+            \item Because of the transaction costs, building up reputation this way costs
+            \item Provider-requestor clusters like this will be visible in the data. E.g. a provider who got paid by X different requestors surely looks better than
+                a provder who was paid by only one requestor, multiple times.
+        \end{itemize}
     \item Maybe debit notes would be better than invoices?
     \item If a provider starts with a debit note for the past debt first (as in the provider strategy described above), we need a way not to count the
         same debt multiple times
+    \item The obvious vulnerability is that if an estabilished requestor (i.e. not paying in advance), intends to leave the market, then there's no
+        incentive for them to pay the last invoice(s). This is true, but not really important - estabilished requestors will be rarely deciding to leave the market.
 \end{enumerate}
 \end{document}
