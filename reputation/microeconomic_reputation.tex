@@ -39,10 +39,10 @@ With an exception of a few details/examples this document describes just a "gene
 \newline
 \textbf{Utility} - The total happiness of an agent.
 \newline
-\textbf{Utility function $U$} - A function $U: StateOfTheWorld -> \mathbb{R}$, defined for a particular agent, that represents their utility in a given situation.
+\textbf{Utility function $U$} - A function $U: StateOfTheWorld \to \mathbb{R}$, defined for a particular agent, that represents their utility in a given situation.
 \newline
 \textbf{Expected utility} - For every possible decision an agent can make ($D$) and every possible state of the world $w$, there is some probability $P: (D, w) \rightarrow [0, 1]$  that given decision will lead to the given state of the world.
-Agents don't have the full knowledge about $P$, they know only some information $I$ and an estimation of $P$ based on this information: $P_I: (D, w) \rightarrow [0, 1]$. The expected utility $E: (I, U, D) -> \mathbb{R}$ is defined as follows:
+Agents don't have the full knowledge about $P$, they know only some information $I$ and an estimation of $P$ based on this information: $P_I: (D, w) \rightarrow [0, 1]$. The expected utility $E: (I, U, D) \to \mathbb{R}$ is defined as follows:
 
 \begin{equation}
 E(I, U, D) = \sum_{w \in all\_possible\_world\_states}U(w) * P_I(D, w)
