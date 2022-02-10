@@ -78,7 +78,7 @@ Consider few different approaches:
   that it should be as non-demanding as possible. E.g. if one has only a single interesting number to share,
   they should be able to do this pretty effortlessly.
 
-* Implement similiar logic in `yagna`
+* Implement similiar logic in `yagna` (Note: this will **not** be an another `yagna` API - here we only discuss a possible `yagna`-side implementation of a client-side logic). 
 
   ```
   yagna ext-api add provider-benchmark "http://golem.network/api/provider\_benchmark"
@@ -201,6 +201,15 @@ This is a draft that will be improved in GAP-10.
     await metrics[2].get(provider_id="abc")  # [["2022-02-02", 130], ["2022-02-03", 140], ["2022-02-04", 170]]
     await metrics[2].get(provider_id="abc", start="2022-02-03")  # [["2022-02-03", 140], ["2022-02-04", 170]]
     ```
+
+### Decentralization of the node indice APIs ecosystem
+
+As mentioned in the [Decisions](#decisions) section, Golem Network will maintain a list of recommended APIs. But what about more decentralized solutions?
+We don't have any certain plans yet, but there are few pretty clear directions:
+
+* Anyone in possession of any useful information about nodes operating on the Golem network can expose such API.
+* Information about existing node indices APIs could be distributed over the Golem protocol.
+* One day we could have aggregators of node indices APIs, who will gather information from many different sources and provide aggregates as just another API.
 
 ## Rationale
 
