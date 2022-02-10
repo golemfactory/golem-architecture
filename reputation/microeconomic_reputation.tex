@@ -61,9 +61,15 @@ In other words, for agent $A$ and decision $D$, $E_A(D)$ is "how happy agent $A$
 \begin{enumerate}
 \item The Expected Utility Hypothesis\footnote{\href{https://en.wikipedia.org/wiki/Expected\_utility\_hypothesis}{https://en.wikipedia.org/wiki/Expected\_utility\_hypothesis}}: every agent tries to maximize their expected utility.
 
-\item Every agent can costlessy access and analyze all of the publicly available information about Golem. Thanks to this assumption we can remove $I$ from the equations - we no longer
+\item Every agent can costlessly access and analyze all of the publicly available information about Golem. Thanks to this assumption we can remove $I$ from the equations - we no longer
     care about "what agent knows", but only about "what really is". This is a major simplification that might not be a good approximation of the "real world" Golem market, but we
     accept it for the sake of the brevity of this document. Also "truth about Golem is known" is an ideal world we would like to live in.
+    \footnote{Note that this assumption applies only to the "general" information about Golem that could be a public knowledge. Some examples:
+        \begin{itemize}
+            \item Free: bugs/vulnerabilities in software/protocol, number or agents on the market, average payments, plans of the Golem Factory.
+            \item Not free: anything about any particular agent, anything about the future.
+        \end{itemize}
+    }
 
 \item The expected utility and money are interchangeable, that is - for every agent $A$ and a pair of decisions $(D_1, D_2): E_A(D_1) < E_A(D_2)$, there is an amount of money X that
     can be given to the agent so that $E_A(D_1) + U_A(X) = E_A(D_2)$. This way we can treat utilities as if they were money, and thus compare them between different agents.
@@ -82,6 +88,7 @@ We assume that maximization of $V_G$ is one of the goals of the Golem Factory - 
 \subsection{Notation}
 
 We'll be using a bunch of different symbols, but they follow a clear common pattern, so please don't be frightened.
+Every $V_{*}$ is an \textit{ex post} value, i.e. evaluated after the agreement is completed and all agreement-related effects are known.
 
 \begin{itemize}
 \item $V_A(a)$ is the total value of the agreement $a$ from the POV of agent $A$. As per assumption 3, this is "utility expressed as money".\footnote{
@@ -96,13 +103,14 @@ I.e. $V_A(a) = X$ means "when agent $A$ takes part in the agreement $a$, their h
 }. They equal $V_P(a)$/$V_R(a)$ if neither side breached the agreement $a$.
 \item $V_{AL}(a)$ is the value lost by agent $A$ because of the other side breaching the agreement $a$.
 \item $V_{AG}(a)$ is the value gained by agent $A$ when they break the agreement $a$.
-\item $V_{PL}$, $V_{RL}$, $V_{PG}$, $V_{RG}$ are $V_{AL}$/$V_{AG}$ from the POV of provider/requestor.
+\item $V_{PL}$, $V_{RL}$, $V_{PG}$, $V_{RG}$ are $V_{AL}$/$V_{AG}$ from the POV of provider/requestor. In most cases $V_{PL} > V_{RG}$ and $V_{RL} > V_{PG}$, reasoning
+    behind this statement can be found in footnote 6.
 \item $C_A$ is the cost of the participation in the Golem market for agent $A$ that is not related to any particular agreement 
 (e.g. the opportunity cost\footnote{\href{https://en.wikipedia.org/wiki/Opportunity\_cost}{https://en.wikipedia.org/wiki/Opportunity\_cost}} of the hardware offered on the market, 
 or the cost of writing the requestor agent).
 \end{itemize}
 
-\subsection{Dissolving the Golem Value}
+\subsection{Decomposition of the Golem Value}
 
 Utilizing the above notation, we can rewrite the $V_G$ equation as:
 
