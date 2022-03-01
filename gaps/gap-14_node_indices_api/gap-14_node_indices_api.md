@@ -1,7 +1,7 @@
 ---
 gap: 14
-title: Node indices APIs
-description: Discuss the place in the Golem ecosystem of the future APIs providing per-node indices.
+title: Network Insights APIs
+description: Discuss the place in the Golem ecosystem of the future APIs providing per-node information.
 author: Jan Betley (@johny-b)
 status: Draft
 type: Meta
@@ -16,12 +16,12 @@ We - the Golem Factory - should decide about our role in shaping the ecosystem o
 
 * `node_id` - either `provider_id` or `requestor_id`
 * `node` - participant of the Golem marketplace identified by `node_id`
-* `indices` - any scalar information about a particular `node` or a group of `nodes`
-* `node indices API` - API that could be queried for `indices`. Examples:
+* `insights` - any scalar information about a particular `node` or a group of `nodes`
+* `network insights API` - API that could be queried for `insights`. Examples:
     *   an API that could be queried for "last time online" index for a given `provider_id`
     *   an API that could be queried for "total amount of all debit notes issued in the last hour"
 
-## Node indices API vs the "reputation" 
+## Network insights API vs the "reputation" 
 There are three types of information about the Golem market that influence the decisions of the agents trading on the Golem marketplace:
 
 1. Information available directly on the Golem market (e.g. offers and demands)
@@ -31,12 +31,12 @@ There are three types of information about the Golem market that influence the d
 The topic of this GAP is in no way related to 1./2. and should fully cover the most general approach to 3.
 While "local" reputation is part of 2, 3 fully includes everything related to the "non-local" reputation, extended with:
 
-* the node-based indices that really can't be labelled as "reputation" (e.g. how often it is rented, average price etc)
-* the aggregated indices (e.g. average prices for all nodes with a given set of parameters)
+* the node-based insights that really can't be labelled as "reputation" (e.g. how often it is rented, average price etc)
+* the aggregated insights (e.g. average prices for all nodes with a given set of parameters)
 
 ## Examples
 
-`Node indices API` might be providing just any information about nodes on the Golem market, but we can safely restrict our attention only to
+`Network Insights API` might be providing just any information about nodes on the Golem market, but we can safely restrict our attention only to
 types of information that can really be utilized in a market strategy. Few examples of those:
 
 *   Average duration of the agreement for a given `node_id` - we might be looking for a long agreement and prefer nodes that have a history of long agreements
@@ -49,9 +49,9 @@ types of information that can really be utilized in a market strategy. Few examp
 
 ## Motivation
 
-### Current and future node indices APIs
+### Current and future Network Insights APIs
 
-There are already few examples of node indices APIs that are in progress or planned:
+There are already few examples of Network Insights APIs that are in progress or planned:
 
 * [Benchmark-based provider reputation (GAP-10)](https://github.com/golemfactory/golem-architecture/pull/33)
 * [Golem Stats](https://stats.golem.network). This API is currently used e.g. by the [community-created provider agent](https://gist.github.com/sv3t0sl4v/28f896752edc9e20347ffc6d8cefe74c)
@@ -66,11 +66,11 @@ All in all, we should expect such APIs to be a permanent part of the Golem marke
 
 ### The role of the Golem Factory
 
-Now we get (at last) to the main topic of this GAP: does Golem Factory want to actively shape the ecosystem of node indices APIs? And if yes, then how?
+Now we get (at last) to the main topic of this GAP: does Golem Factory want to actively shape the ecosystem of Network Insights APIs? And if yes, then how?
 Consider few different approaches:
 
 * Full indifference. We decide this is not a concern of Golem Factory, close this GAP & decide that e.g. GAP-10 should be implemented without any general reflection on other
-  possible node indices APIs.
+  possible Network Insights APIs.
 
 * Implement model client libraries in `ya*apis`, example in the [Sample client library interface](#sample-client-library-interface) section.
 
@@ -96,7 +96,7 @@ Consider few different approaches:
 There is no obvious solution here, we have many different tradeoffs to consider.
 So, what do we really want to achieve?
 
-1. We want to maximize the adoption of the few early node indices APIs.
+1. We want to maximize the adoption of the few early Network Insights APIs.
 
     Every early adopter of e.g. the provider benchmarks [GAP-10](https://github.com/golemfactory/golem-architecture/pull/33) will be priceless.
     If we go in the "here is some poorly documented API, have fun" direction, we won't have many adopters. If we provide a nice, convenient
@@ -107,7 +107,7 @@ So, what do we really want to achieve?
     There was already some effort done in a similiar direction in the community (e.g. [gc_listoffers](https://github.com/krunch3r76/gc__listoffers)).
     The shorter is the path between "I have some data to share" and "This data is easily available in the requestor (or provider) agent", the better
     chance developers will take part in it.
-    It's worth noting that there are possibly useful indices that can be computed costlessly (e.g. "how long this provider is on the market", "how many
+    It's worth noting that there are possibly useful insights that can be computed costlessly (e.g. "how long this provider is on the market", "how many
     offers are there for a given payload at a given time") - we can implement them as a part of the Golem Stats, but this might as well end up as a nice small community project.
 
 3. We want to avoid logic duplication.
@@ -130,28 +130,28 @@ So, what do we really want to achieve?
 
 ### Decisions
 
-1. There is value in treating "node indices API" as a single general concept.
-2. Golem Factory intends to manage the ecosystem of the node indices API by providing and maintaining:
+1. There is value in treating "Network Insights API" as a single general concept.
+2. Golem Factory intends to manage the ecosystem of the Network Insights API by providing and maintaining:
     
     * A list of recommended APIs
     * Sample implementations of client libraries
     * Example usages of client libraries together with particular APIs
     * Specifications and/or guides on writing such APIs
 
-3. In the near future Golem Factory will **not** make any attempt to define a full node indices API interface and will **not** make any attempt to implement a complex client library.
+3. In the near future Golem Factory will **not** make any attempt to define a full Network Insights API interface and will **not** make any attempt to implement a complex client library.
 4. This GAP specifies the capabilities of the first version of the API. It should be minimal, but useful and easy to extend in the future.
 5. The client library implemented together with the GAP-10 will be general (i.e. will be independent of the logic specific to GAP-10).
 6. Precise design of the API (in the minimal version described in the next section) will also be created together with the GAP-10.
 
 ### Minimal API capabilities
 
-Each Node Indices API is defined by a single url. A GET request sent to this url returns a collection of all available indices and their definitions. 
-Definition of a particular indice includes:
+Each Network Insights API is defined by a single url. A GET request sent to this url returns a collection of all available insights and their definitions. 
+Definition of a particular insight includes:
 
 * General information:
     
-    * Indice name (e.g. "provider\_benchmark").
-    * Indice description - a human-readable description explaining the purpose of the indice, collection methods etc.
+    * Insight name (e.g. "provider\_benchmark").
+    * Insight description - a human-readable description explaining the purpose of the insight, collection methods etc.
 
 * Request specification. Each parameter from the following list is either required, optional or not allowed:
 
@@ -202,14 +202,14 @@ This is a draft that will be improved in GAP-10.
     await metrics[2].get(provider_id="abc", start="2022-02-03")  # [["2022-02-03", 140], ["2022-02-04", 170]]
     ```
 
-### Decentralization of the node indice APIs ecosystem
+### Decentralization of the Network Insights APIs ecosystem
 
 As mentioned in the [Decisions](#decisions) section, Golem Network will maintain a list of recommended APIs. But what about more decentralized solutions?
 We don't have any certain plans yet, but there are few pretty clear directions:
 
 * Anyone in possession of any useful information about nodes operating on the Golem network can expose such API.
-* Information about existing node indices APIs could be distributed over the Golem protocol.
-* One day we could have aggregators of node indices APIs, who will gather information from many different sources and provide aggregates as just another API.
+* Information about existing Network Insights APIs could be distributed over the Golem protocol.
+* One day we could have aggregators of Network Insights APIs, who will gather information from many different sources and provide aggregates as just another API.
 
 ## Rationale
 
@@ -236,7 +236,7 @@ There are few different topics to consider:
    
     Open source has obvious advantages, but in this case closing it might often be a better decision. The reasoning:
    
-    * Data provided by node indices APIs will be used in market strategies, so there will be a direct relationship 
+    * Data provided by Network Insights APIs will be used in market strategies, so there will be a direct relationship 
       between "value of index X for node Y" and "market gains of node Y".
     * Because of this we should expect a strong incentive for node operators to have nodes with as good scores as possible
     * This is what we want, but only with an additional assumption: that the score can't be cheated
@@ -250,16 +250,16 @@ There are few different topics to consider:
 
     *   From the API consumer POV.
     
-        Making wrong market decisions equals wasting money. If it's caused by incorrect indices recommended by the Golem Factory, the money-wasting market participant might expect some
+        Making wrong market decisions equals wasting money. If it's caused by incorrect insights recommended by the Golem Factory, the money-wasting market participant might expect some
         compensation from the Golem Factory. One day we'll almost surely have to face such claims (because we decided to recommend APIs and some APIs will surely have bugs).
         That's why it's important to have an unequivocal terms & conditions.
     
     *   From the node operator POV
 
-        What should a node operator do if they think some node indices API is reporting incorrect values for their node?
+        What should a node operator do if they think some Network Insights API is reporting incorrect values for their node?
         For sure we don't want them to fill a defamation lawsuit. 
         Again, we should ensure we have a correct terms & conditions, but maybe one day we'll also have to consider some "appeal" institution.
-        Also, this is related to the open/closed problem from p.1 - indices calculated with an open code are easier to explain/defend.
+        Also, this is related to the open/closed problem from p.1 - insights calculated with an open code are easier to explain/defend.
 
 3.  Malicious APIs
 
