@@ -16,13 +16,13 @@ IOW, this document should be enough for discussions and future plans, not someth
 
 \subsection{Assumptions}
 
-This document proposes an implementation of the reputation model described in the "Microeconomic Golem Reputation"\footnote{
-\href{https://github.com/golemfactory/golem-architecture/blob/jb/microeconomy-reputation/reputation/microeconomic\_reputation.pdf}
-     {https://github.com/golemfactory/golem-architecture/blob/jb/microeconomy-reputation/reputation/microeconomic\_reputation.pdf}
-[TODO - beter url when this is merged to some final location]}, and thus accepts all assumptions made there, most important being
-the expected utility maximization.
+The most important assumption in this document is the expected utility maximization hypothesis\footnote{
+\href{https://en.wikipedia.org/wiki/Expected\_utility\_hypothesis}
+     {https://en.wikipedia.org/wiki/Expected\_utility\_hypothesis}
+}: providers and requestors will do what they think is best for them, and the main purpose of the reputation system
+is to construct an environment where the most profitable behaviour is also the desired behaviour.
     
-Additional assumptions:
+Few more assumptions (some of them are questionable even as approximations - there is a further section discussing them):
 
 \begin{enumerate}
     \item The ground truth about all payments on the market (timestamp, amount, sender, receiver) is known.
@@ -37,7 +37,6 @@ Additional assumptions:
         \end{enumerate}
 \end{enumerate}
 
-Some of them are questionable even as approximations - there is a further section discussing them.
 
 \subsection{General idea}
 
@@ -52,13 +51,15 @@ good requestors pay, good providers are paid. In more detail:
 
 Justification behind these statements:
 \begin{itemize}
-    \item Both first and second: agent's strategy rarely changes, so it's likely that when trading with us
+    \item Both first and second: providers/requestors market strategy rarely changes, so it's likely that when trading with us
         they will behave similarly to the way they behaved in the similar past situations.
     \item Second: if a requestor doesn't pay the provider, they are less likely to trade with them in the future (e.g. because of the provider's local history), 
         and thus requestors more often pay providers they want to trade with, and those are more likely the providers we want to trade with.
 \end{itemize}
 
 \subsection{Detailed strategies}
+
+There are countless possible strategies that are consistent with the main idea, strategies in this section are just examples.
 
 Provider strategy:
 \begin{enumerate}
@@ -121,11 +122,11 @@ Requestor strategy:
 
 So we have defined some strategies for requestors/providers.
 Who will use them? How to encourage others to use similar strategies?
-The plan looks as follows:\footnote{This is a direct implementation of the Conclusion 3.3 from the main reputation document}
+The plan looks as follows:
 \begin{enumerate}
     \item Implement provider/requestor strategies described above. Set them as default provider strategies and recommended requestor strategies.
     \item Put on the market enough providers/requestors who use these strategies.
-    \item (Crucial assumption that should be analyzed) When a new agent enters the market, they use these (or similar) strategies, because they
+    \item (Crucial assumption that should be analyzed) When a new provider/requestor enters the market, they use these (or similar) strategies, because they
         are the most profitable. Thus, as the market grows, the adoption level of these strategies remains high.
     \item Finally, we can remove the initial providers/requestors and the reputation system will still work.
 \end{enumerate}
@@ -164,7 +165,7 @@ This looks like a fully centralized solution, but:
 \begin{itemize}
 
     \item Assumption 1 (payments ground truth) is true, because we pay in crypto.
-    \item Assumption 4 (agents care only about money/service quality) is false\footnote{e.g. requestor would also want their data not to be stolen.}, but this is simply what this reputation system gives us - and it's quite a lot,
+    \item Assumption 4 (providers care only about money, requestors care only about service quality) is false\footnote{e.g. requestor would also want their data not to be stolen.}, but this is simply what this reputation system gives us - and it's quite a lot,
 hopefully enough for a "serious" start of the market.
     \item Assumption 5 is fulfilled for any functioning market.
 \end{itemize}
@@ -181,11 +182,11 @@ hopefully enough for a "serious" start of the market.
         \begin{itemize}
             \item Because of the transaction costs, building up reputation this way costs
             \item Provider-requestor clusters like this will be visible in the data. E.g. a provider who got paid by X different requestors surely looks better than
-                a provder who was paid multiple times by only one requestor.
+                a provider who was paid multiple times by only one requestor.
         \end{itemize}
-    \item Maybe debit notes would be better than invoices?
-        same debt multiple times
-    \item The obvious vulnerability is that if an estabilished requestor (i.e. not paying in advance), intends to leave the market, then there's no
+    \item Maybe debit notes would be better than invoices? This seems to be a good direction, because it gives us an additional useful information - 
+        the amount accepted by the requestor. Accepting and not paying later is much worse than just rejecting the debit note.
+    \item The obvious vulnerability is that if an estabilished requestor (i.e. not paying in advance) intends to leave the market, then there's no
         incentive for them to pay the last invoice(s). This is true, but not really important - estabilished requestors will be rarely deciding to leave the market.
 \end{enumerate}
 \end{document}
