@@ -29,7 +29,7 @@ after it was accepted. This specification describes, how Requestor and Provider 
 
 - Requestor can ignore Debit Note, if it came before expected interval
   - If Requestor is spammed with Debit Notes by Provider, he is allowed to break Agreement stating (in TerminateAgreement) that the **Reason** for termination is Provider's perceived misconduct. He should set `golem.requestor.code` field in **Reason** structure to `TooManyDebitNotes`.
-- In the mechanism suggested above a Debit Note shall have PaymentDueDate set, and the values must be set so that they correspond with the agreed `payment-interval-sec` value.
+- In the mechanism suggested above a Debit Note shall have PaymentDueDate set, and the values must be set so that they correspond with the agreed `golem.com.scheme.payu.payment-timeout-sec? ` value.
   - Intervals are relative to the agreement timestamp
 - Debit Notes are created and sent per Activity, not per Agreement, i.e. if there are two activities happening at the same time, provider should issue Debit Notes related to each Activity separately.
 - Provider puts new negotiable properties in its offer; Requestor may propose different values when responding to that offer; Provider will then either accept or reject those values.
