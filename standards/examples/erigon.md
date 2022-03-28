@@ -25,8 +25,8 @@ Any "Ethereum-specific" properties would be maintained in this namespace. This s
 
 Two negotiable properties to determine Debit Note and Payment intervals:
 
-`golem.com.scheme.payu.debit-notes.interval-sec?` - Debit Notes issue interval
-`golem.com.scheme.payu.payment-interval-sec?` - Expects Payments to be made within specific interval after Debit Note is issued
+`golem.com.scheme.payu.debit-note.interval-sec?` - Debit Notes issue interval
+`golem.com.scheme.payu.payment-timeout-sec?` - Expects Payments to be made within specific interval after Debit Note is issued
 
 ### Sample Offer
 
