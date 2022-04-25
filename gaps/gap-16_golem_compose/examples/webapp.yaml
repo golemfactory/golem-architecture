@@ -1,0 +1,34 @@
+payloads:
+  web-server:
+    runtime: vm
+    params:
+      image_hash: "c37c1364f637c199fe710ca62241ff486db92c875b786814c6030aa1"
+
+  db-server:
+    runtime: vm
+    params:
+      image_hash: "85021afecf51687ecae8bdc21e10f3b11b82d2e3b169ba44e177340c"
+
+networks:
+  default:
+    mask: "192.168.0.1/24"
+
+services:
+  db-service:
+    payload: db-server
+    network: default
+    entrypoint:
+        - run:
+            args: ["/bin/run_rqlite.sh"]
+
+  web-server-service:
+    payload: web-server
+    network: default
+    instances: 2
+    entrypoint:
+        # ...see how attributes extracted from 'db-service' provisioned above are used to populate the arguments of the 'web-server-service'
+        - run:
+            args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
+        - run:
+            args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
+
