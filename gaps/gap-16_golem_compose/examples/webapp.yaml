@@ -1,11 +1,20 @@
 payloads:
   web-server:
     runtime: vm
+    constraints:
+      - "golem.inf.cpu.cores=2"
+      - "golem.inf.mem.gib>=4"
+    capabilities:
+      - "vpn"
     params:
       image_hash: "c37c1364f637c199fe710ca62241ff486db92c875b786814c6030aa1"
 
   db-server:
     runtime: vm
+    constraints:
+      - "golem.inf.storage.gib>10"
+    capabilities:
+      - "vpn"
     params:
       image_hash: "85021afecf51687ecae8bdc21e10f3b11b82d2e3b169ba44e177340c"
 
