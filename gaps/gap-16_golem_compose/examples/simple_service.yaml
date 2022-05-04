@@ -1,6 +1,12 @@
 payloads:
   simple-service:
     runtime: "vm"
+    constraints:
+      - "golem.inf.cpu.cores=2"
+      - "golem.inf.mem.gib>=4"
+      - "golem.inf.storage.gib>10"
+    capabilities:
+      - "vpn"
     params:
       image_hash: "8b11df59f84358d47fc6776d0bb7290b0054c15ded2d6f54cf634488"
 services:

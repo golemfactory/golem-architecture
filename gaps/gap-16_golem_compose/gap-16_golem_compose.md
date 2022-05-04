@@ -23,55 +23,76 @@ The main motivation for this proposal is providing support for development of di
 - allow for easily starting and tearing down multiple different payloads within the Golem Network
 
 ## Specification
+### Golem Application Object Model
+An application hosted on Golem can be described by a set of data structures, which specify and represent all components of the applciationwhich are relevant from Golem's point of view. The data structures are an Object Model of an application, which has following attributes:
+- Object Model has a schema - it consists of object types (for example a `payload`, a `service`, a `network`), and each object type has a set of fields/attributes (eg. a `payload` includes a `runtime`, `capabilities` and runtime-specific `params`)
+- Objects have relationships (eg a `services` is specified by a `runtime`, and may be part of a `network`)
+- Object Model can be maintained in memory of an _engine_
+- Object Model is dynamically updated as the state of represented objects changes (eg. as a result of provisioning resources on Golem network)
+
+The _engine_ which is a host for an Object Model is responsible for:
+- ingesting an initial application specification (a *descriptor*)
+- provisioning Golem resources as per the _descriptor_
+- maintaining the Object Model state (eg. as resources are provisioned)
+
+
+[TODO: link to GAOM schema description] 
+Once the format of the descriptor YAML is finalized, its schema can be published to https://www.schemastore.org/json/.
+This way, the YAML language server will provide support for schema validation and completion in IDEs and editors.
+
 ### Configuration descriptor file
-Here's an example of such a descriptor file:
+An application descriptor specifies initial Golem Application Object Model. It must include all data required to provision Golem resources required by the application.
+The proposed format is YAML. 
+
+Here's an example of such a descriptor:
 ```
 version: "0.0.1"
 
-auth:
-  address: "http://rest-api:6000"
-  app_key: "$YAGNA_APP_KEY"
-  gsb_url: "tcp://gsb-url:6666"
-
-payment:
-  budget: 10  # GLM
-  driver: "polygon"
-  network: "mainnet"
-
 payloads:
-  nginx:
-    runtime: "vm" # runtimes should have their own capabilities assigned
-    params:
-      image: "image-hash"
-      repo-url: "http://girepo.dev.golem.network:8000"
+  web-server:
+    runtime: vm
     constraints:
-      "golem.inf.cpu.cores": 2
-      "golem.inf.mem.gib": 4
-      "golem.inf.storage.gib": 10
+      - "golem.inf.cpu.cores=2"
+      - "golem.inf.mem.gib>=4"
     capabilities:
       - "vpn"
+    params:
+      image_hash: "c37c1364f637c199fe710ca62241ff486db92c875b786814c6030aa1"
+
+  db-server:
+    runtime: vm
+    constraints:
+      - "golem.inf.storage.gib>10"
+    capabilities:
+      - "vpn"
+    params:
+      image_hash: "85021afecf51687ecae8bdc21e10f3b11b82d2e3b169ba44e177340c"
 
 networks:
   default:
-    ip: "192.168.0.0/24"
+    mask: "192.168.0.1/24"
 
-nodes:
-  reverse-proxy:
-    payload: "nginx"
-    args:
-      deploy: # dict, optional
-      start: # list, optional
-    networks:
-      - "name": "default"
-        "address": "192.168.0.2"  # optional
-    environment:
-      - "SOME_VARIABLE=1234"
+services:
+  db-service:
+    payload: db-server
+    network: default
+    entrypoint:
+        - run:
+            args: ["/bin/run_rqlite.sh"]
+
+  web-server-service:
+    payload: web-server
+    network: default
+    instances: 2
+    entrypoint:
+        - run:
+            args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
+        - run:
+            args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
 ```
 
-[TODO: detailed description of each field] 
 
-#### Payloads
-Depending on the chosen `runtime` certain values should be added to the `capabilities` list.
+## Golem Application Object Model - Implementation Features
 
 #### Merging descriptor files
 Multiple descriptor files may be used within the scope of a single deployment. In such a case, the files are merged based on their ordering. The merging is performed using a deep merge strategy.
@@ -138,9 +159,21 @@ In the case of lists, when merging lists from two files, the override values are
 
 [TODO: describe how these files can be composed (CLI, file system hierarchy)]
 
-#### File schema
-Once the name and the structure of the descriptor file is finalized, its schema can be published to https://www.schemastore.org/json/.
-This way, the YAML language server will provide support for schema validation and completion in IDEs and editors.
+#### GOAM object dependency graph
+As the descriptor is processed by the _engine_, the Golem resources are provisioned, and their state in GOAM is updated by the _engine_. Some resources depend on other resources (eg. a `service` may need to be provisioned in a context of a `network`) which implies the sequence of resource provisioning. The _engine_ shall derive the dependency graph from the descriptor and based on this - determine the provisioning actions sequence.
+
+#### GOAM reference syntax
+The attribute values in descriptor may include references to the current state of the Object Model (to specify that `service` provisioning requires parameters which are dependent on another `service`'s state, eg. a web application service must be launched with connection details of a database service specified in the same descriptor). 
+Note: that the reference syntax also indicates implicit resource dependency, ie. if `service B` launch depends on attributes of `service A` which are only known after `service A` is launched, the _engine_ must first provision `service A`, obtain its updated Object Model state, populate `service B` references to 'service A' state and then provision `service B`.
+
+Proposed syntax is as follows:
+A reference to Object Modelmust be enclosed in `${}`, for example:
+
+```
+entrypoint:
+  - run:
+      args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address *${services.db-service.network_node.ip}* initdb"]
+```
 
 ## Rationale
 #### File format
@@ -149,6 +182,9 @@ YAML is used in both Docker Compose and Kubernetes, both of which are widely-ado
 1. It's an established standard
 2. It's more flexible compared to alternatives (e.g. TOML)
 3. Users of the solutions mentioned above should find it easy to start using Golem Compose
+
+A considered alternative is the HashiCorp HCL format, which is native to Terraform platform ecosystem. YAML however is deemed more widely-adopted.
+[TODO: consider writing the examples in HCL, for comparison]
 
 #### Market strategy
 In its current form, the deployment descriptor **does not** include support for specifying the market strategy which should be used by the requestor. There are two primary reasons for this:
@@ -165,7 +201,10 @@ Market strategies will be addressed in a future GAP.
 All GAPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The GAP **must** explain how the author proposes to deal with these incompatibilities.
 
 ## Test Cases
-Test cases are very useful in summarizing the scope and specifics of a GAP.  If the test suite is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/` directory.
+The application descriptor examples which illustrate various Golem application use cases are attached below:
+- [Simple Service](./examples/simple_service.yaml)
+- [Web Application with Database](./examples/webapp.yaml)
+- [Web Application with HTTP proxy over Golem VPN](./examples/webapp_with_local_proxy.yaml)
 
 ## [Optional] Reference Implementation
 An optional section that contains a reference/example implementation that people can use to assist in understanding or implementing this specification.  If the implementation is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/`.
