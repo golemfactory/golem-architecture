@@ -37,8 +37,6 @@ The _engine_ which is a host for an Object Model is responsible for:
 
 
 [TODO: link to GAOM schema description] 
-Once the format of the descriptor YAML is finalized, its schema can be published to https://www.schemastore.org/json/.
-This way, the YAML language server will provide support for schema validation and completion in IDEs and editors.
 
 ### Configuration descriptor file
 An application descriptor specifies initial Golem Application Object Model. It must include all data required to provision Golem resources required by the application.
@@ -46,7 +44,11 @@ The proposed format is YAML.
 
 Here's an example of such a descriptor:
 ```
-version: "0.0.1"
+meta:
+  name: "Sample-application"
+  description: "A sample descriptor for a Golem application"
+  author: "GolemFactory"
+  version: "0.1.0"
 
 payloads:
   web-server:
@@ -90,6 +92,10 @@ services:
         - run:
             args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
 ```
+
+Notes:
+- The descriptor YAML has an **open format**, ie. it must follow YAML schema definition for defined elements, but may include other elements not covered by schema. In other words, the YAML parser must follow a "tolerant reader" pattern.
+- Once the format of the descriptor YAML is finalized, its schema can be published to https://www.schemastore.org/json/. This way, the YAML language server will provide support for schema validation and completion in IDEs and editors.
 
 
 ## Golem Application Object Model - Implementation Features
@@ -159,15 +165,18 @@ In the case of lists, when merging lists from two files, the override values are
 
 [TODO: describe how these files can be composed (CLI, file system hierarchy)]
 
-#### GOAM object dependency graph
+#### GAOM object dependency graph
 As the descriptor is processed by the _engine_, the Golem resources are provisioned, and their state in GOAM is updated by the _engine_. Some resources depend on other resources (eg. a `service` may need to be provisioned in a context of a `network`) which implies the sequence of resource provisioning. The _engine_ shall derive the dependency graph from the descriptor and based on this - determine the provisioning actions sequence.
 
-#### GOAM reference syntax
+#### Explicit dependency syntax
+
+
+#### GAOM reference syntax
 The attribute values in descriptor may include references to the current state of the Object Model (to specify that `service` provisioning requires parameters which are dependent on another `service`'s state, eg. a web application service must be launched with connection details of a database service specified in the same descriptor). 
 Note: that the reference syntax also indicates implicit resource dependency, ie. if `service B` launch depends on attributes of `service A` which are only known after `service A` is launched, the _engine_ must first provision `service A`, obtain its updated Object Model state, populate `service B` references to 'service A' state and then provision `service B`.
 
 Proposed syntax is as follows:
-A reference to Object Modelmust be enclosed in `${}`, for example:
+A reference to Object Model must be enclosed in `${}`, for example:
 
 ```
 entrypoint:

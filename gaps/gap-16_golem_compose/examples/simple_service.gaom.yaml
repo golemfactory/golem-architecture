@@ -1,3 +1,9 @@
+meta:
+  name: "Simple-service"
+  description: "A simple, single service-based Golem application"
+  author: "GolemFactory"
+  version: "0.1.0"
+
 payloads:
   simple-service:
     runtime: "vm"
@@ -9,6 +15,7 @@ payloads:
       - "vpn"
     params:
       image_hash: "8b11df59f84358d47fc6776d0bb7290b0054c15ded2d6f54cf634488"
+
 services:
   simple-service:
     payload: "simple-service"
