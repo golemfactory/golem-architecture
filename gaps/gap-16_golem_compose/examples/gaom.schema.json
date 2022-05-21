@@ -1,0 +1,132 @@
+{
+    "$id": "https://golem.network/gaom.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "GAOM",
+    "description": "Golem Application Object Model",
+    
+    "$defs": {
+      "meta": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": ""
+          },
+          "description": {
+            "type": "string",
+            "description": ""
+          },
+          "author": {
+            "type": "string",
+            "description": ""
+          },
+          "version": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "required": ["name", "description", "author", "version"]
+      },
+
+      "payload": {
+        "type": "object",
+        "properties": {
+          "runtime": {
+            "type": "string",
+            "description": ""
+          },
+          "constraints": {
+            "type": "array",
+            "description": "",
+            "items" : {
+              "type": "string"
+            }
+          },
+          "capabilities": {
+            "type": "array",
+            "description": "",
+            "items" : {
+              "type": "string"
+            }
+          },
+          "params": {
+            "type": "object",
+            "description": ""
+          }
+        },
+        "required": []
+      },
+
+      "network": {
+        "type": "object",
+        "properties": {
+          "mask": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "required": []
+      },
+
+      "exeScriptCommand" : {
+        "type" : "object",
+        "patternProperties" : {
+          "^.*$" : {
+            "type" : "object"
+          }
+        }
+      },
+
+      "service": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "string",
+            "description": ""
+          },
+          "entrypoint": {
+            "type": "array",
+            "description": "",
+            "items" : {
+              "$ref": "#/$defs/exeScriptCommand"
+            }
+          }
+        },
+        "required": []
+      }
+
+    },
+
+    
+    
+    
+    "type": "object",
+    "properties": {
+      "meta": {
+        "description": "Descriptor metadata header",
+        "$ref": "#/$defs/meta"
+
+      },
+      "payloads": {
+        "description": "Payload specifications",
+        "type": "object",
+        "patternProperties" : {
+          "^.*$" : {
+            "$ref": "#/$defs/payload"
+          }
+  
+        }
+      },
+      "services": {
+        "description": "Service specifications",
+        "type": "object",
+        "patternProperties" : {
+          "^.*$" : {
+            "$ref": "#/$defs/service"
+          }
+  
+        }
+      }
+ 
+    }
+}
