@@ -27,13 +27,14 @@ services:
   web-server-service:
     payload: web-server
     network: default
-    instances: 2
+    depends_on:
+      - db-service
     entrypoint:
-        # ...see how attributes extracted from 'db-service' provisioned above are used to populate the arguments of the 'web-server-service'
-        - run:
-            args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
-        - run:
-            args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
+      # ...see how attributes extracted from 'db-service' provisioned above are used to populate the arguments of the 'web-server-service'
+      - run:
+          args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
+      - run:
+          args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
   
   local-proxy:
     payload: local-proxy
