@@ -35,6 +35,7 @@ The _engine_ which is a host for an Object Model is responsible for:
 - ingesting an initial application specification (a *descriptor*)
 - provisioning Golem resources as per the _descriptor_
 - maintaining the Object Model state (eg. as resources are provisioned)
+- persisting the Object Model state
 
 Golem Application Object Model (diagram): 
 ![image](./gaom.drawio.png)
@@ -123,10 +124,10 @@ Complex application descriptors may benefit from splitting the YAML content into
 
 ## Implementation Features
 
-#### Single-YAML package support
+### Single-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on single-YAML descriptors.
 
-#### GAOM Merging descriptor files
+### GAOM Merging descriptor files
 Multiple descriptor files may be used within the scope of a single deployment. In such a case, the files are merged based on their ordering. The merging is performed using a deep merge strategy.
 Here's an example of how this merging strategy is applied:
 
@@ -186,25 +187,37 @@ In the case of lists, when merging lists from two files, the override values are
 
 [TODO: describe how these files can be composed (CLI, file system hierarchy)]
 
-#### GAOM object state
+### GAOM object state
 The entities and resources in a Golem application follow a certain lifecycle - they get provisioned, they remain active, they get removed/terminated. The application elements represented by the object graph shall have their **state** represented in the _engine_. The **state** represents the stage of lifecycle in which an application element is at a given moment in time.
 Following states are considered:
 - Pending
 - Active
 - Terminated 
 
-#### GAOM object dependency graph
+### GAOM object dependency graph
 As the descriptor is processed by the _engine_, the Golem resources are provisioned, and their state in GOAM is updated by the _engine_. Some resources depend on other resources (eg. a `service` may need to be provisioned in a context of a `network`) which implies the sequence of resource provisioning. The _engine_ shall derive the dependency graph from the descriptor and based on this - determine the provisioning actions sequence.
 
-#### GAOM explicit dependency syntax
+### GAOM explicit dependency syntax
 It is possible to specify explicit dependency between services. If a service A should only be provisioned after service B becomes active, the specification of service A shall include a `depends_on` attribute, pointing at the label of service B. Based on this information, the _engine_shall build an appropriate dependency graph.
 **Note:** a service may depend on a number of other services, therefore the `depends_on` attribute must allow for multiple dependency labels. 
 
-#### Multi-YAML package support
+### GAOM state persistence 
+The _engine_ persists the state of GAOM after the state of the model changes.  
+#### File persistence
+The GAOM state can be persisted to a local or remote file (_protocols?_)
+#### Distributed storage
+The GAOM state can be persisted to a distributed storage system (IPFS? Golem native?)
+
+### GAOM state synchronization
+The _engine_ is able to load a persisted state of GAOM and reconcile its content versus actual state of Activities on Golem network. This reconciliation is required eg. when the _engine_ is disconnected from the network (goes _offline_) and then is reconnected to resume control over the Golem application. 
+
+The synchronization may determine gaps between the persisted state (desired) and the current state (actual) on Golem network. The _engine_ is capable of resolving the gaps, but provisioning or terminating Activities as required. 
+
+### Multi-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on multi-YAML descriptors (ZIP-archived). 
 Note: for the purposes of YAML file merging - the order of processing files within the ZIP-archive shall be undefined (ie. there is no guarantee which YAML file shall override the content of any other YAML file in the same archive). 
 
-#### GAOM reference syntax
+### GAOM reference syntax
 The attribute values in descriptor may include references to the current state of the Object Model (to specify that `service` provisioning requires parameters which are dependent on another `service`'s state, eg. a web application service must be launched with connection details of a database service specified in the same descriptor). 
 Note: that the reference syntax also indicates implicit resource dependency, ie. if `service B` launch depends on attributes of `service A` which are only known after `service A` is launched, the _engine_ must first provision `service A`, obtain its updated Object Model state, populate `service B` references to 'service A' state and then provision `service B`.
 
