@@ -25,7 +25,7 @@ The main motivation for this proposal is providing support for development of di
 
 ## Specification
 ### Golem Application Object Model
-An application hosted on Golem can be described by a set of data structures, which specify and represent all components of the applciationwhich are relevant from Golem's point of view. The data structures are an Object Model of an application, which has following attributes:
+An application hosted on Golem can be described by a set of data structures, which specify and represent all components of the application which are relevant from Golem's point of view. The data structures are an Object Model of an application, which has following attributes:
 - Object Model has a schema - it consists of object types (for example a `payload`, a `service`, a `network`), and each object type has a set of fields/attributes (eg. a `payload` includes a `runtime`, `capabilities` and runtime-specific `params`)
 - Objects have relationships (eg a `services` is specified by a `runtime`, and may be part of a `network`)
 - Object Model can be maintained in memory of an _engine_
@@ -185,8 +185,6 @@ A depth-first approach is used to determine the values which need to be added or
 For maps, keys from overriding files have precedence over the base ones.
 In the case of lists, when merging lists from two files, the override values are simply concatenated to the base list. If required, this behaviour can be made configurable (e.g. to enable overriding the entire list instead).
 
-[TODO: describe how these files can be composed (CLI, file system hierarchy)]
-
 ### GAOM object state
 The entities and resources in a Golem application follow a certain lifecycle - they get provisioned, they remain active, they get removed/terminated. The application elements represented by the object graph shall have their **state** represented in the _engine_. The **state** represents the stage of lifecycle in which an application element is at a given moment in time.
 Following states are considered:
@@ -195,7 +193,7 @@ Following states are considered:
 - Terminated 
 
 ### GAOM object dependency graph
-As the descriptor is processed by the _engine_, the Golem resources are provisioned, and their state in GOAM is updated by the _engine_. Some resources depend on other resources (eg. a `service` may need to be provisioned in a context of a `network`) which implies the sequence of resource provisioning. The _engine_ shall derive the dependency graph from the descriptor and based on this - determine the provisioning actions sequence.
+As the descriptor is processed by the _engine_, the Golem resources are provisioned, and their state in GAOM is updated by the _engine_. Some resources depend on other resources (eg. a `service` may need to be provisioned in a context of a `network`) which implies the sequence of resource provisioning. The _engine_ shall derive the dependency graph from the descriptor and based on this - determine the provisioning actions sequence.
 
 ### GAOM explicit dependency syntax
 It is possible to specify explicit dependency between services. If a service A should only be provisioned after service B becomes active, the specification of service A shall include a `depends_on` attribute, pointing at the label of service B. Based on this information, the _engine_shall build an appropriate dependency graph.
@@ -204,9 +202,9 @@ It is possible to specify explicit dependency between services. If a service A s
 ### GAOM state persistence 
 The _engine_ persists the state of GAOM after the state of the model changes.  
 #### File persistence
-The GAOM state can be persisted to a local or remote file (_protocols?_)
+The GAOM state can be persisted to a local or remote file.
 #### Distributed storage
-The GAOM state can be persisted to a distributed storage system (IPFS? Golem native?)
+The GAOM state can be persisted to a distributed storage system (choice of storage options to be selected for implementation).
 
 ### GAOM state synchronization
 The _engine_ is able to load a persisted state of GAOM and reconcile its content versus actual state of Activities on Golem network. This reconciliation is required eg. when the _engine_ is disconnected from the network (goes _offline_) and then is reconnected to resume control over the Golem application. 
@@ -262,11 +260,16 @@ The application descriptor examples which illustrate various Golem application u
 - [Web Application with Database](./examples/webapp.yaml)
 - [Web Application with HTTP proxy over Golem VPN](./examples/webapp_with_local_proxy.yaml)
 
-## [Optional] Reference Implementation
-An optional section that contains a reference/example implementation that people can use to assist in understanding or implementing this specification.  If the implementation is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/`.
+## Reference Implementation
+An early reference implementation of the "golem compose" concept has been started in following set of projects:
+
+- [dApp Manager](https://github.com/golemfactory/dapp-manager) / [dApp Runner](https://github.com/golemfactory/dapp-runner)
+
 
 ## Security Considerations
-All GAPs must contain a section that discusses the security implications/considerations relevant to the proposed change. Include information that might be important for security discussions, surfaces risks and can be used throughout the life cycle of the proposal. E.g. include security-relevant design decisions, concerns, important discussions, implementation-specific guidance and pitfalls, an outline of threats and risks and how they are being addressed. 
+The "golem compose" concept is an abstraction layer defined above the Golem's standard Requestor/Provider model. It is assumed that a "golem compose" _engine_ acts as one or more Requestors, and therefore all Golem's security/permissions models apply. No dedicated enhancements to `yagna` security features are required.
+
+**The "golem compose" operation requires the _engine_ to act as a Requestor Agent application, connecting to Golem daemons using Golem identities. Therefore an implementation of an _engine_ must consider proper, industry-standard credentials management.**
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
