@@ -256,9 +256,9 @@ All GAPs that introduce backwards incompatibilities must include a section descr
 
 ## Test Cases
 The application descriptor examples which illustrate various Golem application use cases are attached below:
-- [Simple Service](./examples/simple_service.yaml)
-- [Web Application with Database](./examples/webapp.yaml)
-- [Web Application with HTTP proxy over Golem VPN](./examples/webapp_with_local_proxy.yaml)
+- [Simple Service](./examples/simple_service.gaom.yaml)
+- [Web Application with Database](./examples/webapp.gaom.yaml)
+- [Web Application with HTTP proxy over Golem VPN](./examples/webapp_with_local_proxy.gaom.yaml)
 
 ## Reference Implementation
 An early reference implementation of the "golem compose" concept has been started in following set of projects:
