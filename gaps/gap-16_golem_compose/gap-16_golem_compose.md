@@ -87,7 +87,6 @@ services:
   web-server-service:
     payload: web-server
     network: default
-    instances: 2
     entrypoint:
         - run:
             args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
