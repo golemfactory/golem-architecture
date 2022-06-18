@@ -13,7 +13,6 @@ replaces (*optional): <GAP number(s)>
 This GAP introduces a proposal for a language-agnostic layer of abstraction over the Golem VPN and its high-level APIs (`yapapi`, `yajsapi`).
 The main element of this proposal is the introduction of an **application descriptor** file which can be used to describe a deployment of a set of services to be run within the Golem Network.
 This application descriptor is intended to be used together with high-level APIs to enable deploying and managing the nodes described within the descriptor.
-A concept of a repository of application descriptors (a **Dapp-store**) is also outlined.
 
 ## Motivation
 ### Why?
@@ -101,22 +100,11 @@ Notes:
 - The descriptor YAML has an **open format**, ie. it must follow YAML schema definition for defined elements, but may include other elements not covered by schema. In other words, the YAML parser must follow a "tolerant reader" pattern.
 - Once the format of the descriptor YAML is finalized, its schema can be published to https://www.schemastore.org/json/. This way, the YAML language server will provide support for schema validation and completion in IDEs and editors.
 
-### Dapp-store
-The Golem application descriptors may be published in repositories from which they are available to Requestors. Dapp-stores may be public or restricted. Dapp-stores shall provide following capabilities:
-#### Upload application descriptor package
-Application designers shall be able to publish application descriptor packages via an API. New application descriptors and updated versions of pre-existing application descriptors can be uploaded. A Dapp-store shall maintain the version history of published application descriptors.
-
-#### Application descriptor package indexing
-A Dapp-store shall maintain an index of application descriptors where application descriptor `meta` attributes shall be used for indexing.
-
-#### Search application descriptors
-Golem Requestors shall have ability to search application descriptors published in a Dapp-store, using an API. Application descriptor index attributes can be referenced to search/filter the application descriptors.
-
-#### Download application descriptor package
-Golem Requestors shall have ability to download the content of application descriptor package using an API.
+### Descriptor package formats
+The Golem application descriptors may be published in two different formats. An application designer may choose the format which better suits their application.
 
 #### Single-YAML descriptor packages
-A package may consist of a single decriptor file in YAML format. This package type is called a **single-YAML** descriptor package.
+A package may consist of a single decriptor file in YAML format. Such a single file is most likely sufficient for applications of low complexity. This package type is called a **single-YAML** descriptor package. 
 
 #### Multi-YAML descriptor package
 Complex application descriptors may benefit from splitting the YAML content into multiple files, groupped by eg. areas of concern. Such multi-file descriptors can be published as ZIP-packages containing all the relevant YAML files, in flat directory structure (only file sin archive root shall be processed by the _engine_ when processing the descriptor). This package type is called a **multi-YAML** descriptor package. 
@@ -237,7 +225,6 @@ YAML is used in both Docker Compose and Kubernetes, both of which are widely-ado
 3. Users of the solutions mentioned above should find it easy to start using Golem Compose
 
 A considered alternative is the HashiCorp HCL format, which is native to Terraform platform ecosystem. YAML however is deemed more widely-adopted.
-[TODO: consider writing the examples in HCL, for comparison]
 
 #### Market strategy
 In its current form, the deployment descriptor **does not** include support for specifying the market strategy which should be used by the requestor. There are two primary reasons for this:
