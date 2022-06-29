@@ -1,0 +1,34 @@
+sequenceDiagram
+%% @config(./mermaid.json);
+
+    participant Client;
+    participant Socket;
+    participant Router;
+    participant Stack;
+    participant Vpn;
+
+    note over Client,Vpn: Initialize connection
+    note over Client,Vpn: Handle first request
+
+    loop Receive VPN frame
+
+        Vpn->>Router: Push frame
+
+        activate Router
+
+            note left of Router: Find service 10.20.30.40:4444 (VPN)
+            note left of Router: Resolved 1.2.3.4:1111
+
+            Router->>Stack: Push frame
+            Stack->>Router: Push
+
+            note left of Router: Find connection 10.20.30.40:4444 -> 10.20.30.40:4444 (VPN)
+
+            Router->>Socket: Push 1.2.3.4:1111
+
+        deactivate Router
+
+        Socket->>Client: Push
+
+    end
+

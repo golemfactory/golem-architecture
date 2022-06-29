@@ -1,0 +1,47 @@
+sequenceDiagram
+%% @config(./mermaid.json);
+
+    participant Client;
+    participant Socket;
+    participant Router;
+    participant Stack;
+    participant Vpn;
+
+    note over Client,Vpn: Initialize connection
+    note over Client,Vpn: Handle first request
+
+    Client->>Socket: Disconnect
+
+    activate Client
+
+        par Router
+            Socket->>Router: Disconnect Client 8.7.6.5:11234
+        and Client
+            Socket->>Client: Disconnected
+        end
+
+    deactivate Client
+
+    activate Router
+
+        note left of Router: Lookup connection from 8.7.6.5:11234
+        note left of Router: Service addr 10.20.30.40:4444
+        note left of Router: Stack addr 10.20.30.41:5555
+
+        Router->>Stack: Disconnect 10.20.30.41:5555 -> 10.20.30.40:4444
+
+        note left of Stack: Virtual socket disconnect
+
+        Stack->>Router: Disconnect frame
+        Router->>Vpn: Disconnect frame
+        Vpn->>Router: Disconnected frame
+        Router->>Stack: Disconnected frame
+
+        note left of Stack: Virtual socket disconnected
+
+        Stack->>Router: Disconnected 10.20.30.41:5555 -> 10.20.30.40:4444
+
+        note right of Router: Remove 10.20.30.41:5555 -> 10.20.30.40:4444
+
+    deactivate Router
+

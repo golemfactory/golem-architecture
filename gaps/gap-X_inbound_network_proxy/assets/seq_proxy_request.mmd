@@ -1,0 +1,66 @@
+sequenceDiagram
+%% @config(./mermaid.json);
+
+    participant Client;
+    participant Socket;
+    participant Router;
+    participant Stack;
+    participant Vpn;
+
+
+    Client->>Socket: Connect 8.7.6.5:11234 -> 1.2.3.4:1111
+    Socket->>Router: Register 8.7.6.5:11234 -> 1.2.3.4:1111
+
+    activate Router
+        note left of Router: Find service 1.2.3.4:1111
+        note left of Router: Resolved 10.20.30.40:4444 (VPN)
+
+        Router->>Stack: Connect 10.20.30.40:4444
+
+        note left of Stack: Virtual socket connect
+        note left of Stack: New local address 10.20.30.41:5555
+
+        Stack->>Router: Connect frame
+        Router->>Vpn: Connect frame
+        Vpn->>Router: Connected frame
+        Router->>Stack: Connected frame
+
+        note left of Stack: Virtual socket connected
+
+        Stack->>Router: Connected 10.20.30.41:5555 -> 10.20.30.40:4444
+
+        note left of Router: Save 10.20.30.41:5555 -> 10.20.30.40:4444
+        note left of Router: Save 8.7.6.5:11234 -> 1.2.3.4:1111
+
+    deactivate Router
+
+    Socket->>Client: Connected
+
+    loop Receive request
+
+        activate Client
+        Client->>Socket: Service Request
+
+        Socket->>Router: Service Request
+
+        activate Router
+
+            Router->>Stack: Service Request
+            Stack->>Router: Request frame
+            Router->>Vpn: Request frame
+            Vpn->>Router: Response frame
+            Router->>Stack: Response frame
+            Stack->>Router: Response
+
+            note left of Router: Find client 10.20.30.41:5555 -> 10.20.30.40:4444
+            note left of Router: Client addr 8.7.6.5:11234
+
+            Router->>Socket: Service Response
+
+        deactivate Router
+
+        Socket->>Client: Service Response
+        deactivate Client
+
+    end
+
