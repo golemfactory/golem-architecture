@@ -1,41 +1,112 @@
 ---
 gap: GAP-17
-title: <The GAP title is a few words, not a complete sentence>
-description: <Description is one full (short) sentence>
-author: <a list of the author's or authors' name(s) and/or username(s), or name(s) and email(s), e.g. (use with the parentheses or triangular brackets): FirstName LastName (@GitHubUsername), FirstName LastName <foo@bar.com>, FirstName (@GitHubUsername) and GitHubUsername (@GitHubUsername)>
+title: Offline Requestor Model
+description: Considerations and features required to implement Golem applications where Requestor is not required to be constantly connected to the network.
+author: stranger80 (@stranger80)
 status: Draft
-type: <Feature, Standards, Meta>
-requires (*optional): <GAP number(s)>
-replaces (*optional): <GAP number(s)>
+type: Feature
 ---
 
-This is the template to be used for new GAP submissions. Note this has been heavily inspired by Ethereum [EIP template](https://github.com/ethereum/EIPs/blob/master/eip-template.md).
-
-The GAP number will be assigned by an editor. A GAP summary document shall be submitted by opening a pull request with GAP-related files placed in `./gaps/gap-draft_title/` directory. To submit your GAP, please use an abbreviated title in the filename, `gap-draft_title.md`.
-
 ## Abstract
-Abstract is a multi-sentence (short paragraph) technical summary. This should be a very terse and human-readable version of the specification section. Someone should be able to read only the abstract to get the gist of what this specification does.
+TBC
 
 ## Motivation
-The motivation section should describe the "why" of this GAP. What problem does it solve? What benefit does it provide to the Golem ecosystem? What use cases does this GAP address?
+The features indicated or referenced in this GAP are intended to meet following objectives:
+- Improve application resilience to network & requestor node failures
+- Enable "fire&forget", and self-sustaining application models
 
 ## Specification
-The technical specification should describe the syntax and semantics of any new feature. 
+Three "Offline Requestor" scenarios are considered in this GAP. 
+
+#### **A. Requestor partially connected**
+Characteristics:
+- Requestor daemon remains online until Agreement is signed and Activity started
+- Requestor daemon may then disconnect while the Activity is in progress
+- Requestor daemon may reconnect at any time, and exercise control over the Activity via ExeScript
+
+**Notes:**
+- This scenario is only possible with payment schemes which assume upfront payment or allow long intervals between payments or with self-sustained payment
+ 
+#### **B. Requestor offline ("fire&forget")** 
+Characteristics:
+- Requestor daemon remains online until Agreement is signed and Activity started
+- Requestor daemon disconnects permanently, while the Activity continues (probably until agreed computation is complete, or funds run out)
+
+**Notes:**
+- This scenario is only possible with payment schemes which assume upfront payment or allow long intervals between payments or with self-sustained payment
+ 
+#### **C. Requestor delegates control**
+Characteristics:
+- Requestor daemon remains online until Agreement is signed and Activity started
+- Requestor daemon transfers grants control rights to another node/identity, which remains online and exercises control over the Activity 
+
+**Notes:**
+- This requires **Agreement Permissions Management** feature
+- (TBD) Not sure how payments are controlled by a “delegate”...? Are all Payment actions allowed for Payments associated with a given Agreement?
+
+### Proposed features
+
+This GAP introduces following features which are aimed at enabling the "offline Reuqestor" scenarios listed above:
+- Activity Attach/Detach
+- Self-sustained Payments
+- Agreement Permissions Management
+
+The mapping between the scenarios and features required to implement them is indicated below:
+
+| | Activity attach/detach | Self-sustained payments | Agreement Permissions Management |
+|-|-|-|-|
+| Requestor partially connected     | X | X | |
+| Requestor offline ("fire&forget") | X | X | |
+| Requestor delegates control       | X | | X |
+
+#### **Feature: Activity attach/detach**
+We propose to introduce an ability for Requestor node to disconnect from the network while controlled Activity remains active, and then gracefully reconnect, and take control of the Activity. **Note** this can happen intentionally, or as a result of eg. a network failure or software error. Therefore the ability to attach a Requestor to resume control over an Activity is improving the reliability and robustness of Golem as a platform. 
+
+The implementation of this feature requires considerations on two levels:
+
+1. Requestor Agent application goes offline, while corresponding `yagna` daemon remains online 
+    - The HL API implementations shall include the ability to obtain a "live" instance of Activity object and corresponding Agreement object based on `activityID`, and then perform actions on them (ExeScript command execution and results processing, Agreement control, including termination), as in the following pseudo-code example:
+       ```
+       ...
+       activity = Golem.attach_activity(activityId)   # returns an "attached" Activity object, which can then be used to manipulate the Activity
+
+       exeScriptResult = activity.exec(exeScript)     # Activity can receive ExeScript commands, etc.
+
+       activity.agreement.terminate(reason)           # ...eventually the corresponding Agreement can be terminated
+       ...
+       ```
+    - Persisting the information about running Activities to which an HL API caller may "attach" is out of scope for HL API implementation, ie. it is the designer of the Requestor Agent application, whois responsible for eg. persisitng the obtained `activityIDs`, in order to be able to "attach" to Activities which are "in-flight".   
+    - TBC decide how to approach the Task and Service objects.
+
+2. Requestor `yagna` daemon goes offline and should have ability to reconnect to network
+    - The daemon may disconnect from the network, and the current state of the Golem node (incuding Demands/Offers, Agreements, Acitivites, etc.) should be persisted.
+    - The daemon may re-connect to the network, and it should be capable of synchronizing the persisted state with the actual state of relevant entities on the network (eg. update the actual state of Agreements, Activities, respective Invoices/DebitNotes, events, etc.)
+    - After the reconnecting and successful synchronization, the `yagna` APIs should continue to work as if there was no offline period. 
+
+#### **Feature: Self-sustained payments**
+A `yagna` Payment Platform abstraction is proposed which implements the standard Payment API logic (Invoice/DebitNote issuance, Payment processing), however does not require the Requestor to be online to accept Invoices/DebitNotes. 
+
+Such a self-sustained Payment Platform shall be implemented as standard payment platform, where Provider-side Payment API calls are not routed to Requestor node (and corresponding Agent application), but instead are handled by a party, which provides the "Accept/Reject" logic, and is able to lauch respective payments on behalf of the Reuqestor who signed the Agreement.
+
+The "payment issuing" party can be for example:
+- A "payment depositary/broker" service, which accepts prepayment from the Reuqestor, as well as instructions on how the funds can be released (which can be as simple as "release x GLM per block on bloackchain", or may include more sophisticated Invoice acceptance logic).
+- A "payment channel" smart-contract on a blockchain network.
+
+#### **Feature: Agreement Permissions Management**
+TBC
+
 
 ## Rationale
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work.
+TBC 
 
 ## Backwards Compatibility
-All GAPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The GAP **must** explain how the author proposes to deal with these incompatibilities.
+TBC
 
 ## Test Cases
-Test cases are very useful in summarizing the scope and specifics of a GAP.  If the test suite is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/` directory.
-
-## [Optional] Reference Implementation
-An optional section that contains a reference/example implementation that people can use to assist in understanding or implementing this specification.  If the implementation is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/`.
+TBC
 
 ## Security Considerations
-All GAPs must contain a section that discusses the security implications/considerations relevant to the proposed change. Include information that might be important for security discussions, surfaces risks and can be used throughout the life cycle of the proposal. E.g. include security-relevant design decisions, concerns, important discussions, implementation-specific guidance and pitfalls, an outline of threats and risks and how they are being addressed. 
+TBC 
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
