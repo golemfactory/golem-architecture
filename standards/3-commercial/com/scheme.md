@@ -60,5 +60,5 @@ as per the diagram:
 ![pay as you use model](pay_as_you_go_model.png "Pay as you use model")
 
 ### **Examples**
-* `golem.com.scheme.payu.payment-timeout-sec?=60` - The Provider will be expecting payments within 1 hour of the Debit Note issue.
+* `golem.com.scheme.payu.payment-timeout-sec?=3600` - The Provider will be expecting payments within 1 hour of the Debit Note issue.
 
