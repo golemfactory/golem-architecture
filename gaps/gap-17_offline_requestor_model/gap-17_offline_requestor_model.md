@@ -25,7 +25,10 @@ Characteristics:
 - Requestor daemon may reconnect at any time, and exercise control over the Activity via ExeScript
 
 **Notes:**
-- This scenario is only possible with payment schemes which assume upfront payment or allow long intervals between payments or with self-sustained payment
+- This scenario is only possible with payment schemes which:
+  * either assume upfront payment, 
+  * or allow long intervals between payments,
+  * or are self-sustained and not depending on the presence of the daemon.
  
 #### **B. Requestor offline ("fire&forget")** 
 Characteristics:
@@ -33,7 +36,10 @@ Characteristics:
 - Requestor daemon disconnects permanently, while the Activity continues (probably until agreed computation is complete, or funds run out)
 
 **Notes:**
-- This scenario is only possible with payment schemes which assume upfront payment or allow long intervals between payments or with self-sustained payment
+- This scenario is only possible with payment schemes which:
+  * either assume upfront payment, 
+  * or allow long intervals between payments,
+  * or are self-sustained and not depending on the presence of the daemon.
  
 #### **C. Requestor delegates control**
 Characteristics:
@@ -58,6 +64,7 @@ The mapping between the scenarios and features required to implement them is ind
 | Requestor partially connected     | X | X | |
 | Requestor offline ("fire&forget") | X | X | |
 | Requestor delegates control       | X | | X |
+|        |  | |  |
 
 #### **Feature: Activity attach/detach**
 We propose to introduce an ability for Requestor node to disconnect from the network while controlled Activity remains active, and then gracefully reconnect, and take control of the Activity. **Note** this can happen intentionally, or as a result of eg. a network failure or software error. Therefore the ability to attach a Requestor to resume control over an Activity is improving the reliability and robustness of Golem as a platform. 
