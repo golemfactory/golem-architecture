@@ -8,7 +8,7 @@ type: Feature
 ---
 
 ## Abstract
-TBC
+Golem Network is a space where Requestors and Providers interact to trade computing resources in exchange for crypto-tokens. Such collaboration may not require constant connection between Requestor and Providers of the resources. The connectivity may also be disrupted by such events as machine failures & outages, network issues, etc. This article considers a number of scenarios where Requestor is not required to remain constantly online, and introduces a number of features required to support such scenarios in Golem ecosystem. 
 
 ## Motivation
 The features indicated or referenced in this GAP are intended to meet following objectives:
@@ -48,7 +48,6 @@ Characteristics:
 
 **Notes:**
 - This requires **Agreement Permissions Management** feature
-- (TBD) Not sure how payments are controlled by a “delegate”...? Are all Payment actions allowed for Payments associated with a given Agreement?
 
 ### Proposed features
 
@@ -99,21 +98,38 @@ The "payment issuing" party can be for example:
 - A "payment depositary/broker" service, which accepts prepayment from the Reuqestor, as well as instructions on how the funds can be released (which can be as simple as "release x GLM per block on bloackchain", or may include more sophisticated Invoice acceptance logic).
 - A "payment channel" smart-contract on a blockchain network.
 
-#### **Feature: Agreement Permissions Management**
-TBC
+**In general,** the self-sustained Payment mechanism shall be expressed in Demand&Offer via dedicated, standardized properties from `golem.com.payment` property namespace. This is important, as a specific payment platform & scheme are required to ensure compatibility between Requestor and Provider nodes to support a specific "offline Requestor" scenario.
 
+#### **Feature: Agreement Permissions Management**
+In order to support scenarios where control delegation from Requestor to a different Golem node is performed, the Golem APIs must include a concept of permissions and grants. 
+
+This feature is described in a dedicated [GAP](). 
 
 ## Rationale
 TBC 
 
 ## Backwards Compatibility
-TBC
+Backwards compatibility can be considered separately for each feature proposed.
+### Activity attach/detach
+
+#### 1. Requestor Agent application goes offline - `yagna` daemon remains online
+This scenario is implemented only on Agent application level (so in HL API library), so backwards compatibility is ensured between a "new" HL API library implementation and "legacy" `yagna` daemon implementation (as no `yagna` REST API changes are required).
+
+#### 2. Requestor `yagna` daemon goes offline
+**IMPORTANT** Will current Golem net implementations (eg. "hybrid net") support a scenario where `yagna` daemon is reconnecting to network after downtime?
+
+### Self-sustained payments
+As self-susteined payment mechanisms are to be provided by specific, distinguished payment platform & scheme implementations, the Golem nodes and Agent applications will ensure compatibility by indicating respective payment conditions via properties & constraints in Demands & Offers. Therefore only nodes which support self-sustained payments will enter an Agreement, so backwards compatibility will be ensured.
+
+### Agreement Permissions Management
+See relevant [GAP]() for details.
 
 ## Test Cases
-TBC
+Indicative test scenario suite is available [here](gap-17_test_cases.md). 
 
 ## Security Considerations
-TBC 
+Considerations must be given to all vulnerabilities which may result from a fact that the original Requestor (who signed the Agreement) disconnects from the network, leaving the Provider 'unattended'. A malicious 'usurper' may be tempted to disguise as the original Requestor to gain control over the in-flight Agreements&Activites. 
+It seems mandatory to ensure the communciation security (ie. message integrity and authentication) is achieved on Golem Net level - so that the Golem Net transport layer ensures the identity of the sender of data over the network.
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
