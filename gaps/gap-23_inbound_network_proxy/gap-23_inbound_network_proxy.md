@@ -1,5 +1,5 @@
 ---
-gap: 22
+gap: 23
 title: Inbound network Proxy
 description: TCP / UDP proxy for forwarding traffic from publicly routable sockets to nodes within the Golem Network
 author: mf (@mfranciszkiewicz)
