@@ -41,13 +41,13 @@ Base64-encoded JSON manifest.
 
 Base64-encoded signature of the base64-encoded manifest.
 
-### `golem.srv.comp.payload.sig.algorithm: String` (optional)
+### `golem.srv.comp.payload.sig.algorithm: String`
 
-Reserved for future use. Describes the digest and signature algorithms used. Fixed at ECDSA (secp256k1) and SHA3-224.
+Digest algorithm used to generate manifest signature.
 
-### `golem.srv.comp.payload.sig.public-key: String` (optional)
+### `golem.srv.comp.payload.cert: String`
 
-Reserved for future use. Specifies signer's public key when it's not possible to recover it from the signature.
+Base64-encoded certificate in DER format.
 
 ### Manifest format
 
