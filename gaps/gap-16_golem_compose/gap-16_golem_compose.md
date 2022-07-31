@@ -238,7 +238,7 @@ Market strategies will be addressed in a future GAP.
 - [Kubernetes](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects)
 
 ## Backwards Compatibility
-All GAPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The GAP **must** explain how the author proposes to deal with these incompatibilities.
+Not applicable, the Golem Compose concept is designed as an "upper layer" on top of HL API libraries. There are no backwards compatibility concerns.
 
 ## Test Cases
 The application descriptor examples which illustrate various Golem application use cases are attached below:
