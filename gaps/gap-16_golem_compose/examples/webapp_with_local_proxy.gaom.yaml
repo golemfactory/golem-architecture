@@ -20,7 +20,7 @@ services:
   db-service:
     payload: db-server
     network: default
-    entrypoint:
+    init:
         - run:
             args: ["/bin/run_rqlite.sh"]
 
@@ -29,7 +29,7 @@ services:
     network: default
     depends_on:
       - db-service
-    entrypoint:
+    init:
       # ...see how attributes extracted from 'db-service' provisioned above are used to populate the arguments of the 'web-server-service'
       - run:
           args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]

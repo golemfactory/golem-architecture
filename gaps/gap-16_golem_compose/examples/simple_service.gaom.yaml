@@ -19,7 +19,7 @@ payloads:
 services:
   simple-service:
     payload: "simple-service"
-    entrypoint:
+    init:
       - run:
           args: ["/golem/run/simulate_observations_ctl.py", "--start"]
       - run:
