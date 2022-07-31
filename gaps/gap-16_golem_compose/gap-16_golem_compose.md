@@ -73,7 +73,7 @@ payloads:
 
 networks:
   default:
-    mask: "192.168.0.1/24"
+    ip: "192.168.0.1/24"
 
 services:
   db-service:
