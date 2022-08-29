@@ -51,7 +51,7 @@ A **permission** indicates an ability to perform a specific action which refers 
 | req:getInvoiceEvents | |
 | req:getPayments | |
 | req:terminateAgreement | |
-| req:setAgreementPermissions | |
+| req:setAgreementPermissions | See: [Transitive permissions](#transitive-permissions) below |
 | req:createActivity | |
 | req:exec | |
 | req:callEncrypted | |
@@ -130,6 +130,10 @@ A new method shall be added in Market API to enable retrieving an Agreement's AC
 **Note** that one of the parameters required for `AcceptDebitNote`/`AcceptInvoice` Payment API calls is an `allocationId`. The ACL allows for delegation of rights to an Agreement and associated entities, but there is no equivalent rights management for funds managed/owned by Agreement Owner. 
 
 Therefore a rights Grantee, who is willing to Accept an incoming Debit Note or Invoice must pass `allocationId` of their own Allocation.
+
+### Transitive permissions
+
+**Note** granting access to `req:setAgreementPermissions` effectively allows grantee to delegates access rights further. This implies transitivity of permissions.
 
 ### Implementation considerations
 
