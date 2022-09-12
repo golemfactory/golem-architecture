@@ -100,7 +100,7 @@
               "description" : "Name of dependency service"
             }
           },
-          "init": {
+          "entrypoint": {
             "type": "array",
             "description": "List of ExeScript commands to be executed as the service's Activity becomes active",
             "items" : {

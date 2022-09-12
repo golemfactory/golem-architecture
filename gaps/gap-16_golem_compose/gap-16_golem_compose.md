@@ -196,7 +196,27 @@ The GAOM state can be persisted to a distributed storage system (choice of stora
 ### GAOM state synchronization
 The _engine_ is able to load a persisted state of GAOM and reconcile its content versus actual state of Activities on Golem network. This reconciliation is required eg. when the _engine_ is disconnected from the network (goes _offline_) and then is reconnected to resume control over the Golem application. 
 
-The synchronization may determine gaps between the persisted state (desired) and the current state (actual) on Golem network. The _engine_ is capable of resolving the gaps, but provisioning or terminating Activities as required. 
+The synchronization may determine gaps between the persisted state (desired) and the current state (actual) on Golem network. The _engine_ is capable of resolving the gaps, by provisioning or terminating Activities as required. 
+
+#### Engine
+The _engine_ implementation shall follow generic logic which operates on resource abstractions, performing generic algorithms, as indicated below. 
+A general rule is that every tangible resource on Golem network (`Service`, `Network`) can be represented by an abstraction called `ResourceAdapter`, which implements a set of generic operations related to provisioning and maintaining a resource for an application. An _engine_ implements a set of generic operations involving resources, their desired state (as per the GAOM descriptor), perceived state (as per GAOM model persisted by the engine) and actual state (as per the current state of resources on Golem network). 
+ 
+
+#### ResourceAdapter
+- Read
+- Create
+- Update
+- Destroy
+
+#### Engine.Plan
+
+
+#### Engine.Apply
+
+
+#### Engine.Destroy
+
 
 ### Multi-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on multi-YAML descriptors (ZIP-archived). 
