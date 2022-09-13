@@ -9,30 +9,30 @@ requires: GAP-5, GAP-4
 ---
 ## Abstract
 
-Some Golem features are more sensitive, because of potential malicious usage. A good example is outbound network traffic, where malicious user could cause harm, if he was able to access any internet resource. In GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest, which defines allowed commands and domains access. Payload Manifest is signed to confirm, that image is safe to use.
+Some Golem features are more sensitive because of potential malicious usage. A good example is outbound network traffic, where malicious user could cause harm if he was able to access any internet resource. In GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which defines allowed commands and domains access. Payload Manifest is signed to confirm that image is safe to use.
 
-Outbound network is not the only use case, which requires certificates. Soon we will have other cases and we need unify certificates usage to allow different sets of permissions.
+Outbound network is not the only use case which requires certificates. Soon we will have other cases and we need unify certificates usage to allow different sets of permissions.
 
 ## Motivation
 
-Golem use cases allowing for interaction with external world (like outbound, inbound network traffic), put `Providers` in danger of malicious behavior from Requestor side. To alleviate this danger, in GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest, which should be signed by trusted party.
+Golem use cases allowing for interaction with external world (like outbound, inbound network traffic) put `Providers` in danger of malicious behavior from Requestor side. To alleviate this danger, in GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which should be signed by trusted party.
 
-Currently `Providers` are able to choose certificates, they trust, by adding them to Provider configuration. This means that any party is able to gain `Providers'` trust, distribute their own certificates and validate safety and security of different Payloads. Despite this, we are aware that gaining trust can be difficult, so Golem Factory has to take initiative to be at least initial source of trust in the Network.
+Currently `Providers` are able to choose certificates they trust, by adding them to Provider configuration. This means that any party is able to gain `Providers'` trust, distribute their own certificates and validate safety and security of different Payloads. Despite this, we are aware that gaining trust can be difficult, so Golem Factory has to take initiative to be at least initial source of trust in the Network.
 
-Ensuring safety and security of Payloads ran on `Providers'` machines can be ensured in few ways:
+Safety and security of Payloads ran on `Providers'` machines can be ensured in few ways:
 
-- Making audit of Payload Manifest and VM image, to validate if permissions are low enough for image to be safe
+- Audit of Payload Manifest and VM image, to validate if permissions are low enough for image to be safe
 - Signing legal Agreements with partner companies developing software on Golem, in which they commit not to do anything malicious
 - Distribute permissions for signing Payloads to external companies taking responsibility for Payloads safety
 
-When designing certificates structure, that will allow to meet requirements mentioned above, we must keep in mind future use cases, that might require signing with certificates:
+When designing certificates structure that will allow to meet requirements mentioned above, we must keep in mind future use cases that might require signing with certificates:
 
 - KYC
 - Inbound network traffic
 
-That means, that certificates will be used to sign different kinds of permissions. In case of transferring certification to other companies or signing legal Agreements, we need to ensure, that we keep control, which permissions they will be able to use.
+This means that certificates will be used to sign different kinds of permissions. In case of transferring certification to other companies or signing legal Agreements, we need to ensure that we keep control which permissions they will be able to use.
 
-In the future of Golem Network we expect, that new independent features will be implemented by community and they may need to use certification. This document aims to standardize this approach.
+In the future of Golem Network we expect that new, independent features will be implemented by community and they may need to use certification. This document aims to standardize this approach.
 
 ## Specification
 
@@ -41,7 +41,7 @@ We decided to use [x509 arbitrary extensions](https://www.openssl.org/docs/man1.
 ### Custom OIDs
 
 To use arbitrary extensions we need to apply to https://pen.iana.org/pen/PenApplication.page to assign OID (Private Enterprise Number) for GolemFactory.
-In further documentation I assume we got number `1.3.6.1.4.1.60000`, until we will acquire real OID.
+In further documentation I assume we got number `1.3.6.1.4.1.60000`, until we acquire real OID.
 
 Having our OID, we can define arbitrary semantic to numbers in our namespace:
 
@@ -64,7 +64,7 @@ Example values of `GolemCertificatesAllowance` field (this list will be used in 
 
 ### Permissions chains
 
-To transfer some set of permissions to external entity, Golem Factory has to sign it's certificate. This will create certificates chain, that will be later validated by Agent application. For signature to be valid, both certificate and it's parent has to contain specific allowance (or `all`).
+To transfer some set of permissions to external entity, Golem Factory has to sign its certificate. This will create certificates chain that will be later validated by Agent application. For signature to be valid, both certificate and its parent has to contain specific allowance (or `all`).
 
 For example, if we have hierarchy:
 
@@ -75,7 +75,7 @@ For example, if we have hierarchy:
 | Golem Intermediate    | manifest-outbound,inbound |
 | Partner's certificate | manifest-outbound         |
 
-than Payload Manifest signature is valid and `Parter's certificate` is allowed to sign Manifests, but has no rights to sign inbound related features.
+then Payload Manifest signature is valid and `Parter's certificate` is allowed to sign Manifests, but has no rights to sign inbound related features.
 
 But if structure looks like this:
 
@@ -86,8 +86,8 @@ But if structure looks like this:
 | Golem Intermediate    | inbound           |
 | Partner's certificate | manifest-outbound |
 
-Than `Parter's certificate` is not allowed to sign manifests and Agent application should reject such Proposals.
-Note that certificates chain is incorrect, because `Partner's certificate` shouldn't be signed by `Golem Intermediate` in the first place.
+then `Partner's certificate` is not allowed to sign manifests and Agent application should reject such Proposals.
+Note that the certificate chain is incorrect, because `Partner's certificate` shouldn't be signed by `Golem Intermediate` in the first place.
 
 ### Limiting certificates chain length
 
@@ -174,7 +174,7 @@ We need internal company policies, who has permissions to decide about signing u
 
 ### Root Golem certificate
 
-Root certificate is always self-signed certificate. We could sign it using [Golem Multisig](https://etherscan.io/address/0x7da82c7ab4771ff031b66538d2fb9b0b047f6cf9) contract to allow anyone validate it's authenticity.
+Root certificate is always self-signed certificate. We could sign it using [Golem Multisig](https://etherscan.io/address/0x7da82c7ab4771ff031b66538d2fb9b0b047f6cf9) contract to allow anyone validate its authenticity.
 
 ## Copyright
 
