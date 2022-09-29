@@ -117,7 +117,7 @@ Running Golem Compose engine for a specific descriptor shall provision respectiv
 ### Single-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on single-YAML descriptors.
 
-### GAOM Merging descriptor files
+### Merging descriptor files
 Multiple descriptor files may be used within the scope of a single deployment. In such a case, the files are merged based on their ordering. The merging is performed using a deep merge strategy.
 Here's an example of how this merging strategy is applied:
 
