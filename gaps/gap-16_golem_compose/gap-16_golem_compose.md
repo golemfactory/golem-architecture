@@ -111,6 +111,9 @@ Complex application descriptors may benefit from splitting the YAML content into
 
 ## Implementation Features
 
+### Descriptor - "Apply" operation 
+Running Golem Compose engine for a specific descriptor shall provision respective resources/services on Golem Network (as a one-off action).
+
 ### Single-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on single-YAML descriptors.
 
