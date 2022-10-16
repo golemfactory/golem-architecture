@@ -97,7 +97,7 @@ services:
 [link](./gaom.schema.json) / [documentation](./gaom.schema.md)
 
 Notes:
-- The descriptor YAML has an **open format**, ie. it must follow YAML schema definition for defined elements, but may include other elements not covered by schema. In other words, the YAML parser must follow a "tolerant reader" pattern.
+- The descriptor YAML has a **strict format**, ie. it must follow YAML schema definition for defined elements. In other words, the YAML parser must follow a "strict reader" pattern - YAML with unknown attributes shall trigger errors. Note: as an extension, we would like to have also ability to explicitly "ignore" the schema errors.
 - Once the format of the descriptor YAML is finalized, its schema can be published to https://www.schemastore.org/json/. This way, the YAML language server will provide support for schema validation and completion in IDEs and editors.
 
 ### Descriptor package formats
@@ -111,10 +111,13 @@ Complex application descriptors may benefit from splitting the YAML content into
 
 ## Implementation Features
 
+### Descriptor - "Apply" operation 
+Running Golem Compose engine for a specific descriptor shall provision respective resources/services on Golem Network (as a one-off action).
+
 ### Single-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on single-YAML descriptors.
 
-### GAOM Merging descriptor files
+### Merging descriptor files
 Multiple descriptor files may be used within the scope of a single deployment. In such a case, the files are merged based on their ordering. The merging is performed using a deep merge strategy.
 Here's an example of how this merging strategy is applied:
 
