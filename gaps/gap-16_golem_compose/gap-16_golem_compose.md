@@ -201,24 +201,118 @@ The _engine_ is able to load a persisted state of GAOM and reconcile its content
 
 The synchronization may determine gaps between the persisted state (desired) and the current state (actual) on Golem network. The _engine_ is capable of resolving the gaps, by provisioning or terminating Activities as required. 
 
+#### GAOM Model object types
+
+A GAOM model object type includes all relevant attributes of a given resource, including:
+- `Name` by which the resource can be identified in GAOM model (mandatory in the GAOM descriptor),
+- `State` which indicates the current state of the resource, as recognized by the engine (so not specified in the GAOM descriptor, but maintained by the engine),
+- Attributes by which the resource can be identified in Golem network. For example, a Service instance can be identified by respective `AgreementId` and `ActivityId`.
+
 #### Engine
 The _engine_ implementation shall follow generic logic which operates on resource abstractions, performing generic algorithms, as indicated below. 
-A general rule is that every tangible resource on Golem network (`Service`, `Network`) can be represented by an abstraction called `ResourceAdapter`, which implements a set of generic operations related to provisioning and maintaining a resource for an application. An _engine_ implements a set of generic operations involving resources, their desired state (as per the GAOM descriptor), perceived state (as per GAOM model persisted by the engine) and actual state (as per the current state of resources on Golem network). 
- 
+A general rule is that every tangible resource on Golem network (`Service`, `Network`) can be manipulated by an abstraction called `ResourceAdapter`, which implements a set of generic operations related to provisioning and maintaining a resource for an application. An _engine_ implements a set of generic operations involving resources, their desired state (as per the GAOM descriptor), perceived state (as per GAOM model persisted by the engine) and actual state (as per the current state of resources on Golem network). 
+
+The _engine_ operates on following GAOM model states:
+- `desired state` - as described by the application descriptor, this is the composition of resources required by an application at a given moment in time. Note that the desired state may change over time - and it is the responsibility of the _engine_ to reflect those changes in the actual set of resources provisioned on Golem network.
+- `persisted state` - the GAOM model snapshot which is persisted after the _engine_ performs any operation on Golem actual resources. Note that the persisted state should include also the 'physical' resource attributes, required to identify the actual resource instance on Golem network (eg. `AgreementId`/`ActivityId`).
+- `actual state` - the GAOM model snapshot which represents the actual current state of resources as they operate on Golem network. The actual state should be obtained for a given moment in time by verifying the actual state of resources as recorded in the `persisted state`.
+
+The fundamental operations of the engine are:
+- `Plan` - based on the `desired state` and `persisted state` derive the `actual state`, and then determine the sequence of actions which need to be performed on Golem network to provision/update/destroy resources, in order to achieve the `desired state`. Note that `Plan` may be called in `Apply` or `Destroy` mode.  
+- `Apply` - run `Plan(Apply)` and then execute the actions determined by the Plan operation. For each of the actions, as soon as it is complete, record the changes in `persisted state`.
+- `Destroy` - run `Plan(Destroy)` and then execute the actions determined by the Plan operation. For each of the actions, as soon as it is complete, record the changes in `persisted state`.
+
+NOTE: the `Apply` operation can be executed repeatedly, and each execution should bring the Golem application to a state as indicated by the application descriptor (the `desired state`). Even when the descriptor remains unchanged, repeated calls of `Apply` operation ensure the application is stable.
 
 #### ResourceAdapter
-- Read
-- Create
-- Update
-- Destroy
+A `ResourceAdapter` module is an abstraction over a specific type of resource, and implements low-level CRUD operations for the resources. Eg. a `ServiceResourceAdapter` implements logic specific to Create, Read, Update and Destroy operations on a service on Golem network. A generic implementation of each of those operations takes `<operation>Request` as parameter and returns `<operation>Response`, where both `...Request` and `...Response` contain the model (in GAOM sense) of the resource.
+
+- `Read` operation
+  - Input: `ReadResourceRequest { Resource model }`
+  - Output: `ReadResourceResponse { Resource model }`
+  - Logic:
+
+    The purpose of this operation is to fetch the actual state of the resource as it exists on Golem network. In order to read the current state, the resource model must contain attributes which allow to identify the actual resource instance (if those attributes are missing from the request, the resource is assumed to not exist).
+    - If `ReadResourceRequest.model` does not contain "identifying" attributes (eg. AgreementId for services) - return `ReadResourceResponse.model` = null
+    - If `ReadResourceRequest.model` does include "identifying" attributes, fetch all available information re. the resource
+      - If the resource does actually exist populate the `ReadResourceResponse.model` with returned attributes and state
+      - If the resource does not exist (eg. Agreement or Activity have been terminated) - return the known attributes of `ReadResourceResponse.model`, but set state to `Terminated`
+
+- `Create` operation
+  - Input: `CreateResourceRequest { Resource model }`
+  - Output: `CreateResourceResponse { Resource model }`
+  - Logic:
+
+    The purpose of this operation is to provision the specified resource on Golem network. The resource gets provisioned using the specification received in the request, then the resulting attributes (including the "identifying" attributes, like AgreementId/ActivityId) are populated into the model returned in the response.
+
+- `Update` operation
+  - Input: `UpdateResourceRequest { Resource model }`
+  - Output: `UpdateResourceResponse { Resource model }`
+  - Logic:
+    
+    The purpose of this operation is to perform an update (change of attribute values) on a resource existing in Golem network without rebuilding it.
+
+    NOTE that update without recreating the resource may not be possible in every case. When updated attributes cannot be applied to a resource at runtime - the `Update` operation should flag this as an error, so that the _engine_ may decide to execute a rebuild (`Destroy` and `Create`) instead.
+
+- `Destroy` operation
+  - Input: `DestroyResourceRequest { Resource model }`
+  - Output: `DestroyResourceResponse { Resource model }`
+  - Logic:
+
+    The purpose of this operation is to destroy/remove a resource from Golem network. The resource model in question must contain attributes which allow to identify the actual resource instance. 
+    - If `DestroyResourceRequest.model` does not contain "identifying" attributes (eg. AgreementId for services) - return `DestroyResourceResponse.model` = null
+    - If `DestroyResourceRequest.model` does include "identifying" attributes, fetch all available information re. the resource
+      - If the resource does actually exist, destroy the resource (eg. terminate respective Activity and Agreement) and populate the `DestroyResourceResponse.model` with known attributes, setting the state to `Terminated`
+      - If the resource does not exist (eg. Agreement or Activity have been terminated) - return the known attributes of `DestroyResourceResponse.model`, but set state to `Terminated`
 
 #### Engine.Plan
+The `Plan` operation is expected to reconcile the differences between:
+- `Desired state`
+- `Persisted state` 
+- `Actual state` as actually observed on Golem network
 
+in order to derive a sequence of actions to be applied on resources, which must be performed to bring the application (resources required by the application) from its current state to desired state. Possible actions are:
+- `Create`
+- `Update`
+- `Rebuild`
+- `Destroy`
 
-#### Engine.Apply
+A general flow of the `Plan` operation is as follows:
 
+![image](./gaom.engine.plan.drawio.png)
 
-#### Engine.Destroy
+1. Reconcile vs actual state
+
+    In this step, the `persisted state` (which indicates the current expected state of the application) needs to be reconciled against the actual state of the resources. This requires iterating over all recorded resources and verifying their current actual state (by calling respective `ResourceAdapter.Read()` operations). The resulting `actual state` becomes input for the second stage.
+
+    *NOTE that the initial (ie. before the application is provisioned for the first time) `persisted state` is empty.  
+
+2. Reconcile vs desired state
+
+    Once the `actual state` is up to date, it can be reconciled against the `desired state` (as expressed by the application GAOM descriptor).
+
+    Pseudo-logic of the reconciliation in `Plan(Apply)` mode is indicated below:
+    - for each resource that is in `desired` but not in `actual` - add `Create` to the action list
+    - for each resource that is in `desired` and in `actual` and has changed - check if update can be perfomed or a rebuild is required
+      - if update can be performed - add `Update` to the action list
+      - if update cannot be performed - add `Rebuild` to the action list
+    - for each resource that is in `actual` but not in `desired` - add `Delete` to the action list
+
+    Pseudo-logic of the reconciliation in `Plan(Destroy)` mode is indicated below:
+    - for each resource that is in `actual` - add `Delete` to the action list
+
+3. Determine knock-on impact
+
+    As the previous step may have yielded updates/rebuilds to existing resources, and there may be other resources dependent on the changes - each `Update`/`Rebuild` action should also trigger follow-on `Update`/`Rebuild` actions on resources which are downstream in GAOM dependency graph. 
+
+#### Engine.Apply/Engine.Destroy
+
+The purpose of `Apply` and `Destroy` operations is to derive the action sequence and then to apply it via `ServiceAdapters`. As the actions are being applied, the resulting resource changes are recorded in the `persisted state`.
+
+The high-level flow is as follows:
+
+![image](./gaom.engine.applydestroy.drawio.png)
+
 
 
 ### Multi-YAML package support
