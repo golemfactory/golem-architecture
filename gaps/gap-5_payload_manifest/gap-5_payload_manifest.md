@@ -47,7 +47,7 @@ Digest algorithm used to generate manifest signature.
 
 ### `golem.srv.comp.payload.cert: String`
 
-Base64-encoded certificate in DER format.
+Base64-encoded certificate in DER, PEM, or PEM certificate chain formats.
 
 ### Manifest format
 
