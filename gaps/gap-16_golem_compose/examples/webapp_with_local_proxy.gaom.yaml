@@ -21,9 +21,11 @@ services:
     payload: db-server
     network: default
     init:
-        - run:
-            args: ["/bin/run_rqlite.sh"]
-
+      - run:
+          args: ["/bin/run_rqlite.sh"]
+    tcp_proxy:
+      ports:
+        - "4001"
   web-server-service:
     payload: web-server
     network: default
@@ -35,16 +37,6 @@ services:
           args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
       - run:
           args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
-  
-  local-proxy:
-    payload: local-proxy
-    network: default
-    port: 8080
-    remote-endpoints:
-      - ip: "${services.web-server-service[0].network_node.ip}"
-        port: 80
-      - ip: "${services.web-server-service[1].network_node.ip}"
-        port: 80
-
-
-
+    http_proxy:
+      ports:
+        - "80"
