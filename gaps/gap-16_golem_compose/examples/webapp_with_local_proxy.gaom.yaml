@@ -23,6 +23,10 @@ services:
     init:
       - run:
           args: ["/bin/run_rqlite.sh"]
+    # The TCP proxy configuration for this service (from Requestor node to the runtime/payload). Includes list of ports to be "mapped".
+    # A single ports entry (eg. - 80) means that a dynamically-selected port on Requestor node will be mapped to port 80 in the Runtime/Payload. The Requestor side port number 
+    # is determined at runtime (when Service is launched)
+    # A mapped ports entry (eg. - 8000:80) means Requestor Node port 8080 will be mapped to port 80 on Runtime/Payload.
     tcp_proxy:
       ports:
         - "4001"
@@ -37,6 +41,10 @@ services:
           args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
       - run:
           args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
+    # The HTTP proxy configuration for this service (from requestor node to the runtime/payload). Includes list of ports to be "mapped".
+    # A single ports entry (eg. - 80) means that a dynamically-selected port on Requestor Node will be mapped to port 80 in the Runtime/Payload. The Requestor side port number 
+    # is determined at runtime (when Service is launched)
+    # A mapped ports entry (eg. - 8000:80) means Requestor Node port 8080 will be mapped to port 80 on Runtime/Payload.
     http_proxy:
       ports:
         - "80"
