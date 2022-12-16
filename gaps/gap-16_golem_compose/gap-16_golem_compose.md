@@ -79,14 +79,14 @@ services:
   db-service:
     payload: db-server
     network: default
-    entrypoint:
+    init:
         - run:
             args: ["/bin/run_rqlite.sh"]
 
   web-server-service:
     payload: web-server
     network: default
-    entrypoint:
+    init:
         - run:
             args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 initdb"]
         - run:
@@ -327,7 +327,7 @@ Proposed syntax is as follows:
 A reference to Object Model must be enclosed in `${}`, for example:
 
 ```
-entrypoint:
+init:
   - run:
       args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address *${services.db-service.network_node.ip}* initdb"]
 ```
