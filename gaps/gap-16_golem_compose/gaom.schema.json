@@ -1,76 +1,76 @@
 {
-    "$id": "https://golem.network/gaom.schema.json",
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "Application",
-    "description": "Golem Application Object Model",
+  "$id": "https://golem.network/gaom.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Application",
+  "description": "Golem Application Object Model",
     
-    "$defs": {
-      "meta": {
+  "$defs": {
+    "meta": {
         "title" : "Meta",
         "description" : "Descriptor metadata structure",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the application"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description of the application"
-          },
-          "author": {
-            "type": "string",
-            "description": "Author"
-          },
-          "version": {
-            "type": "string",
-            "description": "Version of the application (following the sem-ver convention)"
-          }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the application"
         },
+        "description": {
+          "type": "string",
+          "description": "Description of the application"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the application (following the sem-ver convention)"
+        }
+      },
         "required": ["name", "description", "author", "version"]
-      },
+    },
 
-      "payload": {
+    "payload": {
         "title" : "Payload",
-        "type": "object",
-        "properties": {
-          "runtime": {
-            "type": "string",
-            "description": "Specifies the ExeUnit/runtime required by the payload"
-          },
-          "constraints": {
-            "type": "array",
-            "description": "List of the Golem market constraints required by the payload",
+      "type": "object",
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "description": "Specifies the ExeUnit/runtime required by the payload"
+        },
+        "constraints": {
+          "type": "array",
+          "description": "List of the Golem market constraints required by the payload",
             "items" : {
-              "type": "string"
-            }
-          },
-          "capabilities": {
-            "type": "array",
-            "description": "List of Provider capabilities required by the payload",
-            "items" : {
-              "type": "string"
-            }
-          },
-          "params": {
-            "type": "object",
-            "description": "Additional payload parameters"
+            "type": "string"
           }
         },
+        "capabilities": {
+          "type": "array",
+          "description": "List of Provider capabilities required by the payload",
+            "items" : {
+            "type": "string"
+          }
+        },
+        "params": {
+          "type": "object",
+          "description": "Additional payload parameters"
+        }
+      },
         "required": ["runtime"]
-      },
+    },
 
-      "network": {
+    "network": {
         "title" : "Network",
-        "type": "object",
-        "properties": {
-          "mask": {
-            "type": "string",
-            "description": "Network address mask"
-          }
-        },
-        "required": []
+      "type": "object",
+      "properties": {
+        "mask": {
+          "type": "string",
+          "description": "Network address mask"
+        }
       },
+      "required": []
+    },
 
       "exeScriptCommand" : {
         "title" : "ExeScriptCommand",
@@ -79,75 +79,75 @@
         "patternProperties" : {
           "^.*$" : {
             "type" : "object"
-          }
         }
-      },
+      }
+    },
 
-      "service": {
+    "service": {
         "title" : "Service",
         "description" : "A structure to specify a service resource to be provisioned on Golem network as part of the Golem application.",
-        "type": "object",
-        "properties": {
-          "payload": {
-            "type": "string",
-            "description": "Specifies the payload to be executed by the service"
-          },
-          "depends_on": {
-            "type": "array",
-            "description": "List of explicit dependencies - services which must be provisioned before this service can be instantiated",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "description": "Specifies the payload to be executed by the service"
+        },
+        "depends_on": {
+          "type": "array",
+          "description": "List of explicit dependencies - services which must be provisioned before this service can be instantiated",
             "items" : {
               "type" : "string",
               "description" : "Name of dependency service"
-            }
-          },
-          "entrypoint": {
-            "type": "array",
-            "description": "List of ExeScript commands to be executed as the service's Activity becomes active",
-            "items" : {
-              "$ref": "#/$defs/exeScriptCommand"
-            }
           }
         },
+        "init": {
+          "type": "array",
+          "description": "List of ExeScript commands to be executed as the service's Activity becomes active",
+            "items" : {
+            "$ref": "#/$defs/exeScriptCommand"
+          }
+        }
+      },
         "required": ["payload"]
-      }
+    }
 
+  },
+
+    
+    
+    
+  "type": "object",
+  "properties": {
+    "meta": {
+      "description": "Descriptor metadata header",
+      "$ref": "#/$defs/meta"
     },
-
-    
-    
-    
-    "type": "object",
-    "properties": {
-      "meta": {
-        "description": "Descriptor metadata header",
-        "$ref": "#/$defs/meta"
-      },
-      "payloads": {
-        "description": "Payload specifications",
-        "type": "object",
+    "payloads": {
+      "description": "Payload specifications",
+      "type": "object",
         "patternProperties" : {
           "^.*$" : {
-            "$ref": "#/$defs/payload"
-          }
+          "$ref": "#/$defs/payload"
         }
-      },
-      "networks": {
-        "description": "Network specifications",
-        "type": "object",
+      }
+    },
+    "networks": {
+      "description": "Network specifications",
+      "type": "object",
         "patternProperties" : {
           "^.*$" : {
-            "$ref": "#/$defs/network"
-          }
+          "$ref": "#/$defs/network"
         }
-      },
-      "services": {
-        "description": "Service specifications",
-        "type": "object",
+      }
+    },
+    "services": {
+      "description": "Service specifications",
+      "type": "object",
         "patternProperties" : {
           "^.*$" : {
-            "$ref": "#/$defs/service"
-          }
+          "$ref": "#/$defs/service"
         }
       }
     }
+  }
 }
