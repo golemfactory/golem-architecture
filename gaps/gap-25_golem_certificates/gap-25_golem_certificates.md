@@ -2,22 +2,23 @@
 gap: 25
 title: Golem Certificates structure
 description: Describes certificates usage to enable more sensitive golem features.
-author: <Witold Dzięcioł (@nieznanysprawiciel)>
+author: <Witold Dzięcioł (@nieznanysprawiciel)>, evik (@evik42)
 status: Draft
 type: Feature
 requires: GAP-5, GAP-4
----
+—
+
 ## Abstract
 
-Some Golem features are more sensitive because of potential malicious usage. A good example is outbound network traffic, where malicious user could cause harm if he was able to access any internet resource. In GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which defines allowed commands and domains access. Payload Manifest is signed to confirm that image is safe to use.
+Some Golem features are more sensitive because of potential malicious usage. A good example is outbound network traffic, where a malicious user could cause harm if he was able to access any internet resource. In GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which defines allowed commands and domain access. Payload Manifest is signed to confirm that image is safe to use.
 
-Outbound network is not the only use case which requires certificates. Soon we will have other cases and we need unify certificates usage to allow different sets of permissions.
+Outbound network is not the only use case which requires certificates. Soon we will have other cases and we need to unify certificates usage to allow different sets of permissions.
 
 ## Motivation
 
-Golem use cases allowing for interaction with external world (like outbound, inbound network traffic) put `Providers` in danger of malicious behavior from Requestor side. To alleviate this danger, in GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which should be signed by trusted party.
+Golem use cases allowing for interaction with the external world (like outbound, inbound network traffic) put `Providers` in danger of malicious behaviour from the Requestor side. To alleviate this danger, in GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which should be signed by a trusted party.
 
-Currently `Providers` are able to choose certificates they trust, by adding them to Provider configuration. This means that any party is able to gain `Providers'` trust, distribute their own certificates and validate safety and security of different Payloads. Despite this, we are aware that gaining trust can be difficult, so Golem Factory has to take initiative to be at least initial source of trust in the Network.
+Currently `Providers` are able to choose certificates they trust, by adding them to Provider configuration. This means that any party is able to gain `Providers'` trust, distribute their own certificates and validate safety and security of different Payloads. Despite this, we are aware that gaining trust can be difficult, so Golem Factory has to take initiative to be at least the initial source of trust in the Network.
 
 Safety and security of Payloads ran on `Providers'` machines can be ensured in few ways:
 
@@ -30,46 +31,68 @@ When designing certificates structure that will allow to meet requirements menti
 - KYC
 - Inbound network traffic
 
-This means that certificates will be used to sign different kinds of permissions. In case of transferring certification to other companies or signing legal Agreements, we need to ensure that we keep control which permissions they will be able to use.
+This means that certificates will be used to sign different kinds of permissions. In case of transferring certification to other companies or signing legal Agreements, we need to ensure that we control which permissions they will be able to use.
 
-In the future of Golem Network we expect that new, independent features will be implemented by community and they may need to use certification. This document aims to standardize this approach.
+In the future of Golem Network we expect that new, independent features will be implemented by the community and they may need to use certification. This document aims to standardise this approach.
 
 ## Specification
 
-We decided to use [x509 arbitrary extensions](https://www.openssl.org/docs/man1.1.1/man5/x509v3_config.html) to enrich certificates with custom fields describing permissions.
+We decided to use [X.509 Certificate Extensions (Section 4.2)](https://www.rfc-editor.org/rfc/inline-errata/rfc5280.html) to control key usage and permissions in the Golem network.
 
-### Custom OIDs
+### Key usage
 
-To use arbitrary extensions we need to apply to https://pen.iana.org/pen/PenApplication.page to assign OID (Private Enterprise Number) for GolemFactory.
-In further documentation I assume we got number `1.3.6.1.4.1.60000`, until we acquire real OID.
+A certificate can be used to extend the chain of trust via signing other certificates or sign other data that is relevant to the network (for example a Computation Manifest).
+To control what a certificate can sign, standard extensions defined in [RFC 5280 Section 4.2.1](https://www.rfc-editor.org/rfc/inline-errata/rfc5280.html) will be used.
 
-Having our OID, we can define arbitrary semantic to numbers in our namespace:
+Extensions
+- Key Usage (OID: joint-iso-ccitt(2) ds(5) 29 15) extension must be marked as critical
+-- Bit `digitalSignature` (0) is used to denote the ability to sign data but not certificates, this is used to grant permission to the signed data.
+-- Bit `keyCertSign` (5) marks the ability to extend the chain of trust and sign other certificates. If this bit is set, then in `Basic Constraints` the `cA` boolean must be set to true
+
+- Basic Constraints (OID: joint-iso-ccitt(2) ds(5) 29 19) extension must be present for certificates that can sign other certificates (`keyCertSign` bit is set in the `Key Usage` extension)
+-- `cA` boolean must be set to true if the `keyCertSign` bit is set in the `Key Usage` extension
+-- `pathLenConstraint` can be used optionally to limit the length of the certificate chain
+
+### Golem Factory certificate extension
+
+This certificate extension is used to grant permissions to a certificate to use certain capabilities of the golem network. Based on how the certificate is intended to be used (defined in the `Key Usage` extension) these permissions or a subset of them can be granted to ‘child’ certificates or other signed data (for example a Requestor identifier).
+If this extension is present, it must be marked critical.
+
+When processing this extension, the verifying party will check if the certificate contains all permissions required to fulfil the requested operation. It may ignore all other permission values (including ones it cannot process) as those have no effect on executing the request.
+
+In a chain of certificates a certificate is only valid if the Golem Factory certificate extension contains a subset of the permissions of the signing certificate. The self signed root certificate is always considered to have all permissions even if this extension is not present. This can be limited by settings on the Agent application when setting up trust for the root certificate.
+
+Structure of the Golem Factory certificate extension:
+```
+id-gf OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) private(4) iana(1) 59850 }
+id-gf-certificate OBJECT IDENTIFIER ::= { id-gf 1 }
+id-gf-certificate-extension OBJECT IDENTIFIER ::= { id-gf-certificate 1 }
 
 
-| Name                       | OID                      | Semantic                                                             |
-| -------------------------- | ------------------------ | -------------------------------------------------------------------- |
-| GolemFactory               | 1.3.6.1.4.1.60000 (TODO) | Root OID for Golem Factory                                           |
-| GolemCertificates          | ${GolemFactory}.1        | Root for Golem certificates parameters                               |
-| GolemCertificatesAllowance | ${GolemCertificates}.1   | List of permissions to sign certain Golem features using certificate |
+GolemFactoryCertificateExtension ::= CHOICE {
+       permitAll BOOLEAN,
+       permissions SEQUENCE SIZE (1..MAX) OF GolemPermissionId
 
-Example values of `GolemCertificatesAllowance` field (this list will be used in further examples, to illustrate how certification works):
+GolemPermissionID ::= OBJECT IDENTIFIER
+```
+
+This GAP lists all the Golem permissions IDs, when a new permission is created it should be listed here with the assigned OID.
+
+Golem permission ids:
+```
+id-gf-permission OBJECT IDENTIFIER ::= { id-gf 2 }
+id-gf-features OBJECT IDENTIFIER ::= { id-gf-permissions 1 }
+
+id-gf-manifest-outbound OBJECT IDENTIFIER ::= { id-gf-features 1 }
+-- Permission to use outbound capabilities with a request defining manifest
+```
+
+### Permission chain examples
+
+If we have hierarchy:
 
 
-| Field             | Semantic                                                                        |
-| ----------------- | ------------------------------------------------------------------------------- |
-| all               | Certificate is allowed to sign any feature (even not existing future use cases) |
-| manifest-outbound | Allowed to sign manifests with outbound network enabled                         |
-| inbound           | Allowed to sign inbound allowance for Requestors.                               |
-| ...               | {List is non-exhaustive - new features will be created in future}               |
-
-### Permissions chains
-
-To transfer some set of permissions to external entity, Golem Factory has to sign its certificate. This will create certificates chain that will be later validated by Agent application. For signature to be valid, both certificate and its parent has to contain specific allowance (or `all`).
-
-For example, if we have hierarchy:
-
-
-| Certificate           | allowance                 |
+| Certificate           | permissions               |
 | --------------------- | ------------------------- |
 | Golem Root            | all                       |
 | Golem Intermediate    | manifest-outbound,inbound |
@@ -79,32 +102,19 @@ then Payload Manifest signature is valid and `Parter's certificate` is allowed t
 
 But if structure looks like this:
 
-
-| Certificate           | allowance         |
+| Certificate           | permissions       |
 | --------------------- | ----------------- |
 | Golem Root            | all               |
 | Golem Intermediate    | inbound           |
 | Partner's certificate | manifest-outbound |
 
 then `Partner's certificate` is not allowed to sign manifests and Agent application should reject such Proposals.
-Note that the certificate chain is incorrect, because `Partner's certificate` shouldn't be signed by `Golem Intermediate` in the first place.
+Note that the certificate chain is invalid, because `Partner's certificate` shouldn't be signed by `Golem Intermediate` in the first place.
 
 ### Limiting certificates chain length
 
-We would like to allow other parties to sign their Manifests (without forcing us to sign each image), but forbid them signing new child certificates and transfer permissions further.
-This can be done by setting `pathlen` parameter in openssl config, when generating certificate:
-
-```basicConstraints=CA:TRUE,pathlen:2```
-
-### Certificate Allowance list
-
-List of all available values for `GolemCertificatesAllowance` field. This list should be updated when new options appear:
-
-
-| Field             | Semantic                                                                        |
-| ----------------- | ------------------------------------------------------------------------------- |
-| all               | Certificate is allowed to sign any feature (even not existing future use cases) |
-| manifest-outbound | Allowed to sign manifests with outbound network enabled                         |
+When Golem Factory signs a certificate with certificate signing capabilities, it could extend the chain of trust indefinitely. In some cases this is not desired, to limit the length of the chain the `pathLenConstraint` field should be used in the `Basic Constraints` extension.
+For certificates that are only allowed to sign certificates that must not extend the chain of trust, the `pathLenConstraint` must be set to 0.
 
 ## Rationale
 
@@ -114,12 +124,12 @@ Any future releases introducing sensitive features will put Providers in danger,
 
 ### Are there any existing x509 extensions, that we could use?
 
-Although there are extensions serving similar purpose of defining, what certificate can be used for, we have no control over these extensions and can't define our own list of values.
+Beside the standard extensions mentioned in this document, there is no extension that could host a freely extendable list of permissions.
 
-### Why we need `all` allowance?
+### Why we need `all` permission?
 
-Since list of allowances is not exhaustive, we don't want to be forced to change root certificate, when adding new features.
-We must keep in mind that `all` allowance should be used sparingly only for top level certificates. For sure we shouldn't sign any certificate with `all` allowance for external parties.
+Since list of permissions is not exhaustive, we don't want to be forced to change certificates, when adding new features.
+We must keep in mind that `all` permission should be used sparingly only for top level certificates. For sure we shouldn't sign any certificate with `all` permission for external parties.
 
 ## Backwards Compatibility
 
@@ -131,6 +141,8 @@ This GAP aims to solve backward compatibility and security problems, that could 
 ## [Optional] Reference Implementation
 
 ### Generating openssl certificate
+
+TODO: update this part and cert configuration
 
 You can check [here](file://cert.confi) example config, which can be passed to openssl to generate certificate containing expected fields. To generate certificate run:
 
@@ -145,27 +157,27 @@ Output looks like this:
 ```
 ...
         X509v3 extensions:
-            1.3.6.1.4.1.60000.1.1: 
+            1.3.6.1.4.1.59850.1.1:
                 0...all..manifest-outbound
 ...
 ```
 
 ### Provider Agent changes
 
-Provider agent supports using certificates without `allowance` extensions.
+Provider agent supports using certificates without `permission` extension.
 We need following changes:
 
 - Certificates chain permissions validation
-- Check outbound allowance during negotiations (currently signature is enough)
+- Check outbound permission during negotiations (currently signature is enough)
 
-No changes on Requestor side are expected.
+No changes on the Requestor side are expected.
 
 ## Security Considerations
 
 ### Old yagna versions
 
-If we don't implement certificates `allowance` before releasing outbound network, Providers could accept Manifest signatures signed by certificates,
-that don't have `manifest-outbound` allowance. This doesn't hurt, as long as we don't introduce new sensitive features.
+If we don't implement certificates `permissions` before releasing outbound network, Providers could accept Manifest signatures signed by certificates,
+that don't have `manifest-outbound` permission. This doesn't hurt, as long as we don't introduce new sensitive features.
 
 ### Private certificates keys management
 
