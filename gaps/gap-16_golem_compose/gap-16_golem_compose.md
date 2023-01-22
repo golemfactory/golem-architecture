@@ -37,7 +37,7 @@ The _engine_ which is a host for an Object Model is responsible for:
 - persisting the Object Model state
 
 Golem Application Object Model (diagram): 
-![image](./gaom.drawio.png)
+![image](../../gaom/gaom.drawio.png)
 
 ### Configuration descriptor file
 An application descriptor specifies initial Golem Application Object Model. It must include all data required to provision Golem resources required by the application.
@@ -94,7 +94,7 @@ services:
 ```
 
 #### JSON Schema for the descriptor: 
-[link](./gaom.schema.json) / [documentation](./gaom.schema.md)
+[link](../../gaom/gaom.schema.json) / [documentation](../../gaom/gaom.schema.md)
 
 Notes:
 - The descriptor YAML has a **strict format**, ie. it must follow YAML schema definition for defined elements. In other words, the YAML parser must follow a "strict reader" pattern - YAML with unknown attributes shall trigger errors. Note: as an extension, we would like to have also ability to explicitly "ignore" the schema errors.
