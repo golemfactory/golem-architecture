@@ -20,7 +20,15 @@ The technical specification should describe the syntax and semantics of any new 
 
 ### Scope
 
-TODO: list all entities in and out of scope
+Following entities are in scope of Agreement's permissions management: 
+- Agreement
+- Activity
+- Invoice
+- DebitNote
+- Payment
+- ExecBatch
+
+All other Golem entities (as exposed by Golem low-level APIs) are not covered by Agreement Permissions mechanism.
 
 ### Roles
 From the point of view of Agreement permissions, following actor roles are relevant:
