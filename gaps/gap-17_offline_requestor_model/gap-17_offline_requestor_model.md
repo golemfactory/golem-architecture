@@ -89,6 +89,16 @@ The implementation of this feature requires considerations on two levels:
     - The daemon may re-connect to the network, and it should be capable of synchronizing the persisted state with the actual state of relevant entities on the network (eg. update the actual state of Agreements, Activities, respective Invoices/DebitNotes, events, etc.)
     - After the reconnecting and successful synchronization, the `yagna` APIs should continue to work as if there was no offline period. 
 
+**'Detach' and in-flight operations**
+
+It shall be acceptable for 'detach' to happen while there are API calls in-flight. 
+
+For long-polling API calls (eg. `collectDemands`/`collectOffers`, `getExecBatchResults`) the 'detach' should break the running API calls. 
+- For scenario when Agent application goes offline - the daemon implementation shall persist the relevant data structures, so that after subsequent 'attach' the Agent may query for data received by the deamon while the Agent remained offline.
+- For scenario when daemon goes offline - the Golem network protocol shall ensure that relevant data objects are persisted on sender side, and delivered after the daemon subsequently 'attaches' itself.
+
+**Note:** The `getExecBatchResults` API called in `text/event-stream` ('streaming') mode will not attempt to persist the undelivered stream content while calling Agent/daemon remains offline. The same API called in `application/json` ('non-streaming') mode will operate as described above.
+
 #### **Feature: Self-sustained payments**
 A `yagna` Payment Platform abstraction is proposed which implements the standard Payment API logic (Invoice/DebitNote issuance, Payment processing), however does not require the Requestor to be online to accept Invoices/DebitNotes. 
 
