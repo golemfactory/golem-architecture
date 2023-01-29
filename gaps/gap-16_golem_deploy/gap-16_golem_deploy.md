@@ -50,6 +50,7 @@ meta:
   description: "A sample descriptor for a Golem application"
   author: "GolemFactory"
   version: "0.1.0"
+schema: "https://github.com/golemfactory/gaom/blob/v0.0.1/gaom.schema.json"
 
 payloads:
   web-server:
@@ -93,7 +94,10 @@ services:
             args: ["/bin/bash", "-c", "cd /webapp && python app.py --db-address ${services.db-service.network_node.ip} --db-port 4001 run > /webapp/out 2> /webapp/err &" ]
 ```
 
-#### JSON Schema for the descriptor: 
+#### JSON Schema for the GAOM
+The GAOM schema definition shall be maintained in a dedicated repo: https://github.com/golemfactory/gaom.git 
+
+Current schema definition: 
 [link](https://github.com/golemfactory/gaom/blob/main/gaom.schema.json) / [documentation](https://github.com/golemfactory/gaom/blob/main/gaom/gaom.schema.md)
 
 Notes:

@@ -3,6 +3,7 @@ meta:
   description: "A simple, single service-based Golem application"
   author: "GolemFactory"
   version: "0.1.0"
+schema: "https://github.com/golemfactory/gaom/blob/v0.0.1/gaom.schema.json"
 
 payloads:
   simple-service:

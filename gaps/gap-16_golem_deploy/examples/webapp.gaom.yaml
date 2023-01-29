@@ -1,3 +1,4 @@
+schema: "https://github.com/golemfactory/gaom/blob/v0.0.1/gaom.schema.json"
 payloads:
   web-server:
     runtime: vm
