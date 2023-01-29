@@ -132,7 +132,7 @@ This scenario is implemented only on Agent application level (so in HL API libra
 As self-susteined payment mechanisms are to be provided by specific, distinguished payment platform & scheme implementations, the Golem nodes and Agent applications will ensure compatibility by indicating respective payment conditions via properties & constraints in Demands & Offers. Therefore only nodes which support self-sustained payments will enter an Agreement, so backwards compatibility will be ensured.
 
 ### Agreement Permissions Management
-See relevant [GAP]() for details.
+See relevant [GAP-24]() for details.
 
 ## Test Cases
 Indicative test scenario suite is available [here](gap-17_test_cases.md). 
