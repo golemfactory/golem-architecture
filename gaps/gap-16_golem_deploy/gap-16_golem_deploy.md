@@ -37,7 +37,7 @@ The _engine_ which is a host for an Object Model is responsible for:
 - persisting the Object Model state
 
 Golem Application Object Model (diagram): 
-![image](../../gaom/gaom.drawio.png)
+![image](https://github.com/golemfactory/gaom/blob/main/gaom.drawio.png?raw=true)
 
 ### Configuration descriptor file
 An application descriptor specifies initial Golem Application Object Model. It must include all data required to provision Golem resources required by the application.
@@ -94,7 +94,7 @@ services:
 ```
 
 #### JSON Schema for the descriptor: 
-[link](../../gaom/gaom.schema.json) / [documentation](../../gaom/gaom.schema.md)
+[link](https://github.com/golemfactory/gaom/blob/main/gaom.schema.json) / [documentation](https://github.com/golemfactory/gaom/blob/main/gaom/gaom.schema.md)
 
 Notes:
 - The descriptor YAML has a **strict format**, ie. it must follow YAML schema definition for defined elements. In other words, the YAML parser must follow a "strict reader" pattern - YAML with unknown attributes shall trigger errors. Note: as an extension, we would like to have also ability to explicitly "ignore" the schema errors.
@@ -112,7 +112,7 @@ Complex application descriptors may benefit from splitting the YAML content into
 ## Implementation Features
 
 ### Descriptor - "Apply" operation 
-Running Golem Compose engine for a specific descriptor shall provision respective resources/services on Golem Network (as a one-off action).
+Running Golem Deploy engine for a specific descriptor shall provision respective resources/services on Golem Network (as a one-off action).
 
 ### Single-YAML package support
 The _engine_ (and corresponding CLI) shall support provisioning Golem application based on single-YAML descriptors.
@@ -339,7 +339,7 @@ The file format of choice is **YAML**.
 YAML is used in both Docker Compose and Kubernetes, both of which are widely-adopted deployment solutions. As such, it's become a de-facto standard
 1. It's an established standard
 2. It's more flexible compared to alternatives (e.g. TOML)
-3. Users of the solutions mentioned above should find it easy to start using Golem Compose
+3. Users of the solutions mentioned above should find it easy to start using Golem Deploy
 
 A considered alternative is the HashiCorp HCL format, which is native to Terraform platform ecosystem. YAML however is deemed more widely-adopted.
 
@@ -355,7 +355,7 @@ Market strategies will be addressed in a future GAP.
 - [Kubernetes](https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects)
 
 ## Backwards Compatibility
-Not applicable, the Golem Compose concept is designed as an "upper layer" on top of HL API libraries. There are no backwards compatibility concerns.
+Not applicable, the Golem Deploy concept is designed as an "upper layer" on top of HL API libraries. There are no backwards compatibility concerns.
 
 ## Test Cases
 The application descriptor examples which illustrate various Golem application use cases are attached below:
@@ -364,15 +364,15 @@ The application descriptor examples which illustrate various Golem application u
 - [Web Application with HTTP proxy over Golem VPN](./examples/webapp_with_local_proxy.gaom.yaml)
 
 ## Reference Implementation
-An early reference implementation of the "golem compose" concept has been started in following set of projects:
+An early reference implementation of the "golem deploy" concept has been started in following set of projects:
 
 - [dApp Manager](https://github.com/golemfactory/dapp-manager) / [dApp Runner](https://github.com/golemfactory/dapp-runner)
 
 
 ## Security Considerations
-The "golem compose" concept is an abstraction layer defined above the Golem's standard Requestor/Provider model. It is assumed that a "golem compose" _engine_ acts as one or more Requestors, and therefore all Golem's security/permissions models apply. No dedicated enhancements to `yagna` security features are required.
+The "golem deploy" concept is an abstraction layer defined above the Golem's standard Requestor/Provider model. It is assumed that a "golem deploy" _engine_ acts as one or more Requestors, and therefore all Golem's security/permissions models apply. No dedicated enhancements to `yagna` security features are required.
 
-**The "golem compose" operation requires the _engine_ to act as a Requestor Agent application, connecting to Golem daemons using Golem identities. Therefore an implementation of an _engine_ must consider proper, industry-standard credentials management.**
+**The "golem deploy" operation requires the _engine_ to act as a Requestor Agent application, connecting to Golem daemons using Golem identities. Therefore an implementation of an _engine_ must consider proper, industry-standard credentials management.**
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
