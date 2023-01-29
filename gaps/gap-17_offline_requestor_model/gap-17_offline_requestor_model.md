@@ -113,10 +113,10 @@ The "payment issuing" party can be for example:
 #### **Feature: Agreement Permissions Management**
 In order to support scenarios where control delegation from Requestor to a different Golem node is performed, the Golem APIs must include a concept of permissions and grants. 
 
-This feature is described in a dedicated [GAP](). 
+This feature is described in a dedicated [GAP-24](). 
 
 ## Rationale
-TBC 
+The proposed behaviour of 'attach/detach' feature is driven by intent to increase robustness of Golem platform, and expand the space of supported usage scenarios, but also taking into account the state of existing `yagna` implementation. It is assumed that the implementaion of the proposed feature logic would not imply substantial redesign of Golem network protocols & implementations.
 
 ## Backwards Compatibility
 Backwards compatibility can be considered separately for each feature proposed.
