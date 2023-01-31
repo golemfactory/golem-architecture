@@ -11,7 +11,7 @@ type: Feature
 The fundamental model in Golem assumes that visibility and rights to manage an Agreement, and all related domain entities (Activity, Invoice, DebitNote, Payment) are limited to the Requestor and Provider nodes which signed this Agreement. For more complex Golem application scenarios, however, a mechanism is required whereby the permissions can be delegated to a different node/identity. This GAP includes a summary of proposed permission model, enhancements to relevant APIs and some considerations on possible implementations.
 
 ## Motivation
-The main objective of this GAP is to enable "offline requestor" scenarios, where the original Requestor delegates the Agreement permissions to another node (single or a consortium of nodes) so that it can disconnect from the network.
+The main objective of this GAP is to enable "offline requestor" scenarios, where the original Requestor delegates the Agreement permissions to another node (single or a consortium of nodes) so that it can disconnect from the network. This feature is a "building block" required by "Golem Supervisor" concept, where "supervisor swarms" will need to delegate Agreement Permissions between themselves to exercise control over a "self-sustaining" Golem application. Note that the "supervisor swarms" shall require other, higher-level permissions management and consensus protocols, which are out of scope of this GAP, and will be described in a dedicated GAP.
 
 A coherent permissions management model may also enable previously unfeasible scenarios where eg. a "broker" Requestor node negotiates Agreements with Providers and then sells them to intrested customers, who then execute the Agreement by launching Activities and accepting Invoices/DebitNotes.
 
@@ -81,6 +81,7 @@ An indicative example of an Agreement's ACL is shown below:
 
 ```
 agreementACL = {
+    version: 123,
     aclEntries: [
         {
             "grantee": "0x7735df0c0bbb3ca65c55d61eadded653573e0152",
@@ -104,6 +105,8 @@ agreementACL = {
 }
 ```
 
+**Note:** the ACL includes a `version` attribute - this attribute is required to prevent accidental ACL overwrite "races" - see **SetAgreementPermissions** method below.
+
 ### MarketAPI: SetAgreementPermissions
 
 A new method shall be added in Market API to enable setting of an Agreement's ACL.
@@ -118,6 +121,13 @@ A new method shall be added in Market API to enable setting of an Agreement's AC
 **Output:**
 - OK
 - Error 
+
+#### "Race condition" prevention
+
+Note that the ACL artifact includes a `version` attribute, which shall meet following conditions:
+- If `setAgreementPermissions` is called with a `version` attribute value matching the latest recorded ACL version - the ACL update is accepted, and the recorded `versin` is incremented.
+- If `setAgreementPermissions` is called with a `version` attribute value lower than the latest recorded ACL version - the method shall return Error with detailed message similar to 'newer version exists'.
+
 
 ### MarketAPI: GetAgreementPermissions
 
