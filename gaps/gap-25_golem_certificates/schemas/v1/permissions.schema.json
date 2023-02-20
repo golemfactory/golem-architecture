@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://golem.network/schemas/v1/permissions.schema.json",
+  "title": "Golem Network permissions",
+  "description": "Set of permissions related to features of the Golem Network",
+  "oneOf": [
+    {
+      "description": "The entity is granted permissions to use all capabilities available in the network",
+      "type": "string",
+      "const": "all"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "outbound": {
+          "oneOf": [
+            {
+              "description": "The entity is granted unrestricted permission to use the outbound feature with a computation manifest (GAP-5)",
+              "type": "string",
+              "const": "unrestricted"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "description": "A list of urls that the entity has permission to access",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "uniqueItems": true
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
