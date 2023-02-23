@@ -41,6 +41,8 @@ We decided to create a JSON based certificate format to be used within the Golem
 
 We are utilizing JSON Schema as a definition language to specify the different JSON objects. The schemas are open, meaning that they define required properties of each object in question but does allow extra properties to be defined.
 
+Our JSON Schema defines hexadecimal string encoding for properties holding binary data instead of BASE64 encoding. We only define a handful of properties containing binary data so it would not save much space, but when storing node ids for example (public keys of a node in the Golem Network) it is preferred to store it in a format that is used by other parts of the network (logging, user interfaces) for easier matching. This does not prevent anyone to add larger chunks of binary data with a more appropriate encoding in additional properties that are not defined in our schemas.
+
 ### Signed Envelope
 
 The purpose of the signed envelope is to defined a format that allows to cryptographically sign any kind of JSON object. The envelope contains a single signed object with any number of attached signatures. The only requirement for the signed data object is to contain a schema id so the structure of the object can be determined by looking at the `$schema` property.
@@ -50,6 +52,7 @@ The purpose of the signed envelope is to defined a format that allows to cryptog
 To create and verify signatures, the signed data object needs to be processed via a hashing algorithm. The message digest depends on the binary data fed into the algorithm. It is a must to create the same binary stream from the JSON data for the algorithm to produce the same hash. Otherwise verification of the signature would not be possible. There are some common encoding methods used to include binary data into JSON but unfortunately these make the data unreadable for humans without preprocessing it (for example decoding a BASE64 encoded string). To avoid losing readability and allow embedding the signed envelope into other JSON structures, we decided to utilize the `JSON Canonicalization Scheme` described in [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785). This scheme enables reproducible cryptographic operations on JSON data by defining a strict serialization scheme that results in the same binary stream on all platforms.
 
 #### Signing process
+
 
 TODO: elaborate
 
@@ -67,21 +70,44 @@ TODO: elaborate
 
 ### Certificate
 
-TODO: elaborate
+The purpose of the certificate is to allow creation of digital signatures by a verified entity. The subject of the certificate is the entity connected to the private key of a key pair where the public key is part of the certificate structure. This enables using the certificate in a PKI system. We chose a set of required properties that are essential to use the certificate for signing and facilitates fine grained control of permissions in the Golem Network.
 
-Certificate properties, with some explanation and why we selected those
+When a certificate is put into a signed envelope, the whole certificate is signed including properties that are not required or not defined by schema.
 
 #### Subject
 
+Subject property defines the entity to which the certificate is issued. The content of this node must be verified by the issuer to be representative of the entity. We define a small set of required properties but this does not prohibit any issuer to require more data and include it in the certificate. The schema is open and allows additional properties to be set, but does not require any implementation to process them in any capacity.
+
+The required properties are:
+- `subject.displayName` the name to be displayed when presenting the certificate to a user
+- `subject.contact.email` an email address where the subject can be reached for any kind inquiry
+
+The property `subject.legalEntity` is an example for extra information that can be included in the subject node of the certificate it is makes sense for some use case, but it is not required for using the certificate with the Golem Network reference implementation.
+
 #### Public Key
 
-#### Verifying a certificate chain
+The `publicKey` property stores the public key of the subject's key pair to allow verification of their signatures. The node defines the following properties:
+- `publicKey.algorithm` the encryption algorithm for which the key pair is generated for
+- `publicKey.parameters` any parameters that are relevant to key or the algorithm for proper usage
+- `publicKey.key` the hexadecimal encoded string representation of the public key optionally with a "0x" prefix
 
-##### Validity
+#### Validity Period
+
+The `validityPeriod` property defines the time interval for which the certificate is valid. It is defined by the start of the term in `validityPeriod.notBefore` property and the end of the term in the `validityPeriod.notAfter` property.
 
 ##### Key usage
 
+The `keyUsage` property defines how the key attached to the certificate can be used. We define the following usages:
+- `signCertificate` the key can be used to sign other certificates to extend the chain n trust
+- `signManifest` the key can be used to sign payload manifests (defined in GAP-5)
+- `all` the key can be used without restrictions, including use cases that are defined after the certificate was created
+
 ##### Permissions
+
+
+
+#### Verifying a certificate chain
+
 
 
 

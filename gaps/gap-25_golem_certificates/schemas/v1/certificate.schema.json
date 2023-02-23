@@ -69,7 +69,7 @@
       },
       "required": [ "algorithm", "key" ]
     },
-    "validity": {
+    "validityPeriod": {
       "description": "The validity constraints of the certificate",
       "type": "object",
       "properties": {
@@ -111,5 +111,5 @@
       "$ref": "permissions.schema.json"
     }
   },
-  "required": [ "$schema", "subject", "publicKey", "validity", "keyUsage", "permissions" ]
+  "required": [ "$schema", "subject", "publicKey", "validityPeriod", "keyUsage", "permissions" ]
 }
