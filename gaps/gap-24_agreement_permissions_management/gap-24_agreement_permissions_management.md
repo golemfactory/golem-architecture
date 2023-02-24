@@ -187,9 +187,7 @@ Question: do we need some mechanism for compatibility of Requestor Agent apps vs
 
 
 ## Test Cases
-Test cases for this GAP must include the following segments:
-1. Grant individual permissions to a specific Grantee node, and run Requestor Agent process to confirm the granted actions are possible on the REST API. Ensure that actions to which permissions hadn't been granted - are not available.
-2. Grant individual permissions to a specific Grantee node A, and run Requestor Agent process against node B to ensure the actions are not available to node B.
+Indicative test scenario suite is available [here](gap-24_test_cases.md).
 
 ## Security Considerations
 This GAP is all about security and permissions. It is recommended to obtain an external security review/pen test for the implementation.
