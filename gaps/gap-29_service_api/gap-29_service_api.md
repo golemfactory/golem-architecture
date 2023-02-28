@@ -16,15 +16,44 @@ Golem allows for launching and control of interactive services. A service is, in
 The proposed service development model provides an abstraction layer over Golem Network mechanics which allows the developer to focus on service state transition logic - leaving the "logistics" of Provider and Agreement management to a high-level API library.
 
 ## Specification
-TODO The technical specification should describe the syntax and semantics of any new feature. 
+This section summarizes the concept of Golem service execution model. 
 
 ### Service lifecycle
+A Service is an abstraction over an Activity launched on a Provider node. A Service follows a state transition sequence, as indicated on the following diagram.
+
+![Service lifecycle](service_state_diagram.png)
+
+### Service execution model
+
+To implement a Golem Service, a developer is expected to create a class containing code to provide:
+
+- specification of the Golem 'payload' that shall be launched on a Provider node
+- logic (via a sequence of ExeScript commands) to be executed as the Service follows a transition of states in its lifecycle
+
+The initialization of the Service class and transition between states is controlled by the Golem Engine.
+
+```mermaid
+---
+Service interface
+---
+classDiagram
+    class Service{
+        +get_payload()
+        +start()
+        +run()
+        +shutdown()
+    }
+```
+
+The execution sequence is indicated on the diagram below:
 
 ```mermaid
 sequenceDiagram
-    participant Golem as Engine
-    participant SampleService as Service
     participant Agent as Requestor Agent App
+    participant Golem as Engine
+    participant Agreement
+    participant Activity
+    participant SampleService as SampleService
 
     Agent ->>+ Golem: run_service(SampleService)
     Golem ->> SampleService: init()
@@ -32,14 +61,29 @@ sequenceDiagram
     Golem ->> SampleService: get_payload()
     SampleService -->> Golem: payload
     Golem ->> Golem: negotiate_agreement(payload)
+    activate Agreement
+    Golem ->> Agreement: create_activity()
+    activate Activity
+
     Golem ->> SampleService: start()
     SampleService -->> Golem: exe_script
+    Golem ->> Activity: exec(exe_script)
+
     Golem ->> SampleService: run()
     SampleService -->> Golem: exe_script
+    Golem ->> Activity: exec(exe_script)
+
     Golem ->> SampleService: shutdown()
     SampleService -->> Golem: exe_script
+    Golem ->> Activity: exec(exe_script)
+
+    Golem ->> Activity: destroy_activity()
+    deactivate Activity
+
+    Golem ->> Agreement: terminate_agreement()
+    deactivate Agreement
+
     deactivate SampleService
-    
 
 ```
 
