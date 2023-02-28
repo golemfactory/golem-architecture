@@ -9,107 +9,153 @@
       "type": "string",
       "const": "https://golem.network/schemas/v1/certificate.schema.json"
     },
-    "subject": {
-      "description": "Properties describing the subject of this certificate",
+    "certificate": {
       "type": "object",
       "properties": {
-        "displayName": {
-          "description": "The subject's name that is displayed when processing this certificate",
-          "type": "string"
-        },
-        "contact": {
-          "description": "Contact information of the subject",
-          "type": "object",
-          "properties" : {
-            "email": {
-              "description": "Contact email",
-              "type": "string",
-              "format": "email"
-            }
-          },
-          "required": [ "email" ]
-        },
-        "legalEntity": {
-          "description": "The legal entity of the subject",
+        "subject": {
+          "description": "Properties describing the subject of this certificate",
           "type": "object",
           "properties": {
-            "name": {
-              "description": "Name of the legal entity",
+            "displayName": {
+              "description": "The subject's name that is displayed when processing this certificate",
               "type": "string"
             },
-            "address": {
-              "description": "Official address of the legal entity",
-              "oneOf": [
-                { "type": "string" },
-                { "type": "object" }
-              ]
+            "contact": {
+              "description": "Contact information of the subject",
+              "type": "object",
+              "properties" : {
+                "email": {
+                  "description": "Contact email",
+                  "type": "string",
+                  "format": "email"
+                }
+              },
+              "required": [ "email" ]
+            },
+            "legalEntity": {
+              "description": "The legal entity of the subject",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "Name of the legal entity",
+                  "type": "string"
+                },
+                "address": {
+                  "description": "Official address of the legal entity",
+                  "oneOf": [
+                    { "type": "string" },
+                    { "type": "object" }
+                  ]
+                }
+              }
             }
-          }
+          },
+          "required": [ "displayName", "contact" ]
+        },
+        "publicKey": {
+          "description": "Public key of the subject's key pair used with this certificate",
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "description": "Cryptographic algorithm with which the key is used",
+              "type": "string"
+            },
+            "parameters": {
+              "description": "Parameters of the public key specific to the algorithm",
+              "type": "object"
+            },
+            "key": {
+              "description": "Hexadecimal encoded string of the public key",
+              "type": "string",
+              "format": "(0x)?[0-9a-fA-F]+"
+            }
+          },
+          "required": [ "algorithm", "key" ]
+        },
+        "validityPeriod": {
+          "description": "The validity constraints of the certificate",
+          "type": "object",
+          "properties": {
+            "notBefore": {
+              "description": "Date and time when the validity period begins",
+              "type": "string",
+              "format": "date-time"
+            },
+            "notAfter": {
+              "description": "Date and time when the validity period ends",
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [ "notBefore", "notAfter" ]
+        },
+        "keyUsage": {
+          "description": "Permissions to use the key bound to the certificate to extend trust",
+          "oneOf": [
+            {
+              "description": "The certificate holder can use this keypair without restrictions",
+              "type": "string",
+              "const": "all"
+            },
+            {
+              "description": "Defines how this certificate can be used",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [ "signCertificate", "signManifest", "signNode" ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          ]
+        },
+        "permissions": {
+          "description": "Permissions granted to the subject",
+          "$ref": "permissions.schema.json"
         }
       },
-      "required": [ "displayName", "contact" ]
+      "required": [ "subject", "publicKey", "validityPeriod", "keyUsage", "permissions" ]
     },
-    "publicKey": {
-      "description": "Public key of the subject's key pair used with this certificate",
+    "signature": {
       "type": "object",
       "properties": {
         "algorithm": {
-          "description": "Cryptographic algorithm with which the key is used",
-          "type": "string"
+          "description": "Cryptographic algorithm used to calculate the signature",
+          "type": "object",
+          "properties": {
+            "hash": {
+              "description": "Cryptographic hash function used to create the signed fingerprint",
+              "type": "string"
+            },
+            "encryption": {
+              "description": "Cryptographic algorithm used to encrypt the fingerprint",
+              "type": "string"
+            }
+          },
+          "required": [ "hash", "encryption" ]
         },
-        "parameters": {
-          "description": "Parameters of the public key specific to the algorithm",
-          "type": "object"
-        },
-        "key": {
-          "description": "Hexadecimal encoded string of the public key",
+        "signatureValue": {
+          "description": "Hexadecimal encoded string of the calculated signature",
           "type": "string",
           "format": "(0x)?[0-9a-fA-F]+"
+        },
+        "signer": {
+          "description": "Information identifying the signing party with clear reference to the key required to verify the signature",
+          "oneOf": [
+            {
+              "description": "For self signed certificates",
+              "type": "string",
+              "const": "self"
+            },
+            {
+              "description": "Golem network certificate",
+              "$ref": "certificate.schema.json"
+            }
+          ]
         }
       },
-      "required": [ "algorithm", "key" ]
-    },
-    "validityPeriod": {
-      "description": "The validity constraints of the certificate",
-      "type": "object",
-      "properties": {
-        "notBefore": {
-          "description": "Date and time when the validity period begins",
-          "type": "string",
-          "format": "date-time"
-        },
-        "notAfter": {
-          "description": "Date and time when the validity period ends",
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "required": [ "notBefore", "notAfter" ]
-    },
-    "keyUsage": {
-      "description": "Permissions to use the key bound to the certificate to extend trust",
-      "oneOf": [
-        {
-          "description": "The certificate holder can use this keypair without restrictions",
-          "type": "string",
-          "const": "all"
-        },
-        {
-          "description": "Defines how this certificate can be used",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [ "signCertificate", "signManifest", "signNode" ]
-          },
-          "minItems": 1,
-          "uniqueItems": true
-        }
-      ]
-    },
-    "permissions": {
-      "description": "Permissions granted to the subject",
-      "$ref": "permissions.schema.json"
+      "required": [ "algorithm", "signatureValue", "signer" ]
     }
   },
-  "required": [ "$schema", "subject", "publicKey", "validityPeriod", "keyUsage", "permissions" ]
+  "required": [ "$schema", "certificate", "signature" ]
 }
