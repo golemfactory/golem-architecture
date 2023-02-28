@@ -30,7 +30,9 @@ To implement a Golem Service, a developer is expected to create a class containi
 - specification of the Golem 'payload' that shall be launched on a Provider node
 - logic (via a sequence of ExeScript commands) to be executed as the Service follows a transition of states in its lifecycle
 
-The initialization of the Service class and transition between states is controlled by the Golem Engine.
+The execution of the service happens in the context of a `Golem` engine. The engine is a high-level API concept - an object which shields a developer from all the complex nuances of Golem's low-level APIs. All the market interaction, Agreement negotiation, Activity launch and ExeScript execution is encapsulated within the `Golem` engine object.
+
+In the Service API execution model the initialization of the Service class and transition between states is controlled by the `Golem` engine. The developer is expected to provide a definition of Service class implementation of following interface:
 
 ```mermaid
 ---
@@ -45,19 +47,27 @@ classDiagram
     }
 ```
 
+Where:
+- `get_payload()` - a method which returns a specification of a Golem 'payload' package (eg. indication of required runtime, VM image hash, specific Demand properties, etc.)
+- `start()` - a "work generator" method which yields a sequence of ExeScript command batches to be executed on service start. Once the command sequence completes successfully - the service enters the `Running` state.
+- `run()` - a "work generator" method which yields a sequence of ExeScript command batches to be executed while a service is running. Once the command sequence completes successfully - the service enters `Stopping` state, preparing for shutdown.
+- `shutdown()` - a "work generator" method which yields a sequence of ExeScript command batches to be executed while a service is stopping. Once the command sequence completes successfully - the service terminates.
+
+
 The execution sequence is indicated on the diagram below:
 
 ```mermaid
 sequenceDiagram
     participant Agent as Requestor Agent App
-    participant Golem as Engine
+    participant Golem as Golem
     participant Agreement
     participant Activity
     participant SampleService as SampleService
 
-    Agent ->>+ Golem: run_service(SampleService)
+    Agent ->>+ Golem: run_service<SampleService>()
     Golem ->> SampleService: init()
     activate SampleService
+    Golem -->> Agent: SampleService
     Golem ->> SampleService: get_payload()
     SampleService -->> Golem: payload
     Golem ->> Golem: negotiate_agreement(payload)
@@ -87,28 +97,18 @@ sequenceDiagram
 
 ```
 
-### Starting logic
-
-### Running logic
-
-### Stopping logic
-
-
 ## Rationale
-TODO The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work.
+The Service API is an attempt to provide a high-level abstraction over Golem entities, in a way that corresponds to the "twin" Task API. Therefore the Service object implementation follows the pattern of "work generator" - all "state transition" methods are expected to yield-return ExeScript to be executed within the Activity by the `Gelem` engine object.
 
 ## Backwards Compatibility
-TODO All GAPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The GAP **must** explain how the author proposes to deal with these incompatibilities.
+The Service API is a high-level layer over the Golem daemon and REST APIs. Its introduction does not break any compatibility dependencies.
 
 ## Test Cases
 TODO
 Include test cases with attach/detach (ie. Agent reconnecting and "joining the service management" in-flight)
 
-## [Optional] Reference Implementation
-TODO 
-
 ## Security Considerations
-TODO All GAPs must contain a section that discusses the security implications/considerations relevant to the proposed change. Include information that might be important for security discussions, surfaces risks and can be used throughout the life cycle of the proposal. E.g. include security-relevant design decisions, concerns, important discussions, implementation-specific guidance and pitfalls, an outline of threats and risks and how they are being addressed. 
+The Service API does not include any security-related features. It must comply with any security mechanisms implied by lower levels of Golem stack. 
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
