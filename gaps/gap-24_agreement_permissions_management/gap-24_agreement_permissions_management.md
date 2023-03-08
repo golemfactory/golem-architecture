@@ -82,30 +82,70 @@ An indicative example of an Agreement's ACL is shown below:
 ```
 agreementACL = {
     version: 123,
-    aclEntries: [
-        {
-            "grantee": "0x7735df0c0bbb3ca65c55d61eadded653573e0152",
-            "permissions" : [
+
+    "attestationTypes": {
+        "myJWT": {
+            "type": "token",
+            "spec": {
+                "type": "jwt",
+                ...
+            }
+        },
+        "trustedNodes": {
+			"type": "nodeId",
+			"nodes": [
+				"node_id_kj24",
+				"node_id_9fd8",
+				"node_id_gq68"
+			]
+		},
+        "untrustedNodes": {
+			"type": "nodeId",
+			"nodes": [
+				"node_id_kj43",
+				"node_id_ml23",
+				"node_id_8s0d"
+			]
+		},
+    },
+
+    "permissionSets": {
+        "set1": {
+            "attestationTypes": ["untrustedNodes","myJWT"],
+            "permissions": [
                 "req:createActivity",
-                "req:exec",
-                "req:destroyActivity"
+				"req:exec",
+				"req:destroyActivity"
             ]
         },
-        ...
-        {
-            "grantee": "0x0053b2c00006d1d8b75bb7dfa068990a19e4c32e",
-            "permissions" : [
+        "set2": {
+            "attestationTypes": ["trustedNodes"],
+            "permissions": [
                 "req:terminateAgreement",
-                "req:acceptInvoice",
-                "req:rejectInvoice"
+				"req:acceptInvoice",
+				"req:rejectInvoice"
             ]
-
         }
-    ]
+    }
+
 }
 ```
 
 **Note:** the ACL includes a `version` attribute - this attribute is required to prevent accidental ACL overwrite "races" - see **SetAgreementPermissions** method below.
+
+### API Request Attestations
+
+The ACL may indicate that a particular API method is "guarded" by a particular "attestation type". In other words, a call made to this API method shall be validated using a specified "attestation type" algorithm. The attestation artifact shall be passed to API method as described in the **[GAP-27] Generic Attestations on REST APIs**.
+
+Sample attestation types for consideration:
+
+|Attestation type|Description|Example `specs`| Notes |
+|-|-|-|-|
+|`nodeId`| API verifies if the calling node has a particular `nodeId`| { `"nodeIds":["0x7735d...f0bbb", "0x0053b...4c32e"] }`||
+|`token`| API verifies if a specific valid token was passed as attestation artifact | `{"tokenType":"jwt", ???}` | **Question: how can we specify a valid token without revealing the token content itself, or a "secret" required to validate the signature?**|
+|`HMACSHA256`| The attestation passed into the API call must contain the HMAC, SHA256-based digest of the request parameters (**is there any open standard???**)||**Question: again, how do we exchange the secret required to validate the signature?**|
+|`X.509sig`|The attestation passed into the API call must contain digital signature of the request parameters |`{"ca":<trusted root CA cert>}`| **Is there any existing standard of digital signature for REST API calls?** |
+|`Multisig-SHA256-ECDSA`| The attestation passed into the API call must contain a digest of reuqest parameters, with a multi-sig, based on ECDSA standard, of at least `n` of indicated parties | `{"minimumSigs":2, "signatories":["0x7735d...f0bbb", "0x0053b...4c32e", "0x4c32e...0053b"]}` | |
 
 ### MarketAPI: SetAgreementPermissions
 
@@ -177,8 +217,38 @@ The drawback is the risk of local ACL copies going out of sync versus theProvide
 
 ## Rationale
 
+### Permissions API?
 Permission management enhancements are to be applied on Market API only, as only Agreement ACLs are to be managed. An alternative is a broad, generic Permissions API, but it seems overkill.
 
+### ACL structure
+A simple ACL structure was considered:
+
+```
+agreementACL = {
+    version: 123,
+    aclEntries: [
+        {
+            "grantee": "0x7735df0c0bbb3ca65c55d61eadded653573e0152",
+            "permissions" : [
+                "req:createActivity",
+                "req:exec",
+                "req:destroyActivity"
+            ]
+        },
+        ...
+        {
+            "grantee": "0x0053b2c00006d1d8b75bb7dfa068990a19e4c32e",
+            "permissions" : [
+                "req:terminateAgreement",
+                "req:acceptInvoice",
+                "req:rejectInvoice"
+            ]
+
+        }
+    ]
+}
+```
+where a flat list of permission grantees (specified by `nodeId`) was indicated. So the permissions are assigned directly to node's identity. However this design had no extensibility - there is no intuitive way to specify granting permissions depending on various "attestation" methods (like a multi-sig-based token of consensus in a swarm of entitled nodes). 
 
 ## Backwards Compatibility
 The ACL mechanism does not impact the actions allowed for Agreement Owners. This implies that all Requestor Agent modules designed for a model where owning Requestor is the only identity calling Requestor-side APIs will continue to work successfully.
