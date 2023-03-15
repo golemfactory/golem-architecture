@@ -93,19 +93,23 @@ agreementACL = {
         },
         "trustedNodes": {
 			"type": "nodeId",
-			"nodes": [
-				"node_id_kj24",
-				"node_id_9fd8",
-				"node_id_gq68"
-			]
+            "spec": {
+                "nodes": [
+                    "node_id_kj24",
+                    "node_id_9fd8",
+                    "node_id_gq68"
+                ]
+            }
 		},
         "untrustedNodes": {
 			"type": "nodeId",
-			"nodes": [
-				"node_id_kj43",
-				"node_id_ml23",
-				"node_id_8s0d"
-			]
+            "spec": {
+                "nodes": [
+                    "node_id_kj43",
+                    "node_id_ml23",
+                    "node_id_8s0d"
+                ]
+            }
 		},
     },
 
@@ -142,10 +146,9 @@ Sample attestation types for consideration:
 |Attestation type|Description|Example `specs`| Notes |
 |-|-|-|-|
 |`nodeId`| API verifies if the calling node has a particular `nodeId`| { `"nodeIds":["0x7735d...f0bbb", "0x0053b...4c32e"] }`||
-|`token`| API verifies if a specific valid token was passed as attestation artifact | `{"tokenType":"jwt", ???}` | **Question: how can we specify a valid token without revealing the token content itself, or a "secret" required to validate the signature?**|
-|`HMACSHA256`| The attestation passed into the API call must contain the HMAC, SHA256-based digest of the request parameters (**is there any open standard???**)||**Question: again, how do we exchange the secret required to validate the signature?**|
-|`X.509sig`|The attestation passed into the API call must contain digital signature of the request parameters |`{"ca":<trusted root CA cert>}`| **Is there any existing standard of digital signature for REST API calls?** |
-|`Multisig-SHA256-ECDSA`| The attestation passed into the API call must contain a digest of reuqest parameters, with a multi-sig, based on ECDSA standard, of at least `n` of indicated parties | `{"minimumSigs":2, "signatories":["0x7735d...f0bbb", "0x0053b...4c32e", "0x4c32e...0053b"]}` | |
+|`Multisig-SHA256-ECDSA`| The attestation passed into the API call must contain a digest of request content, with a multi-sig, based on ECDSA standard, of at least `n` of indicated parties | `{"minimumSigs":2, "signatories":["0x7735d...f0bbb", "0x0053b...4c32e", "0x4c32e...0053b"]}` | |
+|`token`| API verifies if a specific valid token was passed as attestation artifact. | `{"tokenType":"jwt", "alg": "x.509"}` | The specs must not include any secrets, ie. the token types are limited to x.509 signatures. |
+|`X.509sig`|The attestation passed into the API call must contain digital signature of relevant request |`{"ca":<trusted root CA cert>}`| |
 
 ### MarketAPI: SetAgreementPermissions
 
