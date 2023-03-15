@@ -92,7 +92,7 @@ agreementACL = {
             }
         },
         "trustedNodes": {
-			"type": "nodeId",
+            "type": "nodeId",
             "spec": {
                 "nodes": [
                     "node_id_kj24",
@@ -100,9 +100,9 @@ agreementACL = {
                     "node_id_gq68"
                 ]
             }
-		},
+        },
         "untrustedNodes": {
-			"type": "nodeId",
+            "type": "nodeId",
             "spec": {
                 "nodes": [
                     "node_id_kj43",
@@ -110,7 +110,7 @@ agreementACL = {
                     "node_id_8s0d"
                 ]
             }
-		},
+        },
     },
 
     "permissionSets": {
@@ -118,16 +118,16 @@ agreementACL = {
             "attestationTypes": ["untrustedNodes","myJWT"],
             "permissions": [
                 "req:createActivity",
-				"req:exec",
-				"req:destroyActivity"
+                "req:exec",
+                "req:destroyActivity"
             ]
         },
         "set2": {
             "attestationTypes": ["trustedNodes"],
             "permissions": [
                 "req:terminateAgreement",
-				"req:acceptInvoice",
-				"req:rejectInvoice"
+                "req:acceptInvoice",
+                "req:rejectInvoice"
             ]
         }
     }
