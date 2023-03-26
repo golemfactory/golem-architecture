@@ -118,16 +118,16 @@ agreementACL = {
             "attestationTypes": ["untrustedNodes","myJWT"],
             "permissions": [
                 "req:createActivity",
-                "req:exec",
-                "req:destroyActivity"
+				"req:exec",
+				"req:destroyActivity"
             ]
         },
         "set2": {
             "attestationTypes": ["trustedNodes"],
             "permissions": [
                 "req:terminateAgreement",
-                "req:acceptInvoice",
-                "req:rejectInvoice"
+				"req:acceptInvoice",
+				"req:rejectInvoice"
             ]
         }
     }
@@ -200,6 +200,8 @@ Therefore a rights Grantee, who is willing to Accept an incoming Debit Note or I
 
 To implement the Agreement Permissions Management it is necessary to introduce permission control in yagna REST API. However there is a number of possible ways to manage and 'guard' the Agreement's ACL.
 
+#### ACL verification
+
 1. ACL managed and exerted on Provider node
 
 In this model, the ACL is persisted and managed on the Provider node indicated by the Agreement. Therefore all actions resulting from REST API calls must be routed to Provider node, and the permissionsneed to be validated there. Any attempt to violate the permissions as indicated by the ACL must result with "permissions violation" error returned to the calling node (and respective REST API caller).
@@ -218,8 +220,56 @@ The drawback is the risk of local ACL copies going out of sync versus theProvide
 
 **Recommendation:** Implementation 1. 
 
+#### Agreement -> Provider identification
+
+As Requestor nodes are added as Grantees via the ACL, the Agent App code will expect to be able to call Agreement (and related) APIs on the newly added Grantee node. However, the `yagna` daemon on that Grantee node initially is unaware of the Agreement, and especially is not aware of which Provider is the `host` for this agreement. Effectively, `AgreementId->ProviderId` info needs to be propagated to relevant nodes.
+
+1. "Externally-propagated" Agreement synchronization
+
+This implementation requires that a newly entitled Grantee node is populated with `AgreementId->ProviderId` info, provided via a new method in Market API:
+
+**New `synchronizeAgreement` method in Market API**
+
+A new method is proposed in Market API:
+Parameters:
+- `AgreementId`
+- `ProviderId`
+
+Effect:
+- The `synchronizeAgreement` message is forwarded to Provider and validated. If the Agreement is hosted by that Provider, and Requestor/Grantee is entitled - its details (all relevant entities) are sent to the Grantee node.
+
+**Benefits:**
+- Simple implementation - no automatic info propagation is required from the network
+- Deterministic - Agent App action is required to get all relevant information to the Grantee node, and the operation can be synchronous. This leaves little room for "undefined behaviour".
+
+**Drawbacks:**
+- Requires the Requestor Agent App to obtain the `AgreementId` via other means, eg. via some sort of a "supervisor protocol"
+- Requires implementation of dedicated "synchronization" API, which is quite implementation-specific, and makes the Golem's low-level APIs less abstract.
+
+2. "Auto-propagated" Agreement synchronization
+
+This implementation ensures that Golem Network protocols ensure the `AgreementId->ProviderId` info is automatically propagated to relevant nodes in the network. 
+
+Possible implementation requires the following:
+  1. Each `setAgreementPermissions` processed by the Provider node triggers `AgreementId->ProviderId` messages to all entitled Requestors.
+    - note this is not sufficient if a Grantee node is still offline at that point, therefore the following active notifications are required.
+  2. Each entitled mode which has an ACL maintains a list of entitled Grantees.
+  3. All golem nodes use "GAP-30 Node presence notification" concept to broadcast its presence to whole network (this must happen each time the node joins or re-joins the network, eg. after connectivity failure)
+  4. Whenever a node receives a "Node resence notification" it checks its entitled Grantees list - if the sender of "presence notification" is on the Grantee list - reply with `AgreementId->ProviderId`.
+
+
+**Benefits:**
+- Developer UX. The ACL propagation is "transparent" to nodes involved in Agreement maintenance - ie. any node which becomes entitled to manage an Agreement and its related entities is automatically able to call respective APIs (eg. `GetAgreement` passing the `AgreementId`) and is expected to receive relevant details.
+- No extension of low-level APIs is required - the APIs remain generic and abstract.
+
+**Drawbacks:**
+- Implementation complexity.
+- Quasi-deterministic. As the implementation based on "GAP-30 Node presence notification" mechanism includes message propagation delay, and does not guarantee reliable message delivery - the possibility of relevant nodes not receiving the `AgreementId->ProviderId` mapping cannot be ignored. There may be a period of "unawareness" when the Agent App on Grantee node already "knows" it can manage a specific Agreement, but it is unable to call `getAgreement` because the respective `yagna` daemon hasn't yet received the owning Provider's identifier from the network.
+- Only possible when Grantee Id can be inferred from the ACL. Some attestation types (eg. based on X.509 certificates) do not explicitly indicate entitled node Ids. Therefore it may not always be possible to determine Grantee nodes and notify them appropriately.
+
 ## Rationale
 
+Following altrnative mechanisms were considered for this GAP, and have been discarded in favor of concepts described above.
 ### Permissions API?
 Permission management enhancements are to be applied on Market API only, as only Agreement ACLs are to be managed. An alternative is a broad, generic Permissions API, but it seems overkill.
 
