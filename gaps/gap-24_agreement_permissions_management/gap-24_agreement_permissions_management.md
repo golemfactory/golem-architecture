@@ -231,15 +231,16 @@ This implementation requires that a newly entitled Grantee node is populated wit
 **New `synchronizeAgreement` method in Market API**
 
 A new method is proposed in Market API:
-Request:
+
+**Input:**
 - `AgreementId`
 - `ProviderId`
 
-Response:
+**Output:**
 - OK if the Provider indicated in the request is the 'host' for indicated Agreement
 - Error otherwise
 
-Effect:
+**Effect:**
 - The `synchronizeAgreement` message is forwarded to Provider and validated. If the Agreement is hosted by that Provider, and Requestor/Grantee is entitled - its details (all relevant entities) are sent to the Grantee node.
 
 **Benefits:**
