@@ -231,9 +231,13 @@ This implementation requires that a newly entitled Grantee node is populated wit
 **New `synchronizeAgreement` method in Market API**
 
 A new method is proposed in Market API:
-Parameters:
+Request:
 - `AgreementId`
 - `ProviderId`
+
+Response:
+- OK if the Provider indicated in the request is the 'host' for indicated Agreement
+- Error otherwise
 
 Effect:
 - The `synchronizeAgreement` message is forwarded to Provider and validated. If the Agreement is hosted by that Provider, and Requestor/Grantee is entitled - its details (all relevant entities) are sent to the Grantee node.
@@ -266,6 +270,8 @@ Possible implementation requires the following:
 - Implementation complexity.
 - Quasi-deterministic. As the implementation based on "GAP-30 Node presence notification" mechanism includes message propagation delay, and does not guarantee reliable message delivery - the possibility of relevant nodes not receiving the `AgreementId->ProviderId` mapping cannot be ignored. There may be a period of "unawareness" when the Agent App on Grantee node already "knows" it can manage a specific Agreement, but it is unable to call `getAgreement` because the respective `yagna` daemon hasn't yet received the owning Provider's identifier from the network.
 - Only possible when Grantee Id can be inferred from the ACL. Some attestation types (eg. based on X.509 certificates) do not explicitly indicate entitled node Ids. Therefore it may not always be possible to determine Grantee nodes and notify them appropriately.
+
+**Recommendation:** Implementation 1. 
 
 ## Rationale
 
