@@ -31,7 +31,8 @@
                   },
                   "uniqueItems": true
                 }
-              }
+              },
+              "required": [ "urls" ]
             }
           ]
         }

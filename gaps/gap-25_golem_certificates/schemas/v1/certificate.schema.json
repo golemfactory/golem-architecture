@@ -93,7 +93,7 @@
           "description": "Permissions to use the key bound to the certificate to extend trust",
           "oneOf": [
             {
-              "description": "The certificate holder can use this keypair without restrictions",
+              "description": "The certificate holder can use this key pair without restrictions",
               "type": "string",
               "const": "all"
             },
@@ -134,7 +134,7 @@
           },
           "required": [ "hash", "encryption" ]
         },
-        "signatureValue": {
+        "value": {
           "description": "Hexadecimal encoded string of the calculated signature",
           "type": "string",
           "format": "(0x)?[0-9a-fA-F]+"
@@ -154,7 +154,7 @@
           ]
         }
       },
-      "required": [ "algorithm", "signatureValue", "signer" ]
+      "required": [ "algorithm", "value", "signer" ]
     }
   },
   "required": [ "$schema", "certificate", "signature" ]
