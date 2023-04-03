@@ -45,6 +45,8 @@ Our JSON Schema defines hexadecimal string encoding for properties holding binar
 
 ### Schemas
 
+This description of the schemas and values of properties should be considered complete. In case a future GAP would introduce new properties or extend values of existing ones, this GAP should be updated to serve as a comprehensive documentation of Golem Certificates and related JSON structures.
+
 #### Certificate
 
 The purpose of the certificate is to allow creation of digital signatures by a verified entity. The subject of the certificate is the entity connected to the private key of a key pair where the public key is part of the certificate structure. This enables using the certificate in a PKI system. We chose a set of required properties that are essential to use the certificate for signing and facilitates fine grained control of permissions in the Golem Network.
@@ -176,22 +178,15 @@ Golem Certificates are not intended to replace X.509 certificates used for [Payl
 
 https://github.com/golemfactory/golem-certificate
 
-### Provider Agent changes
-
-Provider agent supports using certificates without the `permission` extension.
-We need following changes:
-
-- Certificates chain permissions validation
-- Check the outbound permission during negotiations (currently signature is enough)
-
-No changes on the Requestor side are expected.
-
 ## Security Considerations
 
 ### Private certificates keys management
 
 We need to consider security issues related to storing and using Root Golem Certificate and important intermediate certificates.
 We need internal company policies, who has permissions to decide about signing using certain certificates and who has access to them.
+
+### Provider trust
+
 Providers should only trust certificate authorities who they can verify and consider safe.
 
 ## Copyright
