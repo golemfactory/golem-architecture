@@ -49,7 +49,7 @@ Our JSON Schema defines hexadecimal string encoding for properties holding binar
 
 The purpose of the certificate is to allow creation of digital signatures by a verified entity. The subject of the certificate is the entity connected to the private key of a key pair where the public key is part of the certificate structure. This enables using the certificate in a PKI system. We chose a set of required properties that are essential to use the certificate for signing and facilitates fine grained control of permissions in the Golem Network.
 
-When a certificate is signed, all properties in the `certificate` object are included in the signature not only the required properties. This allows inclusion of extra information that inherits the same cryptographic tamper protection as the essential data.
+When a certificate is signed, all properties in the `certificate` object are included in the signature not only the required properties. This allows inclusion of extra information that inherits the same cryptographic integrity protection as the essential data.
 
 The schema file can be found in the `schemas/v1` folder and accessible at `https://golem.network/schemas/v1/certificate.schema.json"`.
 
@@ -87,11 +87,11 @@ The `keyUsage` property defines how the key attached to the certificate can be u
 Details of how the holder of the certificate is permitted to use the Golem network. The content of this property is governed by the Permissions schema.
 ##### Signature
 
-This object contains the details of the signature validating the subject and providing tamper protection for properties in the `certificate` object. It defines the following properties:
+This object contains the details of the signature validating the subject and providing integrity protection for properties in the `certificate` object. It defines the following properties:
 - `algorithm` the cryptographic algorithm that was used to create the signature, it requires two details:
   - `hash` the hash function used to create the fingerprint of the signed data
   - `encryption` the cryptographic algorithm used to encrypt the fingerprint
-- `signer` for certificates the signer can be an object containing a signed certificate or the string `self` meaning that the certificate was self signed (aka Root certificate)
+- `signer` for certificates the signer can the string `self` meaning that the certificate was self signed (aka Root certificate) ot an object containing a signed certificate. We opted to include the full certificate as it is easier to handle and understand when opening the JSON certificate in a text editor. We do not anticipate long certificate chains where this would a problem and we think that requiring the certificate to be accessible via the internet would limit the usage for individuals.
 - `value` the encrypted fingerprint that can be decrypted via the signer's public key for verification
 
 #### Permissions
@@ -127,101 +127,23 @@ In order to cryptographically sign a certificate the following steps need to be 
 
 #### Verifying a signature
 
-1. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`
-2. Feed the binary data created in step 1. into the hashing algorithm defined in the `signature.algorithm.hash` property of the certificate to obtain the fingerprint of the certificate
-3. Decrypt the signature stored in `signature.value` using the public key of the signer (the `certificate.publicKey` property of the signing certificate) and the encryption algorithm defined in `signature.algorithm.encryption`. The result of this step will be the signed fingerprint.
-4. Verify that the fingerprint obtained in step 2. and step 3. are the same.
+1. Verify that the signing certificate contained in `signature.signer` is allowed to sign certificates (it's `keyUsage` property is either set to the string `all` or the list contains `signCertificate`).
+2. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`
+3. Feed the binary data created in step 1. into the hashing algorithm defined in the `signature.algorithm.hash` property of the certificate to obtain the fingerprint of the certificate
+4. Decrypt the signature stored in `signature.value` using the public key of the signer (the `certificate.publicKey` property of the signing certificate) and the encryption algorithm defined in `signature.algorithm.encryption`. The result of this step will be the signed fingerprint.
+5. Verify that the fingerprint obtained in step 2. and step 3. are the same.
 
+### Verifying a certificate chain
 
-#### Verifying a certificate chain
+A signed certificate is only valid if the cryptographic signature is valid and the following constraints are fulfilled:
+- The certificate cannot have a validity period that is not fully contained in the signer's validity period. The certificates can have the same `notBefore` and `notAfter` values but the signer cannot sign any certificate that would 'outlive' it.
+- The certificate cannot have key usage value that is not present in the signer.
+- The certificate cannot have any permission that is not granted to the signer.
+  - If the signer has the `all` permission, it can grant any permission to the certificate.
+  - If the signer has `unrestricted` `outbound` permission, it can grant either `unrestricted` or restricted (via the list of URIs) access to the outbound feature.
+  - If the signer has a list of permitted URIs for `outbound` permission, it can only grant access to URIs that it has permission to access. The URI list in the signed certificate must be a subset of the list of URIs in the signer certificate.
 
-
-
-
-
-
-
-XXXXXXXXXXXXXXXXX
-
-
-We decided to use [X.509 Certificate Extensions (Section 4.2)](https://www.rfc-editor.org/rfc/inline-errata/rfc5280.html) to control key usage and permissions in the Golem network.
-
-### Key usage
-
-A certificate can be used to extend the chain of trust via signing other certificates or sign other data that is relevant to the network (for example a Computation Manifest).
-To control what a certificate can sign, standard extensions defined in [RFC 5280 Section 4.2.1](https://www.rfc-editor.org/rfc/inline-errata/rfc5280.html) will be used.
-
-Extensions
-- Key Usage (OID: joint-iso-ccitt(2) ds(5) 29 15) extension must be marked as critical
--- Bit `digitalSignature` (0) is used to denote the ability to sign data but not certificates, this is used to grant permission to the signed data.
--- Bit `keyCertSign` (5) marks the ability to extend the chain of trust and sign other certificates. If this bit is set, then in `Basic Constraints` the `cA` boolean must be set to true
-
-- Basic Constraints (OID: joint-iso-ccitt(2) ds(5) 29 19) extension must be present for certificates that can sign other certificates (`keyCertSign` bit is set in the `Key Usage` extension)
--- `cA` boolean must be set to true if the `keyCertSign` bit is set in the `Key Usage` extension
--- `pathLenConstraint` can be used optionally to limit the length of the certificate chain
-
-### Golem Factory certificate extension
-
-This certificate extension is used to grant permissions to a certificate to use certain capabilities of the golem network. Based on how the certificate is intended to be used (defined in the `Key Usage` extension) these permissions or a subset of them can be granted to ‘child’ certificates or other signed data (for example a Requestor identifier).
-If this extension is present, it must be marked critical.
-
-When processing this extension, the verifying party will check if the certificate contains all permissions required to fulfil the requested operation. It may ignore all other permission values (including ones it cannot process) as those have no effect on executing the request.
-
-In a chain of certificates a certificate is only valid if the Golem Factory certificate extension contains a subset of the permissions of the signing certificate. The self signed root certificate is always considered to have all permissions even if this extension is not present. This can be limited by settings on the Agent application when setting up trust for the root certificate.
-
-Structure of the Golem Factory certificate extension:
-```
-id-gf OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) private(4) iana(1) 59850 }
-id-gf-certificate OBJECT IDENTIFIER ::= { id-gf 1 }
-id-gf-certificate-extension OBJECT IDENTIFIER ::= { id-gf-certificate 1 }
-
-
-GolemFactoryCertificateExtension ::= CHOICE {
-       permitAll BOOLEAN,
-       permissions SEQUENCE SIZE (1..MAX) OF GolemPermissionId
-
-GolemPermissionID ::= OBJECT IDENTIFIER
-```
-
-This GAP lists all the Golem permission IDs. When a new permission is created it should be listed here with the assigned OID.
-
-Golem permission ids:
-```
-id-gf-permission OBJECT IDENTIFIER ::= { id-gf 2 }
-id-gf-features OBJECT IDENTIFIER ::= { id-gf-permissions 1 }
-
-id-gf-manifest-outbound OBJECT IDENTIFIER ::= { id-gf-features 1 }
--- Permission to use outbound capabilities with a request defining manifest
-```
-
-### Permission chain examples
-
-Given a hierarchy:
-
-
-| Certificate           | permissions               |
-| --------------------- | ------------------------- |
-| Golem Root            | all                       |
-| Golem Intermediate    | manifest-outbound,inbound |
-| Partner's certificate | manifest-outbound         |
-
-then Payload Manifest signature is valid and `Parter's certificate` is allowed to sign Manifests, but has no rights to sign inbound related features.
-
-On the other hand, if structure looks like this:
-
-| Certificate           | permissions       |
-| --------------------- | ----------------- |
-| Golem Root            | all               |
-| Golem Intermediate    | inbound           |
-| Partner's certificate | manifest-outbound |
-
-then `Partner's certificate` is not allowed to sign manifests and Agent application should reject such Proposals.
-Note that the certificate chain is invalid, because `Partner's certificate` shouldn't be signed by `Golem Intermediate` in the first place.
-
-### Limiting certificates chain length
-
-When Golem Factory signs a certificate with certificate signing capabilities, it could extend the chain of trust indefinitely. In some cases this is not desired, to limit the length of the chain the `pathLenConstraint` field should be used in the `Basic Constraints` extension.
-For certificates that are only allowed to sign certificates that must not extend the chain of trust, the `pathLenConstraint` must be set to 0.
+In general the signing certificate cannot bestow any kind of permission that would allow the signed certificate to perform an action on the Golem network or related infrastructure (now or in the future) that the signing certificate itself is not capable of. 
 
 ## Rationale
 
@@ -229,56 +151,30 @@ For certificates that are only allowed to sign certificates that must not extend
 
 We wanted to address two goals with the choice of certificate format:
 - The certificate should be human readable, understanding it's content should be viable without the use of any kind of software other than a text editor
-- Extending permissions or other parts of the certificate should be viable for the Golem Community via the
+- Extending permissions or other parts of the certificate should be viable for the Golem Community via the GAP process, without the need to create or update elaborate software tools
 
-x509 - binary, extension requires a legal entity to govern OIDs,
-JWS - it is a signature format that uses BASE64 encoding to preserve content in binary, uses x509 certificates for actual signer entity
+We believe that Golem Certificates provide considerable value and are a good investment from the tooling perspective.
 
-XXXXXX
+#### X.509
 
-### Why can't we wait with introducing permissions?
+Unfortunately the industry standard [X.509](https://www.rfc-editor.org/rfc/rfc5280) certificate is hard to work with. Custom extension can be created but these would be hard to process with existing tools. Especially if we take into consideration the need to not just verify the signature but also validate the contents of the permission extension against the same extension in the signer certificate. This would require custom tooling. We did not want to compromise on our goals if we have to spend the resources to create custom tooling anyhow.
 
-Any future releases introducing sensitive features will put Providers in danger, because the same certificates could be used to sign new features.
+#### JWS 
 
-### Are there any existing x509 extensions, that we could use?
-
-Beside the standard extensions mentioned in this document, there is no extension that could host a freely extendable list of permissions.
+[JSON Web Signature](https://www.rfc-editor.org/rfc/rfc7515) is a JSON based format to support signed content. Although the data is represented in JSON, the signed data is handled in BASE64 encoded format to guarantee binary consistency and verification of the signature.
 
 ### Why we need `all` permission?
 
-Since the list of permissions is not exhaustive, we don't want to be forced to change certificates, when adding new features.
+Since the list of permissions can be extended in the future, we don't want to be forced to change root certificates with each additional feature.
 We must keep in mind that `all` permission should be used sparingly only for top level certificates. Most importantly, we shouldn't sign any certificates with the `all` permission for external parties.
 
 ## Backwards Compatibility
 
-Since outbound network isn't release yet, we don't have any problems with backward compatibility.
-This GAP aims to solve backward compatibility and security problems, that could arise in the future.
+Golem Certificates are not intended to replace X.509 certificates used for [Payload Manifest](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-5_payload_manifest/gap-5_payload_manifest.md) right now, but in the future this is a possibility to introduce certificate based permission control.
 
-## Test Cases
+## Reference Implementation
 
-## [Optional] Reference Implementation
-
-### Generating openssl certificate
-
-TODO: update this part and cert configuration
-
-You can check [here](file://cert.confi) example config, which can be passed to openssl to generate certificate containing expected fields. To generate certificate run:
-
-`openssl req -x509 -sha256 -days 1825 -newkey rsa:4096 -keyout rootCA.key -out rootCA.crt -config cert.config  --extensions golem_network_certificates`
-
-than check if certificate contains expected fields with:
-
-`openssl x509 -text -noout -in rootCA.crt`
-
-Output looks like this:
-
-```
-...
-        X509v3 extensions:
-            1.3.6.1.4.1.59850.1.1:
-                0...all..manifest-outbound
-...
-```
+https://github.com/golemfactory/golem-certificate
 
 ### Provider Agent changes
 
@@ -292,19 +188,11 @@ No changes on the Requestor side are expected.
 
 ## Security Considerations
 
-### Old yagna versions
-
-If we don't implement certificate `permissions` before releasing the outbound network, Providers could accept Manifest signatures signed by certificates,
-that don't have the `manifest-outbound` permission. This is safe, as long as we don't introduce new sensitive features.
-
 ### Private certificates keys management
 
 We need to consider security issues related to storing and using Root Golem Certificate and important intermediate certificates.
 We need internal company policies, who has permissions to decide about signing using certain certificates and who has access to them.
-
-### Root Golem certificate
-
-Root certificate is always self-signed certificate. We could sign it using [Golem Multisig](https://etherscan.io/address/0x7da82c7ab4771ff031b66538d2fb9b0b047f6cf9) contract to allow anyone validate its authenticity.
+Providers should only trust certificate authorities who they can verify and consider safe.
 
 ## Copyright
 
