@@ -157,5 +157,6 @@
       "required": [ "algorithm", "value", "signer" ]
     }
   },
-  "required": [ "$schema", "certificate", "signature" ]
+  "required": [ "$schema", "certificate", "signature" ],
+  "additionalProperties": false
 }
