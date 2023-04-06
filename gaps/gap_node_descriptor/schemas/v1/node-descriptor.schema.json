@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://golem.network/schemas/v1/node-descriptor.schema.json",
+  "title": "Golem Node descriptor with permissions",
+  "description": "Data representing a node within the Golem Network (Node ID) and the permissions granted to this node.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://golem.network/schemas/v1/node-descriptor.schema.json"
+    },
+    "nodeDescriptor": {
+      "type": "object",
+      "properties": {
+        "nodeId": {
+          "description": "The unique identifier of the node on the network",
+          "type": "string",
+          "format": "^(0x)?[0-9a-fA-F]{40}$"
+        },
+        "permissions": {
+          "description": "Permissions granted to the node",
+          "$ref": "permissions.schema.json"
+        },
+        "validityPeriod": {
+          "description": "The validity constraints of the node descriptor",
+          "$ref": "certificate.schema.json#/properties/certificate/properties/validityPeriod"
+        }
+      },
+      "required": [ "nodeId", "permissions", "validityPeriod" ]
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "description": "Cryptographic algorithm used to calculate the signature",
+          "$ref": "certificate.schema.json#/properties/signature/properties/algorithm"
+        },
+        "value": {
+          "description": "Hexadecimal encoded string of the calculated signature",
+          "$ref": "certificate.schema.json#/properties/signature/properties/value"
+        },
+        "signer": {
+          "description": "Golem network certificate",
+          "$ref": "certificate.schema.json"
+        }
+      },
+      "required": [ "algorithm", "value", "signer" ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [ "$schema", "nodeDescriptor", "signature" ]
+}
