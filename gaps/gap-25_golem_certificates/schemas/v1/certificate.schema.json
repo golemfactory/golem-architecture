@@ -31,23 +31,6 @@
                 }
               },
               "required": [ "email" ]
-            },
-            "legalEntity": {
-              "description": "The legal entity of the subject",
-              "type": "object",
-              "properties": {
-                "name": {
-                  "description": "Name of the legal entity",
-                  "type": "string"
-                },
-                "address": {
-                  "description": "Official address of the legal entity",
-                  "oneOf": [
-                    { "type": "string" },
-                    { "type": "object" }
-                  ]
-                }
-              }
             }
           },
           "required": [ "displayName", "contact" ]

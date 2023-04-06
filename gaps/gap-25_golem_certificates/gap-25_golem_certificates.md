@@ -16,7 +16,7 @@ Outbound network is not the only use case which requires certificates. Soon we w
 
 ## Motivation
 
-Golem use cases allowing for interaction with the external world (like outbound, inbound network traffic) put `Providers` in danger of malicious behavior from the `Requestor` side. To alleviate this danger, in GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which may be signed by a trusted party.
+Golem use cases allowing for interaction with the external world (like outbound, inbound network traffic) put `Providers` in danger of malicious behaviour from the `Requestor` side. To alleviate this danger, in GAP-5 and GAP-4 we decided to limit Requestor abilities by introducing Computational Manifest which may be signed by a trusted party.
 
 Currently `Providers` are able to choose certificates they trust, by adding them to Provider configuration. This means that any party is able to gain `Providers'` trust, distribute their own certificates and validate safety and security of different Payloads. Despite this, we are aware that gaining trust can be difficult, so Golem Factory has to take initiative to be at least the initial source of trust in the Network.
 
@@ -63,8 +63,6 @@ The required properties are:
 - `subject.displayName` the name to be displayed when presenting the certificate to a user
 - `subject.contact.email` an email address where the subject can be reached for any kind inquiry
 
-The property `subject.legalEntity` is an example for extra information that can be included in the subject property of the certificate if it makes sense for some use case, but it is not required for using the certificate with the Golem Network reference implementation.
-
 ##### Public Key
 
 The `publicKey` property stores the public key of the subject's key pair to allow verification of their signatures. The node defines the following properties:
@@ -94,7 +92,7 @@ This object contains the details of the signature validating the subject and pro
   - `hash` the hash function used to create the fingerprint of the signed data
   - `encryption` the cryptographic algorithm used to encrypt the fingerprint
 - `signer` for certificates the signer can the string `self` meaning that the certificate was self signed (aka Root certificate) ot an object containing a signed certificate. We opted to include the full certificate as it is easier to handle and understand when opening the JSON certificate in a text editor. We do not anticipate long certificate chains where this would a problem and we think that requiring the certificate to be accessible via the internet would limit the usage for individuals.
-- `value` the encrypted fingerprint that can be decrypted via the signer's public key for verification
+- `value` the hexadecimal encoded string representation of the encrypted fingerprint optionally with a "0x" prefix, it can be decrypted via the signer's public key for verification
 
 #### Permissions
 
