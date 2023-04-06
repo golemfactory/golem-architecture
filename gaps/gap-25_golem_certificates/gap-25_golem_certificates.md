@@ -130,8 +130,8 @@ In order to cryptographically sign a certificate the following steps need to be 
 #### Verifying a signature
 
 1. Verify that the signing certificate contained in `signature.signer` is allowed to sign certificates (it's `keyUsage` property is either set to the string `all` or the list contains `signCertificate`).
-2. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`
-3. Feed the binary data created in step 1. into the hashing algorithm defined in the `signature.algorithm.hash` property of the certificate to obtain the fingerprint of the certificate
+2. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`.
+3. Feed the binary data created in step 1. into the hashing algorithm defined in the `signature.algorithm.hash` property of the certificate to obtain the fingerprint of the certificate.
 4. Decrypt the signature stored in `signature.value` using the public key of the signer (the `certificate.publicKey` property of the signing certificate) and the encryption algorithm defined in `signature.algorithm.encryption`. The result of this step will be the signed fingerprint.
 5. Verify that the fingerprint obtained in step 2. and step 3. are the same.
 
@@ -139,7 +139,9 @@ In order to cryptographically sign a certificate the following steps need to be 
 
 A signed certificate is only valid if the cryptographic signature is valid and the following constraints are fulfilled:
 - The certificate cannot have a validity period that is not fully contained in the signer's validity period. The certificates can have the same `notBefore` and `notAfter` values but the signer cannot sign any certificate that would 'outlive' it.
-- The certificate cannot have key usage value that is not present in the signer.
+  - A certificate chain is valid (from validity period point of view) if the above is true, but when looking at if a certificate can be used right now, then the timestamp of usage must not be before the `notBefore` timestamp and must not be after the timestamp in the `notAfter` property. 
+- The certificate cannot have key usage value that is not granted to the signer.
+- The signer certificate must have the permission to sign certificates (it's `keyUsage` property is either set to the string `all` or the list contains `signCertificate`).
 - The certificate cannot have any permission that is not granted to the signer.
   - If the signer has the `all` permission, it can grant any permission to the certificate.
   - If the signer has `unrestricted` `outbound` permission, it can grant either `unrestricted` or restricted (via the list of URIs) access to the outbound feature.
