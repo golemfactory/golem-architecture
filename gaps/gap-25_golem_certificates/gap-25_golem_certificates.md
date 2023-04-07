@@ -78,7 +78,7 @@ The `validityPeriod` property defines the time interval for which the certificat
 
 The `keyUsage` property defines how the key attached to the certificate can be used. We define the following usages:
 - `signCertificate` the key can be used to sign other certificates to extend the chain n trust
-- `signManifest` the key can be used to sign payload manifests (defined in GAP-5)
+- `signManifest` the key can be used to sign payload manifests (defined in GAP-5) /manifest will not support Golem certificates right now, it requires some update to GAP-5 and the implementation/
 - `signNode` the key can be used to sign a node descriptor (defined in GAP-XX)
 - `all` the key can be used without restrictions, including use cases that are defined after the certificate was created
 
@@ -118,10 +118,9 @@ To create and verify signatures, the signed data object needs to be processed vi
 In order to cryptographically sign a certificate the following steps need to be taken:
 
 1. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`
-2. Feed the binary data created in step 1. into a hashing algorithm that is compatible with the chose encryption to obtain the fingerprint of the certificate
-3. Encrypt the fingerprint obtained in step 2. via the encryption algorithm supported by the private key of the signer. The private key must be the one connected to the public key specified in the signer's certificate. This encrypted fingerprint is the signature.
-4. Create the `signature` property in the JSON certificate and add the following details
-  - name of the hash and encryption algorithm used to create the signature into the `algorithm` property
+2. Sign the binary data with the chosen signature algorithm using the private key of the signer. The private key must be the one connected to the public key specified in the signer's certificate.
+3. Create the `signature` property in the JSON certificate and add the following details
+  - name of the hash and encryption algorithm (details of the signature algorithm) used to create the signature into the `algorithm` property
   - binary data of the signature into `value` property
   - the `signer` property of the `signature` should contain the signing certificate or the string `self` in case of self signature
 
@@ -129,9 +128,7 @@ In order to cryptographically sign a certificate the following steps need to be 
 
 1. Verify that the signing certificate contained in `signature.signer` is allowed to sign certificates (it's `keyUsage` property is either set to the string `all` or the list contains `signCertificate`).
 2. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`.
-3. Feed the binary data created in step 1. into the hashing algorithm defined in the `signature.algorithm.hash` property of the certificate to obtain the fingerprint of the certificate.
-4. Decrypt the signature stored in `signature.value` using the public key of the signer (the `certificate.publicKey` property of the signing certificate) and the encryption algorithm defined in `signature.algorithm.encryption`. The result of this step will be the signed fingerprint.
-5. Verify that the fingerprint obtained in step 2. and step 3. are the same.
+3. Using the signature algorithm matching the one used for creating the signature (`signature.algorithm.hash` and `signature.algorithm.encryption`) and the signer's public key (the `certificate.publicKey` property of the signing certificate), verify that the signature is valid for the binary data obtained in step 2.
 
 ### Verifying a certificate chain
 
