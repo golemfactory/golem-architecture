@@ -53,7 +53,7 @@ The purpose of the certificate is to allow creation of digital signatures by a v
 
 When a certificate is signed, all properties in the `certificate` object are included in the signature not only the required properties. This allows inclusion of extra information that inherits the same cryptographic integrity protection as the essential data.
 
-The schema file can be found in the `schemas/v1` folder and accessible at `https://golem.network/schemas/v1/certificate.schema.json"`.
+The schema file can be found in the `schemas/v1` folder and accessible at `https://golem.network/schemas/v1/certificate.schema.json`.
 
 ##### Subject
 
@@ -120,9 +120,9 @@ In order to cryptographically sign a certificate the following steps need to be 
 1. Create a binary representation of the `certificate` property by serializing the content via the above mentioned `JSON Canonicalization Scheme`
 2. Sign the binary data with the chosen signature algorithm using the private key of the signer. The private key must be the one connected to the public key specified in the signer's certificate.
 3. Create the `signature` property in the JSON certificate and add the following details
-  - name of the hash and encryption algorithm (details of the signature algorithm) used to create the signature into the `algorithm` property
-  - binary data of the signature into `value` property
-  - the `signer` property of the `signature` should contain the signing certificate or the string `self` in case of self signature
+    - name of the hash and encryption algorithm (details of the signature algorithm) used to create the signature into the `algorithm` property
+    - binary data of the signature into `value` property
+    - the `signer` property of the `signature` should contain the signing certificate or the string `self` in case of self signature
 
 #### Verifying a signature
 
