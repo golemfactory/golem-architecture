@@ -91,7 +91,7 @@ This object contains the details of the signature validating the subject and pro
 - `algorithm` the cryptographic algorithm that was used to create the signature, it requires two details:
   - `hash` the hash function used to create the fingerprint of the signed data
   - `encryption` the cryptographic algorithm used to encrypt the fingerprint
-- `signer` for certificates the signer can the string `self` meaning that the certificate was self signed (aka Root certificate) ot an object containing a signed certificate. We opted to include the full certificate as it is easier to handle and understand when opening the JSON certificate in a text editor. We do not anticipate long certificate chains where this would a problem and we think that requiring the certificate to be accessible via the internet would limit the usage for individuals.
+- `signer` for certificates the signer can the string `self` meaning that the certificate was self signed (aka Root certificate) or an object containing a signed certificate. We opted to include the full certificate as it is easier to handle and understand when opening the JSON certificate in a text editor. We do not anticipate long certificate chains where this would a problem and we think that requiring the certificate to be accessible via the internet would limit the usage for individuals.
 - `value` the hexadecimal encoded string representation of the encrypted fingerprint optionally with a "0x" prefix, it can be decrypted via the signer's public key for verification
 
 #### Permissions
