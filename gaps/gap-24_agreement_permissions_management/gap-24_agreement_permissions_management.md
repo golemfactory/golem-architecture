@@ -228,7 +228,7 @@ As Requestor nodes are added as Grantees via the ACL, the Agent App code will ex
 
 This implementation requires that a newly entitled Grantee node is populated with `AgreementId->ProviderId` info, provided via a new method in Market API:
 
-**New `synchronizeAgreement` method in Market API**
+**New `attachAgreement` method in Market API**
 
 A new method is proposed in Market API:
 
@@ -241,7 +241,9 @@ A new method is proposed in Market API:
 - Error otherwise
 
 **Effect:**
-- The `synchronizeAgreement` message is forwarded to Provider and validated. If the Agreement is hosted by that Provider, and Requestor/Grantee is entitled - its details (all relevant entities) are sent to the Grantee node.
+- The `attachAgreement` message is forwarded to Provider and validated. If the Agreement is hosted by that Provider, and Requestor/Grantee is entitled - its details (all relevant entities) are sent to the Grantee node.
+- Moreover, add the Id of the note which issued the call to the list of "event subscribers", so that it is include in the list of Agreement-related events recipients (see **Event Propagation** below).
+
 
 **Benefits:**
 - Simple implementation - no automatic info propagation is required from the network
@@ -274,9 +276,29 @@ Possible implementation requires the following:
 
 **Recommendation:** Implementation 1. 
 
+#### Event propagation
+
+Provider is expected to actively notify a set of Grantees with Agreement (and respective entity) events. However the list of recipient nodes for events needs to be maintained by the Provider. Following logic is proposed:
+
+- A successful call to `attachAgreement` from a `granteeId` will add this Grantee to the list of event "subscribers".
+  - A new grantee added to "subscribers" list triggers sending full history of relevant events to that grantee (* there may be room for optimization here, eg. for a grantee who was offline and re-connects itself, it may be useful to only send events it hadn't previously received).
+- Each event shall be forwarded by the Provider to all recipients from "event subscriber" list
+  - In case event message delivery is failing for a given grantee (delivery confirmation to be decided during implementation) - that grantee is removed from "event subscriber" list.
+- Whenever Grantee disconnects, and then reconnects itself - it must call the `attachAgreement` again.
+- In situations where Grantee isn't aware it has been removed from "subscriber list" (eg. network went down, event message delivery failed, Provider removed the Grantee from list):
+  - (Option 1) A simple "health check" mechanism is proposed - where Grantee side, for all Agreements in non-terminated state, performs a periodic "am I still subscribed" call to Provider. If False is returned, yagna daemon calls attachAgreement again, in order to get the latest state of the Agreement. (This option is specific to Agreement synchronization and is not a generic mechanism)
+  - (Option 2) Implement message delivery guarantee on GSB transport level, which would need to have following features:
+    - Message delivery can be either guaranteed or not guaranteed (as required)
+    - Message delivery sequence can be either guaranteed or not guaranteed (as required)
+    - User code is able to specify the message sequence indicator (as per functionality, eg. specify that Agreement timestamp is to be used as sequence indicator)
+
+    If the above is available, the event message delivery is guaranteed, and the upper layer (Agreement-specific) does not need to worry about this.
+
+Option 2 is definitely a more substantial change, but more generic and potentially having more uses. Choice between Option 1 and 2 requires a broader discussion during implementation. 
+
 ## Rationale
 
-Following altrnative mechanisms were considered for this GAP, and have been discarded in favor of concepts described above.
+Following alternative mechanisms were considered for this GAP, and have been discarded in favor of concepts described above.
 ### Permissions API?
 Permission management enhancements are to be applied on Market API only, as only Agreement ACLs are to be managed. An alternative is a broad, generic Permissions API, but it seems overkill.
 
