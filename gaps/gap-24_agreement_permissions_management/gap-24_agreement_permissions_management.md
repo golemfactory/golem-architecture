@@ -278,7 +278,7 @@ Possible implementation requires the following:
 
 #### Event propagation
 
-Provider is expected to actively notify a set of Grantees with Agreement (and respective entity) events. However the list of recipient nodes for events needs to be maintained by the Provider. Following logic is proposed:
+Provider is expected to actively notify a set of Grantees with Agreement (and respective entity) events. However the list of recipient nodes for events needs to be maintained by the Provider. Note that it is unclear from the ACL which nodes belong to Grantee group, therefore some mechanism of implicit "event subscription" is required. Following logic is proposed:
 
 - A successful call to `attachAgreement` from a `granteeId` will add this Grantee to the list of event "subscribers".
   - A new grantee added to "subscribers" list triggers sending full history of relevant events to that grantee (* there may be room for optimization here, eg. for a grantee who was offline and re-connects itself, it may be useful to only send events it hadn't previously received).
@@ -286,7 +286,7 @@ Provider is expected to actively notify a set of Grantees with Agreement (and re
   - In case event message delivery is failing for a given grantee (delivery confirmation to be decided during implementation) - that grantee is removed from "event subscriber" list.
 - Whenever Grantee disconnects, and then reconnects itself - it must call the `attachAgreement` again.
 - In situations where Grantee isn't aware it has been removed from "subscriber list" (eg. network went down, event message delivery failed, Provider removed the Grantee from list):
-  - (Option 1) A simple "health check" mechanism is proposed - where Grantee side, for all Agreements in non-terminated state, performs a periodic "am I still subscribed" call to Provider. If False is returned, yagna daemon calls attachAgreement again, in order to get the latest state of the Agreement. (This option is specific to Agreement synchronization and is not a generic mechanism)
+  - (Option 1) A simple "health check" mechanism is proposed - where Grantee side, for all Agreements in non-terminated state, performs a periodic "am I still subscribed" call to Provider. If False is returned, yagna daemon calls `attachAgreement` again, in order to get the latest state of the Agreement. (This option is specific to Agreement synchronization and is not a generic mechanism)
   - (Option 2) Implement message delivery guarantee on GSB transport level, which would need to have following features:
     - Message delivery can be either guaranteed or not guaranteed (as required)
     - Message delivery sequence can be either guaranteed or not guaranteed (as required)
