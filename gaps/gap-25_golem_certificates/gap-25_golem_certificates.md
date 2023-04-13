@@ -186,6 +186,10 @@ We need internal company policies, who has permissions to decide about signing u
 
 Providers should only trust certificate authorities who they can verify and consider safe.
 
+### Default signature algorithm
+
+The reference implementation, [Golem certificate](https://github.com/golemfactory/golem-certificate) library by default is using EdDSA signatures with Ed25519 scheme. This provides security equivalent of 128 bit symmetric keys. The schema does not dictate any specific algorithms and implementors can use different ones based on their needs.
+
 ## Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
