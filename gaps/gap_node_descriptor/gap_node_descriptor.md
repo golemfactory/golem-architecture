@@ -50,7 +50,7 @@ Semantics of the signature are defined in the [certificate schema](https://githu
 
 ### Signature creation and verification
 
-The process is the same as described for [certificates](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-25_golem_certificates/gap-25_golem_certificates.md#signature-creation-and-verification), but the signature is created for data in the `nodeDescriptor` property instead of the `certificate` one.
+The process is quite similar to what is described for [certificates](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-25_golem_certificates/gap-25_golem_certificates.md#signature-creation-and-verification), but the signature is created for data in the `nodeDescriptor` property instead of the `certificate` one.
 
 #### Creating a signature
 
@@ -82,23 +82,28 @@ This part explains the steps to be taken when verifying a node descriptor during
 3. Verify that the node descriptor's permission property does not include any permissions that is not granted to the signing certificate. (Details about permission verification can be found in the [Golem certificate structure document](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-25_golem_certificates/gap-25_golem_certificates.md#verifying-a-certificate-chain))
 4. Verify that the Computation manifest does not request any features or access that the node is not granted via the node descriptor.
 
-
-//// stopped here
-
 ## Rationale
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work.
+
+### Why do we need node descriptors?
+
+Node descriptors are one way for providers to trust requestors that their requests are valid and does not intent to cause harm. This is the first KYC solution to allow finer control over outbound and similar sensitive upcoming features.
 
 ## Backwards Compatibility
-All GAPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The GAP **must** explain how the author proposes to deal with these incompatibilities.
+
+When a requestor does not know about node descriptors or the node does not have one, the property in the demand will not be set. It is up to the provider if it will server such requests or not.
+An older provider will not recognize the data in this property and will simply ignore it, reducing its capability to verify the requestor.
 
 ## Test Cases
-Test cases are very useful in summarizing the scope and specifics of a GAP.  If the test suite is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/` directory.
 
-## [Optional] Reference Implementation
-An optional section that contains a reference/example implementation that people can use to assist in understanding or implementing this specification.  If the implementation is too large to reasonably be included inline, then consider adding it as one or more files in `./gaps/gap-draft_title/`.
+The reference implementation contains appropriate tests.
+
+## Reference Implementation
+
+[Golem certificate](https://github.com/golemfactory/golem-certificate) library is available to create, sign, verify node descriptors. The reference implementation of Golem network node [yagna](https://github.com/golemfactory/yagna) will also contain the feature from v0.13.0.
 
 ## Security Considerations
-All GAPs must contain a section that discusses the security implications/considerations relevant to the proposed change. Include information that might be important for security discussions, surfaces risks and can be used throughout the life cycle of the proposal. E.g. include security-relevant design decisions, concerns, important discussions, implementation-specific guidance and pitfalls, an outline of threats and risks and how they are being addressed. 
+
+[Golem certificate](https://github.com/golemfactory/golem-certificate) library by default is using EdDSA signatures with Ed25519 scheme. This provides security equivalent of 128 bit symmetric keys.
 
 ## Copyright
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
