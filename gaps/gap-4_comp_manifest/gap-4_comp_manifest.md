@@ -107,8 +107,16 @@ from the ground up using properties only.
 
 7. `golem.srv.comp.manifest.net.inet.out.urls : List[String]`
 
-    List of allowed external URLs that outbound requests can be sent to.
+    List of allowed external URLs that outbound requests can be sent to.  
     E.g. `["http://golemfactory.s3.amazonaws.com/file1", "http://golemfactory.s3.amazonaws.com/file2"]`
+
+    If unrestricted outbound is requested this property must not be set.
+
+8. `golem.srv.comp.manifest.net.inet.out.unrestricted : true`
+
+   This property means that the payload requires unrestricted outbound access. When present the value is always `true`. Either this property or the URL list in `golem.srv.comp.manifest.net.inet.out.urls` must be present.
+
+   If neither `golem.srv.comp.manifest.net.inet.out.unrestricted` nor `golem.srv.comp.manifest.net.inet.out.urls` is present, the manifest should be considered invalid and outbound access should not be permitted.
 
 #### Example
 
@@ -254,6 +262,8 @@ Providers (unless it's included in the Computation Payload).
 
 Computation Manifests are not required by the legacy Runtime capabilities and
 negotiations will commence as prior to introducing this feature.
+
+In some versions of the reference implementation [yagna](https://github.com/golemfactory/yagna) when neither `golem.srv.comp.manifest.net.inet.out.unrestricted` nor `golem.srv.comp.manifest.net.inet.out.urls` is present, but the payload is signed (as described in [Computation Payload Manifest](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-5_payload_manifest/gap-5_payload_manifest.md)) the provider can allow unrestricted access to the requestor. This is not intended and will not work in future releases. The intention is that unrestricted access must be explicitly requested.
 
 ## Test Cases
 
