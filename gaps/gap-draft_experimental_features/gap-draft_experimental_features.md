@@ -86,8 +86,32 @@ between Golem features that may undergo modifications and those that are already
 ## Specification
 
 ### Categories of features
-- Stable features
-- Experimental features
+
+We would like to split features into 2 categories:
+- Experimental Features
+- Stable Features
+
+**Experimental Features** can be thought of as prototypes, which purpose is to evaluate ideas
+and confront them with users feedback.
+They will be developed in separation on protocol level, what will allow to break compatibility
+often and make iterative changes. Each new version will cooperate only with other Nodes
+implementing exactly the same version. **Experimental features** can be dropped at any time, 
+but it is not allowed to break any of existing **Stable Features**.
+
+Every feature should begin its lifetime as experimental. After feature proved its business
+and UX value, it can be upgraded to **Stable Feature**. **Stable Feature** should keep backward
+compatibility according to [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy).
+
+Before upgrading feature, following things should be considered or taken care of:
+- Backward compatibility with previous versions of protocol (and potential interactions/collisions)
+- Forward compatibility and reasonable level of extensibility
+- Security
+- Stability and quality
+- Generality level: **Stable Features** shouldn't contain implementation solutions that close
+  protocol usage for entities outside of Golem Factory
+
+Notice that _upgrade process_ from **Experimental Feature** to **Stable Feature** is not backward
+compatible itself, although developers can choose to keep compatibility if they see reasons for it.
 
 ### Experimental features separation
 
