@@ -90,7 +90,7 @@ Node descriptors are one way for providers to trust requestors that their reques
 
 ## Backwards Compatibility
 
-When a requestor does not know about node descriptors or the node does not have one, the property in the demand will not be set. It is up to the provider if it will server such requests or not.
+When a requestor does not know about node descriptors or the node does not have one, the property in the demand will not be set. It is up to the provider if it will serve such requests or not.
 An older provider will not recognize the data in this property and will simply ignore it, reducing its capability to verify the requestor.
 
 ## Test Cases
