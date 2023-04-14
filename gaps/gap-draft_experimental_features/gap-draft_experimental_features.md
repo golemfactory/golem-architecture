@@ -95,7 +95,7 @@ We would like to split features into 2 categories:
 and confront them with users feedback.
 They will be developed in separation on protocol level, what will allow to break compatibility
 often and make iterative changes. Each new version will cooperate only with other Nodes
-implementing exactly the same version. **Experimental features** can be dropped at any time, 
+implementing exactly the same version. **Experimental Features** can be dropped at any time, 
 but it is not allowed to break any of existing **Stable Features**.
 
 Every feature should begin its lifetime as experimental. After feature proved its business
@@ -115,19 +115,94 @@ compatible itself, although developers can choose to keep compatibility if they 
 
 ### Experimental features separation
 
+**Experimental features** should be separated on protocol level by adding specific prefix
+and creating special _experimental_ namespace this way. Everything within this namespace
+can be changed and any time and doesn't have stable semantic. Moreover, everyone is allowed
+to use names from experimental namespace.
+
+**Stable Features** protocols aren't allowed to use reserved prefixes, otherwise they will be
+treated as experimental.
+
+In following paragraphs experimental namespacing for different kind of APIs will be introduced.
+Moreover, a few guidelines will be proposed to avoid naming collisions.
+
+Keep in mind, that since everything within _experimental_ namespace is undefined, no one
+is forced to keep the guidelines, if they would hinder ability to fast development.
+
 #### Negotiation protocols
+
+Assuming we have `golem.com.payment`, let's introduce experimental `payment-platform` namespace:
+
+`"golem.com.payment.!exp.payment-platform" : "erc20-rinkeby-tglm"`
+
+(TODO: Check if we can use `!` sign. May cause conflict in constraint language,
+json or yaml Offer/Demand representation)
+
+We have multiple options of correct experimental namespaces:
+- `"golem.com.payment.!exp.payment-platform"`
+- `"golem.com.!exp.payment.payment-platform"`
+- `"golem.!exp.com.payment.payment-platform"`
+- `"!exp.golem.com.payment.payment-platform"`
+
+Example of incorrect namespacing:
+
+`"golem.com.payment.payment-platform.!exp" : "erc20-rinkeby-tglm"`
+
+`payment-platform` property didn't exist before, so we are not allowed to introduce it.
 
 #### GSB protocols
 
+TODO
+
 #### REST APIs
 
+TODO
+
 #### CLIs and other user facing interfaces
+
+- Commands should be explicitly classified as **Stable** or **Experimental**
+- We should introduce new commands instead of changing previous, when introducing
+**Experimental Feature**
+
+In general, I would treat all CLI commands that we have now, as experimental and slowly
+move them to stable. I don't think CLI stability is important for us at this point.
 
 #### SDKs
 
 SDK features are outside the scope of this GAP.
 
 ### Versioning scheme
+
+Since content of _experimental_ namespace is undefined, we can expect properties collisions,
+when many independent entities will work on features at the same time. That's why additional
+namespacing and versioning is recommended.
+- Use feature identifier to separate properties from unrelated features
+- Use version number to separate subsequent iterations of the feature 
+
+Suggested template for namespacing:
+
+`"golem.com.payment.!exp.{feature-identitfier}.{version}.payment-platform"`
+
+Example of using identifier and version number.
+
+`"golem.com.payment.!exp.gap-12345.v3.22.payment-platform" : "erc20-rinkeby-tglm"`
+
+Version consists of 2 numbers:
+
+| Number             | Description                                                            |
+|--------------------|------------------------------------------------------------------------|
+| Release number     | Incremented with every public release of the feature                   |
+| Development number | Incremented during development to separate each new change in protocol |
+
+
+Characteristic of versioning:
+- Only exact versions are compatible
+- Developer shouldn't consider compatibility with previous version at all
+  - If the code related to protocol was changed than he should always increment `Development` number
+  - When releasing, if the code has changed in relation to previous release than `Release`
+    number should always be incremented
+- Developer can prefix or postfix Development number with his nick/identifier/whatever to
+  avoid version clashes with other team members
 
 ### Phases of feature development
 
