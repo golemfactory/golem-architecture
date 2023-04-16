@@ -1,5 +1,5 @@
 ---
-gap: <to be assigned>
+gap: GAP-31
 title: Signed node descriptor
 description: Define node descriptor document format to enable requestor verification.
 author: evik (@evik42)
