@@ -152,11 +152,42 @@ Example of incorrect namespacing:
 
 #### GSB protocols
 
-TODO
+GSB allows to make RPC calls to other yagna daemons. Messages are sent to specific address
+like for example:
+`/public/market/protocol/mk1/discovery/offers/GetOffers`
+
+Examples of introducing new GSB message `ListOffers`:
+- `/public/!exp/market/protocol/mk1/discovery/offers/ListOffers`
+- `/public/market/!exp/protocol/mk1/discovery/offers/ListOffers`
+- `/public/market/protocol/!exp/mk1/discovery/offers/ListOffers`
+- `/public/market/protocol/mk1/!exp/discovery/offers/ListOffers`
+- `/public/market/protocol/mk1/discovery/!exp/offers/ListOffers`
+- `/public/market/protocol/mk1/discovery/offers/!exp/ListOffers`
+
+Note that `/public` prefix has special meaning. Net module redirects all calls to `/public`
+addresses. For this reason `/!exp/public` is not correct namespacing.
+
+##### Backoff to stable version
+
+In case of GSB messages it is hard to imagine, that changes will be completely independent
+of previous versions of protocols. In this case it might be useful to check if other yagna
+daemon supports experimental version and backoff to stable code if it doesn't.
+
+We would recommend always binding `IsSupported` endpoint, when developing new **Experimental Feature**.
+In combination with [versioning](#Versioning-scheme) it could allow us to send GSB message
+to check if other yagna supports this specific experimental feature.
+Sending message will result with `Endpoint not found` in case it is not supported.
 
 #### REST APIs
 
-TODO
+Example address for responding to Proposal:
+`POST /market-api/v1/demands/{demand_id}}/proposals/{proposal_id}`
+
+Examples of experimental namespacing:
+- `POST /market-api/v1/!exp/demands/{demand_id}}/proposals/{proposal_id}`
+- `POST /market-api/v1/demands/!exp/{demand_id}}/proposals/{proposal_id}`
+- `POST /market-api/v1/demands/{demand_id}}/!exp/proposals/{proposal_id}`
+- `POST /market-api/v1/demands/{demand_id}}/proposals/!exp/{proposal_id}`
 
 #### CLIs and other user facing interfaces
 
