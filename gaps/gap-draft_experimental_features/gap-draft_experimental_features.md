@@ -96,11 +96,19 @@ and confront them with users feedback.
 They will be developed in separation on protocol level, what will allow to break compatibility
 often and make iterative changes. Each new version will cooperate only with other Nodes
 implementing exactly the same version. **Experimental Features** can be dropped at any time, 
-but it is not allowed to break any of existing **Stable Features**.
+but they are not allowed to break any of existing **Stable Features**.
+
 
 Every feature should begin its lifetime as experimental. After feature proved its business
 and UX value, it can be upgraded to **Stable Feature**. **Stable Feature** should keep backward
 compatibility according to [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy).
+
+#### Phases of feature development
+
+- Development version (PoC)
+- MVP release
+- Iterating over released feature
+- Upgrade to stable version
 
 Before upgrading feature, following things should be considered or taken care of:
 - Backward compatibility with previous versions of protocol (and potential interactions/collisions)
@@ -234,16 +242,6 @@ Characteristic of versioning:
     number should always be incremented
 - Developer can prefix or postfix Development number with his nick/identifier/whatever to
   avoid version clashes with other team members
-
-### Phases of feature development
-
-- PoC version
-- Release and iterating over implementation
-- Upgrade to stable version
-
-### Problems that won't be solved
-
-## Rationale
 
 ## Backwards Compatibility
 
