@@ -99,7 +99,7 @@ The reference implementation contains appropriate tests.
 
 ## Reference Implementation
 
-[Golem certificate](https://github.com/golemfactory/golem-certificate) library is available to create, sign, verify node descriptors. The reference implementation of Golem network node [yagna](https://github.com/golemfactory/yagna) will also contain the feature from v0.13.0.
+[Golem certificate](https://github.com/golemfactory/golem-certificate) library is available to create, sign, verify node descriptors. The reference implementation of Golem network node [yagna](https://github.com/golemfactory/yagna) will also use node descriptors for the 'partner rule' feature released in a future version.
 
 ## Security Considerations
 
