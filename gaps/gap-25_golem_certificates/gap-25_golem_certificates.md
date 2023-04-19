@@ -1,5 +1,5 @@
 ---
-gap: 25
+gap: GAP-25
 title: Golem Certificates structure
 description: Describes certificates usage to enable more sensitive golem features.
 author: <Witold Dzięcioł (@nieznanysprawiciel)>, evik (@evik42)
