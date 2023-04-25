@@ -110,13 +110,16 @@ from the ground up using properties only.
     List of allowed external URLs that outbound requests can be sent to.  
     E.g. `["http://golemfactory.s3.amazonaws.com/file1", "http://golemfactory.s3.amazonaws.com/file2"]`
 
-    If unrestricted outbound is requested this property must not be set.
+    If unrestricted outbound access is requested this property must not be set.
 
-8. `golem.srv.comp.manifest.net.inet.out.unrestricted : true`
+8. `golem.srv.comp.manifest.net.inet.out.unrestricted.urls : true`
 
    This property means that the payload requires unrestricted outbound access. When present the value is always `true`. Either this property or the URL list in `golem.srv.comp.manifest.net.inet.out.urls` must be present.
 
-   If neither `golem.srv.comp.manifest.net.inet.out.unrestricted` nor `golem.srv.comp.manifest.net.inet.out.urls` is present, the manifest should be considered invalid and outbound access should not be permitted.
+   The manifest must be considered invalid and outbound access should not be permitted in the following scenarios:
+   - neither `golem.srv.comp.manifest.net.inet.out.unrestricted.urls` nor `golem.srv.comp.manifest.net.inet.out.urls` is present
+   - both `golem.srv.comp.manifest.net.inet.out.unrestricted.urls` and `golem.srv.comp.manifest.net.inet.out.urls` are present
+   - property `golem.srv.comp.manifest.net.inet.out.unrestricted.urls` is present and it contains a value different from `true`
 
 #### Example
 
