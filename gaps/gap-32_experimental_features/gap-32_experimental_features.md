@@ -1,5 +1,5 @@
 ---
-gap: <to be assigned>
+gap: GAP-32
 title: Experimental features
 description: GAP describes process of introducing new experimental features that would speed up development.
 author: <Witold Dzięcioł (@nieznanysprawiciel)>
