@@ -158,6 +158,13 @@ Example of incorrect namespacing:
 
 `payment-platform` property didn't exist before, so we are not allowed to introduce it.
 
+##### Array members
+
+In case of arrays we don't want to introduce new property, because we would omit standard mechanisms
+that agents use for filtering Nodes. For example if we want to add experimental `"gpu"` capability,
+it is natural to add this property to existing array like this:
+`"golem.runtime.capabilities": ["inet", "vpn", "!exp:gpu"]`
+
 #### GSB protocols
 
 GSB allows to make RPC calls to other yagna daemons. Messages are sent to specific address
@@ -175,11 +182,11 @@ Examples of introducing new GSB message `ListOffers`:
 Note that `/public` prefix has special meaning. Net module redirects all calls to `/public`
 addresses. For this reason `/!exp/public` is not correct namespacing.
 
-##### Backoff to stable version
+##### Fallback to stable version
 
 In case of GSB messages it is hard to imagine, that changes will be completely independent
 of previous versions of protocols. In this case it might be useful to check if other yagna
-daemon supports experimental version and backoff to stable code if it doesn't.
+daemon supports experimental version and fallback to stable code if it doesn't.
 
 We would recommend always binding `IsSupported` endpoint, when developing new **Experimental Feature**.
 In combination with [versioning](#Versioning-scheme) it could allow us to send GSB message
@@ -208,7 +215,10 @@ move them to stable. I don't think CLI stability is important for us at this poi
 
 #### SDKs
 
-SDK features are outside the scope of this GAP.
+Experimental features shall be clearly indicated in SDK APIs in a similar way to Deprecated features, ie:
+- mark experimental elements of APIs using a method standard for the language of the SDK library
+  (eg. @experimental decorator in Python)
+- once a feature is promoted to stable status, remove the `experimental` mark from the respective APIs.
 
 ### Versioning scheme
 
