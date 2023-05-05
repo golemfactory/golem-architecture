@@ -196,13 +196,13 @@ Sending message will result with `Endpoint not found` in case it is not supporte
 #### REST APIs
 
 Example address for responding to Proposal:
-`POST /market-api/v1/demands/{demand_id}}/proposals/{proposal_id}`
+`POST /market-api/v1/demands/{demand_id}/proposals/{proposal_id}`
 
 Examples of experimental namespacing:
-- `POST /market-api/v1/!exp/demands/{demand_id}}/proposals/{proposal_id}`
-- `POST /market-api/v1/demands/!exp/{demand_id}}/proposals/{proposal_id}`
-- `POST /market-api/v1/demands/{demand_id}}/!exp/proposals/{proposal_id}`
-- `POST /market-api/v1/demands/{demand_id}}/proposals/!exp/{proposal_id}`
+- `POST /market-api/v1/!exp/demands/{demand_id}/proposals/{proposal_id}`
+- `POST /market-api/v1/demands/!exp/{demand_id}/proposals/{proposal_id}`
+- `POST /market-api/v1/demands/{demand_id}/!exp/proposals/{proposal_id}`
+- `POST /market-api/v1/demands/{demand_id}/proposals/!exp/{proposal_id}`
 
 #### CLIs and other user facing interfaces
 
@@ -220,7 +220,23 @@ Experimental features shall be clearly indicated in SDK APIs in a similar way to
   (eg. @experimental decorator in Python)
 - once a feature is promoted to stable status, remove the `experimental` mark from the respective APIs.
 
-### Versioning scheme
+
+### Good practices guidelines
+
+Although this GAP tries to enforce as little as possible to give developers freedom to implement things
+in the simplest way, we would like to encourage some best practices.
+
+#### Namespacing guidelines
+
+To facilitate visual grouping of experimental properties, we encourage to choose namespacing version
+which places `!exp` prefix on the lowest level possible. For example:
+
+- `"golem.!exp.com.payment.payment-platform"`
+- `/public/!exp/market/protocol/mk1/discovery/offers/ListOffers`
+- `POST /market-api/v1/!exp/demands/{demand_id}/proposals/{proposal_id}`
+
+
+#### Versioning scheme
 
 Since content of _experimental_ namespace is undefined, we can expect properties collisions,
 when many independent entities will work on features at the same time. That's why additional
@@ -230,11 +246,11 @@ namespacing and versioning is recommended.
 
 Suggested template for namespacing:
 
-`"golem.com.payment.!exp.{feature-identitfier}.{version}.payment-platform"`
+`"golem.!exp.{feature-identitfier}.{version}.com.payment.payment-platform"`
 
 Example of using identifier and version number.
 
-`"golem.com.payment.!exp.gap-12345.v3.22.payment-platform" : "erc20-rinkeby-tglm"`
+`"golem.!exp.gap-12345.v3.22.com.payment.payment-platform": "erc20-rinkeby-tglm"`
 
 Version consists of 2 numbers:
 
