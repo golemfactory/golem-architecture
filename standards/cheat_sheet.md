@@ -26,6 +26,7 @@ This page contains an aggregated summary of all namespaces and properties specif
      * [manifest](2-service/srv/comp/manifest.md)
        * [net](2-service/srv/comp/manifest/net.md)
        * [script](2-service/srv/comp/manifest/script.md)
+     * [payload](2-service/srv/comp/payload.md)
      * [wasm](2-service/srv/comp/wasm.md)
 ###	3-commercial
  * com
@@ -151,6 +152,7 @@ Namespace that describes capabilities of a Golem service.
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
 |**`golem.srv.caps.multi-activity`**|`Boolean`|Demand/Offer||Indicates the that the Provider supports the multi-activity Agreements. |
+|**`golem.srv.caps.payload-manifest`**|`Boolean`|Offer||Providers need to declare that they support Payload Manifests by setting this property to `true`. |
 ---
 
 ## [`srv.comp`](2-service/srv/comp.md)
@@ -199,6 +201,20 @@ This namespace defines properties used to specify details the Golem Computation 
 |---|---|---|---|---|
 |**`golem.srv.comp.manifest.script.commands`**|`List[String]`|Demand||Specifies a curated list of commands in form of: |
 |**`golem.srv.comp.manifest.script.match`**|`String`|Demand||Selects a default way of comparing command arguments stated in the manifest and the ones received in the ExeScript, unless stated otherwise in a command JSON object. |
+---
+
+## [`srv.comp.payload`](2-service/srv/comp/payload.md)
+
+This namespace defines properties used to specify the Golem Payload Manifest (as originally designed in [GAP-5](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-5_payload_manifest/gap-5_payload_manifest.md)). 
+
+### Properties
+
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
+|**`golem.srv.comp.payload`**|`String`|Demand||Base64-encoded JSON manifest. |
+|**`golem.srv.comp.payload.sig`**|`String`|Demand||Base64-encoded signature of the base64-encoded manifest. |
+|**`golem.srv.comp.payload.sig.algorithm`**|`String`|Demand||Digest algorithm used to generate manifest signature. |
+|**`golem.srv.comp.payload.cert`**|`String`|Demand||Base64-encoded certificate in DER format. |
 ---
 
 ## [`srv.comp.wasm`](2-service/srv/comp/wasm.md)
