@@ -35,21 +35,53 @@ Computation Manifest can take one of the following forms:
 - `golem.srv.comp.manifest` namespace properties, an extension to
   Golem Computation Resource Standards.
 
-The Computation Manifest is expected to be included in a Computation Payload
-Manifest ([GAP](https://github.com/golemfactory/golem-architecture/pull/28))
-file, where its hash is co-signed with Payload hashes. If a Computation
-Manifest is included in the Demand (and thus, Agreement), its role is to
-derive the properties from and override the initially sourced Manifest.
+The Computation Manifest is expected to be included in a Payload
+Manifest ([GAP-5](https://github.com/golemfactory/golem-architecture/pull/28))
+embedded or linked in an Agreement, where its hash is co-signed with Payload 
+hashes. If a Computation Manifest is defined in a Demand (and thus, 
+Agreement) via GCRS properties, its role is to override those properties in 
+the original Manifest.
+
+The process of signing and verifying a Computation Manifest remains out of 
+scope of this GAP. Computation Manifests are meant to be signed externally, 
+i.e. either as a part of an Agreement or a Computation Payload Manifest.
+
+### Development cycle
+
+Computation Manifest is an optional component of a Payload Manifest, 
+created by an application developer. Payload Manifests may be signed by any 
+willing entity, who is free to establish and govern their own signing 
+process; i.e., that entity may choose to sign any submitted manifest or 
+involve extra preliminary steps, e.g.:
+
+- manifest correctness / semantic validation
+- opinionated security checks
+- developer identity verification
+- charging fees
+
+Initially, Golem Factory may enact as a trusted authority by
+verifying and signing application manifests created by chosen developers.
+This process is out of scope of this GAP.
+
+Computation Manifests can optionally be specified or extended by Requestors
+in their Demands. CMs defined solely via properties will lack the signature of
+a trusted authority, unless the Requestor is considered as one and the 
+Agreement is signed with his trusted key counterpart.
+
+Positive verification of a Payload Manifest signature requires Providers to 
+add the public key of an entity to their trusted key storage. The storage is 
+initialized with a default set of trusted keys, including the one of 
+Golem Factory.
 
 ### GCRS `golem.srv.comp.manifest` namespace
 
-Intended for overriding an external Manifest but allows defining a new Manifest
+Intended for overriding an external Manifest. Allows defining new Manifests
 from the ground up using properties only.
 
 1. `golem.srv.comp.manifest.version : String`
 
-    Specifies a version (Semantic Versioning 2.0 specification) of the manifest,
-    **defaults** to "0.1.0"
+    Specifies a version (Semantic Versioning 2.0 specification) of the 
+    manifest, **defaults** to "0.1.0"
 
 2. `golem.srv.comp.manifest.script` (sub-namespace)
 
@@ -69,46 +101,78 @@ from the ground up using properties only.
 
     - UTF-8 encoded JSON strings
 
-      Command context (e.g. `env`) or argument matching mode need to be
+      Command context (e.g. `env`) or argument / property matching mode need to be
       specified for a command.
 
-      E.g. `["{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"MYVAR\": \"42\", \"match\": \"strict\" }}}"]`
+      E.g.:
+      - `["{\"run\": { \"value\": \"/bin/date -R\", \"env\": { \"VAR\": \"42\" } }"]`
+      - `["{\"run\": { \"value\": \"/bin/date\", \"env\": { \"VAR\": \"4[0-9]+\" }, \"match\": \"regex\"}"]`
+      - `["{\"run\": { \"value\": \"/bin/date -R\", \"env\": { \"VAR\": { \"value\": \"4[0-9]+\", \"match\": \"regex\" } }"]`
+      - `["{\"run\": { \"value\": \"/bin/[a-zA-Z0-9]*\", \"match\": \"regex\" }"]`
 
-    - mix of both
+    - a combination of both
 
     `"deploy"`, `"start"` and `"terminate'` commands are always allowed.
-    These values become the **default** if no `manifest.script.command` property
-    has been set in the Demand, but the `manifest` namespace is present.
+    These values become the **default** if no `manifest.script.command` 
+    property has been set in the Demand, but the `manifest` namespace is 
+    present.
 
 4. `golem.srv.comp.manifest.script.match : String`
 
-    Selects a default way of comparing command arguments stated in the manifest
-    and the ones received in the ExeScript, unless stated otherwise in a
-    command JSON object.
-
-    The `match` property could be one of:
-
-      - `"strict"`: byte-to-byte argument equality (**default**)
-      - `"regex"`: treat arguments as regular expressions
-
-        Syntax: Perl-compatible regular expressions (UTF-8 Unicode mode),
-        w/o the support for look around and backreferences (among others);
-        for more information read the documentation of the Rust
-        [regex](https://docs.rs/regex/latest/regex/) crate.
+    Selects a default way of comparing arguments and parameters of commands 
+    stated in the manifest and the ones received in an ExeScript, unless set 
+    otherwise in a command JSON object.
 
 5. `golem.srv.comp.manifest.net` (sub-namespace)
 
     Applies constraints to networking. Currently, outgoing requests to the
-    public Internet network are covered.
+    public network (Internet) are covered.
 
 6. `golem.srv.comp.manifest.net.inet.out.protocols : List[String]`
 
-    List of allowed outbound protocols. Currently **fixed at** `["http", "https"]`.
+    List of allowed outbound protocols. Currently, **fixed at** 
+    `["http", "https", "ws", "wss"]`.
 
 7. `golem.srv.comp.manifest.net.inet.out.urls : List[String]`
 
-    List of allowed external URLs that outbound requests can be sent to.
-    E.g. `["http://golemfactory.s3.amazonaws.com/file1", "http://golemfactory.s3.amazonaws.com/file2"]`
+    List of allowed external URLs that outbound requests can be sent to, in form of:
+
+    - UTF-8 encoded strings
+
+      E.g.: `["http://golemfactory.s3.amazonaws.com/file1", "http://golemfactory.s3.amazonaws.com/file2"]`
+   
+    - UTF-8 encoded JSON strings
+      
+      E.g.: `["{\"value\": \"http://golemfactory.s3.amazonaws.com/file[0-9]+\", \"match\": \"regex\" }"]`
+
+    - a combination of both
+   
+8. `golem.srv.comp.manifest.net.inet.out.match : String`
+
+    Selects a default way of comparing URLs stated in the manifest 
+    and the ones received in an ExeScript, unless set otherwise 
+    in a URL JSON object.
+
+#### Value matching
+
+It's possible to set a namespace-wide matching mode via `script.match` or
+`inet.out.match` properties, which affect the way the `commands` or `urls` 
+are compared, respectively.
+
+The `match` property could be one of:
+
+  - `"strict"`: byte-to-byte value equality (**default**)
+  - `"regex"`: treat values as regular expressions
+
+    Syntax: Perl-compatible regular expressions (UTF-8 Unicode mode),
+    w/o the support for look around and back-references (among others);
+    for more information read the documentation of the Rust
+    [regex](https://docs.rs/regex/latest/regex/) crate.
+  
+Each command or URL provided as a string-encoded JSON object can
+override the namespace-wide matching mode, as shown in the property 
+descriptions above. Each nested object is allowed to override the matching 
+mode on a higher level.
 
 #### Example
 
@@ -117,7 +181,7 @@ from the ground up using properties only.
   "golem.srv.comp.manifest.script.match": "regex",
   "golem.srv.comp.manifest.script.commands": [
     "run /bin/cat /etc/motd",
-    "{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"MYVAR\": \"42\", \"match\": \"strict\" }}}"
+    "{\"run\": { \"args\": \"/bin/date -R\", \"env\": { \"VAR\": \"42\" }, \"match\": \"strict\" }}"
   ],
   "golem.srv.comp.manifest.net.inet.out.protocols": [
     "http",
@@ -146,7 +210,7 @@ from the ground up using properties only.
             "run": {
               "args": "/bin/date -R",
               "env": {
-                "MYVAR": "42"
+                "VAR": "42"
               },
               "match": "strict"
             }
@@ -181,7 +245,7 @@ from the ground up using properties only.
           "run": {
             "args": "/bin/date -R",
             "env": {
-              "MYVAR": "42"
+              "VAR": "42"
             },
             "match": "strict"
           }
@@ -209,7 +273,7 @@ from the ground up using properties only.
       - run:
           args: "/bin/date -R"
           env:
-            MYVAR: '42'
+            VAR: '42'
           match: strict
     net:
       inet:
