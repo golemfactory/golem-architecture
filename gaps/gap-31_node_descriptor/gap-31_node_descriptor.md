@@ -103,16 +103,16 @@ In the future the market daemon might provide facilities to verify the node desc
 
 ```mermaid
 sequenceDiagram
-    box lightyellow Offline
+    box Offline
     actor Cert as Owner of a golem certificate
     actor KeyPair as Owner of node keypair
     end
-    box lightgreen Requestor
+    box Requestor
     participant Req as Requestor agent
     participant YagnaR as Market daemon (requestor)
     end
     participant Network
-    box pink Provider
+    box Provider
     participant YagnaP as Market daemon (provider)
     participant Prov as Provider agent
     end
