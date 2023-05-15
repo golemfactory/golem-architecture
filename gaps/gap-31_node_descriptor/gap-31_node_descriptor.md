@@ -93,6 +93,70 @@ Node descriptors are one way for providers to trust requestors that their reques
 When a requestor does not know about node descriptors or the node does not have one, the property in the demand will not be set. It is up to the provider if it will serve such requests or not.
 An older provider will not recognize the data in this property and will simply ignore it, reducing its capability to verify the requestor.
 
+## Where does verification of the node descriptor happens?
+
+Currently the Golem Market is not aware of the node descriptor or it's details. It is the provider agent's responsibility to verify the node descriptor and based on the result of the verification and other parts of the demand either reject the proposal or continue with negotiation.
+
+In the future the market daemon might provide facilities to verify the node descriptor allowing the provider agent to use Offer constraints to filter demands on the marked daemon side.
+
+## How the information flow looks like with node descriptor involved?
+
+```mermaid
+sequenceDiagram
+    box lightyellow Offline
+    actor Cert as Owner of a golem certificate
+    actor KeyPair as Owner of node keypair
+    end
+    box lightgreen Requestor
+    participant Req as Requestor agent
+    participant YagnaR as Market daemon (requestor)
+    end
+    participant Network
+    box pink Provider
+    participant YagnaP as Market daemon (provider)
+    participant Prov as Provider agent
+    end
+    activate YagnaP
+    critical Setup Node Descriptor
+        KeyPair ->> YagnaR: Query NodeId of yagna daemon
+        activate KeyPair
+        YagnaR ->> KeyPair: NodeId
+        KeyPair ->> +Cert: Request a Node Descriptor<br/>for the NodeId
+        Note over Cert: Decides on validity period<br/>and appropriate permissions<br/>for the node
+        Note over Cert: Creates Node Descriptor and signs it
+        Cert ->> -KeyPair: Node Descriptor
+        KeyPair ->> -Req: Sets up requestor agent<br/>to attach Node Descriptor<br/>to demand
+        Note over KeyPair, Req: The above steps need to be repeated only if<br/>- the NodeId changes<br/>- the Node Descriptor expires<br/>- permissions need to be extended
+    end
+    activate Req
+    activate Prov
+    Prov ->> YagnaP: Offer
+    YagnaP ->> Network: Publish Offer
+    Network ->> YagnaR: Offers
+    Req ->> YagnaR: Send Demand
+    YagnaR ->> Req: Send initial Proposals
+    Req ->> YagnaR: Proposal w/ Demand including Node Descriptor
+    YagnaR ->> YagnaP: Proposal w/ Demand including Node Descriptor
+    YagnaP ->> Prov: Proposal w/ Demand including Node Descriptor
+    Note over Prov: Checks the Demand and based on its contents<br/>verifies the Node Descriptor
+    alt Reject proposal
+        Prov ->> YagnaP: Reject proposal
+        YagnaP ->> YagnaR: Reject proposal
+        YagnaR ->> Req: Reject proposal
+    else Accept proposal
+        opt Negotiate proposal details
+            loop Negotiation
+                Prov ->> Req: Alternative proposal
+                Req ->> Prov: Alternative proposal
+            end
+        end
+        Prov ->> Req: Final Proposal
+        Req ->> Prov: Agreement
+        Prov ->> Req: Accept Agreement
+        Note over Prov, Req: Agreement is established, fulfillment follows
+    end
+```
+
 ## Test Cases
 
 The reference implementation contains appropriate tests.
