@@ -158,11 +158,11 @@ Example of incorrect namespacing:
 
 `payment-platform` property didn't exist before, so we are not allowed to introduce it.
 
-##### Array members
+##### Enum members
 
-In case of arrays we don't want to introduce new property, because we would omit standard mechanisms
+In case of experimental enum values we don't want to introduce a new experimental property, because we would omit standard mechanisms
 that agents use for filtering Nodes. For example if we want to add experimental `"gpu"` capability,
-it is natural to add this property to existing array like this:
+it is natural to add this experimental value to existing enum like this:
 `"golem.runtime.capabilities": ["inet", "vpn", "!exp:gpu"]`
 
 #### GSB protocols
