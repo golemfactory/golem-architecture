@@ -75,9 +75,6 @@ The node descriptor is currently an [Experimental Feature](https://github.com/go
 As a result, property should be prefixed appropriately to indicate this.
 The node descriptor is added as a json object in the `golem.!exp.gap-31.v0.node.descriptor` property of the demand and becomes integral part of the demand during negotiation.
 
-> **Note**
-> Currently, node descriptor is an [Experimental Feature](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-32_experimental_features/gap-32_experimental_features.md)
-
 ### Verifying during negotiation
 
 This part explains the steps to be taken when verifying a node descriptor during negotiation to validate if it can be used for the demand or not.
