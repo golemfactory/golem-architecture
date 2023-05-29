@@ -143,9 +143,6 @@ Assuming we have `golem.com.payment`, let's introduce experimental `payment-plat
 
 `"golem.com.payment.!exp.payment-platform" : "erc20-rinkeby-tglm"`
 
-(TODO: Check if we can use `!` sign. May cause conflict in constraint language,
-json or yaml Offer/Demand representation)
-
 We have multiple options of correct experimental namespaces:
 - `"golem.com.payment.!exp.payment-platform"`
 - `"golem.com.!exp.payment.payment-platform"`
