@@ -72,7 +72,7 @@ In order to cryptographically sign a node descriptor the following steps need to
 ### Node descriptor in the Demand
 
 The node descriptor is currently an [Experimental Feature](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-32_experimental_features/gap-32_experimental_features.md).
-As a result, property should be prefixed appropriately to indicate this.
+As a result, property should be prefixed appropriately to separate it from stable features.
 The node descriptor is added as a json object in the `golem.!exp.gap-31.v0.node.descriptor` property of the demand and becomes integral part of the demand during negotiation.
 
 ### Verifying during negotiation
