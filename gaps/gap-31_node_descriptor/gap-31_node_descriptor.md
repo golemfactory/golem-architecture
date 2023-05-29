@@ -71,7 +71,10 @@ In order to cryptographically sign a node descriptor the following steps need to
 
 ### Node descriptor in the Demand
 
-The node descriptor is added as a json object in the `golem.node.descriptor` property of the demand and becomes integral part of the demand during negotiation.
+The node descriptor is added as a json object in the `golem.!exp.gap-31.v0.node.descriptor` property of the demand and becomes integral part of the demand during negotiation.
+
+> **Warning**
+> Currently, node descriptor is an [Experimental Feature](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-32_experimental_features/gap-32_experimental_features.md)
 
 ### Verifying during negotiation
 
