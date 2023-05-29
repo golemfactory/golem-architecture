@@ -59,9 +59,9 @@ In order to cryptographically sign a node descriptor the following steps need to
 1. Create a binary representation of the `nodeDescriptor` property by serializing the content via the `JSON Canonicalization Scheme`
 2. Sign the binary data with the chosen signature algorithm using the private key of the signer. The private key must be the one connected to the public key specified in the signer's certificate.
 3. Create the `signature` property in the JSON certificate and add the following details
-    - name of the hash and encryption algorithm (details of the signature algorithm) used to create the signature into the `algorithm` property
-    - binary data of the signature into `value` property
-    - the `signer` property of the `signature` must contain the signing certificate
+   - name of the hash and encryption algorithm (details of the signature algorithm) used to create the signature into the `algorithm` property
+   - binary data of the signature into `value` property
+   - the `signer` property of the `signature` must contain the signing certificate
 
 #### Verifying a signature
 
@@ -73,7 +73,7 @@ In order to cryptographically sign a node descriptor the following steps need to
 
 The node descriptor is added as a json object in the `golem.!exp.gap-31.v0.node.descriptor` property of the demand and becomes integral part of the demand during negotiation.
 
-> **Warning**
+> **Note**
 > Currently, node descriptor is an [Experimental Feature](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-32_experimental_features/gap-32_experimental_features.md)
 
 ### Verifying during negotiation
@@ -173,4 +173,5 @@ The reference implementation contains appropriate tests.
 [Golem certificate](https://github.com/golemfactory/golem-certificate) library by default is using EdDSA signatures with Ed25519 scheme. This provides security equivalent of 128 bit symmetric keys.
 
 ## Copyright
+
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
