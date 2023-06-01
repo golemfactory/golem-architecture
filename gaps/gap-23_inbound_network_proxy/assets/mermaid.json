@@ -1,0 +1,12 @@
+{
+    "theme": "neutral",
+    "fontFamily": "Source Code Pro, Droid Sans, monospace",
+    "flowchart": {
+        "curve": "cardinal"
+    },
+    "sequence": {
+        "actorFontFamily": "Source Code Pro, Droid Sans, monospace",
+        "noteFontFamily": "Source Code Pro, Droid Sans, monospace",
+        "messageFontFamily": "Source Code Pro, Droid Sans, monospace"
+    }
+}

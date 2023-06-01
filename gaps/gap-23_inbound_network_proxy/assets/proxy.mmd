@@ -1,0 +1,48 @@
+flowchart LR
+%% @config(./mermaid.json);
+
+    Provider["Provider Agent"];
+    Runtime["Net Runtime"];
+
+    subgraph proxy
+
+        subgraph ManagementHTTP["Management API"]
+            ProbeAPI["Probe API"];
+            StatusAPI["Status API"];
+            GatewayAPI["Gateway API"];
+        end
+
+        subgraph Probes["probes"]
+            subgraph ProbeHTTP1["HTTP 1"]
+                P11["1"];
+                P1R["..."];
+                P1N["N"];
+            end
+
+            subgraph ProbeHTTP2["HTTP N"]
+                PN1["1"];
+                PNR["..."];
+                PNN["N"];
+            end
+        end
+
+        subgraph Sockets["public sockets"]
+            S1["1"];
+            SR["..."];
+            SN["N"];
+        end
+
+        Router;
+        Stack["smoltcp"];
+
+
+        ProbeAPI-->Probes;
+        GatewayAPI-->Sockets;
+        Sockets<-->Router;
+        Stack<-->Router;
+    end
+
+    Provider.->ProbeAPI;
+    Runtime.->GatewayAPI;
+    Runtime.->StatusAPI;
+    Router<.->|"Golem VPN"|Service;
