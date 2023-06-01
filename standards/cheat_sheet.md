@@ -23,6 +23,10 @@ This page contains an aggregated summary of all namespaces and properties specif
      * [eth](2-service/srv/app/eth.md)
    * [caps](2-service/srv/caps.md)
    * [comp](2-service/srv/comp.md)
+     * [manifest](2-service/srv/comp/manifest.md)
+       * [net](2-service/srv/comp/manifest/net.md)
+       * [script](2-service/srv/comp/manifest/script.md)
+     * [payload](2-service/srv/comp/payload.md)
      * [wasm](2-service/srv/comp/wasm.md)
 ###	3-commercial
  * com
@@ -54,6 +58,9 @@ Specifications of CPU computing power assigned to a service.
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
 |**`golem.inf.cpu.architecture`**|`String`|Offer||CPU architecture. |
+|**`golem.inf.cpu.vendor`**|`String`|Offer||CPU vendor. |
+|**`golem.inf.cpu.brand`**|`String`|Offer||CPU brand, human-readable. |
+|**`golem.inf.cpu.model`**|`String`|Offer||CPU stepping, family and model. |
 |**`golem.inf.cpu.cores`**|`Number (int32)`|Offer||Total number of CPU cores assigned to service. It is a sum of CPU cores possibly from multiple CPUs. |
 |**`golem.inf.cpu.threads`**|`Number (int32)`|Offer||Total number of CPU threads assigned to service. It is a sum of CPU threads possibly from multiple CPUs and cores. |
 |**`golem.inf.cpu.capabilities`**|`List[String]`|Offer||CPU capability flags.  For x86 architectures this property is populated with CPU features as returned by CPUID instruction. For full list, see here: https://github.com/golemfactory/ya-runtime-vm/blob/master/runtime/src/cpu.rs#L59  |
@@ -145,6 +152,7 @@ Namespace that describes capabilities of a Golem service.
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
 |**`golem.srv.caps.multi-activity`**|`Boolean`|Demand/Offer||Indicates the that the Provider supports the multi-activity Agreements. |
+|**`golem.srv.caps.payload-manifest`**|`Boolean`|Offer||Providers need to declare that they support Payload Manifests by setting this property to `true`. |
 ---
 
 ## [`srv.comp`](2-service/srv/comp.md)
@@ -155,8 +163,58 @@ Generic properties describing the Computation Platform aspects.
 
 | Property | Type | Applies to | Category | Description |
 |---|---|---|---|---|
-|**`golem.srv.comp.expiration`**|`Number (int32)`|Demand||Indicates the expiration time of the Agreement which is being negotiated. This is expressed as  Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`) |
+|**`golem.srv.comp.expiration`**|`Number (int32)`|Demand||Indicates the expiration time of the Agreement which is being negotiated. This is expressed as  Javascript timestamp (number of milliseconds since 1970-01-01 00:00:00 UTC, as returned by `Date.now()`). After this time both sides are allowed to terminate the Agreement; and Provider actually does that. |
 |**`golem.srv.comp.task_package`**|`String`|Demand||Indicates the URI of a package/binary which is to be executed by the Provider. This is a generic property, which, however, may be interpreted differently per each Computation Platform. Therefore, in a Computation Platform-specific namespace it is expected to specify the semantics of `golem.srv.comp.task_package` property for that Platform. |
+---
+
+## [`srv.comp.manifest`](2-service/srv/comp/manifest.md)
+
+This namespace defines properties used to specify the Golem Computation Manifest (as originally designed in [GAP-4](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-4_comp_manifest/gap-4_comp_manifest.md)). 
+
+### Properties
+
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
+|**`golem.srv.comp.manifest.version`**|`String`|Demand||Specifies a version (Semantic Versioning 2.0 specification) of the manifest, **defaults** to "0.1.0" |
+---
+
+## [`srv.comp.manifest.net`](2-service/srv/comp/manifest/net.md)
+
+This namespace defines properties used to specify details the Golem Computation Manifest network aspects. Applies constraints to networking. Currently, outgoing requests to the public Internet network are covered. 
+
+### Properties
+
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
+|**`golem.srv.comp.manifest.net.inet.out.protocols`**|`List[String]`|Demand||List of allowed outbound protocols. Currently **fixed at** `["http", "https"]`. |
+|**`golem.srv.comp.manifest.net.inet.out.urls`**|`List[String]`|Demand||List of allowed external URLs that outbound requests can be sent to.   |
+|**`golem.srv.comp.manifest.net.inet.out.unrestricted.urls`**|`Boolean`|Demand||This property means that the payload requires unrestricted outbound access. When present the value is always `true`. Either this property or the URL list in `golem.srv.comp.manifest.net.inet.out.urls` must be present. |
+---
+
+## [`srv.comp.manifest.script`](2-service/srv/comp/manifest/script.md)
+
+This namespace defines properties used to specify details the Golem Computation Manifest ExeScript allowance. Defines a set of allowed ExeScript commands and applies constraints to their arguments.  
+
+### Properties
+
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
+|**`golem.srv.comp.manifest.script.commands`**|`List[String]`|Demand||Specifies a curated list of commands in form of: |
+|**`golem.srv.comp.manifest.script.match`**|`String`|Demand||Selects a default way of comparing command arguments stated in the manifest and the ones received in the ExeScript, unless stated otherwise in a command JSON object. |
+---
+
+## [`srv.comp.payload`](2-service/srv/comp/payload.md)
+
+This namespace defines properties used to specify the Golem Payload Manifest (as originally designed in [GAP-5](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-5_payload_manifest/gap-5_payload_manifest.md)). 
+
+### Properties
+
+| Property | Type | Applies to | Category | Description |
+|---|---|---|---|---|
+|**`golem.srv.comp.payload`**|`String`|Demand||Base64-encoded JSON manifest. |
+|**`golem.srv.comp.payload.sig`**|`String`|Demand||Base64-encoded signature of the base64-encoded manifest. |
+|**`golem.srv.comp.payload.sig.algorithm`**|`String`|Demand||Digest algorithm used to generate manifest signature. |
+|**`golem.srv.comp.payload.cert`**|`String`|Demand||Base64-encoded certificate in DER format. |
 ---
 
 ## [`srv.comp.wasm`](2-service/srv/comp/wasm.md)
