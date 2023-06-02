@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://golem.network/schemas/v1/permissions.schema.json",
+  "$id": "https://raw.githubusercontent.com/golemfactory/golem-architecture/master/schemas/v1/permissions.schema.json",
   "title": "Golem Network permissions",
-  "description": "Set of permissions related to features of the Golem Network",
+  "description": "Set of permissions related to features of the Golem Network. Schema described in detail in GAP-25.",
   "oneOf": [
     {
       "description": "The entity is granted permissions to use all capabilities available in the network",

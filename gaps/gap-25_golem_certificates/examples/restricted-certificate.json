@@ -1,5 +1,5 @@
 {
-  "$schema": "https://golem.network/schemas/v1/certificate.schema.json",
+  "$schema": "https://raw.githubusercontent.com/golemfactory/golem-architecture/master/schemas/v1/certificate.schema.json",
   "certificate": {
     "validityPeriod": {
       "notBefore": "2023-01-01T00:00:00Z",
@@ -38,7 +38,7 @@
     },
     "value": "8e25857653288b21cc03e32b1073b3ab83a8165e0aca3fdc89bf2fd95618136e3457561e94dc205d56c1e690c6d377023596226a0ac0b01e89d0a27a8ef04103",
     "signer": {
-      "$schema": "https://golem.network/schemas/v1/certificate.schema.json",
+      "$schema": "https://raw.githubusercontent.com/golemfactory/golem-architecture/master/schemas/v1/certificate.schema.json",
       "certificate": {
         "validityPeriod": {
           "notBefore": "2000-01-01T00:00:00Z",

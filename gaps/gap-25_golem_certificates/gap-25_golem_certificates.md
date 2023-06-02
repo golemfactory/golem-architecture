@@ -53,7 +53,7 @@ The purpose of the certificate is to allow creation of digital signatures by a v
 
 When a certificate is signed, all properties in the `certificate` object are included in the signature not only the required properties. This allows inclusion of extra information that inherits the same cryptographic integrity protection as the essential data.
 
-The schema file can be found in the `schemas/v1` folder and accessible at `https://golem.network/schemas/v1/certificate.schema.json`.
+The schema file can be found in the `schemas/v1` folder and accessible at `https://raw.githubusercontent.com/golemfactory/golem-architecture/master/schemas/v1/certificate.schema.json`.
 
 ##### Subject
 
@@ -96,7 +96,7 @@ This object contains the details of the signature validating the subject and pro
 
 #### Permissions
 
-This schema defines the available permission control in the Golem network. It can be found in the `schemas/v1` folder or can be accessed at `https://golem.network/schemas/v1/permissions.schema.json`.
+This schema defines the available permission control in the Golem network. It can be found in the `schemas/v1` folder or can be accessed at `https://raw.githubusercontent.com/golemfactory/golem-architecture/master/schemas/v1/permissions.schema.json`.
 
 Permissions have two forms:
 - the string `all` which means that the subject is permitted to use all capabilities (present and future) of the Golem network

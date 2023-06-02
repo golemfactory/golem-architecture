@@ -1,5 +1,5 @@
 {
-  "$schema": "https://golem.network/schemas/v1/certificate.schema.json",
+  "$schema": "https://raw.githubusercontent.com/golemfactory/golem-architecture/master/schemas/v1/certificate.schema.json",
   "certificate": {
     "validityPeriod": {
       "notBefore": "2000-01-01T00:00:00Z",
