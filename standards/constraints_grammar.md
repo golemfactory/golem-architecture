@@ -94,6 +94,10 @@ An `AttributeDescription` is a string of characters which may include any charac
     >
     (
     )
+    [
+    ]
+    $
+    \
 
 
 ### Whitespaces
