@@ -48,6 +48,10 @@ The time period for which this node descriptor is valid. Semantics defined in th
 
 Semantics of the signature are defined in the [certificate schema](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-25_golem_certificates/gap-25_golem_certificates.md#signature) with one difference. A node descriptor cannot be used to create signatures so it cannot be self signed.
 
+### Schema ID and schema evolution
+
+The schema ID definition and schema evolution guideline is the same as for certificate schema found in [GAP-25]()
+
 ### Signature creation and verification
 
 The process is quite similar to what is described for [certificates](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-25_golem_certificates/gap-25_golem_certificates.md#signature-creation-and-verification), but the signature is created for data in the `nodeDescriptor` property instead of the `certificate` one.

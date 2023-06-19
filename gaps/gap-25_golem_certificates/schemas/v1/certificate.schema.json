@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://golem.network/schemas/v1/certificate.schema.json",
+  "$id": "https://schemas.golem.network/v1/certificate.schema.json",
   "title": "Golem Certificate structure",
   "description": "Data describing an entity and its permissions within the Golem network",
   "type": "object",
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://golem.network/schemas/v1/certificate.schema.json"
+      "const": "https://schemas.golem.network/v1/certificate.schema.json"
     },
     "certificate": {
       "type": "object",
