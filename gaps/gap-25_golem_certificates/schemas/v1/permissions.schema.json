@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://golem.network/schemas/v1/permissions.schema.json",
+  "$id": "https://schemas.golem.network/v1/permissions.schema.json",
   "title": "Golem Network permissions",
   "description": "Set of permissions related to features of the Golem Network",
   "oneOf": [

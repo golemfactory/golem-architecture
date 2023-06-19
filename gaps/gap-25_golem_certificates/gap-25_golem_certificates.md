@@ -107,6 +107,16 @@ Permissions have two forms:
         - `urls` property, which contains an array of URIs that the subject can access via the `outbound` feature. This list has the same semantics as `golem.srv.comp.manifest.net.inet.out.urls` property defined in [GAP-4 Computation Manifest](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-4_comp_manifest/gap-4_comp_manifest.md#gcrs-golemsrvcompmanifest-namespace)
 
 
+### Schema ID and schema evolution
+
+The latest schema can always be found in the [architecture repository](https://github.com/golemfactory/golem-architecture) under the appropriate GAP that introduced the schema. We use the schema IDs leveraging the `golem.network` domain for easier access, but these URLs redirect to the github versions of the schema.
+The redirect always points to master branch to reference the latest, accepted version of the schema. When a schema is extended in a backward compatible way (for example: new optionals fields are added, new permissions defined) the schema will be updated under the same version of the API. If a schema modification is not backward compatible and results in new version of the schema, it would go to a new version folder and the schema ID changes to reflect that.
+
+Example:
+`https://schemas.golem.network/v1/certificate.schema.json` points to `https://raw.githubusercontent.com/golemfactory/golem-architecture/master/gaps/gap-25_golem_certificates/schemas/v1/certificate.schema.json` where the schema is published.
+If a backward compatible change would be done to the certificate it would still be accessible via the same URL, with the same schema ID under the `v1` version.
+When the schema evolves in a non backward compatible way it would have a new schema ID matching the new URL where it could be accessed: `https://schemas.golem.network/v2/certificate.schema.json`. This new URL would point to appropriate file on github or other service that hosts the published, accepted version of the schema.
+
 ### Signature creation and verification
 
 #### Serialization method
