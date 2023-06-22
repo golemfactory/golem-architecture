@@ -18,36 +18,34 @@ This GAP introduces GPU (and possibly other PCI) devices capability description.
 
 * golem: {
     * !exp: {
-        * gap: {
-            * pci: { 
-                * v1: {
-                    * inf: {
-                        * [gpu](#inf-gpu): {
-                            * model: string,
-                            * [video-mem](#inf-gpu-video-mem): {
-                                * dedicated.gib: number,
-                                * total.gib: number
-                            * },
-                            * [cuda](#inf-gpu-cuda): {
-                                * enabled: boolean,
-                                * cores: integer,  
-                                * version-compatibility: integer, 
-                            * },
-                            * [clock](#inf-gpu-clock): {
-                                * base.mhz: integer,
-                                * boost.mhz: integer
-                            * },
-                            * [memory](#inf-gpu-memory): {
-                                * clock.mhz: integer,
-                                * type: string,
-                                * bus: integer,
-                                * bandwidth: integer 
-                            * },
-                            * [tpu](#inf-gpu-tpu): {
-                                * enabled: bool,
-                                * gen: string,
-                                * cores: int
-                            * }
+        * gap-pci: { 
+            * v1: {
+                * inf: {
+                    * [gpu](#inf-gpu): {
+                        * model: string,
+                        * [video-mem](#inf-gpu-video-mem): {
+                            * dedicated.gib: number,
+                            * total.gib: number
+                        * },
+                        * [cuda](#inf-gpu-cuda): {
+                            * enabled: boolean,
+                            * cores: integer,  
+                            * version-compatibility: integer, 
+                        * },
+                        * [clock](#inf-gpu-clock): {
+                            * base.mhz: integer,
+                            * boost.mhz: integer
+                        * },
+                        * [memory](#inf-gpu-memory): {
+                            * clock.mhz: integer,
+                            * type: string,
+                            * bus: integer,
+                            * bandwidth: integer 
+                        * },
+                        * [tpu](#inf-gpu-tpu): {
+                            * enabled: bool,
+                            * gen: string,
+                            * cores: int
                         * }
                     * }
                 * }
