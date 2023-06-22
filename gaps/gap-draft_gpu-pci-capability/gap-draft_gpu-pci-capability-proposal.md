@@ -24,26 +24,26 @@ This GAP introduces GPU (and possibly other PCI) devices capability description.
                     * inf: {
                         * [gpu](#inf-gpu): {
                             * model: string,
-                            * [video-mem](#inf-gpu-model-video-mem): {
+                            * [video-mem](#inf-gpu-video-mem): {
                                 * dedicated.gib: number,
                                 * total.gib: number
                             * },
-                            * [cuda](#inf-gpu-model-cuda): {
+                            * [cuda](#inf-gpu-cuda): {
                                 * enabled: boolean,
                                 * cores: integer,  
                                 * version-compatibility: integer, 
                             * },
-                            * [clock](#inf-gpu-model-clock): {
+                            * [clock](#inf-gpu-clock): {
                                 * base.mhz: integer,
                                 * boost.mhz: integer
                             * },
-                            * [memory](#inf-gpu-model-memory): {
+                            * [memory](#inf-gpu-memory): {
                                 * clock.mhz: integer,
                                 * type: string,
                                 * bus: integer,
                                 * bandwidth: integer 
                             * },
-                            * [tpu](#inf-gpu-model-tpu): {
+                            * [tpu](#inf-gpu-tpu): {
                                 * enabled: bool,
                                 * gen: string,
                                 * cores: int
@@ -67,7 +67,7 @@ Namespace that describes GPU capabilities
 |------------------------------------------------------------|-----------|------------|-------------------------------------------------------------|
 | `golem.!exp.gap.pci.v1.inf.gpu.model`                      | `string`  | Offer      | Indicates the name of the GPU model                         |
 
-### inf-gpu-model-video-mem
+### inf-gpu-video-mem
 
 Namespace that describes GPU video memory
 
@@ -75,10 +75,10 @@ Namespace that describes GPU video memory
 
 | Property                                                      | Type      | Applies to | Description                                                 |
 |---------------------------------------------------------------|-----------|------------|-------------------------------------------------------------|
-| `golem.!exp.gap.pci.v1.inf.gpu.model.video-mem.dedicated.gib` | `integer` | Offer      | indicates the amount of memory built into GPU               |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.video-mem.total.gib`     | `integer` | Offer      | indicates the total amount of memory available for graphics |
+| `golem.!exp.gap.pci.v1.inf.gpu.video-mem.dedicated.gib` | `integer` | Offer      | indicates the amount of memory built into GPU               |
+| `golem.!exp.gap.pci.v1.inf.gpu.video-mem.total.gib`     | `integer` | Offer      | indicates the total amount of memory available for graphics |
 
-### inf-gpu-model-cuda
+### inf-gpu-cuda
 
 Namespace that describes GPU CUDA capabilities
 
@@ -86,11 +86,11 @@ Namespace that describes GPU CUDA capabilities
 
 | Property                                                         | Type      | Applies to | Description                                                 |
 |------------------------------------------------------------------|-----------|------------|-------------------------------------------------------------|
-| `golem.!exp.gap.pci.v1.inf.gpu.model.cuda.enabled`               | `boolean` | Offer      | this is related to the image running and not the VM runtime |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.cuda.cores`                 | `integer` | Offer      | This can be found from the general specification of each GPU. Otherwise it is platform specific that we would not like to work with. We should aim to focus on platform independent metrics that are easy to access in a health check |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.cuda.version-compatibility` | `number`  | Offer      | this is not known by the GPU because there is a minimum CUDA version and also it can be deprecated in a future CUDA version. It can also be different for CUDA and a given library, for example tensorflow had a different GPU compatibility requirement for building from source and using prebuild binaries. Get the info from Nvidia and/or a general guideline from StackOverflow |
+| `golem.!exp.gap.pci.v1.inf.gpu.cuda.enabled`               | `boolean` | Offer      | this is related to the image running and not the VM runtime |
+| `golem.!exp.gap.pci.v1.inf.gpu.cuda.cores`                 | `integer` | Offer      | This can be found from the general specification of each GPU. Otherwise it is platform specific that we would not like to work with. We should aim to focus on platform independent metrics that are easy to access in a health check |
+| `golem.!exp.gap.pci.v1.inf.gpu.cuda.version-compatibility` | `number`  | Offer      | this is not known by the GPU because there is a minimum CUDA version and also it can be deprecated in a future CUDA version. It can also be different for CUDA and a given library, for example tensorflow had a different GPU compatibility requirement for building from source and using prebuild binaries. Get the info from Nvidia and/or a general guideline from StackOverflow |
 
-### inf-gpu-model-clock
+### inf-gpu-clock
 
 Namespace that describes information about GPU clock 
 
@@ -98,10 +98,10 @@ Namespace that describes information about GPU clock
 
 | Property                                              | Type      | Applies to | Description                                                                     |
 |-------------------------------------------------------|-----------|------------|---------------------------------------------------------------------------------|
-| `golem.!exp.gap.pci.v1.inf.gpu.model.clock.base.mhz`  | `integer` | Offer      | the standard speed your graphics card works at when not pressed by a heavy load |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.clock.boost.mhz` | `integer` | Offer      | the optimum speed at which the graphics card can run                            |
+| `golem.!exp.gap.pci.v1.inf.gpu.clock.base.mhz`  | `integer` | Offer      | the standard speed your graphics card works at when not pressed by a heavy load |
+| `golem.!exp.gap.pci.v1.inf.gpu.clock.boost.mhz` | `integer` | Offer      | the optimum speed at which the graphics card can run                            |
 
-### inf-gpu-model-memory
+### inf-gpu-memory
 
 Namespace that describes information about GPU memory
 
@@ -109,13 +109,13 @@ Namespace that describes information about GPU memory
 
 | Property                                                   | Type      | Applies to | Description                                                               |
 |------------------------------------------------------------|-----------|------------|---------------------------------------------------------------------------|
-| `golem.!exp.gap.pci.v1.inf.gpu.model.memory.clock.mhz`     | `integer` | Offer      | the speed at which the GPU's memory operates                              |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.memory.type`          | `string`  | Offer      | the type of the GPU's memory, e.g. GDDR5                                  |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.memory.bus`           | `integer` | Offer      | GPU's memory interface width in bits                                      |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.memory.bandwidth.gib` | `integer` | Offer      | the theoretical maximum amount of data that the bus can handle per second |
+| `golem.!exp.gap.pci.v1.inf.gpu.memory.clock.mhz`     | `integer` | Offer      | the speed at which the GPU's memory operates                              |
+| `golem.!exp.gap.pci.v1.inf.gpu.memory.type`          | `string`  | Offer      | the type of the GPU's memory, e.g. GDDR5                                  |
+| `golem.!exp.gap.pci.v1.inf.gpu.memory.bus`           | `integer` | Offer      | GPU's memory interface width in bits                                      |
+| `golem.!exp.gap.pci.v1.inf.gpu.memory.bandwidth.gib` | `integer` | Offer      | the theoretical maximum amount of data that the bus can handle per second |
 
 
-### inf-gpu-model-tpu
+### inf-gpu-tpu
 
 Namespace that describes information about TPU
 
@@ -123,9 +123,9 @@ Namespace that describes information about TPU
 
 | Property                                          | Type      | Applies to | Description                         |
 |---------------------------------------------------|-----------|------------|-------------------------------------|
-| `golem.!exp.gap.pci.v1.inf.gpu.model.tpu.enabled` | `boolean` | Offer      | indicates if the GPU is TPU-enabled |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.tpu.gen`     | `string`  | Offer      | the generation of the TPU           |
-| `golem.!exp.gap.pci.v1.inf.gpu.model.tpu.cores`   | `integer` | Offer      | the number of TPU cores available   |
+| `golem.!exp.gap.pci.v1.inf.gpu.tpu.enabled` | `boolean` | Offer      | indicates if the GPU is TPU-enabled |
+| `golem.!exp.gap.pci.v1.inf.gpu.tpu.gen`     | `string`  | Offer      | the generation of the TPU           |
+| `golem.!exp.gap.pci.v1.inf.gpu.tpu.cores`   | `integer` | Offer      | the number of TPU cores available   |
 
 
 ---
