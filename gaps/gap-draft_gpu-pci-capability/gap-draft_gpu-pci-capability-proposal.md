@@ -28,7 +28,7 @@ This GAP introduces GPU (and possibly other PCI) devices capability description.
                             * cores: integer,  
                             * version: integer, 
                         * },
-                        * [clocks](#inf-gpu-clock): {
+                        * [clocks](#inf-gpu-clocks): {
                             * graphics.mhz: integer,
                             * memory.mhz: integer,
                             * sm.mhz: integer,
