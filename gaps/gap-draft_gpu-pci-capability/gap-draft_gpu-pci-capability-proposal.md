@@ -132,7 +132,7 @@ Namespace that describes information about TPU
 This specification is based on the wish-list provided in [#157](https://github.com/golemfactory/ya-runtime-vm/issues/157). \
 For now the assumption is that we only detect the first pci (possibly nvidia) gpu, tpu is only supported as a tpu-enabled gpu device.
 
-Other PCI (and similarly non-PIC) devices can be added as another sub-tree next to `golem.!exp.gap-pci.v1.inf.gpu`.
+Other PCI (and similarly non-PCI) devices can be added as another sub-tree next to `golem.!exp.gap-pci.v1.inf.gpu`.
 ## Backwards Compatibility
 If `gpu` node is not present in the offer then it means the Provider does not have it or does not allow using it. \
 If `gpu` node is present but the Requestor does not demand it then it should be skipped in the agreement.
