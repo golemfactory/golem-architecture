@@ -108,7 +108,7 @@ from the ground up using properties only.
 7. `golem.srv.comp.manifest.net.inet.out.urls : List[String]`
 
     List of allowed external domains that outbound requests can be sent to.  
-    E.g. `["http://golemfactory.s3.amazonaws.com", "https://github.com"]`
+    E.g. `["http://golemfactory.s3.amazonaws.com", "https://github.com", "tcp://5.6.7.8:33/", "udp://1.1.1.1:853/"]`
     
     Port number is inferred from protocol in domain name and doesn't have to be explicit. Access to non-standard port
     should be always specified.
