@@ -19,14 +19,8 @@ The usage counters used to specify the service usage vector are defined in this 
 
 **Note:** Usage counters are always expressed in Number type.
 
-## `golem.usage.duration_sec : Number (int32)` [[Deprecated]](/standards/README.md#deprecated-properties)
-Duration of Activity (in seconds).
-
 ## `golem.usage.duration-sec : Number (int32)`
 Duration of Activity (in seconds). Replacement for deprecated `golem.usage.duration_sec`.
-
-## `golem.usage.cpu_sec : Number (int32)` [[Deprecated]](/standards/README.md#deprecated-properties)
-Duration of CPU time during Activity execution (in seconds).
 
 ## `golem.usage.cpu-sec : Number (int32)`
 Duration of CPU time during Activity execution (in seconds). Replacement for deprecated `golem.usage.cpu_sec`.
@@ -34,8 +28,17 @@ Duration of CPU time during Activity execution (in seconds). Replacement for dep
 ## `golem.usage.gib : Number (float)`
 Maximum level ("high water mark") of RAM memory usage during activity execution (in GBytes).
 
-## `golem.usage.storage_gib : Number (float)` [[Deprecated]](/standards/README.md#deprecated-properties)
-Maximum level ("high water mark") of storage usage during activity execution (in GBytes).
-
 ## `golem.usage.storage-gib : Number (float)`
 Maximum level ("high water mark") of storage usage during activity execution (in GBytes). Replacement for deprecated `golem.usage.storage_gib`.
+
+## `golem.usage.duration_sec : Number (int32)` [[Deprecated]](/standards/README.md#deprecated-properties)
+Duration of Activity (in seconds).
+Use `golem.usage.duration-sec` instead.
+
+## `golem.usage.storage_gib : Number (float)` [[Deprecated]](/standards/README.md#deprecated-properties)
+Maximum level ("high water mark") of storage usage during activity execution (in GBytes).
+Use `golem.usage.storage-gib` instead.
+
+## `golem.usage.cpu_sec : Number (int32)` [[Deprecated]](/standards/README.md#deprecated-properties)
+Duration of CPU time during Activity execution (in seconds).
+Use `golem.usage.cpu-sec` instead.
