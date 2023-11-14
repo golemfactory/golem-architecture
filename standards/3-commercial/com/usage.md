@@ -42,3 +42,11 @@ Use `golem.usage.storage-gib` instead.
 ## `golem.usage.cpu_sec : Number (int32)` [[Deprecated]](/standards/README.md#deprecated-properties)
 Duration of CPU time during Activity execution (in seconds).
 Use `golem.usage.cpu-sec` instead.
+
+# Use case specific usage counters
+
+## Http-authentication runtime
+
+### `http-auth.requests : Number (int32)`
+Number of requests made to http endpoints exposed by runtime.
+Reference: https://github.com/golemfactory/ya-runtime-http-auth#runtime-definition
