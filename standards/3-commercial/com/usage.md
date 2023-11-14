@@ -45,8 +45,23 @@ Use `golem.usage.cpu-sec` instead.
 
 # Use case specific usage counters
 
-## Http-authentication runtime
+## Http-authentication runtime (ya-runtime-http-auth)
+
+- Repository: https://github.com/golemfactory/ya-runtime-http-auth
 
 ### `http-auth.requests : Number (int32)`
 Number of requests made to http endpoints exposed by runtime.
 Reference: https://github.com/golemfactory/ya-runtime-http-auth#runtime-definition
+
+## Outbound gateway (ya-runtime-outbound-gateway)
+
+- Repository: https://github.com/golemfactory/ya-runtime-outbound-gateway
+- Reference: https://github.com/golemfactory/ya-runtime-outbound-gateway/blob/master/conf/ya-runtime-outbound-gateway.json
+
+### `golem.usage.network.in-mib: Number (float)`
+
+Incoming network traffic usage in MiB/s
+
+### `golem.usage.network.out-mib: Number (float)`
+
+Outgoing network traffic usage in MiB/s
