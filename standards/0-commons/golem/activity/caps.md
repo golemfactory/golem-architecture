@@ -31,5 +31,12 @@ Indicates the data transmission protocols available for TRANSFER operation on th
 
 ### Describes: Offer
 
-Indicates that ExeUnit is capable of sending `deploy` and `transfer` command progress events according to protocol
+Indicates that ExeUnit is capable of sending `transfer` command progress events according to protocol
+described [here](https://github.com/golemfactory/yagna/blob/master/docs/provider/exe-unit/command-progress.md).
+
+## `golem.activity.caps.deploy.report-progress : bool [Fact]`
+
+### Describes: Offer
+
+Indicates that ExeUnit is capable of sending `deploy` command progress events according to protocol
 described [here](https://github.com/golemfactory/yagna/blob/master/docs/provider/exe-unit/command-progress.md).
