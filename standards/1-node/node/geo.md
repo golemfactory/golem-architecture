@@ -1,4 +1,8 @@
 # Golem Identity Properties - Geography
+
+> [!NOTE]
+> Unused
+
 Namespace defining location/geography aspects of a Golem node.
 
 ## Common Properties
