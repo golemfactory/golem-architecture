@@ -1,6 +1,8 @@
 # Golem Amendment Proposals (GAPs)
 
 ## List of approved GAPs
+
+
 | Link                                                                         | Description             | Category          |
 |------------------------------------------------------------------------------|-------------------------|-------------------|
 | [GAP-1](./gap-1_gap_process/gap-1_gap_process.md)                            | GAP process             | Internal process  |
