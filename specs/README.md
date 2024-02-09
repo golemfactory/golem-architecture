@@ -1,11 +1,5 @@
 # Specifications
 
-
-## REST API
-
-REST API specifications (OpenAPI, yaml) are maintained in [repository](https://github.com/golemfactory/ya-client/tree/master/specs).
-Documentation is generated [here](https://golemfactory.github.io/ya-client/). 
-
 ## [Capabilities](./capabilities.md)
 
 List of Golem capabilities.
