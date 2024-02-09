@@ -26,3 +26,17 @@ Indicates the data transmission protocols available for TRANSFER operation on th
 ### **Examples**
 * `golem.activity.caps.transfer.protocol:List=["https"]` - Declares availability of HTTPS protocol for data transfer
 * `golem.activity.caps.transfer.protocol=["http","https","gftp"]` - Declares availability of HTTP, HTTPS and "GFTP" protocols for file transfer
+
+## `golem.activity.caps.transfer.report-progress : bool [Fact]`
+
+### Describes: Offer
+
+Indicates that ExeUnit is capable of sending `transfer` command progress events according to protocol
+described [here](https://github.com/golemfactory/yagna/blob/master/docs/provider/exe-unit/command-progress.md).
+
+## `golem.activity.caps.deploy.report-progress : bool [Fact]`
+
+### Describes: Offer
+
+Indicates that ExeUnit is capable of sending `deploy` command progress events according to protocol
+described [here](https://github.com/golemfactory/yagna/blob/master/docs/provider/exe-unit/command-progress.md).
