@@ -23,7 +23,7 @@ Current ExeUnit implementation supports only these 2 commands.
 
 ### Progress parameters
 
-To enable progress events Requestor agent has to attach progress parameters to `ExeScriptCommand`.
+To enable progress events Requestor agent has to attach progress parameters to [ExeScriptCommand](https://golemfactory.github.io/ya-client/?urls.primaryName=Activity%20API#model-RunCommand).
 Example `deploy` and `transfer` command:
 ```json
 [
@@ -44,10 +44,39 @@ Example `deploy` and `transfer` command:
 
 `ProgressArgs` structure is described [here](https://golemfactory.github.io/ya-client/index.html?urls.primaryName=Activity%20API#model-ProgressArgs).
 
-### Progress event
-
-
-
 
 ### Listening to events 
 
+Events will be available on [getStreamingBatchResults](https://golemfactory.github.io/ya-client/index.html?urls.primaryName=Activity%20API#/requestor_control/getExecBatchResults) endpoint (with `text/event-stream` accept header).
+Event structure is defined [here](https://golemfactory.github.io/ya-client/index.html?urls.primaryName=Activity%20API#model-RuntimeEventKindProgress).
+
+Example:
+```json
+{
+  "batch_id": "5c9a8f0e13dd49edb7fa570a10b1b14b",
+  "index": 0,
+  "timestamp": "2024-02-09T15:12:07.540318580",
+  "kind": {
+    "progress": {
+      "step": [
+        0,
+        1
+      ],
+      "message": "Transfer retried",
+      "progress": [
+        60,
+        1024
+      ],
+      "unit": "Bytes"
+    }
+  }
+}
+```
+
+You must check specific ExeUnit documentation to know implementation details not covered
+by this specification.
+
+## List of supporting ExeUnits
+
+- [ya-exe-unit](https://github.com/golemfactory/yagna/blob/master/docs/provider/exe-unit/command-progress.md) (`deploy` and `transfer` commands)
+- [ya-runtime-ai](https://github.com/golemfactory/ya-runtime-ai) (only `deploy` command)
