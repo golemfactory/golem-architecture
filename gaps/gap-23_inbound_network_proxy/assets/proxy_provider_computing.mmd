@@ -1,0 +1,29 @@
+flowchart LR
+%% @config(./mermaid.json);
+
+    subgraph requestor
+        App-->Requestor["Daemon"];
+    end
+
+    subgraph provider
+        Proxy["Net Proxy"];
+
+        ExeUnit<-->Provider;
+        Agent-->Provider["Daemon"];
+        Agent-->ExeUnit;
+        Agent-->Proxy;
+        Runtime-->Proxy;
+
+        subgraph compute
+            ExeUnit<-->Runtime["Net Runtime"];
+        end
+
+    end
+
+    subgraph user
+        Client;
+    end
+
+    Proxy-->Provider;
+    Requestor<.->|"Internet"|Provider;
+    Client.->|"Internet"|Proxy

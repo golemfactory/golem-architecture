@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.golem.network/v1/certificate.schema.json",
+  "certificate": {
+    "validityPeriod": {
+      "notBefore": "2000-01-01T00:00:00Z",
+      "notAfter": "2030-01-01T00:00:00Z"
+    },
+    "keyUsage": "all",
+    "permissions": "all",
+    "subject": {
+      "displayName": "Example root cert",
+      "contact": {
+        "email": "root-example@example.com"
+      }
+    },
+    "publicKey": {
+      "algorithm": "EdDSA",
+      "key": "1497d5430205a082dc58cf571b3a579d7fe6fbf2ad3edec7cb7fbf5ec4ccba72",
+      "parameters": {
+        "scheme": "Ed25519"
+      }
+    }
+  },
+  "signature": {
+    "algorithm": {
+      "hash": "sha512",
+      "encryption": "EdDSA"
+    },
+    "value": "5999adc36faa32f9f3490d4e652b36d8930ec31030fc487a5480aa22ff878ece33c42af3297b3b53db4fc1a22b94ef65dfa91220302b828ab643f2e1b26c370b",
+    "signer": "self"
+  }
+}
