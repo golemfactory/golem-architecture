@@ -88,10 +88,10 @@ Namespace that describes information about GPU memory
 
 #### Properties
 
-| Property                                             | Type      | Applies to | Description                                                               |
-| ---------------------------------------------------- | --------- | ---------- | ------------------------------------------------------------------------- |
-| `golem.!exp.gap-35.v1.inf.gpu.memory.bandwidth.gib` | `integer` | Offer      | the theoretical maximum amount of data that the bus can handle per second |
-| `golem.!exp.gap-35.v1.inf.gpu.memory.total.gib`     | `integer` | Offer      | indicates the amount of memory available to the GPU                       |
+| Property                                            | Type      | Applies to | Description                                                               |
+| --------------------------------------------------- | --------- | ---------- | ------------------------------------------------------------------------- |
+| `golem.!exp.gap-35.v1.inf.gpu.memory.bandwidth.gib` | `integer` | Offer      | **Optional** The theoretical maximum amount of data that the bus can handle per second |
+| `golem.!exp.gap-35.v1.inf.gpu.memory.total.gib`     | `integer` | Offer      | Indicates the amount of memory available to the GPU                       |
 
 ## Rationale
 This specification is based on the wish-list provided in [#157](https://github.com/golemfactory/ya-runtime-vm/issues/157). \
