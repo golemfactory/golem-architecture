@@ -76,10 +76,10 @@ Namespace that describes information about GPU clocks
 
 | Property                                           | Type      | Applies to | Description                                                                                                        |
 | -------------------------------------------------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------ |
-| `golem.!exp.gap-35.v1.inf.gpu.clock.graphics.mhz` | `integer` | Offer      | The max rate of the graphics clock as reported by nvidia-smi                                                       |
-| `golem.!exp.gap-35.v1.inf.gpu.clock.memory.mhz`   | `integer` | Offer      | The max rate of the memory clock as reported by nvidia-smi                                                         |
-| `golem.!exp.gap-35.v1.inf.gpu.clock.sm.mhz`       | `integer` | Offer      | The max rate of the streaming multiprocessor clock as reported by nvidia-smi. CUDA cores are driven by this clock. |
-| `golem.!exp.gap-35.v1.inf.gpu.clock.video.mhz`    | `integer` | Offer      | The max rate of the video clock as reported by nvidia-smi                                                          |
+| `golem.!exp.gap-35.v1.inf.gpu.clocks.graphics.mhz` | `integer` | Offer      | The max rate of the graphics clock as reported by nvidia-smi                                                       |
+| `golem.!exp.gap-35.v1.inf.gpu.clocks.memory.mhz`   | `integer` | Offer      | The max rate of the memory clock as reported by nvidia-smi                                                         |
+| `golem.!exp.gap-35.v1.inf.gpu.clocks.sm.mhz`       | `integer` | Offer      | The max rate of the streaming multiprocessor clock as reported by nvidia-smi. CUDA cores are driven by this clock. |
+| `golem.!exp.gap-35.v1.inf.gpu.clocks.video.mhz`    | `integer` | Offer      | The max rate of the video clock as reported by nvidia-smi                                                          |
 
 ### inf-gpu-memory
 
