@@ -171,18 +171,14 @@ deposit_transfer_and_close(id, ...
 2. Funder sends deposit ID to Spender.
 3. Spender uses deposit ID to create allocation on yagna.
 4. Spender start processing tasks (agreemets with Providers)
-
-Providers - greedy bunch of machines that want to earn some money
-
-![provider](deposit_assets/provider300.webp)
-
 5. Funder can extend deposit using extendDeposit function.
 6. Spender can ammend allocation using deposit ID.
 7. Spender when finished can close deposit using closeDeposit function.
 8. Alternatevily if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
 
 
-Example flow
+### Example usage flow chart
+
 ```mermaid
 sequenceDiagram
     actor Funder
@@ -216,7 +212,7 @@ sequenceDiagram
     Web3->>Funder: Returns remaining funds
 ```
 
-## Golem flow
+### Chart explaining flow of GLM tokens 
 
 ```mermaid
 flowchart TD
@@ -229,10 +225,17 @@ flowchart TD
 
 ## Fee claim
 
+![greedy](deposit_assets/greedy300.webp)
+
 Fee is claimed when deposit is close by spender. Fee amount depends on implementation of the contract implementation.
 For example it can be flat fee, percent fee or combination of both.
 
+Fee schema is completely up to the contract and service implementation. Yagna doesn't care really,
+we should probably provide some API exposing gas costs so the service can calculate fee based on that.
+
 ## Additional safety for Funder
+
+![padlocks](deposit_assets/padlocks300.webp)
 
 * If Spender fail to close allocation due some kind of service failure, 
 Funder can terminate deposit after validTo date elapses taking back remaining funds and fee.
@@ -248,4 +251,8 @@ They are not notified about deposit ID, because we don't see how can it benefit 
 We are open for suggestions, but this solution was designed to solve other problem.
 
 To benefit providers we need to implement something like locking funds for every provider separatly.
+
+Who cares about poor providers anyway?
+
+![provider](deposit_assets/provider300.webp)
 
