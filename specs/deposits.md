@@ -79,7 +79,8 @@ interface ILockPayment {
 
 ```
 
-Additional events emitted by the contract:
+Additional events emitted by the contract (for easier web3 integration). There is no need for
+extra options emitted by the contract, because additional information can be extracted using getDeposit(id) function.
 
 ``` solidity
     event DepositCreated(uint256 id, address spender);
@@ -122,7 +123,7 @@ pub struct Deposit {
     pub contract: String,
 }
 ```
-Deposit view (read from contract given)
+Deposit view (read from contract given using ```getDeposit(uint256 id)```)
 ```rust
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DepositView {
@@ -134,6 +135,32 @@ pub struct DepositView {
     pub fee_amount: u128,
     pub valid_to: u64,
 }
+```
+
+Api extension of optional field deposit in ya-client
+```yaml
+    Allocation:
+      properties:
+...
+        deposit:
+          type: object
+          properties:
+            id:
+              type: string
+            contract:
+              type: string
+          required:
+            - id
+            - contract
+```
+
+Changes in erc20_payment_lib and yagna has to be made to enable payments directly from deposit
+using methods.
+```
+deposit_single_transfer(id, ...
+deposit_transfer(id, ...
+deposit_single_transfer_and_close(id, ...
+deposit_transfer_and_close(id, ...
 ```
 
 ### Flow
@@ -151,8 +178,51 @@ Providers - greedy bunch of machines that want to earn some money
 
 5. Funder can extend deposit using extendDeposit function.
 6. Spender can ammend allocation using deposit ID.
-7. Spender can close deposit using closeDeposit function.
+7. Spender when finished can close deposit using closeDeposit function.
 8. Alternatevily if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
+
+
+Example flow
+```mermaid
+sequenceDiagram
+    actor Funder
+    actor Spender
+    Spender->>Funder: Propose createDeposit
+    Funder->>Web3: Send createDeposit
+    Web3->>Spender: Confirm createDeposit
+    Spender->>yagna: Create allocation from deposit id
+    yagna->>Web3: Check if deposit valid
+    Funder->>Spender: Ask for work
+    Spender->>yagna: Send work
+    yagna->>providers: proxy work
+    yagna->>providers: pay via deposit contract
+    Funder->>Spender: More work
+    Spender->>Funder: Propose extendDeposit
+    Funder->>Web3: Send extendDeposit
+    Web3->>Spender: Confirm extendDeposit
+    Spender->>yagna: Ammend allocation with extendedDeposit
+    Spender->>yagna: Send more work
+    yagna->>providers: Proxy more work
+    yagna->>providers: Pay providers with deposit contracts
+    Funder->>Spender: Thats enough work
+    Spender->>yagna: Finish and close allocation
+    yagna->>providers: Pay all pending invoices/debit notes
+    yagna->>Web3: Call close allocation
+    Web3->>Spender: Pay fee
+    Web3->>Funder: Returns remaining funds
+```
+
+## Fee claim
+
+Fee is claimed when deposit is close by spender. Fee amount depends on implementation of the contract implementation.
+For example it can be flat fee, percent fee or combination of both.
+
+## Additional safety for Funder
+
+* If Spender fail to close allocation due some kind of service failure, 
+Funder can terminate deposit after validTo date elapses taking back remaining funds and fee.
+* Spender can do whatever he wants with the locked funds, so the Funder has to trust the Spender.
+* Spender doesn't have to trust the Funder, which is most important part of the solution.
 
 ## Benefits for providers
 
@@ -164,10 +234,3 @@ We are open for suggestions, but this solution was designed to solve other probl
 
 To benefit providers we need to implement something like locking funds for every provider separatly.
 
-
-```mermaid
-pie title Proposed fee distribution
-    "Job payout" : 60
-    "Gas coverage" : 20
-    "Fee earned" : 20
-```
