@@ -50,6 +50,7 @@ struct DepositView {
     uint128 feeAmount; //fee amount locked for spender
     uint64 validTo; //after this timestamp funds can be returned to customer
 }
+
 interface ILockPayment {
     // createDeposit - Customer locks funds for usage by spender
     //
@@ -170,11 +171,11 @@ deposit_transfer_and_close(id, ...
 1. Funder creates deposit using createDeposit function getting deposit ID.
 2. Funder sends deposit ID to Spender.
 3. Spender uses deposit ID to create allocation on yagna.
-4. Spender start processing tasks (agreemets with Providers)
+4. Spender start processing tasks (agreements with Providers)
 5. Funder can extend deposit using extendDeposit function.
-6. Spender can ammend allocation using deposit ID.
+6. Spender can amend allocation using deposit ID.
 7. Spender when finished can close deposit using closeDeposit function.
-8. Alternatevily if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
+8. Alternatively if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
 
 
 ### Example usage flow chart
@@ -240,7 +241,7 @@ we should probably provide some API exposing gas costs so the service can calcul
 * If Spender fail to close allocation due some kind of service failure, 
 Funder can terminate deposit after validTo date elapses taking back remaining funds and fee.
 * Spender can do whatever he wants with the locked funds, so the Funder has to trust the Spender.
-* Spender doesn't have to trust the Funder, which is most important part of the solution.
+* Spender doesn't have to trust the Funder, which is the most important part of the solution.
 
 ## Benefits for providers
 
@@ -250,7 +251,7 @@ Unfortunately we don't know yet how providers can benefit from this feature.
 They are not notified about deposit ID, because we don't see how can it benefit them.
 We are open for suggestions, but this solution was designed to solve other problem.
 
-To benefit providers we need to implement something like locking funds for every provider separatly.
+To benefit providers we need to implement something like locking funds for every provider separately.
 
 Who cares about poor providers anyway?
 
