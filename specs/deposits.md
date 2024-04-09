@@ -216,6 +216,17 @@ sequenceDiagram
     Web3->>Funder: Returns remaining funds
 ```
 
+## Golem flow
+
+```mermaid
+flowchart TD
+    Funder(Funder wallet) -->|GLM transfer| Contract{Contract with locked GLM}
+    Contract -->|From Fee part| E[Spender]
+    Contract -->|From Main deposit| Provider1[Provider1]
+    Contract -->|From Main deposit| Provider2[Provider2]
+    Contract -->|Close or terminate| Funder[Funder wallet]
+```
+
 ## Fee claim
 
 Fee is claimed when deposit is close by spender. Fee amount depends on implementation of the contract implementation.
