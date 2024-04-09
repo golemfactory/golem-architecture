@@ -61,7 +61,7 @@ interface ILockPayment {
     //              if given negative it is deducted from flatFeeAmount
     // blockNo - block number until which funds are guaranteed to be locked for spender.
     //           Spender still can use the funds after this block,
-    //           but customer can request the funds to be returned clearing deposit after (or equal to) this block number.
+    //           but customer can request the funds to be returned clearing deposit after validToTimestamp.
     function createDeposit(uint64 nonce, address spender, uint128 amount, uint128 flatFeeAmount, int64 percentFee, uint64 validToTimestamp) external returns (uint256);
     function extendDeposit(uint64 nonce, uint128 additionalAmount, uint128 additionalFlatFee, uint64 validToTimestamp) external;
     // Spender can close deposit anytime claiming fee and returning rest of funds to Funder
