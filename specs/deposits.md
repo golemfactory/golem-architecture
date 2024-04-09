@@ -10,8 +10,11 @@ We want solution for the following problem:
 4. Person B wants to be sure that User A will pay for the computation.
 5. Person B wants to be paid for being middle man (for example cover gas costs and/or earn some money)
 
+Funder (User A) - Person that is funding the deposit and requesting job from the Spender service
 
-Spender 
+![funder](deposit_assets/funder300.webp)
+
+Spender (Person B) - Service based on yagna
 
 ![spender](deposit_assets/spender300.webp)
 
@@ -25,6 +28,8 @@ Point 5 is not satisfied, because Person B can't be sure that User A will pay fo
 ### Solution 
 
 Contract that will hold funds until specified time.
+
+![lock](deposit_assets/lock300.webp)
 
 We are using following interface:
 
@@ -107,19 +112,58 @@ Nonce is chosen by funder when creating deposit.
     }
 ```
 
+### Yagna implementation
 
-- **LockContract**: Sample contract implementing deposit interface
-- **Deposit**: Object in the contract representing the deposit
-- **Funder**: A user who requests service from the Golem Network. 
-- **Spender**: Address that is spending the deposit. The same as the **Requestor**.
+Deposit
+```rust
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Deposit {
+    pub id: String,
+    pub contract: String,
+}
+```
+Deposit view (read from contract given)
+```rust
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct DepositView {
+    pub id: String,
+    pub nonce: u64,
+    pub funder: String,
+    pub spender: String,
+    pub amount: u128,
+    pub fee_amount: u128,
+    pub valid_to: u64,
+}
+```
 
-- **Provider**: A provider of computing resources.
-- **Golem Network**: The Golem Network.
-- **Golem Factory**: The Golem Factory.
-- 
+### Flow
 
+![flow](deposit_assets/flow300.webp)
 
-## Deposit
+1. Funder creates deposit using createDeposit function getting deposit ID.
+2. Funder sends deposit ID to Spender.
+3. Spender uses deposit ID to create allocation on yagna.
+4. Spender start processing tasks (agreemets with Providers)
+
+Providers - greedy bunch of machines that want to earn some money
+
+![provider](deposit_assets/provider300.webp)
+
+5. Funder can extend deposit using extendDeposit function.
+6. Spender can ammend allocation using deposit ID.
+7. Spender can close deposit using closeDeposit function.
+8. Alternatevily if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
+
+## Benefits for providers
+
+![featurebox](deposit_assets/featurebox300.webp)
+
+Unfortunately we don't know yet how providers can benefit from this feature.
+They are not notified about deposit ID, because we don't see how can it benefit them.
+We are open for suggestions, but this solution was designed to solve other problem.
+
+To benefit providers we need to implement something like locking funds for every provider separatly.
+
 
 
 
