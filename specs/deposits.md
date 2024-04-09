@@ -187,6 +187,10 @@ Example flow
 sequenceDiagram
     actor Funder
     actor Spender
+    participant Web3 as Web3 (Polygon/Holesky)
+    participant yagna as yagna (Golem Node)
+    participant providers as Providers (ie. VM)
+    Funder->>Spender: Greet and request work
     Spender->>Funder: Propose createDeposit
     Funder->>Web3: Send createDeposit
     Web3->>Spender: Confirm createDeposit
