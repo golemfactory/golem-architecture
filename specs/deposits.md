@@ -165,5 +165,9 @@ We are open for suggestions, but this solution was designed to solve other probl
 To benefit providers we need to implement something like locking funds for every provider separatly.
 
 
-
-
+```mermaid
+pie title Proposed fee distribution
+    "Job payout" : 60
+    "Gas coverage" : 20
+    "Fee earned" : 20
+```
