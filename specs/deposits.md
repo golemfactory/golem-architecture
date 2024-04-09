@@ -4,8 +4,8 @@
 
 We want solution for the following problem:
 
-1. User A wants to use the Golem Network to perform a computation, but don't want to run yagna.
-2. User A wants person B to run yagna for them.
+1. User A wants to use the Golem Network to perform a computation, but doesn't want to run yagna.
+2. User A wants person B to run yagna on their behalf.
 3. User A wants to give allowance for spending his funds to person B.
 4. Person B wants to be sure that User A will pay for the computation.
 5. Person B wants to be paid for being middle man (for example cover gas costs and/or earn some money)
@@ -21,7 +21,7 @@ Spender (Person B) - Service based on yagna
 
 ### Solution attempt allowance
 
-The simple solution is to use ERC20 allowance to person B funds, but this solution has some drawbacks:
+The simple solution is to use ERC20 allowance to person B's funds, but this solution has some drawbacks:
 Point 4 is not satisfied, because User A can revoke allowance at any time.
 Point 5 is not satisfied, because Person B can't be sure that User A will pay for the computation.
 
@@ -213,7 +213,7 @@ sequenceDiagram
     Web3->>Funder: Returns remaining funds
 ```
 
-### Chart explaining flow of GLM tokens 
+### Chart explaining the flow of GLM tokens 
 
 ```mermaid
 flowchart TD
@@ -231,14 +231,14 @@ flowchart TD
 Fee is claimed when deposit is close by spender. Fee amount depends on implementation of the contract implementation.
 For example it can be flat fee, percent fee or combination of both.
 
-Fee schema is completely up to the contract and service implementation. Yagna doesn't care really,
+The fee schema is entirely determined by the contract and service implementation. Yagna doesn't care really,
 we should probably provide some API exposing gas costs so the service can calculate fee based on that.
 
 ## Additional safety for Funder
 
 ![padlocks](deposit_assets/padlocks300.webp)
 
-* If Spender fail to close allocation due some kind of service failure, 
+* If Spender fails to close the allocation due to some kind of service failure, 
 Funder can terminate deposit after validTo date elapses taking back remaining funds and fee.
 * Spender can do whatever he wants with the locked funds, so the Funder has to trust the Spender.
 * Spender doesn't have to trust the Funder, which is the most important part of the solution.
