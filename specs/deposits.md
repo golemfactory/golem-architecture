@@ -1,6 +1,6 @@
 # Specification for deposits functionality.
 
-Motivation.
+### Motivation
 
 We want solution for the following problem:
 
