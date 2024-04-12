@@ -23,7 +23,7 @@ Spender (Person B) - Service based on yagna
 
 The simple solution is to use ERC20 allowance to person B's funds, but this solution has some drawbacks:
 Point 4 is not satisfied, because User A can revoke allowance at any time.
-Point 5 is not satisfied, because Person B can't be sure that User A will pay for the computation.
+Point 5 can be satisfied by taking funds beforehand.
 
 ### Solution 
 
@@ -52,19 +52,6 @@ struct DepositView {
 }
 
 interface ILockPayment {
-    // createDeposit - Customer locks funds for usage by spender
-    //
-    // id - unique id (build from Funder address and nonce)
-    // spender - the address that is allowed to spend the funds regardless of time
-    // amount - amount of GLM tokens to lock
-    // flatFeeAmount - amount of GLM tokens given to spender (non-refundable). Fee is claimed by spender when called payoutSingle or payoutMultiple first time.
-    // percentFee - percent fee as percent of amount (given in parts/per million), so 1000 gives 0.1 %.
-    //              if given negative it is deducted from flatFeeAmount
-    // blockNo - block number until which funds are guaranteed to be locked for spender.
-    //           Spender still can use the funds after this block,
-    //           but customer can request the funds to be returned clearing deposit after validToTimestamp.
-    function createDeposit(uint64 nonce, address spender, uint128 amount, uint128 flatFeeAmount, int64 percentFee, uint64 validToTimestamp) external returns (uint256);
-    function extendDeposit(uint64 nonce, uint128 additionalAmount, uint128 additionalFlatFee, uint64 validToTimestamp) external;
     // Spender can close deposit anytime claiming fee and returning rest of funds to Funder
     function closeDeposit(uint256 id) external;
     // Funder can terminate deposit after validTo date elapses
@@ -113,6 +100,16 @@ Nonce is chosen by funder when creating deposit.
         return address(uint160(id >> 96));
     }
 ```
+
+### Additional open questions that need to be answered ASAP
+
+![thinking](deposit_assets/thinking300.webp)
+
+* Should yagna adjust allocation to the data returned in deposit view? 
+* Should yagna allocation be for full amount or only for amount - fee?
+
+Additional notes from Witek:
+https://www.notion.so/golemnetwork/Specifications-f664c647d3d541b1aa2ad0fa98624ed9#20246ad4207b46b0a94d6110a56107c4
 
 ### Yagna implementation
 
@@ -193,19 +190,21 @@ sequenceDiagram
     Web3->>Spender: Confirm createDeposit
     Spender->>yagna: Create allocation from deposit id
     yagna->>Web3: Check if deposit valid
+    yagna->>Spender: Create allocation confirmed
+    Spender->>Funder: I'm ready to work
     Funder->>Spender: Ask for work
     Spender->>yagna: Send work
-    yagna->>providers: proxy work
+    yagna->>providers: proxy work (agreements + activities)
     yagna->>providers: pay via deposit contract
     Funder->>Spender: More work
     Spender->>Funder: Propose extendDeposit
     Funder->>Web3: Send extendDeposit
     Web3->>Spender: Confirm extendDeposit
-    Spender->>yagna: Ammend allocation with extendedDeposit
+    Spender->>yagna: Amend allocation with extendedDeposit
     Spender->>yagna: Send more work
     yagna->>providers: Proxy more work
     yagna->>providers: Pay providers with deposit contracts
-    Funder->>Spender: Thats enough work
+    Funder->>Spender: That's enough work
     Spender->>yagna: Finish and close allocation
     yagna->>providers: Pay all pending invoices/debit notes
     yagna->>Web3: Call close allocation
