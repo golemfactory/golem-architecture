@@ -242,6 +242,20 @@ Funder can terminate deposit after validTo date elapses taking back remaining fu
 * Spender can do whatever he wants with the locked funds, so the Funder has to trust the Spender.
 * Spender doesn't have to trust the Funder, which is the most important part of the solution.
 
+## Contract interface validation
+
+It's nice to check if the contract is valid when interacting with it
+
+![interface](deposit_assets/interface300.webp)
+
+TODO - work in progress
+```solidity
+    function version() public view returns (string memory) {
+        return addr.supportsInterface(type(ILockPayment).interfaceId);
+    }
+```
+
+
 ## Benefits for providers
 
 ![featurebox](deposit_assets/featurebox300.webp)
