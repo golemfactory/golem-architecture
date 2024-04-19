@@ -186,6 +186,10 @@ sequenceDiagram
     participant yagna as yagna (Golem Node)
     participant providers as Providers (ie. VM)
     Funder->>Spender: Greet and request work
+    Spender->>Web3: Check if funder has allowance for lock contract for GLM tokens
+    Spender->>Funder: Propose allowance for lock contract for GLM tokens
+    Funder->>Web3: Send allowance
+    Web3->>Spender: Confirm allowance
     Spender->>Funder: Propose createDeposit
     Funder->>Web3: Send createDeposit
     Web3->>Spender: Confirm createDeposit
