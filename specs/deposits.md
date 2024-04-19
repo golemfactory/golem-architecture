@@ -69,6 +69,7 @@ interface ILockPayment {
 
 Additional events emitted by the contract (for easier web3 integration). There is no need for
 extra options emitted by the contract, because additional information can be extracted using getDeposit(id) function.
+Deposit contract cannot list deposits, so we add these events to make deposit tracking easier (using web3 logs)
 
 ``` solidity
     event DepositCreated(uint256 id, address spender);
@@ -171,7 +172,7 @@ deposit_transfer_and_close(id, ...
 4. Spender start processing tasks (agreements with Providers)
 5. Funder can extend deposit using extendDeposit function.
 6. Spender can amend allocation using deposit ID.
-7. Spender when finished can close deposit using closeDeposit function.
+7. Spender when finished can close deposit using closeDeposit function. It is done by yagna after allocation bound to deposit is released.
 8. Alternatively if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
 
 
@@ -265,8 +266,4 @@ They are not notified about deposit ID, because we don't see how can it benefit 
 We are open for suggestions, but this solution was designed to solve other problem.
 
 To benefit providers we need to implement something like locking funds for every provider separately.
-
-Who cares about poor providers anyway?
-
-![provider](deposit_assets/provider300.webp)
 
