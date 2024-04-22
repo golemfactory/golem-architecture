@@ -27,11 +27,82 @@ Point 5 can be satisfied by taking funds beforehand.
 
 ### Solution 
 
-Contract that will hold funds until specified time.
+Contract that will hold funds until specified time. 
+The contract gives spender guarantee that funds will be available for the computation period.
+The contract gives funder guarantee that funds will be returned if the computation is not performed.
+The contract holds logic for fee claim by spender.
+The contract assumes good will (portal implemented on top of Golem) on spender side and bad will (external anonymous user) on funder side.
 
 ![lock](deposit_assets/lock300.webp)
 
-We are using following interface:
+
+### Flow
+
+![flow](deposit_assets/flow300.webp)
+
+1. Funder creates deposit using createDeposit function getting deposit ID.
+2. Funder sends deposit ID to Spender.
+3. Spender uses deposit ID to create allocation on yagna.
+4. Spender start processing tasks (agreements with Providers)
+5. Funder can extend deposit using extendDeposit function.
+6. Spender can amend allocation using deposit ID.
+7. Spender when finished can close deposit using closeDeposit function. It is done by yagna after allocation bound to deposit is released.
+8. Alternatively if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
+
+### Example usage flow chart
+
+```mermaid
+sequenceDiagram
+    actor Funder
+    actor Spender
+    participant Web3 as Web3 (Polygon/Holesky)
+    participant yagna as yagna (Golem Node)
+    participant providers as Providers (ie. VM)
+    Funder->>Spender: Greet and request work
+    Spender->>Web3: Check if funder has allowance for lock contract for GLM tokens
+    Spender->>Funder: Propose allowance for lock contract for GLM tokens
+    Funder->>Web3: Send allowance
+    Web3->>Spender: Confirm allowance
+    Spender->>Funder: Propose createDeposit
+    Funder->>Web3: Send createDeposit
+    Web3->>Spender: Confirm createDeposit
+    Spender->>yagna: Create allocation from deposit id
+    yagna->>Web3: Check if deposit valid
+    yagna->>Spender: Create allocation confirmed
+    Spender->>Funder: I'm ready to work
+    Funder->>Spender: Ask for work
+    Spender->>yagna: Send work
+    yagna->>providers: proxy work (agreements + activities)
+    yagna->>providers: pay via deposit contract
+    Funder->>Spender: More work
+    Spender->>Funder: Propose extendDeposit
+    Funder->>Web3: Send extendDeposit
+    Web3->>Spender: Confirm extendDeposit
+    Spender->>yagna: Amend allocation with extendedDeposit
+    Spender->>yagna: Send more work
+    yagna->>providers: Proxy more work
+    yagna->>providers: Pay providers with deposit contracts
+    Funder->>Spender: That's enough work
+    Spender->>yagna: Finish and close allocation
+    yagna->>providers: Pay all pending invoices/debit notes
+    yagna->>Web3: Call close allocation
+    Web3->>Spender: Pay fee
+    Web3->>Funder: Returns remaining funds
+```
+
+### Chart explaining the flow of GLM tokens
+
+```mermaid
+flowchart TD
+    Funder(Funder wallet) -->|GLM transfer| Contract{Contract with locked GLM}
+    Contract -->|From Fee part| E[Spender]
+    Contract -->|From Main deposit| Provider1[Provider1]
+    Contract -->|From Main deposit| Provider2[Provider2]
+    Contract -->|Close or terminate| Funder[Funder wallet]
+```
+
+
+### Interface of the contract
 
 ``` solidity
 struct Deposit {
@@ -162,71 +233,7 @@ deposit_single_transfer_and_close(id, ...
 deposit_transfer_and_close(id, ...
 ```
 
-### Flow
 
-![flow](deposit_assets/flow300.webp)
-
-1. Funder creates deposit using createDeposit function getting deposit ID.
-2. Funder sends deposit ID to Spender.
-3. Spender uses deposit ID to create allocation on yagna.
-4. Spender start processing tasks (agreements with Providers)
-5. Funder can extend deposit using extendDeposit function.
-6. Spender can amend allocation using deposit ID.
-7. Spender when finished can close deposit using closeDeposit function. It is done by yagna after allocation bound to deposit is released.
-8. Alternatively if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
-
-
-### Example usage flow chart
-
-```mermaid
-sequenceDiagram
-    actor Funder
-    actor Spender
-    participant Web3 as Web3 (Polygon/Holesky)
-    participant yagna as yagna (Golem Node)
-    participant providers as Providers (ie. VM)
-    Funder->>Spender: Greet and request work
-    Spender->>Web3: Check if funder has allowance for lock contract for GLM tokens
-    Spender->>Funder: Propose allowance for lock contract for GLM tokens
-    Funder->>Web3: Send allowance
-    Web3->>Spender: Confirm allowance
-    Spender->>Funder: Propose createDeposit
-    Funder->>Web3: Send createDeposit
-    Web3->>Spender: Confirm createDeposit
-    Spender->>yagna: Create allocation from deposit id
-    yagna->>Web3: Check if deposit valid
-    yagna->>Spender: Create allocation confirmed
-    Spender->>Funder: I'm ready to work
-    Funder->>Spender: Ask for work
-    Spender->>yagna: Send work
-    yagna->>providers: proxy work (agreements + activities)
-    yagna->>providers: pay via deposit contract
-    Funder->>Spender: More work
-    Spender->>Funder: Propose extendDeposit
-    Funder->>Web3: Send extendDeposit
-    Web3->>Spender: Confirm extendDeposit
-    Spender->>yagna: Amend allocation with extendedDeposit
-    Spender->>yagna: Send more work
-    yagna->>providers: Proxy more work
-    yagna->>providers: Pay providers with deposit contracts
-    Funder->>Spender: That's enough work
-    Spender->>yagna: Finish and close allocation
-    yagna->>providers: Pay all pending invoices/debit notes
-    yagna->>Web3: Call close allocation
-    Web3->>Spender: Pay fee
-    Web3->>Funder: Returns remaining funds
-```
-
-### Chart explaining the flow of GLM tokens 
-
-```mermaid
-flowchart TD
-    Funder(Funder wallet) -->|GLM transfer| Contract{Contract with locked GLM}
-    Contract -->|From Fee part| E[Spender]
-    Contract -->|From Main deposit| Provider1[Provider1]
-    Contract -->|From Main deposit| Provider2[Provider2]
-    Contract -->|Close or terminate| Funder[Funder wallet]
-```
 
 ## Fee claim
 
