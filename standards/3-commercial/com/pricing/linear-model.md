@@ -68,7 +68,9 @@ and:
 coeffs = [decimal(coeff_1), ..., decimal(coeff_n), decimal(coeff_fixed)]
 ```
 `decimal` function converts 64-bits floating point number to string using precision:
-floor(log<sub>10</sub>&nbsp;2<sup>[`MANTISSA_DIGITS`]&nbsp;&minus;&nbsp;1</sup>)
+
+**precision = floor(log<sub>10</sub>&nbsp;2<sup>[`MANTISSA_DIGITS`]&nbsp;&minus;&nbsp;1</sup>)**
+
 which is equal to number of significant digits in 64-bits floating point number.
 
 To compute price use formula:
