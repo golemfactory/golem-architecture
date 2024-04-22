@@ -57,5 +57,20 @@ activity_usage_1 = [usage(counter_1, activity_1), ..., usage(counter_n, activity
 activity_usage_n = [usage(counter_1, activity_n), ..., usage(counter_n, activity_n)]
 ```
 
+Before any calculations are done, all vectors must be converted to decimal representation:
+```
+activity_usage_1 = [decimal(activity_usage_1_1), ..., decimal(activity_usage_1_n)]
+...
+activity_usage_n = [decimal(activity_usage_n_1), ..., decimal(activity_usage_n_n)]
+```
+and:
+```
+coeffs = [decimal(coeff_1), ..., decimal(coeff_n), decimal(coeff_fixed)]
+```
+`decimal` function converts 64-bits floating point number to string using precision:
+floor(log<sub>10</sub>&nbsp;2<sup>[`MANTISSA_DIGITS`]&nbsp;&minus;&nbsp;1</sup>)
+which is equal to number of significant digits in 64-bits floating point number.
 
+To compute price use formula:
 
+**price = [activity_usage_1, 1] X coeffs<sup>T</sup> + ... + [activity_usage_n, 1] X coeffs<sup>T</sup>**
