@@ -13,5 +13,7 @@ This field is validate against constraint in the requestor demand (it is added b
 That means that requestor with version 2 will only talk with new providers.
 
 It was needed because old providers cannot confirm payments done by new payment driver (multi-payments).
+To implement protocol version 2, new payment driver has to be able to confirm payments done via multi-payments contract,
+previous implementation needed direct ERC20 transfer and this one has to be able to understand transfers done via contract.
 
 
