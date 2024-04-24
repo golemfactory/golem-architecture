@@ -39,6 +39,8 @@ A `golem.com.usage.vector` may be set as i.e. `["golem.usage.cpu_sec",
 
 The order of the counters in the `golem.com.usage.vector` is important. The same order is used for the price coefficient array, so the coefficient on position n (`coeff_n`) corresponds to the usage counter on position n (`counter_n`). The provider will report the consumption also using this order.
 
+Usage counters are reported from the moment ExeUnit process starts.
+
 ## Price Coefficients
 
 Price coefficients `golem.com.pricing.model.linear.coeffs` on the other side, contain prices of specific counters declared in the `usage` vector. Notice that the `coeffs` array has one element more than the `counters` vector, which always represents a fixed cost for starting an Activity. These values are decided by the provider and are subject to the agreement.
@@ -55,9 +57,9 @@ Since reported usage is a floating point vector, price calculation requires a de
 
 For each activity separate `usage` vector is given:
 
+#### Decimal conversion
 ```
 activity_X_usage = [usage(counter_1, activity_X), ..., usage(counter_n, activity_X)]
-
 ```
 
 Before any calculations are done, all vectors must be converted to decimal representation:
@@ -78,12 +80,24 @@ coeffs = [decimal(coeff_1), ..., decimal(coeff_n), decimal(coeff_fixed)]
 
 which is equal to the number of significant digits in a 64-bit floating point number.
 
+#### Activity cost
+
 The costs for activity X will be then:
 
-**activity_price = [activity_X_usage, 1] X coeffs<sup>T</sup>**
+**activity_X_price = [activity_X_usage, 1] X coeffs<sup>T</sup>**
 
 This formula is i.e. used to calculate the costs for debit notes, which are issued independently for each activity.
 
+#### Agreement cost
+
 To compute the price for the whole agreement under each M activities were started, use the following formula:
 
-**agreement_price = [activity_1_usage, 1] X coeffs<sup>T</sup> + ... + [activity__M_usage, 1] X coeffs<sup>T</sup>**
+**agreement_price = [activity_1_usage, 1] X coeffs<sup>T</sup> + ... + [activity_M_usage, 1] X coeffs<sup>T</sup>**
+
+Since we converted `usage` to decimal representation, we can calculate the price by summing usages for activities
+first and then multiplying the sum by the coefficients:
+
+**all_activities_usage = activity_1_usage + ... + activity_M_usage**
+
+**agreement_price = [all_activities_usage, 1] X coeffs<sup>T</sup>**
+
