@@ -21,7 +21,7 @@ coeffs = [coeff_1, ..., coeff_N, coeff_fixed]
 counters = [counter_1, ..., counter_N] 
 ```
 
-In general, the linear pricing model assumes that the total price for an activity is a sum of products of coefficients of a usage array and a coeffs array:
+In general, the linear pricing model assumes that the total price for an activity is a sum of products of coefficients of a `usage` array and a `coeffs` array:
 
 ```
 price = usage_1 x coeffs_1 + ... + usage_N x coeffs_N + 1 x coeff_fixed.
@@ -31,13 +31,13 @@ where `n` denotes an index of a particular measure agreed between the provider a
 
 ## Usage Counters
 
-Usage `counters` are measures of resource consumption during the execution of the task or service. Each ExeUnit implements a specific subset of usage counters and reports their values to the Yagna daemon. It is the Provider's choice to decide which counters he uses to measure the resource consumption and finally calculate the price. Provider provides this information in the offer as the `golem.usage.vector`.
+Usage `counters` are measures of resource consumption during the execution of the task or service. Each ExeUnit implements a specific subset of usage counters and reports their values to the Yagna daemon. It is the Provider's choice to decide which counters he uses to measure the resource consumption and finally calculate the price. Provider provides this information in the offer as the `golem.com.usage.vector`.
 
 A `golem.com.usage.vector` may be set as i.e. `["golem.usage.cpu_sec",
    "golem.usage.duration_sec"]`
- which indicates that the price will be a function of both the time of CPU and the environment run. The actual price value will depend on the actual coeffs values.
+ which indicates that the price will be a function of both the time of CPU and the environment run. The actual price value will depend on the actual `coeffs` values.
 
-The order of the counters in the `golem.com.usage.vector` is important. The same order is used for the price coefficient array, so the coefficient on position n (`coeff_n`) corresponds to the usage counter on position n (`counter_n`). The provider will report the consumption also using this order.
+The order of the counters in the `golem.com.usage.vector` is important. The same order is used for the price coefficient array, so the coefficient on position n (`coeff_n`) corresponds to the usage counter on position n (`counter_n`). The provider will report the consumption using this order.
 
 Usage counters are reported from the moment ExeUnit process starts.
 
@@ -47,7 +47,7 @@ Price coefficients `golem.com.pricing.model.linear.coeffs` on the other side, co
 
 ## Computing cost
 
-Resource usage vector `usage` is reported by the ExeUnit - a part of the code responsible for running activities on the provider node. The ExeUnit is initialized with an Agreement containing the counters vector. During the Activity execution, it reports the vector of usage per counters according to the order found in the counters vector.
+Resource usage vector `usage` is reported by the ExeUnit - a part of the code responsible for running activities on the provider node. The ExeUnit is initialized with an Agreement containing the counters vector. During the Activity execution, it reports the vector of usage per counters according to the order found in the `counters` vector.
 
 Usage is a vector of floating point values (64-bit).
 
