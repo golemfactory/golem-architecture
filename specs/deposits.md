@@ -198,9 +198,13 @@ Nonce is chosen by funder when creating deposit.
 Additional notes from Witek:
 https://www.notion.so/golemnetwork/Specifications-f664c647d3d541b1aa2ad0fa98624ed9#20246ad4207b46b0a94d6110a56107c4
 
-### Walkthrough usage in yagna
+### How it works with yagna?
 
-1. Create deposit. The simplest way is to use erc20_processor (you need to have secret key added with account founded)
+![gears](deposit_assets/gears300.webp)
+
+#### Step 1. Create deposit. 
+
+The simplest way is to use erc20_processor (you need to have secret key added with account founded)
 
 ```
 erc20_processor deposit create -c holesky --spender 0xc6b6818d452e4c821d32423677092316a6b705e7 --amount 10 --fee-amount 1 --block-for 10000000
@@ -215,7 +219,7 @@ and created deposit with ID: "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013
 
 The funder of the deposit is 0x001111a27323e8Fba0176393d03714c0F7467e2b (note first two zero are cur in id, it's only representation)
 
-Create allocation on yagna using deposit
+#### Step 2. Create allocation on yagna using deposit
 ```
 POST payment-api/v1/allocations
 {
@@ -250,7 +254,7 @@ Response 201
 }
 ```
 
-You can get your allocation details again:
+(optional) You can get your allocation details again:
 
 ```
 GET payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
@@ -272,7 +276,7 @@ Response 200
 }
 ```
 
-Amend allocation by changing totalAmount (and possibly timeout)
+#### Step 2.1 (optional). Amend allocation by changing totalAmount (and possibly timeout)
 ```
 PUT payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
 {
@@ -307,7 +311,18 @@ Response 200
 }
 ```
 
-Release allocation
+#### Step 3. Create agreements.
+
+Agreements are created using specified allocation like in normal flow. Yagna will use deposit as payment source.
+
+Payment driver will use following methods
+
+```
+depositSingleTransfer(id, ...
+depositTransfer(id, ...
+```
+
+#### Step 4. Release allocation
 
 ```
 DELETE payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
@@ -316,17 +331,12 @@ Response 200
 That resulted yagna to release allocation and close deposit:
 https://holesky.etherscan.io/tx/0xcb8c4e3f78be1575b93a4ff93e2ff59a79b32302ffdcffc63ba086c6af7f5313
 
-
-Changes in erc20_payment_lib and yagna has to be made to enable payments directly from deposit
-using methods.
+Driver will use one of following methods to close deposit
 ```
-deposit_single_transfer(id, ...
-deposit_transfer(id, ...
-deposit_single_transfer_and_close(id, ...
-deposit_transfer_and_close(id, ...
+depositSingleTransferAndClose(id, ...
+depositTransferAndClose(id, ...
+closeDeposit(id, ...
 ```
-
-
 
 ## Fee claim
 
