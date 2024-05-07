@@ -24,6 +24,7 @@ Spender (Person B) - Service based on yagna
 The simple solution is to use ERC20 allowance to person B's funds, but this solution has some drawbacks:
 Point 4 is not satisfied, because User A can revoke allowance at any time.
 Point 5 can be satisfied by taking funds beforehand.
+With allowance it is impossible to separate funds for different task for the same spender.
 
 ### Solution 
 
@@ -34,6 +35,15 @@ The contract holds logic for fee claim by spender.
 The contract assumes good will (portal implemented on top of Golem) on spender side and bad will (external anonymous user) on funder side.
 
 ![lock](deposit_assets/lock300.webp)
+
+### General idea of the solution
+
+1. Twórca serwisu chce świadczyć usługi dla swoich użytkowników i (ewentualnie) zarabiać na tych usługach.
+2. Serwis nie chce być pośrednikem płatności, żeby uniknąć problemów (prawnych i księgowych) z tym związanych. 
+3. Chcemy dostarczyć serwisowi rozwiązanie, które pozwoli na to, że użytkownik zapłaci za usługi na golemie, a
+serwis otrzyma prowizję za pośredniczenie w tej usłudze.
+4. Jednocześnie serwis chce zabezpieczyć się przed sytuacją, w której użytkownik nie zapłaci za wykonaną usługę.
+5. Serwis może stworzyć swój kontrakt ze zdefiniowanym modelem pobierania prowizji (lub użyć gotowego).
 
 
 ### Flow
@@ -49,7 +59,7 @@ The contract assumes good will (portal implemented on top of Golem) on spender s
 7. Spender when finished can close deposit using closeDeposit function. It is done by yagna after allocation bound to deposit is released.
 8. Alternatively if Spender fail to close allocation Funder can terminate deposit using terminateDeposit function after validTo date elapses.
 
-### Example usage flow chart
+#### Example usage flow chart
 
 ```mermaid
 sequenceDiagram
@@ -90,7 +100,7 @@ sequenceDiagram
     Web3->>Funder: Returns remaining funds
 ```
 
-### Chart explaining the flow of GLM tokens
+#### Chart explaining the flow of GLM tokens
 
 ```mermaid
 flowchart TD
@@ -126,17 +136,16 @@ interface ILockPayment {
     // Spender can close deposit anytime claiming fee and returning rest of funds to Funder
     function closeDeposit(uint256 id) external;
     // Funder can terminate deposit after validTo date elapses
-    function terminateDeposit(uint64 nonce) external;
     function depositSingleTransfer(uint256 id, address addr, uint128 amount) external;
     function depositTransfer(uint256 id, bytes32[] calldata payments) external;
     function depositSingleTransferAndClose(uint256 id, address addr, uint128 amount) external;
     function depositTransferAndClose(uint256 id, bytes32[] calldata payments) external;
-    function getMyDeposit(uint64 nonce) external view returns (DepositView memory);
     function getDeposit(uint256 id) external view returns (DepositView memory);
-    function getDepositByNonce(uint64 nonce, address funder) external view returns (DepositView memory);
 }
 
 ```
+
+#### How to find my deposits (solidity events)
 
 Additional events emitted by the contract (for easier web3 integration). There is no need for
 extra options emitted by the contract, because additional information can be extracted using getDeposit(id) function.
@@ -154,6 +163,8 @@ Deposits are stored in the contract using deposit ID:
     // deposit is stored using arbitrary id
     mapping(uint256 => Deposit) public deposits;
 ```
+
+#### Preventing deposit id collisions
 
 Deposit ID consists of funder address and nonce merged together into U256 id:
 Nonce is chosen by funder when creating deposit.
@@ -187,46 +198,124 @@ Nonce is chosen by funder when creating deposit.
 Additional notes from Witek:
 https://www.notion.so/golemnetwork/Specifications-f664c647d3d541b1aa2ad0fa98624ed9#20246ad4207b46b0a94d6110a56107c4
 
-### Yagna implementation
+### Walkthrough usage in yagna
 
-Deposit
-```rust
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Deposit {
-    pub id: String,
-    pub contract: String,
-}
+1. Create deposit. The simplest way is to use erc20_processor (you need to have secret key added with account founded)
+
 ```
-Deposit view (read from contract given using ```getDeposit(uint256 id)```)
-```rust
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DepositView {
-    pub id: String,
-    pub nonce: u64,
-    pub funder: String,
-    pub spender: String,
-    pub amount: u128,
-    pub fee_amount: u128,
-    pub valid_to: u64,
-}
+erc20_processor deposit create -c holesky --spender 0xc6b6818d452e4c821d32423677092316a6b705e7 --amount 10 --fee-amount 1 --block-for 10000000
+erc20_processor run
 ```
 
-Api extension of optional field deposit in ya-client
-```yaml
-    Allocation:
-      properties:
-...
-        deposit:
-          type: object
-          properties:
-            id:
-              type: string
-            contract:
-              type: string
-          required:
-            - id
-            - contract
+You can see tx, where the deposit is created:
+https://holesky.etherscan.io/tx/0xfe1dc09e6d0cacecfe3c752d8d18d432cdac79e86a1be6e5203da88db0f05c71
+
+We are interacting with contract "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+and created deposit with ID: "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424"
+
+The funder of the deposit is 0x001111a27323e8Fba0176393d03714c0F7467e2b (note first two zero are cur in id, it's only representation)
+
+Create allocation on yagna using deposit
 ```
+POST payment-api/v1/allocations
+{
+    "totalAmount": 1,
+    "makeDeposit": false,
+    "paymentPlatform": {
+        "network": "holesky",
+        "driver": "erc20",
+        "token": "tglm"
+    },
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "timeout": "2024-05-10T08:32:49.899Z"
+}
+Response 201
+{
+    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
+    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
+    "paymentPlatform": "erc20-holesky-tglm",
+    "totalAmount": "1",
+    "spentAmount": "0",
+    "remainingAmount": "1",
+    "timestamp": "2024-05-07T08:48:04.390Z",
+    "timeout": "2024-05-10T08:32:49.899Z",
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "makeDeposit": false
+}
+```
+
+You can get your allocation details again:
+
+```
+GET payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
+Response 200
+{
+    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
+    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
+    "paymentPlatform": "erc20-holesky-tglm",
+    "totalAmount": "1",
+    "spentAmount": "0",
+    "remainingAmount": "1",
+    "timestamp": "2024-05-07T08:48:04.390Z",
+    "timeout": "2024-05-10T08:32:49.899Z",
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "makeDeposit": false
+}
+```
+
+Amend allocation by changing totalAmount (and possibly timeout)
+```
+PUT payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
+{
+    "totalAmount": 1.1,
+    "makeDeposit": false,
+    "paymentPlatform": {
+        "network": "holesky",
+        "driver": "erc20",
+        "token": "tglm"
+    },
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "timeout": "2024-05-10T08:32:49.899Z"
+}
+Response 200
+{
+    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
+    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
+    "paymentPlatform": "erc20-holesky-tglm",
+    "totalAmount": "1.100000000000000",
+    "spentAmount": "0",
+    "remainingAmount": "1.100000000000000",
+    "timestamp": "2024-05-07T08:48:04.390Z",
+    "timeout": "2024-05-10T08:32:49.899Z",
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "makeDeposit": false
+}
+```
+
+Release allocation
+
+```
+DELETE payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
+Response 200
+```
+That resulted yagna to release allocation and close deposit:
+https://holesky.etherscan.io/tx/0xcb8c4e3f78be1575b93a4ff93e2ff59a79b32302ffdcffc63ba086c6af7f5313
+
 
 Changes in erc20_payment_lib and yagna has to be made to enable payments directly from deposit
 using methods.
@@ -260,15 +349,16 @@ Funder can terminate deposit after validTo date elapses taking back remaining fu
 
 ## Contract interface validation
 
-It's nice to check if the contract is valid when interacting with it
+Yagna provides a way to check if the user created deposit with proper arguments. 
+
+TODO
 
 ![interface](deposit_assets/interface300.webp)
 
 TODO - work in progress
 ```solidity
-    function version() public view returns (string memory) {
-        return addr.supportsInterface(type(ILockPayment).interfaceId);
-    }
+    TODO
+
 ```
 
 
