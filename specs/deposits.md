@@ -38,12 +38,14 @@ The contract assumes good will (portal implemented on top of Golem) on spender s
 
 ### General idea of the solution
 
-1. Twórca serwisu chce świadczyć usługi dla swoich użytkowników i (ewentualnie) zarabiać na tych usługach.
-2. Serwis nie chce być pośrednikem płatności, żeby uniknąć problemów (prawnych i księgowych) z tym związanych. 
-3. Chcemy dostarczyć serwisowi rozwiązanie, które pozwoli na to, że użytkownik zapłaci za usługi na golemie, a
-serwis otrzyma prowizję za pośredniczenie w tej usłudze.
-4. Jednocześnie serwis chce zabezpieczyć się przed sytuacją, w której użytkownik nie zapłaci za wykonaną usługę.
-5. Serwis może stworzyć swój kontrakt ze zdefiniowanym modelem pobierania prowizji (lub użyć gotowego).
+1. The creator of the platform wants to provide services for their users and (potentially) 
+make a profit from these services.
+2. The platform does not want to act as a payment intermediary to avoid associated legal and accounting issues.
+3. We want to provide a solution to the platform that allows users to pay for services on Golem, 
+and the platform will receive a commission for facilitating this service (covering gas fees and other costs).
+4. At the same time, the platform wants to protect itself from situations 
+where users do not pay for the provided service.
+5. The platform can create its own contract with a defined commission model (or use an existing one).
 
 
 ### Flow
