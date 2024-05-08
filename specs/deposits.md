@@ -113,8 +113,163 @@ flowchart TD
     Contract -->|Close or terminate| Funder[Funder wallet]
 ```
 
+### How it works with yagna?
+
+![gears](deposit_assets/gears300.webp)
+
+
+You can browse [yagna API documentation](https://golemfactory.github.io/ya-client/?urls.primaryName=Payment%20API#/requestor/createAllocation)
+
+
+#### Step 1. Create deposit.
+
+The simplest way is to use erc20_processor (you need to have secret key added with account founded)
+
+```
+erc20_processor deposit create -c holesky --spender 0xc6b6818d452e4c821d32423677092316a6b705e7 --amount 10 --fee-amount 1 --block-for 10000000
+erc20_processor run
+```
+
+You can see tx, where the deposit is created:
+https://holesky.etherscan.io/tx/0xfe1dc09e6d0cacecfe3c752d8d18d432cdac79e86a1be6e5203da88db0f05c71
+
+We are interacting with contract `0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf`
+and created deposit with ID: `0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424`
+spender `0xc6b6818d452e4c821d32423677092316a6b705e7` has to match yagna id belonging to the service.
+
+The funder of the deposit is `0x001111a27323e8Fba0176393d03714c0F7467e2b` (note first two zero are cur in id, it's only representation)
+
+#### Step 2. Create allocation on yagna using deposit
+```
+POST payment-api/v1/allocations
+{
+    "totalAmount": 1,
+    "makeDeposit": false,
+    "paymentPlatform": {
+        "network": "holesky",
+        "driver": "erc20",
+        "token": "tglm"
+    },
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "timeout": "2024-05-10T08:32:49.899Z"
+}
+```
+```
+Response 201
+{
+    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
+    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
+    "paymentPlatform": "erc20-holesky-tglm",
+    "totalAmount": "1",
+    "spentAmount": "0",
+    "remainingAmount": "1",
+    "timestamp": "2024-05-07T08:48:04.390Z",
+    "timeout": "2024-05-10T08:32:49.899Z",
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "makeDeposit": false
+}
+```
+
+(optional) You can get your allocation details again:
+
+```
+GET payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
+```
+```
+Response 200
+{
+    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
+    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
+    "paymentPlatform": "erc20-holesky-tglm",
+    "totalAmount": "1",
+    "spentAmount": "0",
+    "remainingAmount": "1",
+    "timestamp": "2024-05-07T08:48:04.390Z",
+    "timeout": "2024-05-10T08:32:49.899Z",
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "makeDeposit": false
+}
+```
+
+#### Step 2.1 (optional). Amend allocation by changing totalAmount (and possibly timeout)
+```
+PUT payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
+{
+    "totalAmount": 1.1,
+    "timeout": "2024-05-10T08:32:49.899Z"
+}
+```
+```
+Response 200
+{
+    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
+    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
+    "paymentPlatform": "erc20-holesky-tglm",
+    "totalAmount": "1.100000000000000",
+    "spentAmount": "0",
+    "remainingAmount": "1.100000000000000",
+    "timestamp": "2024-05-07T08:48:04.390Z",
+    "timeout": "2024-05-10T08:32:49.899Z",
+    "deposit": {
+        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
+        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
+    },
+    "makeDeposit": false
+}
+```
+
+#### Step 3. Create agreements
+
+Agreements are created using specified allocation like in normal flow. Yagna will use deposit as payment source.
+
+Payment driver will use following methods
+
+```
+depositSingleTransfer(id, ...
+depositTransfer(id, ...
+```
+
+#### Step 4. Release allocation
+
+```
+DELETE payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
+Response 200
+```
+That resulted yagna to release allocation and close deposit:
+https://holesky.etherscan.io/tx/0xcb8c4e3f78be1575b93a4ff93e2ff59a79b32302ffdcffc63ba086c6af7f5313
+
+Driver will use one of following methods to close deposit
+```
+depositSingleTransferAndClose(id, ...
+depositTransferAndClose(id, ...
+closeDeposit(id, ...
+```
+
+## Fee claim
+
+![greedy](deposit_assets/greedy300.webp)
+
+Fee is claimed when deposit is close by spender. Fee amount depends on implementation of the contract implementation.
+For example it can be flat fee, percent fee or combination of both.
+
+The fee schema is entirely determined by the contract and service implementation. Yagna doesn't care really,
+we should probably provide some API exposing gas costs so the service can calculate fee based on that.
+
 
 ### Interface of the contract
+
+![interface](deposit_assets/interface300.webp)
+
+The interface is the minimum part of the contract that is needed for yagna to interact with it.
 
 ``` solidity
 struct Deposit {
@@ -200,155 +355,6 @@ Nonce is chosen by funder when creating deposit.
 Additional notes from Witek:
 https://www.notion.so/golemnetwork/Specifications-f664c647d3d541b1aa2ad0fa98624ed9#20246ad4207b46b0a94d6110a56107c4
 
-### How it works with yagna?
-
-![gears](deposit_assets/gears300.webp)
-
-#### Step 1. Create deposit. 
-
-The simplest way is to use erc20_processor (you need to have secret key added with account founded)
-
-```
-erc20_processor deposit create -c holesky --spender 0xc6b6818d452e4c821d32423677092316a6b705e7 --amount 10 --fee-amount 1 --block-for 10000000
-erc20_processor run
-```
-
-You can see tx, where the deposit is created:
-https://holesky.etherscan.io/tx/0xfe1dc09e6d0cacecfe3c752d8d18d432cdac79e86a1be6e5203da88db0f05c71
-
-We are interacting with contract "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
-and created deposit with ID: "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424"
-
-The funder of the deposit is 0x001111a27323e8Fba0176393d03714c0F7467e2b (note first two zero are cur in id, it's only representation)
-
-#### Step 2. Create allocation on yagna using deposit
-```
-POST payment-api/v1/allocations
-{
-    "totalAmount": 1,
-    "makeDeposit": false,
-    "paymentPlatform": {
-        "network": "holesky",
-        "driver": "erc20",
-        "token": "tglm"
-    },
-    "deposit": {
-        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
-        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
-    },
-    "timeout": "2024-05-10T08:32:49.899Z"
-}
-Response 201
-{
-    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
-    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
-    "paymentPlatform": "erc20-holesky-tglm",
-    "totalAmount": "1",
-    "spentAmount": "0",
-    "remainingAmount": "1",
-    "timestamp": "2024-05-07T08:48:04.390Z",
-    "timeout": "2024-05-10T08:32:49.899Z",
-    "deposit": {
-        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
-        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
-    },
-    "makeDeposit": false
-}
-```
-
-(optional) You can get your allocation details again:
-
-```
-GET payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
-Response 200
-{
-    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
-    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
-    "paymentPlatform": "erc20-holesky-tglm",
-    "totalAmount": "1",
-    "spentAmount": "0",
-    "remainingAmount": "1",
-    "timestamp": "2024-05-07T08:48:04.390Z",
-    "timeout": "2024-05-10T08:32:49.899Z",
-    "deposit": {
-        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
-        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
-    },
-    "makeDeposit": false
-}
-```
-
-#### Step 2.1 (optional). Amend allocation by changing totalAmount (and possibly timeout)
-```
-PUT payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
-{
-    "totalAmount": 1.1,
-    "makeDeposit": false,
-    "paymentPlatform": {
-        "network": "holesky",
-        "driver": "erc20",
-        "token": "tglm"
-    },
-    "deposit": {
-        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
-        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
-    },
-    "timeout": "2024-05-10T08:32:49.899Z"
-}
-Response 200
-{
-    "allocationId": "bf1bbf80-3d70-49e9-804d-cb032b163374",
-    "address": "0xc6b6818d452e4c821d32423677092316a6b705e7",
-    "paymentPlatform": "erc20-holesky-tglm",
-    "totalAmount": "1.100000000000000",
-    "spentAmount": "0",
-    "remainingAmount": "1.100000000000000",
-    "timestamp": "2024-05-07T08:48:04.390Z",
-    "timeout": "2024-05-10T08:32:49.899Z",
-    "deposit": {
-        "id": "0x1111a27323e8fba0176393d03714c0f7467e2b0000000013117f26391a6424",
-        "contract": "0xfe1B27Bac0e3Ad39d55C9459ae59894De847dcbf"
-    },
-    "makeDeposit": false
-}
-```
-
-#### Step 3. Create agreements.
-
-Agreements are created using specified allocation like in normal flow. Yagna will use deposit as payment source.
-
-Payment driver will use following methods
-
-```
-depositSingleTransfer(id, ...
-depositTransfer(id, ...
-```
-
-#### Step 4. Release allocation
-
-```
-DELETE payment-api/v1/allocations/bf1bbf80-3d70-49e9-804d-cb032b163374
-Response 200
-```
-That resulted yagna to release allocation and close deposit:
-https://holesky.etherscan.io/tx/0xcb8c4e3f78be1575b93a4ff93e2ff59a79b32302ffdcffc63ba086c6af7f5313
-
-Driver will use one of following methods to close deposit
-```
-depositSingleTransferAndClose(id, ...
-depositTransferAndClose(id, ...
-closeDeposit(id, ...
-```
-
-## Fee claim
-
-![greedy](deposit_assets/greedy300.webp)
-
-Fee is claimed when deposit is close by spender. Fee amount depends on implementation of the contract implementation.
-For example it can be flat fee, percent fee or combination of both.
-
-The fee schema is entirely determined by the contract and service implementation. Yagna doesn't care really,
-we should probably provide some API exposing gas costs so the service can calculate fee based on that.
 
 ## Additional safety for Funder
 
@@ -359,13 +365,11 @@ Funder can terminate deposit after validTo date elapses taking back remaining fu
 * Spender can do whatever he wants with the locked funds, so the Funder has to trust the Spender.
 * Spender doesn't have to trust the Funder, which is the most important part of the solution.
 
-## Contract interface validation
+## Contract parameters validation
 
-Yagna provides a way to check if the user created deposit with proper arguments. 
+Service wants to validate parameters sent from frontend user to service backend using yagna.
 
-TODO
 
-![interface](deposit_assets/interface300.webp)
 
 TODO - work in progress
 ```solidity
