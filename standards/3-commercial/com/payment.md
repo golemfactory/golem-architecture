@@ -77,14 +77,11 @@ Constraints:
 
 (alternatively, the Demand may include constraints to filter only the preferred payment platform: )
 
-Note the &()() means both constraints needed (LDAP filter syntax)
 ```
 Demand 1a
 
 Constraints:
-(
-    (golem.com.payment.protocol.version>1)
-)
+(golem.com.payment.platform.erc20-mainnet-glm.address=*)
 ```
 
 3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform
@@ -135,3 +132,5 @@ golem.com.payment.protocol.version = 2
 Payment protocol version spec:
 
 [Payment Version Spec](../../../spec/payment_version.md)
+
+
