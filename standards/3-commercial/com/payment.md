@@ -50,6 +50,14 @@ During negotiation the Provider will adjust `golem.com.payment.debit-notes.accep
 
 The address of GLM payment receiver (Provider) for indicated payment platform.
 
+## `golem.com.payment.protocol.version: Number (int32)`
+
+### Describes: Demand/Offer
+
+### Specification
+
+[Payment Version Spec](../../../spec/payment_version.md)
+
 ## Payment platform selection convention
 
 The semantics of `golem.com.payment.platform` namespace include the platform selection convention & patterns. 
@@ -65,13 +73,14 @@ golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
 golem.com.payment.platform.zksync-mainnet-glm.address = "0xdeadbeef"
 ```
 
-2. Requestor publishes a Demand with no constraints on payment platform (it wants to choose from Offers it receives)
+2. Requestor publishes a Demand with no constraints on payment platform (it wants to choose from Offers it receives).
+It also wants provider to support payment protocol version > 1.
 
 ```
 Demand 1
 
 Constraints:
-()
+(golem.com.payment.protocol.version>1)
 ```
 ...and from the market matching, it receives `Offer 1`.
 
@@ -80,69 +89,27 @@ Constraints:
 Demand 1a
 
 Constraints:
-(golem.com.payment.platform.erc20-mainnet-glm.address=*)
+    &(golem.com.payment.protocol.version>1)
+    (golem.com.payment.platform.erc20-mainnet-glm.address=*)
 ```
 
-3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform
+3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform and protocol version
 ```
 Demand 2 (Proposal)
 
 Properties:
 golem.com.payment.chosen-platform = "erc20-mainnet-glm"
+golem.com.payment.protocol.version = 2
 ```
 
-4. Provider responds with a counter-Offer, where it confirms the selected payment platform
+4. Provider responds with a counter-Offer, where it confirms the selected payment platform and protocol version
 ```
 Offer 2 (Proposal)
 
 Properties:
 golem.com.payment.chosen-platform = "erc20-mainnet-glm"
 golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
-```
-
-## `golem.com.payment.protocol.version: Number (int32)`
-
-### Describes: Demand/Offer
-
-## Specifying protocol version convention
-
-An example selection scenario:
-
-
-1. Provider publishes an open Offer with payment version
-```
-Offer 1
-
-Properties:
-golem.com.payment.platform.version = 2
-```
-
-2. Requestor publishes a Demand with constrains on payment platform
-
-```
-Demand constraint example:
-
-Constraints:
-(golem.com.payment.protocol.version>1)
-```
-3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected protocol version
-```
-Demand 2 (Proposal)
-
-Properties:
 golem.com.payment.protocol.version = 2
 ```
-
-4. Provider responds with a counter-Offer, where it confirms the selected protocol version
-```
-Offer 2 (Proposal)
-
-Properties:
-golem.com.payment.protocol.version = 2
-```
-
-Payment protocol version spec:
-
-[Payment Version Spec](../../../spec/payment_version.md)
 
 
