@@ -83,8 +83,7 @@ Demand 1a
 
 Constraints:
 (
-    &(golem.com.payment.protocol.version>1)
-    (golem.com.payment.platform.erc20-mainnet-glm.address=*)
+    (golem.com.payment.protocol.version>1)
 )
 ```
 
@@ -94,7 +93,6 @@ Demand 2 (Proposal)
 
 Properties:
 golem.com.payment.chosen-platform = "erc20-mainnet-glm"
-golem.com.payment.protocol.version = 2
 ```
 
 4. Provider responds with a counter-Offer, where it confirms the selected payment platform
@@ -104,6 +102,33 @@ Offer 2 (Proposal)
 Properties:
 golem.com.payment.chosen-platform = "erc20-mainnet-glm"
 golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
+```
+
+## `golem.com.payment.protocol.version: Number (int32)`
+
+### Describes: Demand/Offer
+
+## Specifying protocol version convention
+
+```
+Demand constraint example:
+
+Constraints:
+(golem.com.payment.protocol.version>1)
+```
+
+```
+Demand 2 (Proposal)
+
+Properties:
+golem.com.payment.protocol.version = 2
+```
+
+4. Provider responds with a counter-Offer, where it confirms the selected protocol version
+```
+Offer 2 (Proposal)
+
+Properties:
 golem.com.payment.protocol.version = 2
 ```
 

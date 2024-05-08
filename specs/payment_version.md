@@ -1,19 +1,37 @@
-### Added possibility of setting version of payment protocol
+# Payment protocol version
 
-A new field was added to offer on provider side and demand on requestor side
-golem.com.payment.protocol.version
-There is only one possible value for now: 2
+## Original protocol (version < 2)
 
-```golem.com.payment.protocol.version = 2```
+### Payment transaction validation
 
-This field is validate against constraint in the requestor demand (it is added by default by yagna):
+Payment driver validates transaction in following way
+1. Provider receives payment confirmation from requestor (with specific transaction id)
+2. It downloads transaction information from blockchain.
+3. It parses logs from transaction to find out if sender address matches requestor address and if value is correct.
+One transfer in one transaction is supported.
+
+## Introduction of payment protocol version (>=2)
+
+Both provider and requestor should specify property `golem.com.payment.protocol.version`
+It has to be included in offer and in demand.
+
+Requestor willing to send multi-payment transactions should choose only providers with version >= 2.
+
+This can be achieved by setting constraint in demand:
 
 ```"golem.com.payment.protocol.version" > 1```
 
-That means that requestor with version 2 will only talk with new providers.
 
-It was needed because old providers cannot confirm payments done by new payment driver (multi-payments).
-To implement protocol version 2, new payment driver has to be able to confirm payments done via multi-payments contract,
-previous implementation needed direct ERC20 transfer and this one has to be able to understand transfers done via contract.
+### Why
 
+1. Provider is unable to validate transactions made via contract.
 
+### Requirements
+
+Payment driver validates transaction in following way
+1. Provider receives payment confirmation from requestor (with specific transaction id)
+2. It downloads transaction information from blockchain.
+3. It parses logs from transaction to find out if sender address matches requestor address and if value is correct.
+Multiple transfers in one transaction are supported.
+
+   
