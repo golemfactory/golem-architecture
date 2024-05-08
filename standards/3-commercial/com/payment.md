@@ -80,11 +80,15 @@ It also wants provider to support payment protocol version > 1.
 Demand 1
 
 Constraints:
-(golem.com.payment.protocol.version>1)
+(
+    (golem.com.payment.protocol.version>1)
+)
 ```
 ...and from the market matching, it receives `Offer 1`.
 
 (alternatively, the Demand may include constraints to filter only the preferred payment platform: )
+
+Note the &()() means both constraints needed (LDAP filter syntax)
 ```
 Demand 1a
 
