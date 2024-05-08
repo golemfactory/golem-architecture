@@ -71,12 +71,11 @@ golem.com.payment.platform.zksync-mainnet-glm.address = "0xdeadbeef"
 Demand 1
 
 Constraints:
-(golem.com.payment.protocol.version>1)
+()
 ```
 ...and from the market matching, it receives `Offer 1`.
 
 (alternatively, the Demand may include constraints to filter only the preferred payment platform: )
-
 ```
 Demand 1a
 
@@ -107,13 +106,26 @@ golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
 
 ## Specifying protocol version convention
 
+An example selection scenario:
+
+
+1. Provider publishes an open Offer with payment version
+```
+Offer 1
+
+Properties:
+golem.com.payment.platform.version = 2
+```
+
+2. Requestor publishes a Demand with constrains on payment platform
+
 ```
 Demand constraint example:
 
 Constraints:
 (golem.com.payment.protocol.version>1)
 ```
-
+3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected protocol version
 ```
 Demand 2 (Proposal)
 
