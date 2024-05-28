@@ -8,13 +8,16 @@ Namespace with properties defining payment parameters.
 Payment Platform to be used for settlement of the Agreement.
 
 ### Value enum
-| Value     | Description                                          |
-| --------- | ---------------------------------------------------- |
-| "zksync-rinkeby-tglm" | L2 off-chain **tGLM** on zkSync rinkeby  |
-| "zksync-mainnet-glm" | L2 off-chain **GLM** on zkSync mainnet  |
-| "erc20-rinkeby-tglm"  | L1 on-chain **tGLM** ERC-20 on Ethereum rinkeby |
-| "erc20-mainnet-glm"  | L1 on-chain **GLM** ERC-20 on Ethereum mainnet |
-|           |                                                      |
+| Value                              | Description                                       |
+|------------------------------------|---------------------------------------------------|
+| "zksync-rinkeby-tglm" (deprecated) | L2 off-chain **tGLM** on zkSync rinkeby           |
+| "zksync-mainnet-glm" (deprecated)  | L2 off-chain **GLM** on zkSync mainnet            |
+| "erc20-rinkeby-tglm" (deprecated)  | L1 on-chain **tGLM** ERC-20 on Ethereum rinkeby   |
+| "erc20-goerli-tglm" (deprecated)   | L1 on-chain **tGLM** ERC-20 on Ethereum goerli    |
+| "erc20-holesky-tglm"               | L1 on-chain **tGLM** ERC-20 on Ethereum holesky   |
+| "erc20-polygon-glm"                | L2 on-chain **GLM** ERC-20 on Polygon POS Network |
+| "erc20-mainnet-glm"                | L1 on-chain **GLM** ERC-20 on Ethereum mainnet    |
+|                                    |                                                   |
 
 ### **Examples**
 * `golem.com.payment.chosen-platform="erc20-mainnet-glm"` - specifies ERC-20 plain Ethereum as payment platform.
@@ -47,6 +50,14 @@ During negotiation the Provider will adjust `golem.com.payment.debit-notes.accep
 
 The address of GLM payment receiver (Provider) for indicated payment platform.
 
+## `golem.com.payment.protocol.version: Number (int32)`
+
+### Describes: Demand/Offer
+
+### Specification
+
+[Payment Version Spec](../../../spec/payment_version.md)
+
 ## Payment platform selection convention
 
 The semantics of `golem.com.payment.platform` namespace include the platform selection convention & patterns. 
@@ -62,39 +73,47 @@ golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
 golem.com.payment.platform.zksync-mainnet-glm.address = "0xdeadbeef"
 ```
 
-2. Requestor publishes a Demand with no constraints on payment platform (it wants to choose from Offers it receives)
+2. Requestor publishes a Demand with no constraints on payment platform (it wants to choose from Offers it receives).
+It also wants provider to support payment protocol version > 1.
 
 ```
 Demand 1
 
 Constraints:
-()
+(
+    (golem.com.payment.protocol.version>1)
+)
 ```
 ...and from the market matching, it receives `Offer 1`.
 
 (alternatively, the Demand may include constraints to filter only the preferred payment platform: )
+
+Note the &()() means both constraints needed (LDAP filter syntax)
 ```
 Demand 1a
 
 Constraints:
-(golem.com.payment.platform.erc20-mainnet-glm.address=*)
+    &(golem.com.payment.protocol.version>1)
+    (golem.com.payment.platform.erc20-mainnet-glm.address=*)
 ```
 
-3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform
+3. Requestor formulates a counter-Proposal for `Offer 1`, where it indicates selected payment platform and protocol version
 ```
 Demand 2 (Proposal)
 
 Properties:
 golem.com.payment.chosen-platform = "erc20-mainnet-glm"
+golem.com.payment.protocol.version = 2
 ```
 
-4. Provider responds with a counter-Offer, where it confirms the selected payment platform
+4. Provider responds with a counter-Offer, where it confirms the selected payment platform and protocol version
 ```
 Offer 2 (Proposal)
 
 Properties:
 golem.com.payment.chosen-platform = "erc20-mainnet-glm"
 golem.com.payment.platform.erc20-mainnet-glm.address = "0xdeadbeef"
+golem.com.payment.protocol.version = 2
 ```
 
 

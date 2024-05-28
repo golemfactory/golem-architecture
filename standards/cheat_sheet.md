@@ -164,7 +164,7 @@ Namespace with properties defining payment parameters.
 | **`golem.com.payment.chosen-platform`**                  | `String`         | Demand/Offer |            | Payment Platform to be used for settlement of the Agreement.                                |
 | **`golem.com.payment.debit-notes.accept-timeout?`**      | `Number (int32)` | Demand/Offer | Negotiable | Indicates the timeout period (in seconds) for the Requestor to accept incoming Debit Notes. |
 | **`golem.com.payment.platform.<platform name>.address`** | `String`         | Demand/Offer |            | The address of GLM payment receiver (Provider) for indicated payment platform.              |
-
+| **`golem.com.payment.version`**                          |`Number (int32)`|Demand/Offer|| Version of the payment protocol (2 means multi-payments capabilities)                       |
 
 ## [`com.pricing.model`](3-commercial/com/pricing/model.md)
 
