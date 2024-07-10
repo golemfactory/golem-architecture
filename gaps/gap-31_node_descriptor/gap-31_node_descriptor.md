@@ -30,7 +30,7 @@ This GAP introduces the key usage `signNode` for [Golem certificates](https://gi
 
 The schema heavily relies on references to previously defined items in [GAP-25](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-25_golem_certificates/gap-25_golem_certificates.md). When a node descriptor is signed, all data in the `nodeDescriptor` property are digitally signed to add cryptographic integrity protection. Similarly to the previously defined certificate schema, the node descriptor schema does not restrict additional properties allowing adding contextual information and allowing compatibility with future additions.
 
-The schema file can be found in the `schemas/v1` folder and accessible at `https://golem.network/schemas/v1/node-descriptor.schema.json`.
+The schema file can be found in the `schemas/v1` folder and accessible at `https://schemas.golem.network/v1/node-descriptor.schema.json`.
 
 #### Node Id
 
@@ -38,7 +38,7 @@ The `nodeId` property contains the node's identifier on the network in hexadecim
 
 #### Permissions
 
-Details of how the node is permitted to use the Golem network. The content of this property is governed by the [permissions schema](https://golem.network/schemas/v1/permissions.schema.json).
+Details of how the node is permitted to use the Golem network. The content of this property is governed by the [permissions schema](https://schemas.golem.network/v1/permissions.schema.json).
 
 #### Validity Period
 
