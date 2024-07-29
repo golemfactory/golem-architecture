@@ -1,6 +1,8 @@
 *.aux
 *.fdb*
 *.fls
-golem-arch.pdf
+*.pdf
+*.synctex.gz
+
 
 
