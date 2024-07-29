@@ -1,0 +1,98 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\title{Golem Network \\ Net Module Notes}
+\begin{document}
+\maketitle{}
+\section{Introduction}
+
+This documment describes how currently component for node communication works 
+and how it shud work in the future.
+
+\section{General net abstraction}
+
+% TODO: Opisać generalna abstrakcję rozproszonego RPC które musi 
+%   zaimplementować taki komponent.
+
+\subsection{Level0 Implementation}
+
+is called "CentralNet".
+
+\subsubsection{Assumtions}
+
+\begin{itemize}
+    \item Easy to implement.
+    \item Musi umieć przebijąc firewall'a. 
+    \item Nie musi byś wydajne
+    \item Nie musi być zdecentaralizowane.
+    \item Nie musi wspirać szyfrowania e2e. 
+\end{itemize}
+
+Cel: Zbudowanie PoC dla użytkowników.
+
+Wszystkie węzły łączą się do jednego centralnego serwera. Po TCP. Komummikacja jest klienta serwer.
+
+
+Protokół wygląda tak:
+
+ - Klient łaczy się od serwera
+ - Klient wysyła hello ( z wersją bibliotek). -> hello.
+ - Klient wysyła komende register (po to by móc odbieraz komunikaty wysyłanie do niego)
+ - Serwer odpowiada 
+ - Serwer co jakiś czas wysyała ping / na który klient odpowiada pong.
+
+
+ - jak trzeba wysłać do jakiego węzła to pakije jest w komunikat CallRequest
+
+ \begin{code}
+    message CallRequest {
+        string caller = 1;
+        string address = 2;
+        string request_id = 3;
+        bytes data = 4;
+        bool no_reply = 5;
+      }
+ \end{code}
+
+
+Komunikacja do proxy uzywa TLS1.3. Brak szyfrowania e2e.
+
+
+\subsection{Market a CentralNet}
+
+Market wymaga rozsyłanie informacji do wielu węzłów.
+W tym celu używa się funkcjonalności bradcast implamentacji CentralNet'u.
+
+Węzły kótee szujkją ofert rejestruje się jako odbiorcy na kanale rozgłaszania.
+Kazdy providera co pewien czas (domyślnie 2min) wysyła na ten kanał inofrmację 
+o tym jakie posiada oferty. dzieki temy requestor które szuka ofert po jakimś czasie poznaje 
+wszystkie ofert providerów podłaczonych do danego węzła CentralNet.
+
+
+\subsection{Horyzontalne skalowanie CentralNet (może lepeij o tym nie pisać)}
+
+Głównym ograniczeniem jest mechanizm broadcastów. możliwe są dwie konfogiracje:
+
+1. Węzły łaczą się tylko do jednej losowej instancji serwer (stabilinie wg. id identyfikatora węzła) 
+w takiej sytuacji węzłe requestora widzie tylko częśc providerów ta która jest podpieta do tego samego proxy.
+
+2. Węzłę który bedzie dużo zlecać komfigurujemy by łaczył się do wielu serwerów proxy. spowoduje to że będzie dostałwał 
+odpowiednio wiecej komunikatów o ofertach.
+
+
+\section{Level1 Hybrid net}
+
+
+
+\section{LeveL2 WebRTC}
+
+- rfc5389 Session Traversal Utilities for NAT (STUN) 
+- rfc5766 Traversal Using Relays around NAT (TURN)
+- rfc8445 Interactive Connectivity Establishment (ICE)
+
+
+
+
+
+
+\end{document}
