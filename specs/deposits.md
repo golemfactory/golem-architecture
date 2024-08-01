@@ -345,17 +345,6 @@ Nonce is chosen by funder when creating deposit.
 
 [Sample implementation](deposit_assets/full_contract_code.md)
 
-### Additional open questions that need to be answered ASAP
-
-![thinking](deposit_assets/thinking300.webp)
-
-* Should yagna adjust allocation to the data returned in deposit view? 
-* Should yagna allocation be for full amount or only for amount - fee?
-
-Additional notes from Witek:
-https://www.notion.so/golemnetwork/Specifications-f664c647d3d541b1aa2ad0fa98624ed9#20246ad4207b46b0a94d6110a56107c4
-
-
 ## Additional safety for Funder
 
 ![padlocks](deposit_assets/padlocks300.webp)
@@ -369,11 +358,32 @@ Funder can terminate deposit after validTo date elapses taking back remaining fu
 
 Service wants to validate parameters sent from frontend user to service backend using yagna.
 
+Contract validation part:
 
-
-TODO - work in progress
 ```solidity
-    TODO
+
+contract LockPayment is ILockPayment {
+    .....
+    .....
+    .....
+
+    //validateDeposit - validate extra fields not covered by common validation
+    function validateDeposit(uint256 id, uint128 flatFeeAmount) external view returns (string memory) {
+        Deposit memory deposit = deposits[id];
+        if (deposit.spender == address(0)) {
+            return "failed due to wrong deposit id";
+        }
+        if (flatFeeAmount != deposit.feeAmount) {
+            return "failed due to flatFeeAmount mismatch";
+        }
+        return "valid";
+    }
+
+    function getValidateDepositSignature() external pure returns (string memory) {
+        // this signature may be different if other compatible fee scheme is deployed
+        return '[{"type": "uint256", "name": "id"}, {"type": "uint128", "name": "flatFeeAmount"}]';
+    }
+}
 
 ```
 
