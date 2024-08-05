@@ -274,9 +274,9 @@ The interface is the minimum part of the contract that is needed for yagna to in
 ``` solidity
 struct Deposit {
     address spender; //address that can spend the funds provided by customer
-    uint128 amount; //remaining funds locked
-    uint128 feeAmount; //fee amount locked for spender
     uint64 validTo; //after this timestamp funds can be returned to customer
+    uint128 amount; //remaining funds locked (assuming max value 1 billion GLMs <=~ 2**90 gwei)
+    uint128 feeAmount; //fee amount locked for spender
 }
 
 struct DepositView {
@@ -285,19 +285,28 @@ struct DepositView {
     address funder; //address that can spend the funds provided by customer
     address spender; //address that can spend the funds provided by customer
     uint128 amount; //remaining funds locked
-    uint128 feeAmount; //fee amount locked for spender
     uint64 validTo; //after this timestamp funds can be returned to customer
 }
 
 interface ILockPayment {
-    // Spender can close deposit anytime claiming fee and returning rest of funds to Funder
+    struct DepositView {
+        uint256 id;     //unique id
+        uint64 nonce;  //nonce unique for each funder
+        address funder; //address that can spend the funds provided by customer
+        address spender; //address that can spend the funds provided by customer
+        uint128 amount; //remaining funds locked
+        uint64 validTo; //after this timestamp funds can be returned to customer
+    }
+
     function closeDeposit(uint256 id) external;
-    // Funder can terminate deposit after validTo date elapses
+    function terminateDeposit(uint64 nonce) external;
     function depositSingleTransfer(uint256 id, address addr, uint128 amount) external;
     function depositTransfer(uint256 id, bytes32[] calldata payments) external;
     function depositSingleTransferAndClose(uint256 id, address addr, uint128 amount) external;
     function depositTransferAndClose(uint256 id, bytes32[] calldata payments) external;
     function getDeposit(uint256 id) external view returns (DepositView memory);
+    function getDepositByNonce(uint64 nonce, address funder) external view returns (DepositView memory);
+    function getValidateDepositSignature() external pure returns (string memory);
 }
 
 ```
