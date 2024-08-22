@@ -31,11 +31,11 @@ do wasm by móc uzywać bezpośrednio w przeglądarce.
     - nie trzeba mieć uprawnień administratora. aplikacja nie instaluje sterowników i nie psuje ustawień sieci.
   - elastyczność - API powinno pozwalwać wiele  różnych rodzajów usług.
 
-**NOTE** Te załorzenia ustotnie wpływają na wybór narzędzi ob jak słysze że np. requestor mógłby się wpinać przez wireguard 
-do sieci w porvierami lub by łaczyć provieerów tunelem ssh do requestora. to by być takich requestorem trzeba mieć dużo bardziej 
+**NOTE** Te założenia istotnie wpływają na wybór narzędzi ob jak słysze, że np. requestor mógłby się wpinać przez wireguard 
+do sieci w porvierami lub by łączyć provieerów tunelem ssh do requestora. to by być takich requestorem trzeba mieć dużo bardziej 
 skomplikowany deployment. łaczenie sieci na poziomie systemu operacyjnego powoduje że trudniej jest wyizolować ruch od niezaufanych 
-węzłów. takie rozwiązania sprawdzą się w klasycznym Cloud gdzie można udować statyczne sztruktury i ufać zę operator 
-clouda nie probbuje się do nas włamać. 
+węzłów. Takie rozwiązania sprawdzą się w klasycznym Cloud gdzie można udowa statyczne sztruktury i ufać zę operator 
+clouda nie próbuje się do nas włamać. 
 
 ## Podstawowy deployment 
 
@@ -51,6 +51,38 @@ Gdzie
 
 # Golem jako system rozproszony
 
+By zrozumieć dalszą cześć trzeba zacząć od podstawowego wzorca na którym golem jest zrobiony.
+Widać wyrażnie że tego typu aplikacja będzie miała całościowo skomplikowany protokół z duża liczbą róznych 
+komunikatów przesyłanych między węzłami.  
+
+
 
 
 ![image](./dia/gsb-net-dist.svg)
+
+
+## GFTP
+
+
+
+```mermaid
+%% Example of sequence diagram
+  sequenceDiagram
+    box Requerstor
+    participant B as Browser
+    participant N1 as Golem Node (requstor)
+    end
+    box Provider
+    participant N2 as Golem Node (provider)
+    participant ExeUnit
+    participant Fs
+    end    
+    
+    B->>N1: websocket UploadChunk
+    N1->>N2: P2P (wraped RPC UploadChunk)
+    N2->>ExeUnit: GSB UploadChunk    
+    ExeUnit->>Fs: write
+    
+  
+```
+
