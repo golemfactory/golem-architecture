@@ -1,5 +1,5 @@
 
-# Załorzenia konstrukcyjne
+# Założenia konstrukcyjne
 
 ## Czym jest golem ?
 
