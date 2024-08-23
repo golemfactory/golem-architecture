@@ -111,13 +111,37 @@ sequenceDiagram
     end
 ```
 
+Aktualny protokół warstwy
 
+```mermaid
+block-beta
+    columns 2
+        Application("Market / Payment /Activity / VPN ..."):2
+        grpc("Golem RPC") gr1("Msg")
+        uTCP("TCP") uUDP("UDP")
+        uIP("IPv6"):2
+        gsession("Golem Session"):2
+        UDP:2 
+        IP:2
+```
 
+By uprościć sobie implementację  niezawodnej komunikacji użyto gotowej implementacio 
+stosu TCP/IP w user space. (smoltcp). Podejście to ma dużą wade poprzez to że 
+nadmiarowe nagłówki zmniejszają MTU i powodują spadek wydajności protokołów.
 
+Dodatkowym anywydajnościowym zagraniem jest to że pakiety między maszynami 
+przesyłane są surowym RPC pprzez co dodatkowo każdy pakiet jest powiekszany o dane nagłówkowe
+RPC.
 
+#  Przejście na WebRTC
 
+Wsparcie do webrtc w zewnęrznych bibliotekch dojrzało na tyle że możnaby wymienić stack na:
 
+![img_1.png](img_1.png)
 
-
+TODO: Rozpisać nowe dodatkowe komponenty:
+ - serwery synganacyjne.
+ - zasady dostepu do STUN i TURN hostowanych przez golem-a.
+ - Rozszerzenie discovery o dostęp po HTTPS i WSS.
 
 
