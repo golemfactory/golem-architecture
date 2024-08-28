@@ -1,0 +1,166 @@
+\newglossaryentry{node}
+{
+        name=node,
+        description={TODO! A fundamental entity in the Golem p2p network.}
+}
+
+\newglossaryentry{comp}
+{
+        name=computational resources,
+        description={TODO! Any resources which allow to run a program. 
+					In practice a single traditional computer or a cluster of computers.}
+}
+
+\newglossaryentry{requestor}
+{
+        name=requestor,
+        description={TODO! A node which needs computational power. It defines the payload descriptor 
+					and sends out demand order to find requestors.}
+}
+
+\newglossaryentry{provider}
+{
+        name=provider,
+        description={TODO! A node that has computation resources to offer. It creates and sends out the offers. 
+					One provider might be managing many computers (e.g. in case of a datacenter)}
+}
+
+\newglossaryentry{payload}
+{
+        name=payload,
+        description={TODO! The computer program code, Docker or VM image, as well as the
+					configuration and/or input data, which the requestor intends to have deployed
+					and executed by the provider node(s)}
+}
+
+\newglossaryentry{plane}
+{
+        name=plane,
+        description={}
+}
+
+\newglossaryentry{layer}
+{
+        name=layer,
+        description={}
+}
+
+\newglossaryentry{namespace}
+{
+        name=namespace,
+        description={}
+}
+
+\newglossaryentry{aspDim}
+{
+        name=aspect dimension,
+        description={}
+}
+
+\newglossaryentry{service}
+{
+        name=service,
+        description={}
+}
+
+\newglossaryentry{resource}
+{
+        name=resource,
+        description={}
+}
+
+\newglossaryentry{demand}
+{
+        name=demand,
+        description={TODO! Demand is created by Requestors and contains description of the
+					payload, including properties telling what capabilities the payload might
+					require (e.g. specific hardware architecture or features) and optionally other
+					conditions which ought to be satisfied by the provider nodes (e.g. asking only
+					for nodes which are located within specific country). Most of the content of the
+					Demand is opaque for the Golem network}
+}
+
+\newglossaryentry{offer}
+{
+        name=offer,
+        description={TODO! Offer is created by Provider nodes and contains the description of the
+					computing resources the node has to offer, as well as any optional conditions
+					for their use (e.g. limiting their availability only to certain requestor
+					nodes).}
+}
+
+\newglossaryentry{proposal}
+{
+        name=proposal,
+        description={TODO! The object which includes all the Demand/Offer/Proposal properties. 
+					This is a JSON object in "flat convention" - where keys are full property names and 
+					their values indicate properties.}
+}
+
+\newglossaryentry{agreement}
+{
+        name=agreement,
+        description={TODO! The object which includes all the Demand/Offer/Proposal properties. 
+					This is a JSON object in "flat convention" - where keys are full property names and 
+					their values indicate properties.}
+}
+
+\newglossaryentry{invoice}
+{
+        name=invoice,
+        description={TODO! An Invoice is an artifact issued by the Provider to the Requestor, 
+					in the context of a specific Agreement. It indicates the total Amount owed by 
+					the Requestor in this Agreement. 
+					No further Debit Notes shall be issued after the Invoice is issued. 
+					The issue of Invoice signals the Termination of the Agreement. 
+					No Activity execution is allowed after the Invoice is issued.}
+}
+
+\newglossaryentry{property}
+{
+        name=property,
+        description={}
+}
+
+\newglossaryentry{debit}
+{
+        name=debit note,
+        description={A Debit Note is an artifact issued by the Provider to the Requestor, in the context of a specific Activity. 
+					It is a notification of Total Amount Due incurred by the Activity until the moment the Debit Note is issued. 
+					This is expected to be used as trigger for payment in upfront-payment or pay-as-you-go scenarios.}
+}
+
+\newacronym{gn}{GN}{Golem Node}
+\newacronym{ga}{GA}{Golem Agent}
+\newacronym{gc}{GC}{Golem Client}
+\newacronym{gad}{GAD}{Golem Agent Daemon}
+\newacronym{gac}{GAC}{Golem Agent Console}
+\newacronym{gm}{GM}{Golem Manager}
+\newacronym{gsm}{GSM}{Golem Schedule Manager}
+\newacronym{gpg}{GPG}{Golem Payment Gateway}
+\newacronym{gtk}{GTK}{Golem Toolkit}
+\newacronym{gms}{GMS}{Golem Market Service}
+\newacronym{gas}{GAS}{Golem Activity Service}
+\newacronym{gps}{GPS}{Golem Payment Service}
+\newacronym{gns}{GNS}{Golem Net Service}
+\newacronym{gsb}{GSB}{Golem Service Bus}
+\newacronym{gmsapi}{GMS API}{Golem Market Service API}
+\newacronym{gasapi}{GAS API}{Golem Activity Service API}
+\newacronym{gpsapi}{GPS API}{Golem Payment Service API}
+\newacronym{gar}{GAR}{Golem Abstraction Resource}
+\newacronym{res}{RES}{Resource}
+\newacronym{up}{UP}{User Plane}
+\newacronym{epp}{EPP}{External Provider Plane}
+\newacronym{gp}{GP}{Golem Plane}
+\newacronym{gacp}{Gacp}{Golem agent console point}
+\newacronym{grp}{GRp}{Golem REST point}
+\newacronym{gmp}{Gmp}{Golem market point}
+\newacronym{gap}{Gap}{Golem activity point}
+\newacronym{gpp}{Gpp}{Golem payment point}
+\newacronym{gnp}{Gnp}{Golem net point}
+\newacronym{Grp}{Grp}{Golem resource point}
+\newacronym{Gsp}{Gsp}{Golem service point}
+\newacronym{gntw}{Gntw}{Golem network}
+\newacronym{pl}{PL}{Platform Layer}
+\newacronym{il}{IL}{Integration Layer}
+\newacronym{bl}{BL}{Business Layer}

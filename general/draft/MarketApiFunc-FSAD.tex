@@ -1,0 +1,1984 @@
+% MarketApiFunctions-FSAD-210
+
+\subsubsubsubsection{SubscribeOffer Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The SubscribeOffer function is used to publish the Provider Offer on the Golem Market. It uses the POST /offers method.
+The Offer object is a set of properties and constraints of the sale item (e.g. computational resources like CPU, MEM, HDD, GPU, NIC)
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+No parameters
+
+\end{verbatim}
+\end{tcolorbox}
+
+Offer Object
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+{
+  "properties": {},
+  "constraints": "string"
+}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+properties	& M	& 	json or flat	&		&	Offer properties \\ 
+
+\hline
+
+constraints	& O	& 	string	&		&	Offer constraints \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /offers
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+201	 		&	Subscribed \\
+\hline
+400			&	(400) Bad request \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	&	& 	string	&		&	Subscription Identifier \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:SubsOffer} on page ~\pageref{fig:SubsOffer}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/SubscribeOffer-P-Workflow.png}
+    \caption{Provider SubscribeOffer Workflow}
+	\label{fig:SubsOffer}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+%% Unsubscribe Offer 
+\subsubsubsubsection{UnsubscribeOffer Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The UnsubscribeOffer function is used to stop receiving Demand Proposals for a Provider from Golem Market. 
+It uses the DELETE /offers/\{subscriptionId\} method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Demand Object
+
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string	&		&	Subscription Identifier \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+DELETE /offers/{subscriptionId}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Offer revoked \\
+\hline
+%400			&	(400) Bad request \\
+%\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Already unsubscribed. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+
+%subscriptionId	&	& 	string	&		&	Subscription Identifier \\ 
+
+%\hline
+
+%\end{tabular}
+%\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:UsO} on page ~\pageref{fig:UsO}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/UnsubscribeOffer-P-Workflow.png}
+    \caption{Provider UnsubscribeOffer Workflow}
+	\label{fig:UsO}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{List(GetOffers) Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The GetOffers function is used to fetch all active Offers which have been published by the Provider. 
+It uses the GET /offers method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+No parameters
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Offer Object
+
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+
+%\end{verbatim}
+%\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+
+%properties	& M	& 	json or flat	&		&	Offer properties \\ 
+
+%\hline
+
+%constraints	& O	& 	string	&		&	Offer constraints \\ 
+
+%\hline
+
+%\end{tabular}
+%\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /offers
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Offer list. \\
+\hline
+400			&	(400) Bad request \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+[
+  {
+    "properties": {},
+    "constraints": "string",
+    "offerId": "string",
+    "providerId": "string",
+    "timestamp": "YYYY-MM-DDThh:mm:ss.sssZ"
+  }
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+properties	& 	& 	json or flat	&		&	Offer properties \\ 
+
+\hline
+
+constraints	& 	& 	string	&		&	Offer constraints \\ 
+
+\hline
+
+offerId		&	&	string	&		& 	Offer Identifier \\
+
+\hline
+
+providerId  & 	&	string	&		&	Provider's Node Identifier \\
+
+\hline
+
+timestamp	&	& 	string(\$date-time)	& YYYY-MM-DDThh:mm:ss.sssZ	&	Time of ???  \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:LO} on page ~\pageref{fig:LO}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/List(GetOffers)-P-Workflow.png}
+    \caption{Provider Workflow Active Offer List }
+	\label{fig:LO}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{CollectDemands Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The CollectDemands function is used to read Market responses to published Offer by the Provider. 
+It uses the GET /offers/\{subscriptionId\}/events method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+timeout
+maxEvents
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Offer Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+timeout			& O	& 	number(\$float)	&		&	Timeout used in long-polling calls (in seconds). 
+													How many seconds server should wait for response containing new events 
+													(0.0 means it should return immediately if there are no events).	Default value : 5 \\ 
+
+\hline
+
+maxEvents		& O & integer(\$int32)	&		&	Maximum number of events that server should return at once.		Default value : 10 \\
+
+\hline	
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /offers/{subscriptionId}/events
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Proposal or Agreement event list. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+[
+  {
+    "eventType": "string",
+    "eventDate": "YYYY-MM-DDThh:mm:ss.sssZ"
+  }
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+eventType	& 	& 	string	&		&	Event Type \\ 
+
+\hline
+
+eventDate	& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Event Date \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:CD} on page ~\pageref{fig:CD}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/CollectDemads-P-Workflow.png}
+    \caption{Provider Workflow Collect Demands }
+	\label{fig:CD}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{GetProposalDemand Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The GetProposalDemand function is used to fetch Proposal (Demand) with given id. 
+It uses the GET /offers/\{subscriptionId\}/proposals/\{proposalId\} method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+proposalId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Offer Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+proposalId		& M & 	string			&		&	Proposal Identifier \\
+
+\hline	
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /offers/{subscriptionId}/proposals/{proposalId}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Proposal  \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Proposal rejected. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+{
+  "properties": {},
+  "constraints": "string",
+  "proposalId": "string",
+  "issuerId": "string",
+  "state": "Initial",
+  "timestamp": "YYYY-MM-DDThh:mm:ss.sssZ",
+  "prevProposalId": "string"
+}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+properties	& 	& 	json or flat		&								&	 \\ 
+
+\hline
+
+constraints &	&	string				&								&	\\
+
+\hline
+
+proposalId	&	&	string				&								& Proposal Identifier \\
+
+\hline
+
+issuerId	&	&	string				&								& Issuer Node Id \\
+
+\hline
+
+state		&	&	enum				& [Initial, Draft, Rejected, Accepted, Expired] & Proposal State \\
+
+\hline
+
+timestamp	& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Time ? \\ 
+
+\hline
+
+prevProposalId & &	string 				&								&	Id of the proposal from other side which this proposal responds to \\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:GPD} on page ~\pageref{fig:GPD}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/GetProposalDemand-P-Workflow.png}
+    \caption{Provider Workflow Get Proposal Demand }
+	\label{fig:GPD}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{CounterProposalOffer Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The CounterProposalOffer function is used to respond with bespoke Offer to received Demand. 
+It uses the POST /offers/\{subscriptionId\}/proposals/\{proposalId\} method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+proposalId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Offer Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "properties": {},
+  "constraints": "string"
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+proposalId		& M & 	string			&		&	Proposal Identifier \\
+
+\hline	
+
+properties		& M &	json or flat 	&		& Offer Properties		\\
+
+\hline
+
+constraints 	& M &	string			&		& Offer Constraints		\\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /offers/{subscriptionId}/proposals/{proposalId}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+201	 		&	Counter Proposal created.  \\
+\hline
+400			&	(400) Bad request	\\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Proposal rejected. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+  proposalId
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+proposalId	&	&	string				&								& Proposal Identifier \\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:CPO} on page ~\pageref{fig:CPO}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/CounterProposalOffer-P-Workflow.png}
+    \caption{Provider Workflow Counter Proposal Offer }
+	\label{fig:CPO}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{RejectProposalDemand Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The RejectProposalDemand function is used to reject Proposal Demand. \\
+It uses the POST /offers/\{subscriptionId\}/proposals/\{proposalId\}/reject method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+proposalId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "message": "string",
+  "additionalProp1": {}
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId		& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+proposalId			& M & 	string			&		&	Proposal Identifier \\
+
+\hline	
+
+message				& O &	string 			&		& 		\\
+
+\hline
+
+additionalProp1 	& O &	json			&		& 		\\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /offers/{subscriptionId}/proposals/{proposalId}/reject
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Proposal rejected.  \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Proposal rejected. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+  None
+\end{verbatim}
+\end{tcolorbox}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:RPD} on page ~\pageref{fig:RPD}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/RejectProposalDemand-P-Workflow.png}
+    \caption{Provider Workflow Reject Proposal Demand }
+	\label{fig:RPD}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+
+%%%%%%%%% Demand %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsubsubsection{SubscribeDemand Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The SubscribeDemand function is used to publish the Requestor Demand on the Golem Market. It uses the POST /demands method.
+The Demand object is a set of properties and constraints of the item being ordered (e.g., computing resources such as CPU, MEM, HDD, GPU, NIC)
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+No parameters
+
+\end{verbatim}
+\end{tcolorbox}
+
+Demand Object
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+{
+  "properties": {},
+  "constraints": "string"
+}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+properties	& M	& 	json or flat	&		&	Offer properties \\ 
+
+\hline
+
+constraints	& O	& 	string	&		&	Offer constraints \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /demands
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+201	 		&	Subscribed \\
+\hline
+400			&	(400) Bad request \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	&	& 	string	&		&	Subscription Identifier \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:SubsDemand} on page ~\pageref{fig:SubsDemand}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/SubscribeDemand-R-Workflow.png}
+    \caption{Requestor SubscribeDemand Workflow}
+	\label{fig:SubsDemand}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+%% Unsubscribe Demand 
+\subsubsubsubsection{UnsubscribeDemand Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The UnsubscribeDemand function is used to stop receiving Offer Proposals for a Requestor from Golem Market. \\ 
+It uses the DELETE /demands/\{subscriptionId\} method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Demand Object
+
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string	&		&	Subscription Identifier \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+DELETE /demands/{subscriptionId}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Demand revoked \\
+\hline
+%400			&	(400) Bad request \\
+%\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Already unsubscribed. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+
+%subscriptionId	&	& 	string	&		&	Subscription Identifier \\ 
+
+%\hline
+
+%\end{tabular}
+%\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:UsD} on page ~\pageref{fig:UsD}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/UnsubsribeDemand-R-Workflow.png}
+    \caption{Requestor UnsubscribeDemand Workflow}
+	\label{fig:UsD}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{List(GetDemands) Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The GetDemands function is used to fetch all active Demands which have been published by the Requestor. \\ 
+It uses the GET /offers method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+No parameters
+
+\end{verbatim}
+\end{tcolorbox}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /offers
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Demand list. \\
+\hline
+400			&	(400) Bad request \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+[
+  {
+    "properties": {},
+    "constraints": "string",
+    "demandId": "string",
+    "requestorId": "string",
+    "timestamp": "YYYY-MM-DDThh:mm:ss.sssZ"
+  }
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+properties	& 	& 	json or flat	&		&	Demand properties \\ 
+
+\hline
+
+constraints	& 	& 	string	&		&	Demand constraints \\ 
+
+\hline
+
+demandId		&	&	string	&		& 	Demand Identifier \\
+
+\hline
+
+requestorId  & 	&	string	&		&	Requestor's Node Identifier \\
+
+\hline
+
+timestamp	&	& 	string(\$date-time)	& YYYY-MM-DDThh:mm:ss.sssZ	&	Time of ???  \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:LD} on page ~\pageref{fig:LD}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/List(GetDemands)-R-Workflow.png}
+    \caption{Requestor Workflow Active Demand List }
+	\label{fig:LD}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{CollectOffers Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The CollectOffers function is used to read Market responses to published Demand by the Requestor.  \\
+It uses the GET /demands/\{subscriptionId\}/events method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+timeout
+maxEvents
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Offer Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+timeout			& O	& 	number(\$float)	&		&	Timeout used in long-polling calls (in seconds). 
+													How many seconds server should wait for response containing new events 
+													(0.0 means it should return immediately if there are no events).	Default value : 5 \\ 
+
+\hline
+
+maxEvents		& O & integer(\$int32)	&		&	Maximum number of events that server should return at once.		Default value : 10 \\
+
+\hline	
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /demands/{subscriptionId}/events
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Proposal or Agreement event list. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+[
+  {
+    "eventType": "string",
+    "eventDate": "YYYY-MM-DDThh:mm:ss.sssZ"
+  }
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+eventType	& 	& 	string	&		&	Event Type \\ 
+
+\hline
+
+eventDate	& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Event Date \\ 
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:CO} on page ~\pageref{fig:CO}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/CollectOffers-R-Workflow.png}
+    \caption{Requestor Workflow Collect Offers }
+	\label{fig:CO}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{GetProposalOffer Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The GetProposalOffer function is used to fetch Proposal (Offer) with given id. \\
+It uses the GET /demands/\{subscriptionId\}/proposals/\{proposalId\} method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+proposalId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Offer Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "properties": {},
+%  "constraints": "string"
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+proposalId		& M & 	string			&		&	Proposal Identifier \\
+
+\hline	
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /demands/{subscriptionId}/proposals/{proposalId}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Proposal  \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Proposal rejected. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+{
+  "properties": {},
+  "constraints": "string",
+  "proposalId": "string",
+  "issuerId": "string",
+  "state": "Initial",
+  "timestamp": "YYYY-MM-DDThh:mm:ss.sssZ",
+  "prevProposalId": "string"
+}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+properties	& 	& 	json or flat		&								&	 \\ 
+
+\hline
+
+constraints &	&	string				&								&	\\
+
+\hline
+
+proposalId	&	&	string				&								& Proposal Identifier \\
+
+\hline
+
+issuerId	&	&	string				&								& Issuer Node Id \\
+
+\hline
+
+state		&	&	enum				& [Initial, Draft, Rejected, Accepted, Expired] & Proposal State \\
+
+\hline
+
+timestamp	& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Time ? \\ 
+
+\hline
+
+prevProposalId & &	string 				&								&	Id of the proposal from other side which this proposal responds to \\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:GPO} on page ~\pageref{fig:GPO}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/GetProposalOffer-R-Workflow.png}
+    \caption{Requestor Workflow Get Proposal Offer }
+	\label{fig:GPO}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{CounterProposalDemand Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The CounterProposalDemand function is used to respond with bespoke Demand to received Offer. \\
+It uses the POST /demands/\{subscriptionId\}/proposals/\{proposalId\} method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+proposalId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Demand Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "properties": {},
+  "constraints": "string"
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId	& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+proposalId		& M & 	string			&		&	Proposal Identifier \\
+
+\hline	
+
+properties		& M &	json or flat 	&		& Demand Properties		\\
+
+\hline
+
+constraints 	& M &	string			&		& Demand Constraints		\\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /demands/{subscriptionId}/proposals/{proposalId}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+201	 		&	Counter Proposal created.  \\
+\hline
+400			&	(400) Bad request	\\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Proposal rejected. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+  proposalId
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+proposalId	&	&	string				&								& Proposal Identifier \\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:CPD} on page ~\pageref{fig:CPD}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/CounterProposalDemand-R-Workflow.png}
+    \caption{Requestor Workflow Counter Proposal Demand }
+	\label{fig:CPD}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{RejectProposalOffer Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The RejectProposalOffer function is used to reject Proposal Offer. \\
+It uses the POST /demands/\{subscriptionId\}/proposals/\{proposalId\}/reject method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+subscriptionId
+proposalId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "message": "string",
+  "additionalProp1": {}
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+subscriptionId		& M	& 	string			&		&	Subscription Identifier \\ 
+
+\hline
+
+proposalId			& M & 	string			&		&	Proposal Identifier \\
+
+\hline	
+
+message				& O &	string 			&		& 		\\
+
+\hline
+
+additionalProp1 	& O &	json			&		& 		\\
+
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /demands/{subscriptionId}/proposals/{proposalId}/reject
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Proposal rejected.  \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	Proposal rejected. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+  None
+\end{verbatim}
+\end{tcolorbox}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:RPO} on page ~\pageref{fig:RPO}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,height=12cm,angle=0]{./diag/Workflow/Market/RejectProposalOffer-R-Workflow.png}
+    \caption{Requestor Workflow Reject Proposal Offer }
+	\label{fig:RPO}
+\end{figure}
+
+
+\end{enumerate}
+
+\newpage

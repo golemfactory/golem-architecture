@@ -1,0 +1,115 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[left=1.5cm, right=2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{ragged2e}
+\usepackage[yyyymmdd]{datetime}
+\usepackage[acronym,nonumberlist]{glossaries}
+\usepackage{iftex}
+\usepackage{afterpage}
+\usepackage{lscape}
+\usepackage[table]{xcolor}
+\usepackage{tcolorbox}
+
+\DeclareUnicodeCharacter{200B}{{\hskip 0pt}}
+
+% Glossary
+
+\makeglossaries
+\include{Glossary-FSAD.tex}
+
+% ToC Env
+
+\pagenumbering{arabic}
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+\makeatletter
+\newcommand\subsubsubsection{\@startsection{paragraph}{4}{\z@}{-2.5ex\@plus -1ex \@minus -.25ex}{1.25ex \@plus .25ex}{\normalfont\normalsize\bfseries}}
+\newcommand\subsubsubsubsection{\@startsection{subparagraph}{5}{\z@}{-2.5ex\@plus -1ex \@minus -.25ex}{1.25ex \@plus .25ex}{\normalfont\normalsize\bfseries}}
+\makeatother
+
+\renewcommand{\dateseparator}{--}
+
+% Header and Footer Definition
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhf{}
+\fancyhead[R]{\bfseries Golem Network Architecture Overview}
+\fancyfoot[L]{
+    \raggedright{Author: P. Rekucki, M. Rakowski \\ Company: Golem Factory}
+    }
+\fancyfoot[C]{
+    \centering{Draft \\ Propertiary}
+    }
+\fancyfoot[R]{
+    \raggedleft{Date: \today \\ Page: \thepage\ of \pageref{LastPage}}
+    }
+
+\begin{document}
+
+% Title Page
+
+\thispagestyle{empty}
+\begin{flushright}
+    \includegraphics[width=100bp]{Golem.png}
+\end{flushright}
+
+\vskip4cm
+
+\begin{flushleft}
+    \huge Functional and System Architecture Document
+\end{flushleft}
+\hrule
+\begin{flushleft}
+    \LARGE Golem Network Architecture Overview
+\end{flushleft}
+
+\vskip8cm
+\hrule
+
+\begin{center}
+    \Large Warsaw 2024
+\end{center}
+
+\break
+
+% ToC
+
+\tableofcontents
+
+\newpage
+
+% Sections Files
+
+%\section{Scope}
+\include{Scope-FSAD.tex}
+
+%\section{Reference}
+\include{Reference-FSAD.tex}
+
+%\section{Definition of terms and Abbreviations}
+\include{DefAbb-FSAD.tex}
+
+%\section{Framework Concept}
+\include{Concept-FSAD.tex}
+
+%\section{Golem Plane}
+\include{GPlane-FSAD.tex}
+
+%\section{User Plane}
+\include{UPlane-FSAD.tex}
+
+%\section{External Provider Plane}
+\include{EPPlane-FSAD.tex}
+
+%\section{Layers}
+\include{Layers-FSAD.tex}
+
+\end{document}
