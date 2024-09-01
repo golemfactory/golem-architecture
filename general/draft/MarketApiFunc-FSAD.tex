@@ -1982,3 +1982,1464 @@ default		&	Unexpected error. \\
 \end{enumerate}
 
 \newpage
+
+\subsubsubsubsection{ListAgreements Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The ListAgreements function is used to list Agreement objects with optional filters by the Requestor and Provider node. 
+It uses the GET /agreements method.
+
+\item Side
+
+Both
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+appSessionId
+state
+afterTimestamp
+beforeTimestamp
+
+\end{verbatim}
+\end{tcolorbox}
+
+Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "proposalId": "string",
+  "validTo": "YYYY-MM-DDThh:mm:ss.sssZ"
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+appSessionId	& O & 	string				&			& A correlation/session identifier used for querying events related to an action where this appSessionId has been specified \\
+\hline
+
+state			& O	& 	string(enum)		&	[Proposal, Pending, Cancelled, Rejected, Approved, Expired, Terminated]	&	State of an agreement \\ 
+\hline
+
+afterTimestamp	& O &	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Apply only to records created later than the specified timestamp \\
+\hline
+
+beforeTimestamp	& O &	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Apply only to records created before the specified timestamp \\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /agreements
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Result of listing agreements. \\
+\hline
+400			&	(400) Bad request \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+[
+  {
+    "id": "string",
+    "timestamp": "YYYY-MM-DDThh:mm:ss.sssZ",
+    "approvedDate": "YYYY-MM-DDThh:mm:ss.sssZ",
+    "role": "string"
+  }
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+id				& 	& 	string				&								&	Agreement Identyfier \\ 
+\hline
+
+timestamp		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+approvedDate	& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+role			& 	& 	string				&								&	 \\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:BLA} on page ~\pageref{fig:BLA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/ListAgreements-B-Workflow.png}
+    \caption{Both Workflow List Agreements }
+	\label{fig:BLA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+\subsubsubsubsection{GetAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The GetAgreement function is used to fetch Agreement objects with given agreementId by the Requestor and Provider node. 
+It uses the GET /agreements/\{agreementId\} method.
+
+\item Side
+
+Both
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "proposalId": "string",
+%  "validTo": "YYYY-MM-DDThh:mm:ss.sssZ"
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId	& M & 	string				&			& Agreement Identifier \\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /agreements/agreementId
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Agreement. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+{
+  "agreementId": "string",
+  "demand": {
+    "properties": {},
+    "constraints": "string",
+    "demandId": "string",
+    "requestorId": "string",
+    "timestamp": "YYYY-MM-DDThh-MM-DDThh:mm:ss.sssZ"
+  },
+  "offer": {
+    "properties": {},
+    "constraints": "string",
+    "offerId": "string",
+    "providerId": "string",
+    "timestamp": "YYYY-MM-DDThh-MM-DDThh:mm:ss.sssZ"
+  },
+  "validTo": "YYYY-MM-DDThh-MM-DDThh:mm:ss.sssZ",
+  "approvedDate": "YYYY-MM-DDThh-MM-DDThh:mm:ss.sssZ",
+  "state": "Proposal",
+  "timestamp": "YYYY-MM-DDThh-MM-DDThh:mm:ss.sssZ",
+  "appSessionId": "string",
+  "proposedSignature": "string",
+  "approvedSignature": "string",
+  "committedSignature": "string"
+}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId				& 	& 	string				&		&	Agreement Identyfier \\ 
+\hline
+
+demand.properties		&	&	json or flat		&		& 	Demand Properties \\
+\hline
+
+demand.constraints		&	&	string				&		&	Demand Constraints \\	
+\hline
+
+demand.demandId			&	&	string				&		&	Demand Identifier \\
+\hline 		
+
+demand.requestorId		&	&	string 				&		&	Requestor Node Identifier \\
+\hline
+
+demand.timestamp		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+offer.properties		&	&	json or flat		&		& 	Offer Properties \\
+\hline
+
+offer.constraints		&	&	string				&		&	Offer Constraints \\	
+\hline
+
+offer.offerId			&	&	string				&		&	Offer Identifier \\
+\hline 		
+
+offer.providerId		&	&	string 				&		&	Provider Node Identifier \\
+\hline
+
+offer.timestamp		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+validTo			& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+approvedDate	& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+state			& 	& 	string(enum)		&	[ Proposal, Pending, Cancelled, Rejected, Approved, Expired, Terminated ]	& Agreement State	\\ 
+\hline
+
+timestamp		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+appSessionId	&	&	string 				&			&	AppSessionId \\
+\hline
+
+proposedSignature &		& string 			&			&	Proposed Signature \\
+\hline
+
+approvedSignature &		&  string			&			&  Approved Signature \\
+\hline  
+  
+committedSignature &	& 	string			&			&	Committed Signature \\
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:BGA} on page ~\pageref{fig:BGA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/GetAgreement-B-Workflow.png}
+    \caption{Both Workflow Get Agreement }
+	\label{fig:BGA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% AgreementEvents
+\subsubsubsubsection{CollectAgreementEvents Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The CollectAgreementEvents function is used to collect events related to an Agreement objects with optional filters by the Requestor and Provider node. 
+It uses the GET /agreementEvents method.
+
+\item Side
+
+Both
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+appSessionId
+maxEvents
+afterTimestamp
+timeout
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "proposalId": "string",
+%  "validTo": "YYYY-MM-DDThh:mm:ss.sssZ"
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+appSessionId	& O & 	string				&			& A correlation/session identifier used for querying events related to an action where this appSessionId has been specified \\
+\hline
+
+maxEvents			& O	& 	integer(\$int32)		&	10	&	Maximum number of events that server should return at once. \\ 
+\hline
+
+afterTimestamp	& O &	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	Apply only to records created later than the specified timestamp \\
+\hline
+
+timeout	& O &	number(\$float)	&	5	&	Timeout used in long-polling calls (in seconds). 
+											How many seconds server should wait for response containing new events 
+											(0.0 means it should return immediately if there are no events) \\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+GET /agreementEvents
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Agreement-related event list. \\
+\hline
+400			&	(400) Bad request \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+[
+  {
+    "eventType": "string",
+    "eventDate": "YYYY-MM-DDThh:mm:ss.sssZ",
+    "agreementId": "string"
+  }
+]
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+\hline
+
+eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+
+eventType		& 	& 	string(enum)		&	[AgreementApprovedEvent, AgreementRejectedEvent, AgreementCancelledEvent, AgreementTerminatedEvent] &	Event Type \\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:CAE} on page ~\pageref{fig:CAE}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/CollectAgreementEvents-B-Workflow.png}
+    \caption{Both Workflow Collect Agreement Events }
+	\label{fig:CAE}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% TerminateAgreement
+\subsubsubsubsection{TerminateAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The TerminateAgreement function is used to terminate approved Agreement objects by the Requestor and Provider node. 
+It uses the POST /agreements/\{agreementId\}/terminate method.
+
+\item Side
+
+Both
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "message": "string",
+  "additionalProp1": {}
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+
+message			& O	& 	string				&		&	 	\\ 
+\hline
+
+additionalProp1	& O &	json				&		&		\\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/terminate
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Agreement terminated. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+409			&	(409) Conflict. \\
+\hline
+410			&	(410) Gone \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+%agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+%\hline
+%eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+%\hline
+%eventType		& 	& 	string(enum)		&	 &	Event Type \\ 
+%\hline
+%\end{tabular}
+%\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:BTA} on page ~\pageref{fig:BTA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/TerminateAgreement-B-Workflow.png}
+    \caption{Both Workflow Terminate Agreement  }
+	\label{fig:BTA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% ReasonTerminateAgreement
+\subsubsubsubsection{ReasonTerminateAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The ReasonTerminateAgreement function is used to get termination reason reported when terminateAgreement was called. 
+This method is used by the Requestor and Provider node. It uses the POST /agreements/\{agreementId\}/terminate/reason method.
+
+\item Side
+
+Both
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%agreementId
+%
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/terminate/reason
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+200	 		&	Agreement termination reason. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+400			&	(400) Bad request \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+{
+  "eventType": "string",
+  "eventDate": "YYYY-MM-DDThh:mm:ss.sssZ",
+  "agreementId": "string",
+  "terminator": "Requestor",
+  "signature": "string",
+  "reason": {
+    "message": "string",
+    "additionalProp1": {}
+  }
+}
+
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+agreementId		& 	& 	string				&								&	Agreement Identyfier \\ 
+\hline
+eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+\hline
+eventType		& 	& 	string(enum)		&	[AgreementApprovedEvent, AgreementRejectedEvent, AgreementCancelledEvent, AgreementTerminatedEvent] &	Event Type \\ 
+\hline
+terminator 		&	&	enum 				& [Requestor, Provider]			&				\\
+\hline
+signature 		&	&	string 				&								&				\\
+\hline
+reason.message 	&	&	string 				&								&				\\
+\hline
+reason.additionalProp1	&	&	json 			&								&				\\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:BRTA} on page ~\pageref{fig:BRTA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/ReasonTerminateAgreement-B-Workflow.png}
+    \caption{Both Workflow Reason Terminate Agreement  }
+	\label{fig:BRTA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% ConfirmAgreement
+
+\subsubsubsubsection{ConfirmAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The ConfirmAgreement function is used to send Agreement proposal object to the Provider by the Requestor node. 
+It uses the POST /agreements/\{agreementId\}/confirm method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+appSessionId
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "message": "string",
+%  "additionalProp1": {}
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+
+appSessionId	& O	& 	string				&		&	A correlation/session identifier used for querying events related to an action where this appSessionId has been specified 	\\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/confirm
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Agreement confirmed. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	(410) Gone \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+%agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+%\hline
+%eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+%\hline
+%eventType		& 	& 	string(enum)		&	 &	Event Type \\ 
+%\hline
+%\end{tabular}
+%\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:RCA} on page ~\pageref{fig:RCA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/ConfirmAgreement-R-Workflow.png}
+    \caption{Requestor Workflow Confirm Agreement  }
+	\label{fig:RCA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% CancelAgreement
+
+\subsubsubsubsection{CancelAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The CancelAgreement function is used to cancel Agreement object by the Requestor node. 
+It uses the POST /agreements/\{agreementId\}/cancel method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+appSessionId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "message": "string",
+  "additionalProp1": {}
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+
+message 		& O	& 	string				&		&	 	\\ 
+\hline
+
+additionalProp1 & O	& 	json				&		&	 	\\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/cancel
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Agreement cancelled. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	(410) Gone \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+%agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+%\hline
+%eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+%\hline
+%eventType		& 	& 	string(enum)		&	 &	Event Type \\ 
+%\hline
+%\end{tabular}
+%\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:RCCA} on page ~\pageref{fig:RCCA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/CancelAgreement-R-Workflow.png}
+    \caption{Requestor Workflow Cancel Agreement  }
+	\label{fig:RCCA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% WaitAgreement WaitForApproval
+
+\subsubsubsubsection{WaitForApproval Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The WaitForApproval function is used to wait for Agreement approval by the Provider. This method is used by the Requestor node. 
+It uses the POST /agreements/\{agreementId\}/wait method.
+
+\item Side
+
+Requestor
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+timeout
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "message": "string",
+%  "additionalProp1": {}
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+
+timeout 		& O	& 	number(\$float)				&	5	&	Timeout used in blocking calls waiting for eg. acknowledgement. 
+																How many seconds server should wait for response/acknowledgement of an action 
+																(0.0 means it should wait for other party's response indefinitely)	\\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/wait
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Agreement approved by the Provider. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+408			&	(408) Timeout. \\
+\hline
+409			&	(409) Conflict. \\
+\hline
+410			&	(410) Gone \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+%agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+%\hline
+%eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+%\hline
+%eventType		& 	& 	string(enum)		&	 &	Event Type \\ 
+%\hline
+%\end{tabular}
+%\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:RWW} on page ~\pageref{fig:RWW}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/WaitForAgreement-R-Workflow.png}
+    \caption{Requestor Workflow WaitForApproval }
+	\label{fig:RWW}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% ApproveAgreement
+
+\subsubsubsubsection{ApproveAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The ApproveAgreement function is used to approve Agreement proposed by Requestor. This method is used by the Provider node. 
+It uses the POST /agreements/\{agreementId\}/approve method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+appSessionId
+timeout
+
+\end{verbatim}
+\end{tcolorbox}
+
+%Object
+%\begin{tcolorbox}[boxrule=0pt, frame empty]
+%\begin{verbatim}
+%{
+%  "message": "string",
+%  "additionalProp1": {}
+%}
+%\end{verbatim}
+%\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+
+appSessionId	& O	& 	string				&		&	A correlation/session identifier used for querying events related to an action where this appSessionId has been specified 	\\ 
+\hline
+
+timeout			& O & 	number(\$float)		&	5 	&  Timeout used in blocking calls waiting for eg. acknowledgement. 
+														How many seconds server should wait for response/acknowledgement of an action 
+														(0.0 means it should wait for other party's response indefinitely) \\
+\hline
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/approve
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Agreement approved. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+408			&	(408) Timeout. \\
+\hline
+410			&	(410) Gone \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+%agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+%\hline
+%eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+%\hline
+%eventType		& 	& 	string(enum)		&	 &	Event Type \\ 
+%\hline
+%\end{tabular}
+%\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:PAA} on page ~\pageref{fig:PAA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/ApproveAgreement-P-Workflow.png}
+    \caption{Provider Workflow Approve Agreement  }
+	\label{fig:PAA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
+% RejectAgreement
+
+\subsubsubsubsection{RejectAgreement Function}
+
+\begin{enumerate}
+
+\item Profile
+
+\begin{enumerate}
+
+\item Description
+
+The RejectAgreement function is used to reject Agreement object proposed by Requestor. This method is used by the Provider node. 
+It uses the POST /agreements/\{agreementId\}/reject method.
+
+\item Side
+
+Provider
+
+\end{enumerate}
+
+\item Request
+
+\begin{enumerate}
+
+\item Input
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+agreementId
+
+\end{verbatim}
+\end{tcolorbox}
+
+Object
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+{
+  "message": "string",
+  "additionalProp1": {}
+}
+\end{verbatim}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & 	string				&		& 	Agreement Identifier \\
+\hline
+
+message 		& O	& 	string				&		&	 	\\ 
+\hline
+
+additionalProp1 & O	& 	json				&		&	 	\\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+\item REST Method
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim} 
+
+POST /agreements/{agreementId}/reject
+
+\end{verbatim}
+\end{tcolorbox}
+
+\end{enumerate}
+
+\item Response
+
+\begin{center}
+\begin{tabular}{|c|l|} 
+\hline
+\rowcolor{lightgray}	Code 		& 	Description \\
+\hline
+204	 		&	Agreement rejected. \\
+\hline
+404			&	(404) The specified resource was not found. \\
+\hline
+401			&	(401) Authorization information is missing or invalid. \\
+\hline
+410			&	(410) Gone \\
+\hline
+default		&	Unexpected error. \\
+\hline
+\end{tabular}
+\end{center}
+
+\item Result
+
+\begin{tcolorbox}[boxrule=0pt, frame empty]
+\begin{verbatim}
+
+None
+
+\end{verbatim}
+\end{tcolorbox}
+
+%\begin{center}
+%\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+%\hline
+%\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+%\hline
+%agreementId		& 	& 	string				&						&	Agreement Identyfier \\ 
+%\hline
+%eventDate		& 	& 	string(\$date-time)	&	YYYY-MM-DDThh:mm:ss.sssZ	&	 \\ 
+%\hline
+%eventType		& 	& 	string(enum)		&	 &	Event Type \\ 
+%\hline
+%\end{tabular}
+%\end{center}
+
+\item Workflow
+
+(Please see Figure ~\ref{fig:PRA} on page ~\pageref{fig:PRA}):
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=11cm,height=11cm,angle=0]{./diag/Workflow/Market/RejectAgreement-P-Workflow.png}
+    \caption{Provider Workflow Reject Agreement  }
+	\label{fig:PRA}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
+
