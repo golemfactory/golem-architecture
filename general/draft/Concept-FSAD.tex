@@ -2,6 +2,34 @@
 
 \subsection{Introduction}
 
+The Golem System is a framework for trading computing power in the Peer2Peer (P2P) model.
+Settlement of computing power usage takes place in the Etherium network and its derivatives.
+
+The framework consists of a set of basic components and dependencies between them, 
+as well as programming elements that allow for the creation of decentralized and distributed
+applications and services using the Golem trading model.
+
+These are:
+
+\begin{itemize}
+
+\item protocols
+\item libraries
+\item API
+\item implementation of sample components
+
+\end{itemize}
+
+The goal of the Golem System is to provide
+
+\begin{itemize}
+
+\item portability
+\item ease of installation
+\item flexibility
+
+\end{itemize}
+
 In this chapter, the general concept of the Golem network architecture will be presented. 
 Both the assumptions and elements of the network, applications, services, protocols will be 
 described in the most abstract way possible, so as not to lose the idea of ​​solving the system 
@@ -9,19 +37,18 @@ due to the complexity of the processes taking place in it.
 
 A detailed description of the components will be described later in the document.
 
-\subsection{Definitions}
+%\subsection{Definitions}
+%\begin{description}
+%\item[Plane] This is a set of elements (physical, virtual or their abstractions),
+%applications, services, protocols, functions that allow for internal
+%and external communication, their configuration and monitoring at all layers.
+%\end{description}
 
-\begin{description}
-
-\item[Plane] This is a set of elements (physical, virtual or their abstractions),
-applications, services, protocols, functions that allow for internal
-and external communication, their configuration and monitoring at all layers.
-
-\end{description}
+\newpage
 
 \subsection{Abstract Architecture}
 
-The architecture of the Golem Network will be presented on three planes 
+The architecture of the Golem System will be presented on three planes 
 (Please see Figure ~\ref{fig:Plane} on page ~\pageref{fig:Plane}):
 
 \begin{enumerate}
@@ -32,18 +59,17 @@ The architecture of the Golem Network will be presented on three planes
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=7cm,height=7cm,angle=0]{./diag/03.AbsPlane-Diag-v002.png}
+    \includegraphics[width=8cm,height=8cm,angle=0]{./diag/Abstract/GolemSystemPlane-Abstract.png}
     \caption{Abstraction Plane Concept}
 	\label{fig:Plane}
 \end{figure}
 
-The Golem Plane is the basis on which nodes called Golem Nodes are defined, 
-which together with the Central Net Server build the Golem Network 
+The Golem Plane is the basis on which nodes called Golem Nodes are defined, which build the Golem Network 
 (Please see Figure ~\ref{fig:Ntw} on page ~\pageref{fig:Ntw}).
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=7cm,height=7cm,angle=0]{./diag/02.AbsNtw-Diag-v002.png}
+    \includegraphics[width=8cm,height=8cm,angle=0]{./diag/Abstract/GolemSystemNetwork-Abstract.png}
 	\caption{Abstraction Network Concept}
     \label{fig:Ntw}
 \end{figure}
@@ -58,128 +84,107 @@ outside the Golem Network but used by this network. An example is the availabili
 payments in cryptocurrencies.
 
 The above Planes with their component elements distributed over three main layers 
-are shown in the figure 
-(Please see Figure ~\ref{fig:Arch} on page ~\pageref{fig:Arch}):
+are shown in the figure (Please see Figure ~\ref{fig:Arch} on page ~\pageref{fig:Arch}):
 
 \begin{enumerate}
 	\item Platform Layer (PL)
 	\item Integration Layer (IL)
-	\item Application and Services Layer (ASL)
+	\item Buisness Layer (BL)
 \end{enumerate}
+
+In the Platform Layer (PL) there is the Golem Agent (GA) element,
+which allows you to create a Golem Node (GN) from a computer unit.
+Golem Node is a member of the Golem Network (Gntw).
+
+In the Integration Layer (IL) there is the Golem Agent console (GAC) and Golem Toolkit (GTK).
+The Golem Agent console consists of tools for configuring and monitoring the created applications and services
+and managing the Golem Agent element, which is a daemon of the created node (GN).
+The Golem Toolkit is a set of tools, APIs that allow you to create decentralized and distributed applications and services
+on the Golem network infrastructure and using the Golem commercial model.
+
+In the Business Layer (BL) there is the user plane (UP) and the external provider plane (EPP).
+
+In the user plane (UP), decentralized applications and services of the Golem network are implemented.
+Users can use service and application templates created in the form of the "standards - change the name" framework specification.
+
+This layer defines user roles that can be assigned to Golem nodes depending on the aspect of the node's computational resources and/or the service it provides.
+
+The external provider layer (EPP) is used to handle payments that take place on the Etherium network and its derivatives.
+This layer can be used to define and implement connections to other application and service networks.
 
 \afterpage{
 \begin{landscape}
 	\begin{figure}[htbp]
 		\centering
-		\includegraphics[width=\hsize]{./diag/01.AbsArch-Diag-v002.png}
+		\includegraphics[width=\hsize]{./diag/Abstract/GolemSystemLayers-Abstract.png}
 		\caption{Abstraction Architecture Diagram}
 		\label{fig:Arch}
 	\end{figure}
 \end{landscape}
 }
 
-In the Platform Layer there is the Golem Agent (GA) element, which allows to create a Golem Node (GN) from a computer unit, 
-which is a member of the Golem network (Gntw).
+\newpage
 
-In the Integration Layer there is the Golem Agent Console (GAC) and the Golem Toolkit (GTK). 
-The Golem Agent Console consists of tools for configuring and monitoring created applications and services 
-and managing the Golem Agent element, which is the daemon of the created node (GN). 
-The Golem Toolkit is a set of tools, APIs, which allow to create decentralized and distributed applications and services
-on the Golem network infrastructure.
+The subject of the trade (purchase-sale of the service of using computing resources)
+is described using the service model description language (Golem SMDL).
+This language is based on a simple definition of resource parameters (the list is available) and their constraints, which are expressed using filters.
+The filter syntax is based on the LDAP filter syntax.
 
-In the Applications and Services Layer there is the User Plane (UP) and the External Provider Plane (EPP).
-
-On the User Plane, decentralized applications and services of the Golem network Users are implemented,
-which can use service and application templates created in the form of a "standards - change the name" specification framework.
-
-On this plane, user roles are defined, which can be assigned to Golem Nodes depending on the aspect of the node's computational resources and/or the service it provides.
-A single aspect of a resource and/or service defines a dimension of the namespace.
-Thus, a set of dimensions creates a multidimensional structure of the namespace.
-
-Golem Agent contains basic tools for creating a decentralized market of distributed applications and services.
-These are:
-
-\begin{enumerate}
-
-\item {\bf Golem Market Service (GMS)}
-
-This service has functions for creating a market of distributed computing resources.
-This service allows sellers (Providers) to describe the subject of sale in the form of an offer
-and buyers (Requestors) to describe the subject of demand in the form of a Demand.
-The basic elements of the offer are:
-
+The general description of the service should include:
 
 \begin{itemize}
-\item	Resource Vector
-\item  	Usage Vector
-\item  	Context Vector
-\item 	Pricing Function
+\item {\bf Resource vector R} describes the infrastructure environment using qualitative and quantitative parameters as a service being traded
+\item {\bf Usage vector B} defines the factors influencing the measurement of the consumption of the service of using computing resources. These factors are expressed in arbitrary counters
+\item {\bf Context vector C} includes important factors that affect the price
+\item {\bf Pricing function} indicates the service parameters and cumulative usage counters that affect the cost of the service
 \end{itemize}
 
-In addition, the service allows for decentralized searches of offers and demands in order to associate them
-based on the conditions described in offers and demands. Matched objects are represented as
-proposal. An accepted and confirmed proposal allows for the creation of an agreement object, which
-after being signed by the parties is a confirmation of the sale and purchase of goods such as computing resources.
-
-The Market service is based on the tuple space (Tuples Space).
-A tuple is a finite list of elements that can be used to represent a data item or a message.
-
-In the Golem system, in the Market service, tuples are used to describe objects such as:
-offer, demand, proposal, agreement. The space is used to define interaction functions on these objects
-such as:
+The following parties participate in the trading process
 
 \begin{itemize}
-\item  Observation
-\item  Discovery
-\item  Negotiation
-\item  Agreement
+\item {\bf requestor :} a role of a P2P network node that wants to use the computing resources of other nodes.
+\item {\bf provider :} a role of a P2P network node that wants to sell its resources to other nodes
+\item {\bf user :} an end user who represents the requestor node and/or the provider
+\item {\bf developer :} an application developer
 \end{itemize}
 
-\item {\bf Golem Activity Service (GAS)}
-
-This service has tools that allow the Requestor's applications and services to be launched on the Provider's computing resources,
-while simultaneously measuring the use of these resources in accordance with the concluded contract in the form of an agreement. The measurement of the use of
-resources is recorded in the form of metrics in the Usage Counters Vector (UCV) object.
-
-\item {\bf Golem Payment Service (GPS)}
-
-This service enables settlements between the parties based on the terms contained in the contract. Usage Counters Vector (UCV) objects created in the Golem Activity Service and the settlement terms included in the agreement are used to settle the sale-purchase item.
-
-The Usage Counters Vector (UCV) associated with the agreement and activity creates Activity Detail Record (ADR) objects.
-
-Settlement functions allow the ADR object to be transformed into a Debit Note (DN) object, where the total incremental settlement amounts for using Provider resources are included. The frequency of creating and sending Debit Notes objects between the parties is included in the agreement. The state of completing the use of Provider resources allows for the generation of an invoice summarizing the agreement between the parties. Payment is made via the blockchain operator. Optimization of payment transaction costs is
-possible by setting the terms of this operation in the agreement object.
-
-\item {\bf Golem Net Service (GNS)}
-
-In a single node, the above services communicate with each other via the Golem Service Bus (GSB).
-
-In turn, communication between nodes takes place via the Golem Net Service (GNS) service, which provides peer to peer (p2p) protocols.
-
-This service also provides communication to the Registry and Discovery Service located on the Golem Central Net Server (GCNS).
-
-\item {\bf Golem Services API}
-
-The following APIs are available:
+A user as a provider prepares an offer in the form of an Offer object using the service model description language.
+A user as a requestor prepares a demand in the form of a Demand object using the service model description language.
+Both the Offer and Demand objects consist of two elements:
 
 \begin{itemize}
-\item Golem Market Service API (GMS API)
-\item Golem Activity Service API (GAS API)
-\item Golem Payment Service API (GPS API)
-\item Golem Net Service API (GNS API)
-\item Golem Service Bus API (GSB API)
+\item properties
+\item constraints
 \end{itemize}
 
-All of the above services have APIs that allow you to create new decentralized and distributed applications and services,
-which use the created Golem network infrastructure (Gntw) and the genericity properties of the underlying services.
+The formal language of resource description and settlement conditions is intended to automatically or semi-automatically associate demands with offers.
+The specification of the service model description language is presented later in the document.
 
-The APIs of individual services also allow you to create interaction automation, e.g. settlements, 
-and offer optimization and orders, and many other tools.
+\newpage
 
-\end{enumerate}
+%A single aspect of a resource and/or service defines a dimension of the namespace.
+% Thus, a set of dimensions creates a multidimensional structure of the namespace.
+%Golem Agent contains basic tools for creating a decentralized market of distributed applications and services. These are:
+%\begin{enumerate}
+%\item {\bf Golem Market Service (GMS)}
+%\item {\bf Golem Activity Service (GAS)}
+%\item {\bf Golem Payment Service (GPS)}
+%\item {\bf Golem Net Service (GNS)
+%\item {\bf Golem Services API}
+%The following APIs are available:
+%\begin{itemize}
+%\item Golem Market Service API (GMS API)
+%\item Golem Activity Service API (GAS API)
+%\item Golem Payment Service API (GPS API)
+%\item Golem Net Service API (GNS API)
+%\item Golem Service Bus API (GSB API)
+%\end{itemize}
+%All of the above services have APIs that allow you to create new decentralized and distributed applications and services,
+%which use the created Golem network infrastructure (Gntw) and the genericity properties of the underlying services.
+%The APIs of individual services also allow you to create interaction automation, e.g. settlements, 
+%and offer optimization and orders, and many other tools.
+%\end{enumerate}
 
+%\break
 
-
-\break
-
-\subsection{Reference Architecture}
+%\subsection{Reference Architecture}
