@@ -1,6 +1,6 @@
 # Golem Computation Resource Standards
 
-## Version 0.7.1
+## Version 0.8.0
 
 This repository defines a framework for the specification of Standards for Computing Resources available on Golem ecosystem. It is supplementary to Golem Demand & Offer Specification Language and is meant to prescriptively implement structure in a broad space of conceivable services.
 
@@ -61,3 +61,6 @@ Properties (and usage conters) marked as `Deprecated` are still supported in the
 
 ## Standard properties - Cheat sheet
 [Cheat sheet](cheat_sheet.md)
+
+## References
+[Demand & Offer Specification Language - Constraints Grammar](./constraints_grammar.md)
