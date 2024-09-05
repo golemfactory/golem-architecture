@@ -73,14 +73,225 @@ via a selected payment platform.
 
 In a single node, the above services communicate with each other via the Golem Service Bus (GSB).
 In turn, communication between nodes takes place via the Golem Net Service (GNS) service, which provides Peer2Peer (P2P) protocols.
+
 %This service also provides communication to the Registry and Discovery Service located on the Golem Central Net Server (GCNS).
 
+Figure ~\ref{fig:SCR} on page ~\pageref{fig:SCR}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=12cm,angle=0]{./diag/Reference/ServicesConcept-Reference.png}
+	\caption{Intra and Inter Communication between Services in Nodes}
+    \label{fig:SCR}
+\end{figure}
+
+
+In a single node, the above services communicate with each other via the Golem Service Bus (GSB), the so-called Intra Connection.
+In turn, communication between nodes takes place via the Golem Net Service (GNS), which provides Peer2Peer (P2P) protocols, the so-called Inter Connection.
+Golem Net Service provides the following communication models
 
 \begin{enumerate}
-    \item Service Profile
-    \item Service Protocol
-    \item Service Interface
-    \item Service Workflow
+
+\item Model Mrk0: CentraNet Proxy
+
+\begin{enumerate}
+
+\item Assumptions
+
+\begin{itemize}
+
+\item Ease of implementation
+\item Must be able to penetrate Firewall above
+\item Does not have to be efficient
+\item Does not have to be decentralized
+\item Does not have to support End2End pinging
+
+\end{itemize}
+
+\item Limitation
+
+\item Flow
+
+(Please see Figure ~\ref{fig:MM0C} on page ~\pageref{fig:MM0C}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=7cm,angle=0]{./diag/Issue/NATRelaying-Mk0-Issue.png}
+	\caption{Model Mrk0 Communication}
+    \label{fig:MM0C}
+\end{figure}
+
+\item Stack
+
+\item Sequence Diagram
+
+\end{enumerate}
+
+\item Model Mrk1: P2P Hybrid
+
+Hybrid P2P networks combine elements of decentralized and centralized architectures.
+The CentralNet server plays the role of managing node registration and discovery.
+Hybrid P2P networks aim to achieve a balance between decentralization and efficiency.
+
+\begin{enumerate}
+
+\item Assumptions
+
+\begin{itemize}
+
+\item CentralNet Server with registration and discovery nodes service.
+
+\item ability to send small amount of data to other nodes, about 300 kb per minute
+
+\item if a node has a publicly available tcp/udp port, it can ask other nodes to connect,
+using the ability to send data through the central server.
+
+\item if nodes do not have publicly available tcp/udp port they can use central net to coordinate NAT hole punching
+If nodes does not have publicly available tcp / udp port they can use central net to coordinate NAT hole punching
+
+\item discovery service accepts unencrypted UDP/TCP communication.
+
+\item in the distant future websocket / https://webrtc.rs/ - for browser compatibility.
+
+\end{itemize} 
+
+\item Limitation 
+
+\item Flow
+
+TODO Description
+
+(Please see Figure ~\ref{fig:MM1C} on page ~\pageref{fig:MM1C}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=7cm,angle=0]{./diag/Issue/NATReversal-Mk1-Issue.png}
+	\caption{Model Mrk1 Communication}
+    \label{fig:MM1C}
+\end{figure}
+
+\item Stack
+
+TODO Description
+
+(Please see Figure ~\ref{fig:M1PL} on page ~\pageref{fig:M1PL}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=10cm,angle=0]{./diag/Issue/NetBlock-Mk1-Issue.png}
+	\caption{Protocol Mrk1 Layers}
+    \label{fig:M1PL}
+\end{figure}
+
+\break
+
+\item Sequence Diagram
+
+TODO Description
+
+(Please see Figure ~\ref{fig:M1SN} on page ~\pageref{fig:M1SN}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=8cm,angle=0]{./diag/Issue/SessionNegotiation-Mk1-Issue.png}
+	\caption{Mrk1 Session Negotiation}
+    \label{fig:M1SN}
+\end{figure}
+
+
+\end{enumerate} 
+
+\item Model Mrk2: WebRTC 
+
+\begin{enumerate} 
+\item Assumptions 
+\item Limitation 
+\item Flow
+\item Stack
+\item Sequence Diagram
+\end{enumerate} 
+
+\end{enumerate}
+
+In the Golem system, in the Net service, tuples are used to describe objects such as:
+node, connection, network, status, address . (Please see Figure ~\ref{fig:NF1} on page ~\pageref{fig:NF1})
+
+TODO figure soon
+
+\begin{enumerate}
+
+\item Node Objects
+
+\begin{enumerate}
+
+\item Object Description
+
+TODO !!
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+id 	& M & string & 		& Node Identifier \\
+\hline 		
+
+ip & M & string  & 		& IP address \\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\item Connection Object
+
+\begin{enumerate}
+
+\item Object Description
+
+TODO !!
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+protocol 		& M & integer & 11		&  \\
+\hline 		
+
+localIp 		& M & string  & 0.0.0.0	& Local IP address v4 or v6 \\
+\hline
+
+localPort 		& M & integer & 1234	& Local Port \\
+\hline 
+
+remoteIp 		& M & string  & 0.0.0.0	& Local IP address v4 or v6 \\
+\hline
+
+remotePort 		& M & integer & 4321	& Local Port \\
+\hline 
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+
 \end{enumerate}
 
 \break
@@ -105,7 +316,7 @@ and Figure ~\ref{fig:MF2} on page ~\pageref{fig:MF2}).
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=12cm,angle=0]{./diag/Reference/MarketFrame-1-Reference.png}
+    \includegraphics[width=14cm,angle=0]{./diag/Reference/MarketFrame-1-Reference.png}
 	\caption{Market Objects Frame}
     \label{fig:MF1}
 \end{figure}
@@ -113,7 +324,7 @@ and Figure ~\ref{fig:MF2} on page ~\pageref{fig:MF2}).
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=12cm,angle=0]{./diag/Reference/MarketFrame-2-Reference.png}
+    \includegraphics[width=14cm,angle=0]{./diag/Reference/MarketFrame-2-Reference.png}
 	\caption{Market Objects Frame}
     \label{fig:MF2}
 \end{figure}
@@ -441,7 +652,7 @@ Stateless object
 
 \break
 
-The space is used to define interaction operations on these objects such as:
+The Market Space is used to define interaction operations on these objects such as:
 
 \begin{enumerate}
 \item  Observation Operation
@@ -779,9 +990,6 @@ RejectAgreement		& POST /agreements/\{agreementId\}/ \newline reject				& Provid
 
 \end{enumerate}
 
-
-
-
 \end{enumerate}
 
 %\begin{enumerate}
@@ -817,13 +1025,724 @@ for the generation of an invoice summarizing the agreement between the parties.
 Payment is made via the blockchain operator. Optimization of payment transaction costs is possible by setting the terms of this operation 
 in the agreement object.
 
+In the Golem system, in the Payment service, tuples are used to describe objects such as:
+vector usage counters, activity detail record, debit note, invoice . 
+(Please see Figure ~\ref{fig:PF1} on page ~\pageref{fig:PF1} and Figure ~\ref{fig:PF2} on page ~\pageref{fig:PF2})
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=14cm,angle=0]{./diag/Reference/PaymentFrame-1-Reference.png}
+	\caption{Debit Note and Invoice Objects Frame}
+    \label{fig:PF1}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=17cm,angle=0]{./diag/Reference/PaymentFrame-2-Reference.png}
+	\caption{Payment Objects Frame}
+    \label{fig:PF2}
+\end{figure}
+
+\break
 
 \begin{enumerate}
-    \item Service Profile
-    \item Service Protocol
-    \item Service Interface
-    \item Service Workflow
+
+\item Usage Counter Vector Objects
+
+\begin{enumerate}
+
+\item Object Description
+
+TODO !!
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+{\it counter} 	& O & string & cpu\_sec		& Counter \\
+\hline 		
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
 \end{enumerate}
+
+\item Activity Detail Record
+
+\begin{enumerate}
+
+\item Object Description
+
+TODO !!
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+timestamp 			& M & string(\$date-time) 	&  YYYY-MM-DDThh:mm:ss.sssZ	&  \\
+\hline
+
+agreementId 		& M & string 				&  							&  Agreement Identifier \\
+\hline	
+
+activityId 			& M & string 				&  							&  Activity Identifier \\
+\hline
+
+usageCounterVector	& M & object				&							&  Usage Counter Vector \\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\item Debit Note
+
+\begin{enumerate}
+
+\item Object Description
+
+Debit Note is an object issued by Provider node to Requestor node, in the context of a specific Activity.
+Activity Context is defined as a set of computational resource metrics, called Usage Counter Vector.
+It is a notification of Total Amount Due incurred by the Activity until the Debit Note is issued.
+
+%This is expected to be used as trigger for payment in upfront-payment or pay-as-you-go scenarios.
+
+Debit Note can be used for payment in the scenario:
+
+\begin{itemize}
+
+\item upfront-payment
+
+Payment in advance makes sense when the Agreement concerns multiple activities and 
+the settlement concerns the time of resource lease and not its disposal.
+
+\item pay-as-you-go
+
+Payment with current usage makes sense when the activity on the resources is longer and partial payment terms 
+are agreed with optimized transaction costs.
+
+\end{itemize}
+
+Debit Notes means the current Total Amount Due, which is calculated from the beginning of the Activity.
+Debit Notes calculate the payment amount based on the difference between the Total Payments 
+for the Agreement and the Total Amount Due.
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+debitNoteId 			& M & string 				&  							&  Debit Note Identifier \\
+\hline	
+
+previousDebitNoteId 	& M & string 				&  							&  Last Debit Note Identifier \\
+\hline	
+
+timestamp 				& M & string(\$date-time) 	&  YYYY-MM-DDThh:mm:ss.sssZ	&  \\
+\hline
+
+ActivityDetailRecord	& M & object 				&  							&  Activity Detail Record \\
+\hline	
+
+totalAmountDue 			& M & string 				&  							&   \\
+\hline
+
+usageCounterVector		& M & object				&							&  Usage Counter Vector \\
+\hline
+
+issuerId				& M &  string				&							& Issuer Identifier \\
+\hline
+
+recipientId				& M & string 				&  							&   \\
+\hline
+
+payeeAddr				& M & string 				&  							&   \\
+\hline
+
+payerAddr				& M & string 				&  							&   \\
+\hline
+
+paymentPlatform			& M & string 				&  							&   \\
+\hline
+
+paymentDueDate			& M & string(\$date-time) 	&  YYYY-MM-DDThh:mm:ss.sssZ	&  \\
+\hline
+
+status					& M & string(enum)			& [ ISSUED, RECEIVED, ACCEPTED, REJECTED, FAILED, SETTLED, CANCELLED ] & Debit Note Status \\
+\hline
+			
+\end{tabular}
+\end{center}
+
+\item Object State
+
+(Please see Figure ~\ref{fig:DNSD} on page ~\pageref{fig:DNSD}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=9cm,angle=0]{./diag/Reference/DebitNoteState-Reference.png}
+	\caption{Debit Note Status Diagram}
+    \label{fig:DNSD}
+\end{figure}
+
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{11cm}|} 
+\hline
+\rowcolor{lightgray}	Status	& 	Description \\
+\hline
+
+Issued		&	 	\\
+\hline
+Received	&		\\
+\hline
+Accepted 	& 		\\
+\hline
+Rejected 	&		\\
+\hline
+Failed		&		\\
+\hline
+Settled		&		\\
+\hline
+Cancelled	&		\\
+\hline
+Paid		&	currently not implemented	\\
+\hline
+
+\end{tabular}
+\end{center}
+
+\end{enumerate}
+
+\item Invoice
+
+\begin{enumerate}
+
+\item Object Description
+
+The Invoice object is issued by the Provider node for the Requestor node,
+in the context of a specific Agreement (Agreement object).
+The context of the agreement is defined as a set of consents to the provision of a service and which was made within the Activity.
+It indicates the total amount due from the Applicant under this Agreement.
+After the Invoice is issued, no further Debit Notes will be issued.
+Issuing an Invoice means Termination of the Agreement (if it has not already been terminated).
+After the Invoice is issued, no Activities are allowed to be performed.
+
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+invoiceId	 			& M & string 				&  							&  Debit Note Identifier \\
+\hline	
+
+timestamp 				& M & string(\$date-time) 	&  YYYY-MM-DDThh:mm:ss.sssZ	&  \\
+\hline
+
+agreementId				& M & string 				&  							&  Agreement Identifier \\
+\hline	
+
+activityIds				& O & string(list)			&							& List of activityIds \\
+\hline
+
+amount	 				& M & string 				&  							&   \\
+\hline
+
+issuerId				& M &  string				&							& Issuer Identifier \\
+\hline
+
+recipientId				& M & string 				&  							&   \\
+\hline
+
+payeeAddr				& M & string 				&  							&   \\
+\hline
+
+payerAddr				& M & string 				&  							&   \\
+\hline
+
+paymentPlatform			& M & object(json) 			&  							&   \\
+\hline
+
+paymentDueDate			& M & string(\$date-time) 	&  YYYY-MM-DDThh:mm:ss.sssZ	&  \\
+\hline
+
+status					& M & string(enum)			& [ ISSUED, RECEIVED, ACCEPTED, REJECTED, FAILED, SETTLED, CANCELLED ] & Invoice Status \\
+\hline
+			
+\end{tabular}
+\end{center}
+
+\item Object State
+
+(Please see Figure ~\ref{fig:ISD} on page ~\pageref{fig:ISD}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=9cm,angle=0]{./diag/Reference/InvoiceState-Reference.png}
+	\caption{Invoice Status Diagram}
+    \label{fig:ISD}
+\end{figure}
+
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{11cm}|} 
+\hline
+\rowcolor{lightgray}	Status	& 	Description \\
+\hline
+
+Issued		&	 	\\
+\hline
+Received	&		\\
+\hline
+Accepted 	& 		\\
+\hline
+Rejected 	&		\\
+\hline
+Failed		&		\\
+\hline
+Settled		&		\\
+\hline
+Cancelled	&		\\
+\hline
+Paid		&	currently not implemented	\\
+\hline
+
+\end{tabular}
+\end{center}
+
+\end{enumerate}
+
+
+\item PaymentPlatform Object
+
+\begin{enumerate}
+
+\item Object Description
+
+PaymentPlatform is a object that is helping to chose which driver and network to use
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+driver		& O & string				&							& 							\\
+\hline
+network		& O & string				&							& 							\\
+\hline
+token		& O & string				&							& 							\\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+% Allocation
+
+\item Allocation Object
+
+\begin{enumerate}
+
+\item Object Description
+
+An Allocation is a designated sum of money reserved for the purpose of making some particular payments. 
+Allocations are currently purely virtual objects. 
+They exist only in Requestor's database. 
+An Allocation is connected to a payment account (wallet) specified by address and paymentPlatform field. 
+If these fields are not present the default payment platform is used and the address is assumed to be 
+identical to the Requestor's Node ID.
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+allocationId			& M & string 				&							&  \\
+\hline
+
+address					& O & string 				&							&  \\
+\hline
+
+paymentPlatform			& O & object(json)			&							&	\\
+\hline
+
+totalAmount				& M & string 				&							&  \\
+\hline
+
+spentAmount				& M & string 				&							&  \\
+\hline
+
+remainingAmount			& M & string 				&							&  \\
+\hline
+
+timestamp 				& M & string(\$date-time) 	&  YYYY-MM-DDThh:mm:ss.sssZ	&  \\
+\hline
+
+timeout					& O & string(\$date-time) ?? &							&  \\
+\hline
+
+makeDeposit				& O & boolean				&							&  \\
+\hline
+
+
+extendTimeout			& O & integer(\$int64)		&							& 	in seconds, the time by which the allocation timeout is extended 
+																					after it is last used. \\
+\hline
+
+deposit.id				& M & string 				&							&  \\
+\hline
+
+deposit.contract		& M & string 				&							&  \\
+\hline
+
+deposit.validate		& O & json					& 							& 	\\
+\hline
+			
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\item AgreementPayment Object
+
+\begin{enumerate}
+
+\item Object Description
+
+Share of a Payment assigned to an Agreement, but not to any particular Activity within that Agreement.
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+agreementId		& M & string				&							& 							\\
+\hline
+
+amount			& M & string				&							& 							\\
+\hline
+
+allocationId	& O & string				&							& 							\\
+\hline
+
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\item ActivityPayment Object
+
+\begin{enumerate}
+
+\item Object Description
+
+Share of a Payment assigned to a particular Activity.
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+activityId		& M & string				&							& 							\\
+\hline
+
+amount			& M & string				&							& 							\\
+\hline
+
+allocationId	& O & string				&							& 							\\
+\hline
+
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\item Payment Object
+
+\begin{enumerate}
+
+\item Object Description
+
+A Payment is a single transaction sent from Requestor to Provider. 
+A single payment can be made for multiple Agreements and Activities. 
+AgreementPayments and ActivityPayments specify what is the basis for payment.
+
+\item Object Fields
+
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+
+paymentId			& M & string				&							&							\\
+\hline
+
+payerId				& M & string				&							&							\\
+\hline
+
+payeeId				& M & string				&							&							\\
+\hline
+
+payerAddr			& M & string				&							&							\\
+\hline
+
+payeeAddr			& M & string				&							&							\\
+\hline
+
+paymentPlatform		& M & string				&							&							\\
+\hline
+
+amount				& M & string				&							&							\\
+\hline
+
+timestamp			& M & string(\$date-time)	&							&							\\
+\hline
+
+agreementPayments	& M & object(json)			&							&							\\
+\hline
+
+activityPayments	& M & object(json)			&							&							\\
+\hline
+	
+details				& M & string(\$byte)		&							&							\\
+\hline
+
+\end{tabular}
+\end{center}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\end{enumerate}
+
+%%%% Payment Operations TODO
+
+
+\begin{enumerate}
+
+\item  Payment Operations
+
+\begin{enumerate}
+
+\item Description
+
+(Please see Figure ~\ref{fig:PO} on page ~\pageref{fig:PO}).
+
+\item Sequence Diagram
+
+\begin{figure}[htbp]
+    \centering
+%    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentAgreement-B-Sequence.png}
+	\caption{Payment ... Operations}
+    \label{fig:PO}
+\end{figure}
+
+\item Functions and Methods
+
+\begin{table}
+\footnotesize
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Function Name	& API Method Name				& 	Side		&	Description \\
+\hline
+
+AllocateAmount			&	POST /allocations							&	Requestor 	&	Create Allocation \\
+\hline
+
+ListAllocations			&	GET /allocations 							&	Both		&	Get Allocations	\\
+\hline
+
+GetAllocationDetails	&	GET /allocations/\{allocationId\} 			&	Both		&	Get Allocation	\\
+\hline
+
+ReleaseAllocation		&	DELETE /allocations/\{allocationId\} 		&	Both		&	Release Allocation	\\
+\hline
+
+AmendAllocation			&	PUT /allocations/\{allocationId\} 			&	Both		&	Amend Allocation	\\
+\hline
+
+IssueDebitNote			&	POST /debitNotes							& 	Provider	&	Issue a Debit Note	\\
+\hline
+
+IssueInvoice			&	POST /invoices								&	Provider	&	Issue an Invoice \newline
+																							Function called by Provider process to 
+																							create and send an Invoice to the Requestor node \\
+\hline
+
+						& 	POST /debitNotes/\{debitNoteId\} /send		&	Provider 	&	Send Debit Note to Requestor \\
+\hline
+
+CancelDebitNote			&	POST /debitNotes/\{debitNoteId\} /cancel	&	Provider	&	Cancel Debit Note \\
+\hline
+
+CollectDebitNote \newline InvoiceEvent	&	GET /debitNoteEvents		&	Both		&	Get Debit Note events \\
+\hline
+
+AcceptDebitNote			&	POST /debitNotes/\{debitNoteId\} /accept	&	Requestor	&	Accept received Debit Note \newline
+																							Function called by Requestor process to 
+																							signal Debit Note acceptance to Debit Note Issuer \\
+\hline
+
+						& 	GET /debitNotes								&	Both		& 	List Debit Notes \\
+\hline
+
+						& 	GET /debitNotes/\{debitNoteId\}				&	Both 		&	Get Debit Note \\
+\hline
+
+RejectDebitNote			&	POST /debitNotes/\{debitNoteId\} /reject	&	Requestor	&	Reject received Debit Note \\
+\hline
+
+AcceptInvoice			&	POST /invoices/\{invoiceId\} /accept		&	Requestor 	&	Accept received Invoice \\
+\hline
+
+RejectInvoice			&	POST /invoices/\{invoiceId\} /reject		&	Requestor 	&	Reject received Invoice \\
+\hline
+
+						& 	GET /invoices 								&	Both		&	List Invoices \\
+\hline
+
+						&	GET /invoices/\{invoiceId\}					&	Both		& 	Get Invoice \\
+\hline
+
+						&	POST /invoices/\{invoiceId\} /send			&	Provider 	& 	Send Invoice to Requestor \\
+\hline 
+
+						&	POST /invoices/\{invoiceId\} /cancel		&	Provider 	& 	Cancel Invoice  \\
+\hline
+
+						&	GET /invoiceEvents							&	Both 		& 	Get Invoice events \\
+\hline
+
+RejectionReasion		&												&	Requestor	&	{\it Unsolicited service} 
+																							\newline 	{\it Bad Service}
+																							\newline 	{\it Incorrect Amount} \\
+\hline
+
+						&	GET /payments 								&	Both 		& 	Get payments \\
+\hline
+
+GetPaymentDetail		&	GET /payments/\{paymentId\}					&	Both 		&	Get payment \\
+\hline
+
+						& 	GET /payments/status 						& 	Both 		& 	Get status of the payment driver \\
+\hline
+
+CollectPaymentEvent		&												&	Provider 	&	Function used by Application process to 
+																							collect notification of Payments arriving from PaymentPlatform \\
+\hline
+
+GetPaymentForDebitNote	&												&	Provider 	&	Function called by Provider to
+																							obtain DebitNote-Payment mapping
+																							required for payment reconciliation \\
+\hline
+
+GetPaymentForInvoice	&												&	Provider 	&	Function called by Provider to
+																							obtain Invoice-Payment mapping
+																							required for payment reconciliation \\
+\hline
+
+GetDemandDecorations	&	GET /demandDecorations 						&	Requestor	&	Function to extract the Demand (properties/constraints) specific to
+																							a payment platform, which are necessary to place 
+																							a payment-platform compliant Demand on the market \\
+\hline
+
+GetDemandDecorations	&						 						&	Provider	&	Function to extract the Offer (properties/constraints) specific to
+																							a payment platform, which are necessary to place 
+																							a payment-platform compliant Offer on the market \\
+\hline
+																									
+						&	GET /providerAccounts						&	Provider 	&	Get available accounts for receiving payments \\
+\hline
+
+						&	GET /requestorAccounts						&	Requestor 	&	Get available accounts for receiving payments \\
+\hline
+
+GetSendAccounts			&												&	Requestor 	&	Function used by Application process on Requestor side to
+																							list Accounts defined in the Daemon for the purpose of maiking payments. \\
+\hline
+
+GetReceiveAccounts		&												&	Provider 	&	Function used by Application process on Provider side to
+																							list Accounts defined in the Daemon for the purpose of maiking payments. \\
+\hline
+						
+\end{tabular}
+\end{center}
+
+\end{table}
+
+\end{enumerate}
+
+\end{enumerate} 
+
+
+%\begin{enumerate}
+%    \item Service Profile
+%    \item Service Protocol
+%    \item Service Interface
+%    \item Service Workflow
+%\end{enumerate}
 
 %\subsubsubsubsection{Registry and Discovery Service}
 
