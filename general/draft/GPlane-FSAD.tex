@@ -1577,14 +1577,111 @@ Stateless object
 
 %%%% Payment Operations TODO
 
+The Payment Space is used to define interaction operations on these objects such as:
 
 \begin{enumerate}
 
-\item  Payment Operations
+\item  Billing Operation
 
 \begin{enumerate}
 
 \item Description
+
+TODO!!!
+
+(Please see Figure ~\ref{fig:BO} on page ~\pageref{fig:BO}).
+
+\item Sequence Diagram
+
+\begin{figure}[htbp]
+    \centering
+%    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentBilling-B-Sequence.png}
+	\caption{Billing Operation}
+    \label{fig:BO}
+\end{figure}
+
+\item Functions and Methods
+
+\begin{table}
+\footnotesize
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Function Name	& API Method Name				& 	Side		&	Description \\
+\hline
+
+IssueDebitNote			&	POST /debitNotes							& 	Provider	&	Issue a Debit Note	\\
+\hline
+
+						& 	POST /debitNotes/\{debitNoteId\} /send		&	Provider 	&	Send Debit Note to Requestor \\
+\hline
+
+CancelDebitNote			&	POST /debitNotes/\{debitNoteId\} /cancel	&	Provider	&	Cancel Debit Note \\
+\hline
+
+CollectDebitNote \newline InvoiceEvent	&	GET /debitNoteEvents		&	Both		&	Get Debit Note events \\
+\hline
+
+AcceptDebitNote			&	POST /debitNotes/\{debitNoteId\} /accept	&	Requestor	&	Accept received Debit Note \\
+\hline
+
+						& 	GET /debitNotes								&	Both		& 	List Debit Notes \\
+\hline
+
+						& 	GET /debitNotes/\{debitNoteId\}				&	Both 		&	Get Debit Note \\
+\hline
+
+RejectDebitNote			&	POST /debitNotes/\{debitNoteId\} /reject	&	Requestor	&	Reject received Debit Note \\
+\hline
+
+IssueInvoice			&	POST /invoices								&	Provider	&	Issue an Invoice \\
+\hline
+
+AcceptInvoice			&	POST /invoices/\{invoiceId\} /accept		&	Requestor 	&	Accept received Invoice \\
+\hline
+
+RejectInvoice			&	POST /invoices/\{invoiceId\} /reject		&	Requestor 	&	Reject received Invoice \\
+\hline
+
+						& 	GET /invoices 								&	Both		&	List Invoices \\
+\hline
+
+						&	GET /invoices/\{invoiceId\}					&	Both		& 	Get Invoice \\
+\hline
+
+						&	POST /invoices/\{invoiceId\} /send			&	Provider 	& 	Send Invoice to Requestor \\
+\hline 
+
+						&	POST /invoices/\{invoiceId\} /cancel		&	Provider 	& 	Cancel Invoice  \\
+\hline
+
+						&	GET /invoiceEvents							&	Both 		& 	Get Invoice events \\
+\hline
+
+RejectionReasion		&												&	Requestor	&	{\it Unsolicited service} 
+																							\newline 	{\it Bad Service}
+																							\newline 	{\it Incorrect Amount} \\
+\hline
+						
+\end{tabular}
+\end{center}
+
+\end{table}
+
+\end{enumerate}
+
+\break
+
+%%%% PAYMENT
+
+\item Payment Operation
+
+\begin{enumerate}
+
+\item Description
+
+TODO !!!
 
 (Please see Figure ~\ref{fig:PO} on page ~\pageref{fig:PO}).
 
@@ -1592,8 +1689,8 @@ Stateless object
 
 \begin{figure}[htbp]
     \centering
-%    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentAgreement-B-Sequence.png}
-	\caption{Payment ... Operations}
+%    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentPayment-B-Sequence.png}
+	\caption{Payment Operation}
     \label{fig:PO}
 \end{figure}
 
@@ -1623,63 +1720,6 @@ ReleaseAllocation		&	DELETE /allocations/\{allocationId\} 		&	Both		&	Release Al
 AmendAllocation			&	PUT /allocations/\{allocationId\} 			&	Both		&	Amend Allocation	\\
 \hline
 
-IssueDebitNote			&	POST /debitNotes							& 	Provider	&	Issue a Debit Note	\\
-\hline
-
-IssueInvoice			&	POST /invoices								&	Provider	&	Issue an Invoice \newline
-																							Function called by Provider process to 
-																							create and send an Invoice to the Requestor node \\
-\hline
-
-						& 	POST /debitNotes/\{debitNoteId\} /send		&	Provider 	&	Send Debit Note to Requestor \\
-\hline
-
-CancelDebitNote			&	POST /debitNotes/\{debitNoteId\} /cancel	&	Provider	&	Cancel Debit Note \\
-\hline
-
-CollectDebitNote \newline InvoiceEvent	&	GET /debitNoteEvents		&	Both		&	Get Debit Note events \\
-\hline
-
-AcceptDebitNote			&	POST /debitNotes/\{debitNoteId\} /accept	&	Requestor	&	Accept received Debit Note \newline
-																							Function called by Requestor process to 
-																							signal Debit Note acceptance to Debit Note Issuer \\
-\hline
-
-						& 	GET /debitNotes								&	Both		& 	List Debit Notes \\
-\hline
-
-						& 	GET /debitNotes/\{debitNoteId\}				&	Both 		&	Get Debit Note \\
-\hline
-
-RejectDebitNote			&	POST /debitNotes/\{debitNoteId\} /reject	&	Requestor	&	Reject received Debit Note \\
-\hline
-
-AcceptInvoice			&	POST /invoices/\{invoiceId\} /accept		&	Requestor 	&	Accept received Invoice \\
-\hline
-
-RejectInvoice			&	POST /invoices/\{invoiceId\} /reject		&	Requestor 	&	Reject received Invoice \\
-\hline
-
-						& 	GET /invoices 								&	Both		&	List Invoices \\
-\hline
-
-						&	GET /invoices/\{invoiceId\}					&	Both		& 	Get Invoice \\
-\hline
-
-						&	POST /invoices/\{invoiceId\} /send			&	Provider 	& 	Send Invoice to Requestor \\
-\hline 
-
-						&	POST /invoices/\{invoiceId\} /cancel		&	Provider 	& 	Cancel Invoice  \\
-\hline
-
-						&	GET /invoiceEvents							&	Both 		& 	Get Invoice events \\
-\hline
-
-RejectionReasion		&												&	Requestor	&	{\it Unsolicited service} 
-																							\newline 	{\it Bad Service}
-																							\newline 	{\it Incorrect Amount} \\
-\hline
-
 						&	GET /payments 								&	Both 		& 	Get payments \\
 \hline
 
@@ -1693,22 +1733,22 @@ CollectPaymentEvent		&												&	Provider 	&	Function used by Application pro
 																							collect notification of Payments arriving from PaymentPlatform \\
 \hline
 
-GetPaymentForDebitNote	&												&	Provider 	&	Function called by Provider to
+GetPayment ForDebitNote	&												&	Provider 	&	Function called by Provider to
 																							obtain DebitNote-Payment mapping
 																							required for payment reconciliation \\
 \hline
 
-GetPaymentForInvoice	&												&	Provider 	&	Function called by Provider to
+GetPayment ForInvoice	&												&	Provider 	&	Function called by Provider to
 																							obtain Invoice-Payment mapping
 																							required for payment reconciliation \\
 \hline
 
-GetDemandDecorations	&	GET /demandDecorations 						&	Requestor	&	Function to extract the Demand (properties/constraints) specific to
+GetDemand Decorations	&	GET /demandDecorations 						&	Requestor	&	Function to extract the Demand (properties/constraints) specific to
 																							a payment platform, which are necessary to place 
 																							a payment-platform compliant Demand on the market \\
 \hline
 
-GetDemandDecorations	&						 						&	Provider	&	Function to extract the Offer (properties/constraints) specific to
+GetOffer Decorations	&						 						&	Provider	&	Function to extract the Offer (properties/constraints) specific to
 																							a payment platform, which are necessary to place 
 																							a payment-platform compliant Offer on the market \\
 \hline
@@ -1726,7 +1766,8 @@ GetSendAccounts			&												&	Requestor 	&	Function used by Application proce
 GetReceiveAccounts		&												&	Provider 	&	Function used by Application process on Provider side to
 																							list Accounts defined in the Daemon for the purpose of maiking payments. \\
 \hline
-						
+
+
 \end{tabular}
 \end{center}
 
@@ -1734,7 +1775,11 @@ GetReceiveAccounts		&												&	Provider 	&	Function used by Application proc
 
 \end{enumerate}
 
-\end{enumerate} 
+
+
+\end{enumerate}
+
+ 
 
 
 %\begin{enumerate}
