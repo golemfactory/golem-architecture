@@ -2,7 +2,7 @@
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[left=1.5cm, right=2cm]{geometry}
+\usepackage[left=1.5cm,right=2cm,height=25.5cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{lastpage}
@@ -16,7 +16,31 @@
 \usepackage{tcolorbox}
 \usepackage{longtable}
 \usepackage{float}
+\usepackage{subcaption}
+\usepackage{hyperref}
 
+%	Hyperref
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    %pdftitle={},
+    %pdfpagemode=FullScreen,
+    }
+
+\urlstyle{same}
+
+
+
+%	Caption
+
+\DeclareCaptionFormat{custom}
+{%
+    \textbf{\footnotesize #1#2}\textit{\footnotesize #3}
+}
+\captionsetup{format=custom}
 
 \DeclareUnicodeCharacter{200B}{{\hskip 0pt}}
 
@@ -74,7 +98,7 @@
     \LARGE Golem Network Architecture Overview
 \end{flushleft}
 
-\vskip8cm
+\vskip12cm
 \hrule
 
 \begin{center}

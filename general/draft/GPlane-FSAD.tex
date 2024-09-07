@@ -78,7 +78,7 @@ In turn, communication between nodes takes place via the Golem Net Service (GNS)
 
 Figure ~\ref{fig:SCR} on page ~\pageref{fig:SCR}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm,angle=0]{./diag/Reference/ServicesConcept-Reference.png}
 	\caption{Intra and Inter Communication between Services in Nodes}
@@ -114,7 +114,7 @@ Golem Net Service provides the following communication models
 
 (Please see Figure ~\ref{fig:MM0C} on page ~\pageref{fig:MM0C}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=7cm,angle=0]{./diag/Issue/NATRelaying-Mk0-Issue.png}
 	\caption{Model Mrk0 Communication}
@@ -163,7 +163,7 @@ TODO Description
 
 (Please see Figure ~\ref{fig:MM1C} on page ~\pageref{fig:MM1C}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=7cm,angle=0]{./diag/Issue/NATReversal-Mk1-Issue.png}
 	\caption{Model Mrk1 Communication}
@@ -176,7 +176,7 @@ TODO Description
 
 (Please see Figure ~\ref{fig:M1PL} on page ~\pageref{fig:M1PL}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=10cm,angle=0]{./diag/Issue/NetBlock-Mk1-Issue.png}
 	\caption{Protocol Mrk1 Layers}
@@ -191,7 +191,7 @@ TODO Description
 
 (Please see Figure ~\ref{fig:M1SN} on page ~\pageref{fig:M1SN}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=8cm,angle=0]{./diag/Issue/SessionNegotiation-Mk1-Issue.png}
 	\caption{Mrk1 Session Negotiation}
@@ -230,6 +230,8 @@ TODO !!
 
 \item Object Fields
 
+\begin{table}[H]
+\footnotesize
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
 \hline
@@ -244,6 +246,7 @@ ip & M & string  & 		& IP address \\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -261,6 +264,8 @@ TODO !!
 
 \item Object Fields
 
+\begin{table}[H]
+\footnotesize
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
 \hline
@@ -284,6 +289,8 @@ remotePort 		& M & integer & 4321	& Local Port \\
 
 \end{tabular}
 \end{center}
+
+\end{table}
 
 \item Object State
 
@@ -314,17 +321,17 @@ In the Golem system, in the Market service, tuples are used to describe objects 
 offer, demand, proposal, agreement. (Please see Figure ~\ref{fig:MF1} on page ~\pageref{fig:MF1}
 and Figure ~\ref{fig:MF2} on page ~\pageref{fig:MF2}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=14cm,angle=0]{./diag/Reference/MarketFrame-1-Reference.png}
+    \includegraphics[width=18cm,angle=0]{./diag/Reference/MarketFrame-1-Reference.png}
 	\caption{Market Objects Frame}
     \label{fig:MF1}
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=14cm,angle=0]{./diag/Reference/MarketFrame-2-Reference.png}
+    \includegraphics[width=16cm,angle=0]{./diag/Reference/MarketFrame-2-Reference.png}
 	\caption{Market Objects Frame}
     \label{fig:MF2}
 \end{figure}
@@ -342,6 +349,9 @@ computing resources the node has to offer, as well as any optional conditions
 for their use (e.g. limiting their availability only to certain requestor nodes).
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -367,6 +377,8 @@ constraints	& M	& 	string	&		&	Offer constraints \\
 \end{tabular}
 \end{center}
 
+\end{table}
+
 \item Object State
 
 Stateless object
@@ -379,7 +391,7 @@ Stateless object
 
 \item Object Description
 
-Demand is created by Requestors and contains description of the
+Demand is created by Requestor nodes and contains description of the
 payload, including properties telling what capabilities the payload might
 require (e.g. specific hardware architecture or features) and optionally other
 conditions which ought to be satisfied by the provider nodes (e.g. asking only
@@ -388,6 +400,9 @@ for nodes which are located within specific country).
 %	Most of the content of the Demand is opaque for the Golem network
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -412,7 +427,7 @@ constraints	& M	& 	string	&		&	Demand constraints \\
 
 \end{tabular}
 \end{center}
-
+\end{table}
 
 \item Object State
 
@@ -431,6 +446,9 @@ and a set of field elements that allow handling of the Negotiation operation. Th
 the time the proposal was created, the identifier of the proposal from the other side, to which this proposal responds.
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -461,18 +479,21 @@ prevProposalId 	& O & 	string				&												& 	Id of the Proposal from other s
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
 (Please see Figure ~\ref{fig:PSD} on page ~\pageref{fig:PSD}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=7cm,angle=0]{./diag/Reference/ProposalState-Reference.png}
 	\caption{Proposal State Diagram}
     \label{fig:PSD}
 \end{figure}
 
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{11cm}|} 
@@ -493,6 +514,7 @@ Expired 	&	not accepted nor rejected before validity period \\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
 
@@ -531,6 +553,9 @@ The basic terms of the agreement are:
 \end{itemize}
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -576,18 +601,21 @@ committedSignature	& O &	string 				& 							& 			\\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
 (Please see Figure ~\ref{fig:ASD} on page ~\pageref{fig:ASD}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=9cm,angle=0]{./diag/Reference/AgreementState-Reference.png}
 	\caption{Agreement State Diagram}
     \label{fig:ASD}
 \end{figure}
 
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{11cm}|} 
@@ -612,6 +640,7 @@ Terminated 	&	finished after approval. \\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
 
@@ -624,6 +653,9 @@ Terminated 	&	finished after approval. \\
 The DemandOfferBase object is a temporary object that collects negotiated terms related to the service item.
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -641,6 +673,7 @@ constraints	& M	& 	string	&		&	Temporary Proposal constraints \\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -676,7 +709,7 @@ where the filter syntax is based on the LDAP filter syntax. Depending on the nee
 
 \item Sequence Diagram
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=14cm,angle=0]{./diag/Sequence/MarketObservation-B-Sequence.png}
 	\caption{Market Observation Operation}
@@ -684,6 +717,9 @@ where the filter syntax is based on the LDAP filter syntax. Depending on the nee
 \end{figure}
 
 \item Functions and Methods
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
@@ -702,10 +738,9 @@ EndScan 				& DELETE /scan/\{subscriptionId\}/events	&	Both 	& ?? subscriptionId
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
-
-\break
 
 \item  Discovery Operation
 
@@ -727,7 +762,7 @@ The subsequent phases are direct (one-to-one)
 
 \item Sequence Diagram
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=14cm,angle=0]{./diag/Sequence/MarketDiscovery-B-Sequence.png}
 	\caption{Market Discovery Operation}
@@ -735,6 +770,9 @@ The subsequent phases are direct (one-to-one)
 \end{figure}
 
 \item Functions and Methods
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
@@ -774,9 +812,9 @@ Collect				& 	POST /demands/\{subscriptionId\}/ \newline propertyQuery/\{queryId
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
-
 
 \item  Negotiation Operation
 
@@ -808,11 +846,9 @@ The Requestor node retrieves the proposal (Offer) with the given proposalId usin
 
 (Please see Figure ~\ref{fig:MNO} on page ~\pageref{fig:MNO}).
 
-\break
-
 \item Sequence Diagram
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=14cm,angle=0]{./diag/Sequence/MarketNegotiation-B-Sequence.png}
 	\caption{Market Negotiation Operation}
@@ -820,6 +856,9 @@ The Requestor node retrieves the proposal (Offer) with the given proposalId usin
 \end{figure}
 
 \item Functions and Methods
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
@@ -853,9 +892,9 @@ RejectProposal	&	POST /demands/\{subscriptionId\}/ \newline proposals/\{proposal
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
-
 
 \item  Agreement Operation
 
@@ -929,7 +968,7 @@ The ValidateAgreementContent() function is used to verify an agreement (Agreemen
 
 \item Sequence Diagram
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=14cm,angle=0]{./diag/Sequence/MarketAgreement-B-Sequence.png}
 	\caption{Market Agreement Operation}
@@ -938,7 +977,7 @@ The ValidateAgreementContent() function is used to verify an agreement (Agreemen
 
 \item Functions and Methods
 
-\begin{table}
+\begin{table}[H]
 \footnotesize
 
 \begin{center}
@@ -985,7 +1024,6 @@ RejectAgreement		& POST /agreements/\{agreementId\}/ \newline reject				& Provid
 
 \end{tabular}
 \end{center}
-
 \end{table}
 
 \end{enumerate}
@@ -1029,21 +1067,19 @@ In the Golem system, in the Payment service, tuples are used to describe objects
 vector usage counters, activity detail record, debit note, invoice . 
 (Please see Figure ~\ref{fig:PF1} on page ~\pageref{fig:PF1} and Figure ~\ref{fig:PF2} on page ~\pageref{fig:PF2})
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=14cm,angle=0]{./diag/Reference/PaymentFrame-1-Reference.png}
 	\caption{Debit Note and Invoice Objects Frame}
     \label{fig:PF1}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=17cm,angle=0]{./diag/Reference/PaymentFrame-2-Reference.png}
 	\caption{Payment Objects Frame}
     \label{fig:PF2}
 \end{figure}
-
-\break
 
 \begin{enumerate}
 
@@ -1057,6 +1093,9 @@ TODO !!
 
 \item Object Fields
 
+\begin{table}[H]
+\footnotesize
+
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
 \hline
@@ -1068,6 +1107,7 @@ TODO !!
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1084,6 +1124,9 @@ Stateless object
 TODO !!
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -1105,6 +1148,7 @@ usageCounterVector	& M & object				&							&  Usage Counter Vector \\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1145,6 +1189,9 @@ Debit Notes calculate the payment amount based on the difference between the Tot
 for the Agreement and the Total Amount Due.
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -1193,18 +1240,21 @@ status					& M & string(enum)			& [ ISSUED, RECEIVED, ACCEPTED, REJECTED, FAILED
 			
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
 (Please see Figure ~\ref{fig:DNSD} on page ~\pageref{fig:DNSD}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=9cm,angle=0]{./diag/Reference/DebitNoteState-Reference.png}
 	\caption{Debit Note Status Diagram}
     \label{fig:DNSD}
 \end{figure}
 
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{11cm}|} 
@@ -1231,6 +1281,7 @@ Paid		&	currently not implemented	\\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
 
@@ -1250,6 +1301,9 @@ After the Invoice is issued, no Activities are allowed to be performed.
 
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -1295,18 +1349,21 @@ status					& M & string(enum)			& [ ISSUED, RECEIVED, ACCEPTED, REJECTED, FAILED
 			
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
 (Please see Figure ~\ref{fig:ISD} on page ~\pageref{fig:ISD}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=9cm,angle=0]{./diag/Reference/InvoiceState-Reference.png}
 	\caption{Invoice Status Diagram}
     \label{fig:ISD}
 \end{figure}
 
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|p{11cm}|} 
@@ -1333,6 +1390,7 @@ Paid		&	currently not implemented	\\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \end{enumerate}
 
@@ -1346,6 +1404,9 @@ Paid		&	currently not implemented	\\
 PaymentPlatform is a object that is helping to chose which driver and network to use
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -1362,6 +1423,7 @@ token		& O & string				&							& 							\\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1385,6 +1447,9 @@ If these fields are not present the default payment platform is used and the add
 identical to the Requestor's Node ID.
 
 \item Object Fields
+
+\begin{table}[H]
+\footnotesize
 
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
@@ -1419,7 +1484,6 @@ timeout					& O & string(\$date-time) ?? &							&  \\
 makeDeposit				& O & boolean				&							&  \\
 \hline
 
-
 extendTimeout			& O & integer(\$int64)		&							& 	in seconds, the time by which the allocation timeout is extended 
 																					after it is last used. \\
 \hline
@@ -1435,6 +1499,7 @@ deposit.validate		& O & json					& 							& 	\\
 			
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1452,6 +1517,9 @@ Share of a Payment assigned to an Agreement, but not to any particular Activity 
 
 \item Object Fields
 
+\begin{table}[H]
+\footnotesize
+
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
 \hline
@@ -1467,9 +1535,9 @@ amount			& M & string				&							& 							\\
 allocationId	& O & string				&							& 							\\
 \hline
 
-
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1487,6 +1555,9 @@ Share of a Payment assigned to a particular Activity.
 
 \item Object Fields
 
+\begin{table}[H]
+\footnotesize
+
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
 \hline
@@ -1502,9 +1573,9 @@ amount			& M & string				&							& 							\\
 allocationId	& O & string				&							& 							\\
 \hline
 
-
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1524,12 +1595,14 @@ AgreementPayments and ActivityPayments specify what is the basis for payment.
 
 \item Object Fields
 
+\begin{table}[H]
+\footnotesize
+
 \begin{center}
 \begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
 \hline
 \rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
 \hline
-
 
 paymentId			& M & string				&							&							\\
 \hline
@@ -1566,6 +1639,7 @@ details				& M & string(\$byte)		&							&							\\
 
 \end{tabular}
 \end{center}
+\end{table}
 
 \item Object State
 
@@ -1593,7 +1667,7 @@ TODO!!!
 
 \item Sequence Diagram
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
 %    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentBilling-B-Sequence.png}
 	\caption{Billing Operation}
@@ -1602,7 +1676,7 @@ TODO!!!
 
 \item Functions and Methods
 
-\begin{table}
+\begin{table}[H]
 \footnotesize
 
 \begin{center}
@@ -1666,7 +1740,6 @@ RejectionReasion		&												&	Requestor	&	{\it Unsolicited service}
 						
 \end{tabular}
 \end{center}
-
 \end{table}
 
 \end{enumerate}
@@ -1687,7 +1760,7 @@ TODO !!!
 
 \item Sequence Diagram
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
 %    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentPayment-B-Sequence.png}
 	\caption{Payment Operation}
@@ -1696,7 +1769,7 @@ TODO !!!
 
 \item Functions and Methods
 
-\begin{table}
+\begin{table}[H]
 \footnotesize
 
 \begin{center}
@@ -1770,17 +1843,11 @@ GetReceiveAccounts		&												&	Provider 	&	Function used by Application proc
 
 \end{tabular}
 \end{center}
-
 \end{table}
 
 \end{enumerate}
 
-
-
 \end{enumerate}
-
- 
-
 
 %\begin{enumerate}
 %    \item Service Profile
