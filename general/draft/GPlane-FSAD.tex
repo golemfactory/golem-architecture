@@ -1069,14 +1069,14 @@ vector usage counters, activity detail record, debit note, invoice .
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=14cm,angle=0]{./diag/Reference/PaymentFrame-1-Reference.png}
+    \includegraphics[width=17cm,angle=0]{./diag/Reference/PaymentFrame-1-Reference.png}
 	\caption{Debit Note and Invoice Objects Frame}
     \label{fig:PF1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=17cm,angle=0]{./diag/Reference/PaymentFrame-2-Reference.png}
+    \includegraphics[width=19cm,angle=0]{./diag/Reference/PaymentFrame-2-Reference.png}
 	\caption{Payment Objects Frame}
     \label{fig:PF2}
 \end{figure}
@@ -1655,23 +1655,44 @@ The Payment Space is used to define interaction operations on these objects such
 
 \begin{enumerate}
 
-\item  Billing Operation
+
+\item  Rating Operation
 
 \begin{enumerate}
 
 \item Description
 
-TODO!!!
+The Rating operation is implemented by a set of functions with REST API methods that allow you to transform measurement 
+data into debit note items (Debit Note object) based on the agreed price plan.
 
-(Please see Figure ~\ref{fig:BO} on page ~\pageref{fig:BO}).
+The IssueDebitNote() function is used to create a debit note based on the Activity Detail Record object (ADR object).
+This object collects measurement data from the Usage Counter Vector (UCV) object of the service in a time interval.
+This data is associated with the activity (activityId) and the agreement (agreementId). This function is initialized on the Provider node.
+Using the REST /send method allows you to send the created Debit Note object from the Provider node to the Requestor node.
+The CollectDebitNoteInvoiceEvent() function is used to collect debit notes and their states from the network.
+It listens for events related to the debit note using long polling.
+If there are any events, the method associated with the function (/debitNoteEvents) will return them immediately.
+If there are none, the method will wait until at least one event occurs or the timeout expires.
+The afterTimestamp parameter can be used to get only "new" events.
+Setting the parameter value to the timestamp of the last processed event ensures that no event is missed.
+The events are persistent, i.e. the API call does not remove event records from the receiving queue.
+The AcceptDebitNote() function is used to signal the acceptance of a received debit note by the Requestor node.
+The acceptance event is sent to the network. And via the CollectDebitNoteInvoiceEvent() function, this event is collected
+by the Provider node.
+The CancelDebitNote() function is used to signal the cancellation of a generated debit note by the Provider node.
+The RejectDebitNote() function is used to signal the rejection of a received debit note by the Requestor node.
+From both nodes, you can call the REST methods /debitNotes and /debitNotes/\{debitNoteId\} to retrieve information about
+debit notes.
+
+(Please see Figure ~\ref{fig:RO} on page ~\pageref{fig:RO}).
 
 \item Sequence Diagram
 
 \begin{figure}[H]
     \centering
-%    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentBilling-B-Sequence.png}
-	\caption{Billing Operation}
-    \label{fig:BO}
+    \includegraphics[width=18cm,angle=0]{./diag/Sequence/PaymentRating-B-Sequence.png}
+	\caption{Rating Operation}
+    \label{fig:RO}
 \end{figure}
 
 \item Functions and Methods
@@ -1709,6 +1730,68 @@ AcceptDebitNote			&	POST /debitNotes/\{debitNoteId\} /accept	&	Requestor	&	Accep
 RejectDebitNote			&	POST /debitNotes/\{debitNoteId\} /reject	&	Requestor	&	Reject received Debit Note \\
 \hline
 
+RejectionReasion		&												&	Requestor	&	{\it Unsolicited service} 
+																							\newline 	{\it Bad Service}
+																							\newline 	{\it Incorrect Amount} \\
+\hline
+						
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{enumerate}
+
+\item  Billing Operation
+
+\begin{enumerate}
+
+\item Description
+
+The Billing operation consists of functions with REST API methods that are used to implement the process of issuing invoices 
+based on the use of the service according to the agreed price plan.
+
+The IssueInvoice() function is used to create and send an invoice (Invoice object) from the Provider node to the Requestor node
+in the context of a specific Agreement.
+It indicates the total amount due from the Applicant under this Agreement.
+After issuing an Invoice, no further Debit Notes will be issued.
+Issuing an Invoice means Terminating the Agreement (if it has not already been terminated).
+After issuing an Invoice, no Actions are allowed.
+The CollectDebitNoteInvoiceEvent() function is used to collect invoices and their states from the network.
+It listens for debit note events using long polling.
+If there are any events, the method associated with the function (/invoicesEvents) will return them immediately.
+If there are none, the method will wait until at least one event occurs or the timeout expires.
+The afterTimestamp parameter can be used to get only "new" events.
+Setting the parameter value to the timestamp of the last processed event ensures that no event goes unnoticed.
+The events are persistent, i.e. the API call does not remove event records from the receiving queue.
+The AcceptInvoice() unction is used to signal the acceptance of the received invoice by the Requestor node.
+The acceptance event is sent to the network. And via the CollectDebitNoteInvoiceEvent() function, this event is collected
+by the Provider node.
+The CancelInvoice() function is used to signal the cancellation of the generated invoice by the Provider node.
+The RejectInvoice() function is used to signal the rejection of the received invoice by the Requestor node.
+From both nodes you can call the REST methods /invoices and /invoices/\{invoiceId\} to retrieve information about invoices.
+
+(Please see Figure ~\ref{fig:BO} on page ~\pageref{fig:BO}).
+
+\item Sequence Diagram
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=18cm,angle=0]{./diag/Sequence/PaymentBilling-B-Sequence.png}
+	\caption{Billing Operation}
+    \label{fig:BO}
+\end{figure}
+
+\item Functions and Methods
+
+\begin{table}[H]
+\footnotesize
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Function Name	& API Method Name				& 	Side		&	Description \\
+\hline
+
 IssueInvoice			&	POST /invoices								&	Provider	&	Issue an Invoice \\
 \hline
 
@@ -1744,7 +1827,6 @@ RejectionReasion		&												&	Requestor	&	{\it Unsolicited service}
 
 \end{enumerate}
 
-\break
 
 %%%% PAYMENT
 
@@ -1754,7 +1836,9 @@ RejectionReasion		&												&	Requestor	&	{\it Unsolicited service}
 
 \item Description
 
-TODO !!!
+The Payment operation consists of functions along with REST API methods that serve to implement 
+the process of collecting the necessary information to make a payment for the service through 
+the appropriate payment operator.
 
 (Please see Figure ~\ref{fig:PO} on page ~\pageref{fig:PO}).
 
@@ -1762,7 +1846,7 @@ TODO !!!
 
 \begin{figure}[H]
     \centering
-%    \includegraphics[width=14cm,angle=0]{./diag/Sequence/PaymentPayment-B-Sequence.png}
+    \includegraphics[width=18cm,angle=0]{./diag/Sequence/PaymentPayment-B-Sequence.png}
 	\caption{Payment Operation}
     \label{fig:PO}
 \end{figure}
