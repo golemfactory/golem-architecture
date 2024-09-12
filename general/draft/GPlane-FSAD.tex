@@ -76,13 +76,13 @@ In turn, communication between nodes takes place via the Golem Net Service (GNS)
 
 %This service also provides communication to the Registry and Discovery Service located on the Golem Central Net Server (GCNS).
 
-Figure ~\ref{fig:SCR} on page ~\pageref{fig:SCR}).
+Figure ~\ref{fig:CCR} on page ~\pageref{fig:CCR}).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=12cm,angle=0]{./diag/Reference/ServicesConcept-Reference.png}
+    \includegraphics[width=14cm,angle=0]{./diag/Reference/CommunicationConcept-Reference.png}
 	\caption{Intra and Inter Communication between Services in Nodes}
-    \label{fig:SCR}
+    \label{fig:CCR}
 \end{figure}
 
 
@@ -116,10 +116,19 @@ Golem Net Service provides the following communication models
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=7cm,angle=0]{./diag/Issue/NATRelaying-Mk0-Issue.png}
+    \includegraphics[width=7cm,angle=0]{./diag/Issue/Net-Mk0-1-Issue.png}
 	\caption{Model Mrk0 Communication}
     \label{fig:MM0C}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=5cm,angle=0]{./diag/Issue/Net-Mk0-2-Issue.png}
+	\caption{Model Mrk0 Communication}
+    \label{fig:MM0C}
+\end{figure}
+
+
 
 \item Stack
 
@@ -165,10 +174,20 @@ TODO Description
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=7cm,angle=0]{./diag/Issue/NATReversal-Mk1-Issue.png}
+    \includegraphics[width=7cm,angle=0]{./diag/Issue/Net-Mk1-1-Issue.png}
 	\caption{Model Mrk1 Communication}
     \label{fig:MM1C}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=5cm,angle=0]{./diag/Issue/Net-Mk1-2-Issue.png}
+	\caption{Model Mrk1 Communication}
+    \label{fig:MM1C}
+\end{figure}
+
+
+
 
 \item Stack
 
@@ -178,7 +197,7 @@ TODO Description
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=10cm,angle=0]{./diag/Issue/NetBlock-Mk1-Issue.png}
+    \includegraphics[width=8cm,angle=0]{./diag/Issue/NetBlock-Mk1-Issue.png}
 	\caption{Protocol Mrk1 Layers}
     \label{fig:M1PL}
 \end{figure}
@@ -313,6 +332,16 @@ In addition, the service allows for decentralized searches of offers and demands
 based on the conditions described in offers and demands. Matched objects are represented as
 proposal. An accepted and confirmed proposal allows for the creation of an agreement object, which
 after being signed by the parties is a confirmation of the sale and purchase of goods such as computing resources.
+
+(Please see Figure ~\ref{fig:MSCC} on page ~\pageref{fig:MSCC})
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm,angle=0]{./diag/Reference/MarketService-Reference.png}
+	\caption{Market Service Component Concept}
+    \label{fig:MSCC}
+\end{figure}
+
 
 The Market service is based on the tuple space (Tuples Space).
 A tuple is a finite list of elements that can be used to represent a data item or a message.
@@ -1044,6 +1073,17 @@ while simultaneously measuring the use of these resources in accordance with the
 The measurement of the use of resources is recorded in the form of metrics in the Usage Counters Vector (UCV) object.
 
 
+(Please see Figure ~\ref{fig:ASCC} on page ~\pageref{fig:ASCC})
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm,angle=0]{./diag/Reference/ActivityService-Reference.png}
+	\caption{Activity Service Component Concept}
+    \label{fig:ASCC}
+\end{figure}
+
+
+
 \begin{enumerate}
     \item Service Profile
     \item Service Protocol
@@ -1062,6 +1102,17 @@ Debit Notes objects between the parties is included in the agreement. The state 
 for the generation of an invoice summarizing the agreement between the parties. 
 Payment is made via the blockchain operator. Optimization of payment transaction costs is possible by setting the terms of this operation 
 in the agreement object.
+
+(Please see Figure ~\ref{fig:PSCC} on page ~\pageref{fig:PSCC})
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm,angle=0]{./diag/Reference/PaymentService-Reference.png}
+	\caption{Payment Service Component Concept}
+    \label{fig:PSCC}
+\end{figure}
+
+
 
 In the Golem system, in the Payment service, tuples are used to describe objects such as:
 vector usage counters, activity detail record, debit note, invoice . 

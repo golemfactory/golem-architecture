@@ -49,7 +49,8 @@ A detailed description of the components will be described later in the document
 \subsection{Abstract Architecture}
 
 The architecture of the Golem System will be presented on three planes 
-(Please see Figure ~\ref{fig:Plane} on page ~\pageref{fig:Plane}):
+
+(Please see Figure ~\ref{fig:BDC} on page ~\pageref{fig:BDC}):
 
 \begin{enumerate}
 	\item Golem Plane (GP)
@@ -57,21 +58,22 @@ The architecture of the Golem System will be presented on three planes
 	\item External Provider Plane (EPP)
 \end{enumerate}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=8cm,height=8cm,angle=0]{./diag/Abstract/GolemSystemPlane-Abstract.png}
-    \caption{Abstraction Plane Concept}
-	\label{fig:Plane}
+    \includegraphics[width=9cm,angle=0]{./diag/Abstract/BasicDeployment-Abstract.png}
+    \caption{Basic Deployment Concept}
+	\label{fig:BDC}
 \end{figure}
 
 The Golem Plane is the basis on which nodes called Golem Nodes are defined, which build the Golem Network 
-(Please see Figure ~\ref{fig:Ntw} on page ~\pageref{fig:Ntw}).
 
-\begin{figure}[htbp]
+(Please see Figure ~\ref{fig:BPC} on page ~\pageref{fig:BPC}).
+
+\begin{figure}[H]
     \centering
-    \includegraphics[width=8cm,height=8cm,angle=0]{./diag/Abstract/GolemSystemNetwork-Abstract.png}
-	\caption{Abstraction Network Concept}
-    \label{fig:Ntw}
+    \includegraphics[width=18cm,angle=0]{./diag/Abstract/BasicPackages-Abstract.png}
+	\caption{Basic Packages Concept}
+    \label{fig:BPC}
 \end{figure}
 
 Each node consists of a set of core applications, core services
@@ -84,7 +86,7 @@ outside the Golem Network but used by this network. An example is the availabili
 payments in cryptocurrencies.
 
 The above Planes with their component elements distributed over three main layers 
-are shown in the figure (Please see Figure ~\ref{fig:Arch} on page ~\pageref{fig:Arch}):
+are shown in the figure :
 
 \begin{enumerate}
 	\item Platform Layer (PL)
@@ -112,16 +114,27 @@ This layer defines user roles that can be assigned to Golem nodes depending on t
 The external provider layer (EPP) is used to handle payments that take place on the Etherium network and its derivatives.
 This layer can be used to define and implement connections to other application and service networks.
 
-\afterpage{
-\begin{landscape}
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=\hsize]{./diag/Abstract/GolemSystemLayers-Abstract.png}
-		\caption{Abstraction Architecture Diagram}
-		\label{fig:Arch}
-	\end{figure}
-\end{landscape}
-}
+%\afterpage{
+%\begin{landscape}
+%	\begin{figure}[htbp]
+%		\centering
+%		\includegraphics[width=\hsize]{./diag/Abstract/GolemSystemLayers-Abstract.png}
+%		\caption{Abstraction Architecture Diagram}
+%		\label{fig:Arch}
+%	\end{figure}
+%\end{landscape}
+%}
+
+
+(Please see Figure ~\ref{fig:DPC} on page ~\pageref{fig:DPC})
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm,angle=0]{./diag/Abstract/DetailPackage-Abstract.png}
+	\caption{Detail Packages Concept}
+    \label{fig:DPC}
+\end{figure}
+
 
 \newpage
 
