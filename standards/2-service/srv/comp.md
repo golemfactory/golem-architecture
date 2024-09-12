@@ -1,6 +1,9 @@
 # Computation Platform properties 
 Generic properties describing the Computation Platform aspects.
 
+> [!NOTE]
+> Unused
+
 ## Common Properties
 
 (Not applicable)

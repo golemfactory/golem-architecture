@@ -29,6 +29,11 @@ The Golem Standards repository consists of following sections/categories:
 * [2-service](2-service) - A collection of namespaces containing properties which describe a Golem service or resource. A hierarchy of different **categories of services/resources** is defined.
 * [3-commercial](3-commercial) - A collection of namespaces containing properties which describe commercial aspects of Golem ecosystem. All properties referring to **pricing**, **payments** or **licenses** are defined here.
 
+### Standard properties - Cheat sheet
+
+List fo Golem Factory supported properties:
+[Cheat sheet](cheat_sheet.md)
+
 ## Generic conventions
 
 ### ["Fact" vs "Negotiable" properties](#negotiable-properties)
@@ -59,5 +64,3 @@ There are a couple of reasons for the `Negotiable` property convention:
 
 Properties (and usage conters) marked as `Deprecated` are still supported in the current version of the Standard, but will be removed in one of subsequent versions of the Standard. The deprecation rules as indicated in the [Golem Compatibility Policy](https://handbook.golem.network/see-also/compatibility-policy#deprecation-policy) shall be followed.
 
-## Standard properties - Cheat sheet
-[Cheat sheet](cheat_sheet.md)
