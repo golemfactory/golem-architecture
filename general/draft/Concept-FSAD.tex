@@ -44,19 +44,13 @@ A detailed description of the components will be described later in the document
 %and external communication, their configuration and monitoring at all layers.
 %\end{description}
 
-\newpage
+%\newpage
 
 \subsection{Abstract Architecture}
 
-The architecture of the Golem System will be presented on three planes 
-
-(Please see Figure ~\ref{fig:BDC} on page ~\pageref{fig:BDC}):
-
-\begin{enumerate}
-	\item Golem Plane (GP)
-	\item User Plane (UP)
-	\item External Provider Plane (EPP)
-\end{enumerate}
+Golem System is a framework for building decentralized distributed applications and services used for trading computational resources.
+It is based on the Peer2Peer (P2P) network model, and the settlement of services takes place on the Etherium network and its derivatives.
+The basic deployment consists of three elements (Please see Figure ~\ref{fig:BDC} on page ~\pageref{fig:BDC}):
 
 \begin{figure}[H]
     \centering
@@ -65,8 +59,40 @@ The architecture of the Golem System will be presented on three planes
 	\label{fig:BDC}
 \end{figure}
 
-The Golem Plane is the basis on which nodes called Golem Nodes are defined, which build the Golem Network 
+\begin{enumerate}
 
+\item Golem Node
+
+This is a P2P network node equipped with a unique address, which is the Golem identifier.
+Golem Node is a set of generic basic services used for trading computational resources along with their API.
+
+\item Golem Node Agent
+
+This is a component (application) using the Golem Node API, depending on the role in the process of trading computational resources.
+The basic roles in the trading process are
+
+\begin{itemize}
+
+\item Provider
+
+This is an application that determines the Golem Node to the role of a seller and provider of computational resources.
+
+\item Requestor
+
+This is an application that determines the Golem Node to be a buyer and user of the ordered computing resources.
+
+\end{itemize}
+
+The basic roles of the application allow for their generic expansion, for example to the role of a Broker,
+i.e. a wholesale intermediary for the sale and provision of computing resources.
+
+\item Execution Engine
+
+This is a component responsible for the execution of the order for computing power.
+
+\end{enumerate}
+
+Golem Nodes create a hybrid P2P network of distributed components with a complex communication protocol.
 (Please see Figure ~\ref{fig:BPC} on page ~\pageref{fig:BPC}).
 
 \begin{figure}[H]
@@ -76,57 +102,9 @@ The Golem Plane is the basis on which nodes called Golem Nodes are defined, whic
     \label{fig:BPC}
 \end{figure}
 
-Each node consists of a set of core applications, core services
-and core protocols enabling communication, configuration and monitoring 
-on all layers of decentralized and distributed business processes.
-Business processes are implemented on the User Plane using functions of 
-core components of applications, services and protocols through their API.
-The External Operator Plane is used for specific functions implemented
-outside the Golem Network but used by this network. An example is the availability of
-payments in cryptocurrencies.
+\newpage
 
-The above Planes with their component elements distributed over three main layers 
-are shown in the figure :
-
-\begin{enumerate}
-	\item Platform Layer (PL)
-	\item Integration Layer (IL)
-	\item Buisness Layer (BL)
-\end{enumerate}
-
-In the Platform Layer (PL) there is the Golem Agent (GA) element,
-which allows you to create a Golem Node (GN) from a computer unit.
-Golem Node is a member of the Golem Network (Gntw).
-
-In the Integration Layer (IL) there is the Golem Agent console (GAC) and Golem Toolkit (GTK).
-The Golem Agent console consists of tools for configuring and monitoring the created applications and services
-and managing the Golem Agent element, which is a daemon of the created node (GN).
-The Golem Toolkit is a set of tools, APIs that allow you to create decentralized and distributed applications and services
-on the Golem network infrastructure and using the Golem commercial model.
-
-In the Business Layer (BL) there is the user plane (UP) and the external provider plane (EPP).
-
-In the user plane (UP), decentralized applications and services of the Golem network are implemented.
-Users can use service and application templates created in the form of the "standards - change the name" framework specification.
-
-This layer defines user roles that can be assigned to Golem nodes depending on the aspect of the node's computational resources and/or the service it provides.
-
-The external provider layer (EPP) is used to handle payments that take place on the Etherium network and its derivatives.
-This layer can be used to define and implement connections to other application and service networks.
-
-%\afterpage{
-%\begin{landscape}
-%	\begin{figure}[htbp]
-%		\centering
-%		\includegraphics[width=\hsize]{./diag/Abstract/GolemSystemLayers-Abstract.png}
-%		\caption{Abstraction Architecture Diagram}
-%		\label{fig:Arch}
-%	\end{figure}
-%\end{landscape}
-%}
-
-
-(Please see Figure ~\ref{fig:DPC} on page ~\pageref{fig:DPC})
+A typical component consists of (Please see Figure ~\ref{fig:DPC} on page ~\pageref{fig:DPC})
 
 \begin{figure}[H]
     \centering
@@ -135,8 +113,55 @@ This layer can be used to define and implement connections to other application 
     \label{fig:DPC}
 \end{figure}
 
+\begin{enumerate}
 
-\newpage
+\item REST API Gateway
+
+\item Local Services
+
+These are the basic generic services available within the Golem Node.
+They are distributed on the service bus (Golem Service Bus):
+
+\begin{itemize}
+
+\item Market Service
+
+\item Activity Service
+
+\item Payment Service
+
+\item Identity Service
+
+\item Net Service
+
+This is a service necessary for communication between Golem Node nodes using P2P protocols.
+It is an autonomous service, independent and isolated from other services.
+More information is described later in the document
+
+\end{itemize}
+
+\item Remote Services
+
+These are services available from other Golem Node nodes. These are services that allow remote launch of
+applications and services that use the computing resources of Provider nodes.
+
+This is usually the Execution Engine component.
+
+\item Public Services
+
+These are services that use other networks.
+
+These are usually services that allow them to be used by other Operators, e.g. payment settlements.
+
+\item Console
+
+Command Line Interface (CLI) used to configure and monitor a local service within a node.
+
+\item Database
+
+Embeded Database is used to collect necessary data within a local service
+
+\end{enumerate}
 
 The subject of the trade (purchase-sale of the service of using computing resources)
 is described using the service model description language (Golem SMDL).
