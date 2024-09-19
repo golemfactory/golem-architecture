@@ -28,9 +28,18 @@ very high level description of what they are.
 ## Actors
 This section describes the actors using Golem Network and their role in the
 system.
-### Providers
-### Requesters
-### Software engineer
+### Provider
+### Requestor
+Note: We use term Requestor not Requester.
+### Developer
+### End User
+Consumer of resources can be different person than Requestor.
+For example we can have web service which forwards computationally expensive jobs
+to Golem Network. Example: [Deposits](https://github.com/golemfactory/golem-architecture/blob/master/specs/deposits.md)
+
+#### Service Owner
+#### Funder
+#### Spender
 
 ## Activities
 This section describes what actors can do to the system. The descriptions are
