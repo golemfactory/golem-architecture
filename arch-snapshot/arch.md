@@ -25,6 +25,28 @@ very high level description of what they are.
 
 ## What Golem is not
 
+## Design principles
+
+- Golem is protocol for selling and using resources in Golem Network
+- Protocol is open for being extended by it's users (community)
+  - It provides basic specification how Nodes should communicate within Golem Network
+  - Protocol allows for creating sub-protocols on top of Golem, meaning that developers can
+    define specifications that add specific bahaviors to Nodes, Provider/Requestor agents,
+    SDKs etc.
+- Golem Factory creates specification that are guiding reference implementation of yagna daemon
+  and Agents applications
+- This doesn't close the option to reimplement those components in complately different way
+
+- Example: mid-agreement payments
+  - On the lowest protocol level Golem defines market exchange of Offers/Demands artifacts,
+    property constraint langauge and Payment artifacts (DebitNotes, Invoices)
+  - Golem Factory creates [specification](https://github.com/golemfactory/golem-architecture/blob/master/gaps/gap-3_mid_agreement_payments/gap-3_mid_agreement_payments.md) of protocol defining what should be included in Offer/Demand to use mid-agreement payments
+    and how should Agent application bahave in relation to sending DebitNotes and when payments should happen
+  - Bahavior is implemented in reference implementation
+  - Other developers are allowed not to use this protocol when implementic their own Nodes
+  - They can prepare their own alternative specification of mid-agreement payments as well
+
+
 ## Actors
 This section describes the actors using Golem Network and their role in the
 system.
