@@ -117,6 +117,9 @@ A typical component consists of (Please see Figure ~\ref{fig:DPC} on page ~\page
 
 \item REST API Gateway
 
+A set of REST APIs for creating decentralized and distributed applications and services 
+based on the Golem trading model
+
 \item Local Services
 
 These are the basic generic services available within the Golem Node.
@@ -126,40 +129,53 @@ They are distributed on the service bus (Golem Service Bus):
 
 \item Market Service
 
+A service enabling the circulation of offers and demands for computing resources.
+The purpose of the circulation is to conclude an agreement between the applicant and 
+the provider of computing resources.
+
 \item Activity Service
+
+A service enabling controlled measurement of the parameters of the provider's utilization of computing resources by the requestor's application,
+in accordance with the concluded agreement. The remote launch of the applicant's application takes place on the Execution Engine component of the provider node.
 
 \item Payment Service
 
+A service enabling the settlement of the executed contract between the applicant and the provider
+via the selected payment platform as a public service
+
 \item Identity Service
+
+A service storing the necessary keys needed for the payment transaction.
 
 \item Net Service
 
 This is a service necessary for communication between Golem Node nodes using P2P protocols.
 It is an autonomous service, independent and isolated from other services.
-More information is described later in the document
 
 \end{itemize}
 
+More information is described later in the document
+
 \item Remote Services
 
-These are services available from other Golem Node nodes. These are services that allow remote launch of
-applications and services that use the computing resources of Provider nodes.
+These are services available from other Golem network nodes. These are services that allow remote launch of
+applications and services using the computing resources of Provider nodes.
 
 This is usually the Execution Engine component.
 
 \item Public Services
 
-These are services that use other networks.
-
-These are usually services that allow them to be used by other Operators, e.g. payment settlements.
+A set of services available from other public and/or private networks, e.g. a payment settlement network.
 
 \item Console
 
-Command Line Interface (CLI) used to configure and monitor a local service within a node.
+A Command Line Interface (CLI) used to configure and monitor a local service within a node.
 
 \item Database
 
 Embeded Database is used to collect necessary data within a local service
+
+\item Golem Service Bus (GSB): An element of the Golem Node component that enables communication between related Local, Remote, and Public Services services.
 
 \end{enumerate}
 
