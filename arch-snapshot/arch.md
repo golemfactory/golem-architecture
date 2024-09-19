@@ -159,19 +159,70 @@ them.
   - Node identity verification (challenges)
   - Communication encryption
 #### GSB communication through Net
-- Communication is net implementation independent
+- Communication is independent from net implementation
 - GSB addressing
 
 ### Payments & Clearing
 #### Payments models
-Describe generic model which is open for new implementation
-#### Linear Payment model (as example)
+- Describe generic model which is open for new implementations
+- Payment model specification in Offer/Demand language
+- Linear Payment model as an example
+#### Payments flow during Agreement
+- Negotiating payment platform and other payment details
+- Testnet(s) vs. mainnet(s)
+- Tokens
+- Partial payments vs. payments after Agreement finish
+- DebitNotes/Invoices interactions (acceptance, rejection, cancellation)
+- How DebitNote/Invoice acceptance relates to payment on blockchain?
+- Payment settlement and payment confirmation for Provider
+#### Payment drivers
+- Abstract concept (independance from underlying payment mechanisms)
+- How payment platform relates to payment driver?
+- Examples: erc20 driver, zksync (?)
+#### Payments batching
+#### Deposits payments
+- Overview of the concept
+- Link to external documentation describing details
 
+### ExeUnits
+#### Abstract concept
+- ExeUnit concept is generic enough to sell any kind of computation resources
+- Generic ExeUnits (for example VM, WASM etc.) vs. specialized ExeUnits for specific tasks like:
+  - [GamerHash](https://github.com/golemfactory/ya-runtime-ai)
+  - [outbound gateway](https://github.com/golemfactory/ya-runtime-outbound)
+  - [http authentication](https://github.com/golemfactory/ya-runtime-http-auth)
+  - SGX variant of ExeUnit
+  - These points are not meant to document those ExeUnits, rather show possible variaty based
+    on these examples
+- Interaction with yagna through GSB
+- Control flow between Requestor and ExeUnit
+- Extensible commands list (ExeUnit implementation dependent)
+##### Controlling ExeUnit (basic concepts)
+- Spawning ExeUnit (contract between Provider Agent and ExeUnit)
+  - Self-test
+  - Offer template
+- Binding to GSB (addressing based on activity id)
+- Requestor state control
+- Commands and batches:
+  - Deploy, Start, Transfer, Run, Terminate
+  - Querying command/batch state, receiving results
+  - Transfer methods ([GFTP](#gftp), http)
+#### ExeUnit Supervisor
+- Why splitting Supervisor and Runtime?
+- Common functionalities provided by Supervisor
+#### ExeUnit Runtime
+#### GFTP
+#### VM runtime
+- Virtual machine desciption (so the reader knows what is there, but not details)
+- Functionalities (outbound, VPN, process output capturing)
+- VM images, gvmkit-build etc
+#### WASM runtime
+- WASM supported execution engines
+- WASM images
+
+### VPN
 ### IPC
 ### Processes and the responsibility split between them
-### VM images
-### WASM runtime
-### VPN
 ### Reputation management
 
 ## Key architectural shortcomings
