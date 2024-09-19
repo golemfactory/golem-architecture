@@ -45,11 +45,13 @@ details and establish a glossary to ensure consistency within the document.
 ### Starting a VM
 ### Setting up a VPN
 
-## Artifacts
+## Artifacts/Terms
 This section describes the artifacts, i.e. the terms introduced in Golem Network
 on which actors can act. They are organized by respective aspects of Golem
 Network. The descriptions describe their function rather than their
 implementation.
+
+Section should serve as dictionary to be linked by other chapters.
 
 ### Participating entities
 #### Yagna daemon
@@ -58,22 +60,37 @@ implementation.
 
 ### Marketplace
 #### Offer
+#### Demand
+#### Subscription
+This word is used to describe Offer/Demand put on market, so we should mention it.
+#### Proposal
+#### Negotiation
 #### Agreement
-#### Invoice
-#### Debit note
-#### Payment
+
+### Execution system
+#### Activity
+#### Execution environment (ExeUnit)
+##### ExeUnit Batch
+##### ExeUnit Command
+##### VM
+##### VM Image
+##### WASM
+##### WASM image
+
+### VPN
+#### Network
+
+### Payment System
+#### Payment Driver
+#### Payment Platform
+#### Token
 #### Wallet
 #### Allocation
-#### Demand
-#### Proposal
-#### Activity
+#### Debit Note
+#### Invoice
+#### Payment
+#### Transaction (on blockchain)
 
-### Execution environment
-#### VM
-##### Image
-#### WASM
-##### WASM image
-#### VPN
 
 ## Key architectural decisions
 ### GLM is built on XYZ
@@ -221,8 +238,9 @@ them.
 - WASM images
 
 ### VPN
-### IPC
 ### Processes and the responsibility split between them
+#### IPC
+
 ### Reputation management
 
 ## Key architectural shortcomings
