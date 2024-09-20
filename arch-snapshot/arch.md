@@ -48,7 +48,49 @@ only as detailed as to explain how the actors control the artifacts. The goal is
 to give the reader an overview of the terms introduced by Golem without any
 details and establish a glossary to ensure consistency within the document.
 
-### Selling on golem platform
+### Selling on Golem platform
+
+This chapter explains the process of advertising resources on the Golem Network and selling
+them to Requestors. It provides a high-level overview of how the Provider Agent application
+should operate and interact with the Yagna Daemon.
+
+The following steps are needed:
+1. Describe Resources using property language to create [Offer](#offer)
+2. Publish Offer on market
+3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising Requestor
+4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
+5. Allocate promised Resources according to [Agreement](#agreement)
+6. Send [DebitNotes](#debit-note) to notify Requestor with update cost
+7. Terminate Agreement or wait for Agreement termination event sent by Requestor
+8. Send [Invoice](#invoice) to summarize the cost of the Agreement
+9. Listen on Payment API events for Invoice settlement and payment confirmation 
+
+#### 1. Describe Resources using property language to create [Offer](#offer)
+
+The Golem design was created to support the sale of any type of computing resource.To achieve this,
+Golem employs a generic [property and constraints language](#discovery-and-offersdemand-matching) to
+describe the resources being offered. 
+
+The Yagna market is agnostic to the specific properties used and can match Offers and Demands as long
+as they adhere to the language specification. However, the Yagna daemon does not interpret the semantics
+of the properties in the Offer, nor does its behavior depend on the negotiated Agreement. It is the
+responsibility of the Provider Agent application to accurately interpret the semantics and implement
+the agreed-upon behavior between the parties.
+
+In this chapter, the term "resource" is used in a generic sense. However, illustrating a generic
+example can be challenging. Therefore, we will focus on selling computational power in a virtual
+machine (VM) to provide the reader with a clearer understanding.
+
+
+#### 2. Publish Offer on market
+#### 3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising Requestor
+#### 4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
+#### 5. Allocate promised Resources according to [Agreement](#agreement)
+#### 6. Send [DebitNotes](#debit-note) to notify Requestor with update cost
+#### 7. Terminate Agreement or wait for Agreement termination event sent by Requestor
+#### 8. Send [Invoice](#invoice) to summarize the cost of the Agreement
+#### 9. Listen on Payment API events for Invoice settlement and payment confirmation
+
 ### Searching on market
 ### Buying on golem platform.
 ### Running something
