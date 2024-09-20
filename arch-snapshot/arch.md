@@ -81,6 +81,14 @@ In this chapter, the term "resource" is used in a generic sense. However, illust
 example can be challenging. Therefore, we will focus on selling computational power in a virtual
 machine (VM) to provide the reader with a clearer understanding.
 
+In this case, the Offer should include the following key aspects:
+- The type of [Execution Environment (ExeUnit)](#execution-environments) that will be used.
+- [Hardware specifications](https://github.com/golemfactory/golem-architecture/blob/master/standards/cheat_sheet.md#goleminfcpu),
+  including the number of CPU cores, RAM, and disk space.
+- The price and the [pricing model](#payments-models) applied.
+- The payment scheme, outlining how the agent application interacts with the payment system (e.g. in `pay-as-you-use` scheme,
+  what is expected transaction frequency).
+- The [Wallet](#wallet) address for receiving payments, along with the supported [payment platforms](#payment-platform).
 
 #### 2. Publish Offer on market
 #### 3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising Requestor
