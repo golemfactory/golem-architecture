@@ -15,7 +15,8 @@ implement the needed functionalities.
 The aim is not to dive deep into every integration, but to capture architectural
 decisions and their consequences.
 
-# Functional view
+# Framework Concept
+
 This section describes what comprises Golem network, namely the actors,
 technical artifacts and activities they actors may perform on those activities.
 The objective of this paragraph is to tie together all the terms and provide a
@@ -46,15 +47,46 @@ This section describes what actors can do to the system. The descriptions are
 only as detailed as to explain how the actors control the artifacts. The goal is
 to give the reader an overview of the terms introduced by Golem without any
 details and establish a glossary to ensure consistency within the document.
-### Provisioning a provider
-### Setting up a requester
-### Finding a provider
-### Fulfilling an agreement
-### Creating an image
-### Starting a VM
-### Setting up a VPN
 
-## Artifacts/Terms
+### Selling on golem platform
+### Searching on market
+### Buying on golem platform.
+### Running something
+
+## Layers
+
+decomposition into layers. responsibility of the layers.
+
+### Golem Node
+
+### Business logic
+
+### Execution
+
+## Functional modules
+
+decomposition into functional areas and scopes of responsibility of these layers.
+
+### Market
+### Payment
+### Activity
+### Identity
+### Net
+
+## Applications/Exe-Units
+
+a brief overview of sample applications.
+
+### WASM Runtime
+
+### VM Runtime
+
+### GH/AI Runtime
+
+### HTTP Auth Runtime 
+
+## Artifacts
+
 This section describes the artifacts, i.e. the terms introduced in Golem Network
 on which actors can act. They are organized by respective aspects of Golem
 Network. The descriptions describe their function rather than their
@@ -63,6 +95,7 @@ implementation.
 Section should serve as dictionary to be linked by other chapters.
 
 ### Participating entities
+
 #### Yagna daemon
 #### Provider agent
 #### Requester agent
@@ -111,6 +144,7 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 ### Local storage (TODO: what role does the local DB play?)
 
 ## Technical view - architecture layers
+
 Bottom-up description of different layers of Golem that impose structure on how
 we split components and facilitate communication between them. Golem is not
 monolithic and division of responsibility is not arbitrary.
@@ -252,9 +286,14 @@ them.
 
 ### Reputation management
 
+PR: this is part of the business logic layer. you would need to think about how to add objects from this layer and SDK implementations in different versions to this document. and the concept of building various reputation methods.
+
+PR: ya-provider is also from this layer and you could write down what configurations it supports. e.g. node attestation, authorization certificates, etc.
+
 ## Key architectural shortcomings
 This section contains known shortcomings of the implemented architecture —
 irrespective of whether they were intentional or unintentional.
+
 ### Preexisting two categories of actors
 The preexisting categories of actors (providers and requesters) and their
 asymmetric roles are limiting in certain scenarios. FIXME FIXME FIME
