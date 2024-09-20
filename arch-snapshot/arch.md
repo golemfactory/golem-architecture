@@ -3,6 +3,7 @@ Authors: Witold Dzięcioł, Przemysław Rekucki, Marek Dopiera,
 \<YOUR NAME GOES HERE\>\
 Reviewers: Maciej Maciejowski, Paweł Burgchardt\
 Status: WIP
+
 # About this document
 The goal of this document is to describe present Golem architecture in enough
 detail for an outside person to understand how it works under the hood. The
@@ -91,6 +92,7 @@ implementation.
 #### Yagna daemon
 #### Provider agent
 #### Requester agent
+
 ### Marketplace
 #### Offer
 #### Agreement
@@ -102,11 +104,13 @@ implementation.
 #### Demand
 #### Proposal
 #### Activity
+
 ### Execution environment
 #### VM
 #### Image
 #### WASM image
 #### VPN
+
 ## Key architectural decisions
 ### GLM is built on XYZ
 ### GLM is used for clearing
@@ -125,15 +129,26 @@ monolithic and division of responsibility is not arbitrary.
 The goal of this chapter is to sketch general idea, rather than describe
 specifics.
 ### Network layer
+- Receives message from GSB and propagates them to other Nodes
+- Replacable implementation since it uses GSB for communication
+- Link to [details](#communication-between-nodes)
 ### GSB layer
 RPC-like communication layer providing a way to call other modules or other
 nodes in unified way.
+
+- Allows for unified communication inside processes and between processes (even on different machines)
+- Works by registering handles under specific address
+- Different processes can connect using TCP or Unix sockets to main router on yagna daemon
+- Network layer binds GSB handlers capturing traffic to remote Nodes and redirects messages to Golem Network
+  - Messages received from the Network are redirected to local GSB addresses
 ### Specialized modules layer (market, payment, activity, vpn etc.)
+- Modules communicate with each other using GSB (only, no direct communication in code)
+  - Each module exposes set of GSB messages constituting it's local and public interface
 ### Market negotiation protocols
 Offers/Demands property and constraint language is used to build subprotocols
 for negotiating certain aspects of Agreements.
 
-### Execution environments
+#### Execution environments
 
 There are a few ways to implement an execution environment. We have a few APIs
 here:
@@ -148,6 +163,8 @@ cli or set of GSB endpoints for communication between modules and nodes.
 ### REST API
 ### CLI
 ### GSB API (communication between modules)
+- Modules expose set of local endpoint (accesible for other modules on the same Node)
+- And public endpoints (that can be called from remote Nodes)
 ### SDKs layer (python and js SDK)
 ### Agent application (Requestor script, Provider Agent)
 ### Higher level SDKs
