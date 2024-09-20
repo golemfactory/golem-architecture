@@ -52,6 +52,20 @@ details and establish a glossary to ensure consistency within the document.
 
 decomposition into layers. responsibility of the layers.
 
+Layers:
+- Golem Node (Yagna Daemon)
+  - Serves as gateway to Golem Network, handles protocol
+  - Exposes REST API to be used by higher layers
+- Business layer (Requestor and Provider agent application)
+  - Uses Yagna daemon REST API
+  - Agent defines resources that wants to sell or buy on market
+  - Negotiates details of Agreement related to resources and task execution
+    - Higher level protocols can be built on top of market property langauge and on top of REST API and existing artifacts
+  - Controls task execution
+  - Buisness layer can constits of multiple layers for example higher level SDKs that are used by Customer
+  - Someone can acquire resources on Golem and sell more complicated services built on top
+Diagram like this: https://miro.com/app/board/uXjVMoT9u_0=/?moveToWidget=3458764600630505742&cot=14
+
 ### Golem Node
 
 ### Business logic
