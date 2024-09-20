@@ -44,6 +44,14 @@ to give the reader an overview of the terms introduced by Golem without any
 details and establish a glossary to ensure consistency within the document.
 
 ### Selling on golem platform
+- To sell Provider needs to publish Offer
+- How to define sold resources using property langauge?
+  - Different kinds of resources require different specifications
+  - Offer format is open for extensions
+  - Different kind of information included in Offers (Node information, payments protocols, runtimes etc.)
+  - Link to example specification of Resource definition
+- What happens to published Offer?
+  - Offer propagation mentioned. Link to detailed description
 ### Searching on market
 ### Buying on golem platform.
 ### Running something
