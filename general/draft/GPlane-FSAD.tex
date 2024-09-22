@@ -1,75 +1,25 @@
-\section{Golem Plane}
+\section{Framework Components}
 
 \subsection{Introduction}
 
-On the Golem Plane (GP) are embedded nodes (GN) that communicate with each other using the P2P protocol, creating the Golem Network.
-Each node is built on the basis of the Golem Agent (GA (Yagna)). This component consists of:
+Golem Framework defines the structure of the application and the general mechanism of its operation
+and provides a set of components, libraries, protocols, operations, functions, methods to perform specific tasks.
+The default configuration of the framework guarantees the minimal usability of the Golem system.
+The framework components allow for generic extension with new protocols and libraries.
+Existing basic protocols allow for adding new operations based on existing functions and methods.
+The framework can be extended with new components without disturbing its internal structure.
 
-\begin{itemize}
+The individual components of the framework are described in this chapter
 
-\item Golem Toolkit (GTK): A set of REST APIs for creating decentralized and distributed applications and services based on the Golem trade model.
+\subsection{Golem Node}
 
-\item Golem Local Services (GLS): A set of basic services available within the node. These are:
-
-\begin{itemize}
-
-\item Golem Market Service (GMS): A service that enables the circulation of offers and demands for computational resources.
-The purpose of the circulation is to conclude an agreement between the requestor and the provider of computational resources.
-
-\item Golem Activity Service (GAS) : A service that allows for controlled remote launch of the applicant's application on the supplier's computing resources, 
-in accordance with the concluded agreement.
-
-\item Golem Payment Service (GPS) : A service that allows for the settlement of the executed agreement between the requestor and the provider 
-via a selected payment platform.
-
-\item Golem Net Service (GNS) : A service that manages communication between Golem nodes via P2P protocols.
-
-\end{itemize}
-
-\item Golem Agent Console (GAC) : A Command Line Interface (CLI) used to configure, monitor applications and services on the Golem Agent component.
-
-\item Golem Public Services (GPuS) : A set of services available from other nodes and/or networks.
-
-\item Golem Database (GDB) : An element of the Golem Agent component that allows for recording transactions to the embedded database.
-
-\item Golem Service Bus (GSB) : A Golem Agent component element that enables communication between the binded Golem Local and Public Services.
-
-\item Golem Agent Daemon (GAD) : A module that works as a background process and handles the Golem Agent component elements.
-
-\end{itemize}
-
-\break
-\newpage
-
-\subsection{Golem Network}
-
-\subsubsection{Introduction}
+\subsubsection{Golem Service Bus}
 
 
 
+\subsubsection{Golem Services}
 
-\subsubsection{Golem Node}
-
-
-
-\subsubsubsection{Golem Agent}
-
-\subsubsubsection{Golem Agent Console}
-
-\subsubsubsection{Golem Service Bus}
-
-
-%\subsubsubsubsection{Golem Net Point}
-%\subsubsubsubsection{Golem Market Point}
-%\subsubsubsubsection{Golem Activity Point}
-%\subsubsubsubsection{Golem Payment Point}
-%\subsubsubsection{Golem Abstraction Resource}
-%\subsubsubsubsection{Physical Resource}
-%\subsubsubsubsection{Golem Resource Point}
-
-\subsubsubsection{Golem Services}
-
-\subsubsubsubsection{Golem Net Service}
+\subsubsubsection{Golem Net Service}
 
 In a single node, the above services communicate with each other via the Golem Service Bus (GSB).
 In turn, communication between nodes takes place via the Golem Net Service (GNS) service, which provides Peer2Peer (P2P) protocols.
@@ -322,7 +272,7 @@ Stateless object
 
 \break
 
-\subsubsubsubsection{Golem Market Service}
+\subsubsubsection{Golem Market Service}
 
 This service has functions for creating a market of distributed computing resources.
 This service allows sellers (Providers) to describe the subject of sale in the form of an offer
@@ -1066,7 +1016,7 @@ RejectAgreement		& POST /agreements/\{agreementId\}/ \newline reject				& Provid
 %    \item Service Workflow
 %\end{enumerate}
 
-\subsubsubsubsection{Golem Activity Service}
+\subsubsubsection{Golem Activity Service}
 
 This service has tools that allow the Requestor's applications and services to be launched on the Provider's computing resources,
 while simultaneously measuring the use of these resources in accordance with the concluded contract in the form of an agreement. 
@@ -1091,7 +1041,7 @@ The measurement of the use of resources is recorded in the form of metrics in th
     \item Service Workflow
 \end{enumerate}
 
-\subsubsubsubsection{Golem Payment Service}
+\subsubsubsection{Golem Payment Service}
 
 This service enables settlements between the parties based on the terms contained in the contract. 
 Usage Counters Vector (UCV) objects created in the Golem Activity Service and the settlement terms included in the agreement 
@@ -1984,26 +1934,15 @@ GetReceiveAccounts		&												&	Provider 	&	Function used by Application proc
 
 \end{enumerate}
 
-%\begin{enumerate}
-%    \item Service Profile
-%    \item Service Protocol
-%    \item Service Interface
-%    \item Service Workflow
-%\end{enumerate}
+\subsection{Golem Node Agent}
 
-%\subsubsubsubsection{Registry and Discovery Service}
+\subsubsection{User Application}
 
-%\subsubsubsection{Golem Toolkit}
+\begin{enumerate}
 
-%\subsubsubsubsection{Golem Net Service API}
+\item Provider
 
-%\subsubsubsubsection{Golem Market Service API}
+\item Requestor
 
-%\subsubsubsubsection{Golem Activity Service API}
-
-%\subsubsubsubsection{Golem Payment Service API} 
-
-%\subsubsubsubsection{Golem Rest Point}
-
-%\subsubsection{Golem Central Net Server}
+\end{enumerate}
 
