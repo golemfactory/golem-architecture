@@ -15,7 +15,29 @@ The individual components of the framework are described in this chapter
 
 \subsubsection{Golem Service Bus}
 
+Golem Service Bus is based on three basic components (Please see Figure ~\ref{fig:GSB} on page ~\pageref{fig:GSB}):
 
+\begin{enumerate}
+
+\item GSB API Gateway allows you to bind and unbind services on the bus via the REST GSB API
+
+\item GSB Router is the central unit for client-client (service-service) communication, which sends messages (requests and responses) between them.
+
+\item GSB Console allows you to manage services.
+
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm,angle=0]{./diag/Reference/GSBConcept-Reference.png}
+	\caption{Golem Service Bus}
+    \label{fig:GSB}
+\end{figure}
+
+Binding a service is possible via a WebSocket, Unix Socket, TCP/IP Socket endpoint or HTTP long polling.
+The endpoints allow you to listen for incoming messages (requests).
+The router, which uses the attached URI identifiers, routes the path to the endpoint.
+The pattern for transmitting messages between endpoints is the Routed RPC protocol.
 
 \subsubsection{Golem Services}
 
@@ -23,10 +45,8 @@ The individual components of the framework are described in this chapter
 
 In a single node, the above services communicate with each other via the Golem Service Bus (GSB).
 In turn, communication between nodes takes place via the Golem Net Service (GNS) service, which provides Peer2Peer (P2P) protocols.
-
 %This service also provides communication to the Registry and Discovery Service located on the Golem Central Net Server (GCNS).
-
-Figure ~\ref{fig:CCR} on page ~\pageref{fig:CCR}).
+(Please see Figure ~\ref{fig:CCR} on page ~\pageref{fig:CCR}).
 
 \begin{figure}[H]
     \centering
