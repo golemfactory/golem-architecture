@@ -143,56 +143,37 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 ### Offline requestors are not supported 
 ### Local storage (TODO: what role does the local DB play?)
 
-## Technical view - architecture layers
+## Technical view - components
+This section describes key components of Golem Network, i.e. their
+responsibilities, interfaces and which other components they utilize.
 
-Bottom-up description of different layers of Golem that impose structure on how
-we split components and facilitate communication between them. Golem is not
-monolithic and division of responsibility is not arbitrary.
+### Networking
+* how it works that two separate Yagnas can talk to each other
+#### Central net
+#### Hybrid net
+- Identification
+- Relay
+- Discovering Nodes
+- P2P communication
+- Relayed communication
+- Cryptography
+  - Node identity verification (challenges)
+  - Communication encryption
 
-The goal of this chapter is to sketch general idea, rather than describe
-specifics.
-### Network layer
-### GSB layer
-RPC-like communication layer providing a way to call other modules or other
-nodes in unified way.
-### Specialized modules layer (market, payment, activity, vpn etc.)
-#### Market negotiation protocols
-Offers/Demands property and constraint language is used to build subprotocols
-for negotiating certain aspects of Agreements.
-### Execution environments
-There are a few ways to implement an execution environment. We have a few APIs
-here:
-* Bind and handle GSB messages directly
-* Implement RuntimeSDK and use ExeUnit binary for common functionalities
-* Command specification which can be executed by ExeUnit is flexible enough that
-  higher level protocols could be created here.
-### API layer
-Each specialized module exposes some APIs to users. It is either REST API, yagna
-cli or set of GSB endpoints for communication between modules and nodes.
-#### REST API
-#### CLI
-#### GSB API (communication between modules)
-### SDKs layer (python and js SDK)
-#### Agent application (Requestor script, Provider Agent)
-### Higher level SDKs
-#### Golem compose
-#### Ray on Golem
+### GSB
+* what it is, how it works and how it imposes a code structure and how
+  addressing works
 
-## Technical view - functional aspects
-This section dives into aspects of Golem network architecture to explain how
-they work under the hood. The level of detail does not include code structure,
-interfaces nor data structures but names key components and interaction between
-them.
+### Offer / negotiation
+A description of the component responsible for making offers, counter-offers,
+negotiations, etc.
 
-### Market interactions
-#### Discovery and Offers/Demand matching
-- Offer/Demand properties and constraint langauge
-- Yagna is property agnostic - doesn't understand semantic of properties, only agent do
-- Some examples of properties and costraints and how it works
-- Links to more detailed docs for properties langauge and properties sepcification (?)
-#### Offer propagation
-- Link to design [decision](#only-providers-offers-are-propagated)
-- Algorithm overview
+* Offer/Demand properties and constraint langauge
+* Yagna is property agnostic - doesn't understand semantic of properties, only
+  agent do
+* Some examples of properties and costraints and how it works
+* Links to more detailed docs for properties langauge and properties
+  specification (?)
 #### Process of negotiations and making an agreement
 - Initial Proposal
 - Countering Proposal
@@ -207,22 +188,14 @@ them.
 - What is specified by protocol and what is left to future specifications?
 - Termination reason concept
 
-### Communication between nodes
-#### Central net
-#### Hybrid net
-- Identification
-- Relay
-- Discovering Nodes
-- P2P communication
-- Relayed communication
-- Cryptography
-  - Node identity verification (challenges)
-  - Communication encryption
-#### GSB communication through Net
-- Communication is independent from net implementation
-- GSB addressing
+### Offer propagation
+* a description of how it happens that offers are visible to reqestors
+* Link to design [decision](#only-providers-offers-are-propagated)
+* Algorithm overview
 
-### Payments & Clearing
+### Payments
+* a description of current payment driver, its modes of operations and how it
+  can be extended
 #### Payments models
 - Describe generic model which is open for new implementations
 - Payment model specification in Offer/Demand language
@@ -244,7 +217,10 @@ them.
 - Overview of the concept
 - Link to external documentation describing details
 
-### ExeUnits
+### Activity
+* How the actions on behalf of the requestor are performed
+* We should dive into each important and general implementation, i.e. WASM and
+  VM
 #### Abstract concept
 - ExeUnit concept is generic enough to sell any kind of computation resources
 - Generic ExeUnits (for example VM, WASM etc.) vs. specialized ExeUnits for specific tasks like:
@@ -281,10 +257,28 @@ them.
 - WASM images
 
 ### VPN
-### Processes and the responsibility split between them
-#### IPC
+* The component responsible for creating a VPN between VMs
 
-### Reputation management
+### Reputation
+* a description of how it is evaluated, distributed and used
+
+### SDK
+* which of the logic useful to the user ends up in the SDK
+
+## Technical view - deployment
+How the components are reflected in processes, where the processes are run, what
+is their relation ship, etc.
+
+## Technical view - flows & algorithms
+This section documents how control and responsibility flows through the listed
+components to achieve Golem's functionalities. Any non-trivial algorithms
+spanning more than one component are also described here.
+
+### Starting a provider and publishing an offer
+### Receiving and executing work
+### Finding a provider and requesting work
+### Starting a cluster of VMs
+### Creating a custom image
 
 PR: this is part of the business logic layer. you would need to think about how to add objects from this layer and SDK implementations in different versions to this document. and the concept of building various reputation methods.
 
