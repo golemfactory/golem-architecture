@@ -61,12 +61,11 @@ in Golem Network. From high level perspective, Agent application should do follo
 1. Describe Resources using property language to create [Offer](#offer)
 2. Publish Offer on market
 3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising [Requestor](#requestor)
-4. Wait until [Requestor](#requestor) will demand [Activity](#activity) creation by listening to activity events
-5. Allocate promised Resources according to [Agreement](#agreement)
-6. Send [DebitNotes](#debit-note) to notify [Requestor](#requestor) with update cost
-7. Terminate Agreement or wait for Agreement termination event sent by [Requestor](#requestor)
-8. Send [Invoice](#invoice) to summarize the cost of the [Agreement](#agreement)
-9. Listen on Payment API events for [Invoice](#invoice) settlement and payment confirmation 
+4. Allocate promised Resources according to [Agreement](#agreement)
+5. Send [DebitNotes](#debit-note) to notify [Requestor](#requestor) with update cost
+6. Terminate Agreement or wait for Agreement termination event sent by [Requestor](#requestor)
+7. Send [Invoice](#invoice) to summarize the cost of the [Agreement](#agreement)
+8. Listen on Payment API events for [Invoice](#invoice) settlement and payment confirmation 
 
 #### 1. Describe Resources using property language to create [Offer](#offer)
 
@@ -157,13 +156,32 @@ Instead, the Requestor collects proposals from the market and evaluates them bas
 of proposal exchange, they choose the platform by setting the relevant property according to the Providers' scores,
 which are based on potential transaction costs.
 
+#### 4. Allocate promised Resources according to [Agreement](#agreement)
 
-#### 4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
-#### 5. Allocate promised Resources according to [Agreement](#agreement)
-#### 6. Send [DebitNotes](#debit-note) to notify Requestor with update cost
-#### 7. Terminate Agreement or wait for Agreement termination event sent by Requestor
-#### 8. Send [Invoice](#invoice) to summarize the cost of the Agreement
-#### 9. Listen on Payment API events for Invoice settlement and payment confirmation
+Once the Agreement is signed, the Provider is expected to reserve the promised resources for the Requestor’s use.
+During this time, the Provider cannot sell these resources to anyone else and must be prepared to start the Activity.
+For instance, if the Provider is selling computing power through a Virtual Machine Execution Environment, they
+declared in Agreement a specific amount of RAM and a certain number of threads to be allocated for the VM.
+Provider can only sell any remaining RAM and cores to other Requestors.
+
+Resource access always occurs within the context of an Activity. Creating an Activity is synonymous with starting an
+execution environment. The Activity module enables the Requestor to control the execution environment and monitor
+its state. Further details on controlling an Activity from the Requestor's perspective can be found in
+the ["Running something"](#running-something) section.
+
+From the Provider's perspective, the primary focus is to listen for incoming Activity events and create an Activity
+when requested by the Requestor. Upon receiving an Activity creation event, the Provider should spawn an ExeUnit process
+(and a Virtual Machine in consequence). Conversely, receiving an Activity destruction event should trigger the termination
+of the ExeUnit processes.
+
+The Requestor is allowed to spawn multiple Activities consecutively. In general, multiple Activities running
+simultaneously may be permitted; however, this does not apply in the case of a Virtual Machine, as hardware
+resources can only be allocated once.
+
+#### 5. Send [DebitNotes](#debit-note) to notify Requestor with update cost
+#### 6. Terminate Agreement or wait for Agreement termination event sent by Requestor
+#### 7. Send [Invoice](#invoice) to summarize the cost of the Agreement
+#### 8. Listen on Payment API events for Invoice settlement and payment confirmation
 
 ### Searching on market
 ### Buying on golem platform.
