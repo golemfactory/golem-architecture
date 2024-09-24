@@ -36,8 +36,17 @@ Golem Service Bus is based on three basic components (Please see Figure ~\ref{fi
 
 Binding a service is possible via a WebSocket, Unix Socket, TCP/IP Socket endpoint or HTTP long polling.
 The endpoints allow you to listen for incoming messages (requests).
-The router, which uses the attached URI identifiers, routes the path to the endpoint.
+The router, which uses the attached address (ex. URI identifiers), routes the path to the endpoint.
 The pattern for transmitting messages between endpoints is the Routed RPC protocol.
+(Please see Figure ~\ref{fig:GSBS} on page ~\pageref{fig:GSBS})
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm,angle=0]{./diag/Sequence/GSBCommunication-B-Sequence.png}
+	\caption{GSB Communication}
+    \label{fig:GSBS}
+\end{figure}
+
 
 \subsubsection{Golem Services}
 
@@ -1053,13 +1062,271 @@ The measurement of the use of resources is recorded in the form of metrics in th
 \end{figure}
 
 
+%%%% Objects 
+
+In the Golem system, in the Activity service, tuples are used to describe objects such as:
+ActivityUsage, ADR (Activity Detail Record), ActivityState. (Please see Figure ~\ref{fig:MF1} on page ~\pageref{fig:MF1}
+and Figure ~\ref{fig:MF2} on page ~\pageref{fig:MF2}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=11cm,angle=0]{./diag/Reference/ActivityFrame-1-Reference.png}
+	\caption{Market Objects Frame}
+    \label{fig:AF1}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm,angle=0]{./diag/Reference/ActivityFrame-2-Reference.png}
+	\caption{Market Objects Frame}
+    \label{fig:AF2}
+\end{figure}
+
 
 \begin{enumerate}
-    \item Service Profile
-    \item Service Protocol
-    \item Service Interface
-    \item Service Workflow
+
+\item ActivityUsage Object
+
+\begin{enumerate}
+
+\item Object Description
+
+The ActivityUsage object is created by calling GetCurrentUsage() function
+and GET method /activity/\{activityId\}/usage. Queries can be called in any Activity state.
+
+\item Object Fields
+
+\begin{table}[H]
+\footnotesize
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.& Type		& Example 	& 	Description \\
+\hline
+
+currentUsage 		&  O & number(\$double) 	& [123.5, 34000]	&  	Current vector of usage counters consumed by the Activity. 
+																	The sequence of values corresponds to Usage Vector property 
+																	(golem.usage.vector) as indicated in the Agreement (Offer part).\\
+\hline 		
+
+timestamp 			& M  & integer 			& 	0				& 	Usage update timestamp (UTC) \\
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\item Object State
+
+Stateless object
+
 \end{enumerate}
+
+\item Activity Detail Record
+
+\begin{enumerate}
+
+\item Object Description
+
+The ADR object is a generic object derived from the ActivityUsage object.
+The ADR object has ActivityUsage fields and Activity process identification fields (activityId) along with the Agreement process (agreementId)
+This object is a proposal to consider for flexible and optimal design of settlements within the billing operation of the Payment process.
+It has the properties of CDR (Call Detail Record) objects.
+
+\item Object Fields
+
+\begin{table}[H]
+\footnotesize
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.& Type		& Example 	& 	Description \\
+\hline
+
+currentUsage 		&  O & number(\$double) 	& [123.5, 34000]	&  	Current vector of usage counters consumed by the Activity. 
+																	The sequence of values corresponds to Usage Vector property 
+																	(golem.usage.vector) as indicated in the Agreement (Offer part).\\
+\hline 		
+
+timestamp 			&  M &  string(\$date-time) & 	YYYY-MM-DDThh:mm:ss.sssZ	& 	Usage update timestamp (UTC) \\
+\hline
+
+agreementId 		&  M & string 			& 					& 	Agreement Identifier \\
+\hline
+
+activityId 			&  M & string 			& 					& 	Activity Identifier \\
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\item Object State
+
+Stateless object
+
+\end{enumerate}
+
+\item GetActivityState
+
+TODO !!!
+
+\item ActivityState
+
+\begin{enumerate}
+
+\item Object Description
+
+The ActivityState object is created by calling GetState() function
+and GET method /activity/\{activityId\}/state. This function queries the state of the Activity. 
+
+\item Object Fields
+
+\begin{table}[H]
+\footnotesize
+\begin{center}
+\begin{tabular}{|p{3cm}|l|p{3cm}|p{3cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Name	& MO.	& Type	& Example & 	Description \\
+\hline
+
+state				& M	&	string(enum)	& 	&	State pair tuple (CurrentState, NextState). 
+													NextState is equal to null if there is no pending transition between states.\\
+\hline  
+
+reason 				& O	&	string			&	& 	Reason for Activity termination \\
+\hline
+
+errorMessage		& O	&	string			&	& 	If error caused state change - error message shall be provided. \\
+\hline
+ 
+\end{tabular}
+\end{center}
+\end{table}
+
+\item Object State
+
+(Please see Figure ~\ref{fig:AASD} on page ~\pageref{fig:AASD}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm,angle=0]{./diag/Reference/ActivityState-Reference.png}
+	\caption{Activity State Diagram}
+    \label{fig:AASD}
+\end{figure}
+
+\begin{table}[H]
+\footnotesize
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{11cm}|} 
+\hline
+\rowcolor{lightgray}	State	& 	Description \\
+\hline
+
+New			&	 \\
+\hline
+Deploying	&	? \\
+\hline
+Deployed 	& 	? \\
+\hline
+Ready 		&	 \\
+\hline
+Starting 	&	 \\
+\hline
+Active 		&	 \\
+\hline
+Unresponsive 	&	 \\
+\hline
+Suspending 	&	? \\
+\hline
+Sunspended 	&	? \\
+\hline
+Resuming 	&	 \\
+\hline
+Terminated 	&	 \\
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{enumerate}
+
+\end{enumerate}
+
+The Activity Space is used to define interaction operations on these objects such as:
+
+\begin{enumerate}
+\item  Control Operation
+
+\begin{enumerate}
+
+\item Description
+
+TODO
+
+(Please see Figure ~\ref{fig:ACO} on page ~\pageref{fig:ACO}).
+
+\item Sequence Diagram
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm,angle=0]{./diag/Sequence/ActivityControl-B-Sequence.png}
+	\caption{Activity Control Operation}
+    \label{fig:ACO}
+\end{figure}
+
+\item Functions and Methods
+
+\begin{table}[H]
+\footnotesize
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{7cm}|p{1.5cm}|p{4cm}|} 
+\hline
+\rowcolor{lightgray}	Function Name	& API Method Name	& 	Side	&	Description \\
+\hline
+
+CreateActivity 				& POST 	/activity	&	Requestor	&  Creates new Activity based on given Agreement	\\
+\hline
+
+Exec						& POST /activity/\{activityId\}/exec	&	Requestor 	&  Executes an ExeScript batch within a given Activity	\\
+\hline
+
+GetExecBatchResults 		& GET /activity/\{activityId\}/ \newline exec/\{batchId\}	&	Both 	&  Queries for ExeScript batch result	\\
+\hline
+
+DestroyActivity				& DELETE /activity/\{activityId\}	& Requestor & Destroys given Activity \\
+\hline
+
+GetState					& GET /activity/\{activityId\}/state	& Both	& Get state of specified Activity \\
+\hline
+
+GetCurrentUsage				& GET /activity/\{activityId\}/usage	& Both & Get usage of specified Activity \\
+\hline
+
+GetRunningCommand			& GET /activity/\{activityId\}/command	& Requestor & Get running commands for specified Activity \\
+\hline
+
+ListenEvent					& GET /events	&	Provider	&	Fetch Requestor command events \\
+\hline
+
+ChangeState					& PUT /activity/\{activityId\}/state & Provider & Set state of specified Activity \\
+\hline
+
+							& GET /activity/\{activityId\}/agreement & Provider & Returns agreementId corresponding to the Activity \\
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+\end{enumerate}
+
+\end{enumerate}
+
 
 \subsubsubsection{Golem Payment Service}
 
