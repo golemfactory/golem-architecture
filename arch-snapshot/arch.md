@@ -130,6 +130,33 @@ the Requestor can begin using the resources. The Agreement remains valid until i
 of termination (e.g., duration of the Agreement and conditions under which it can be terminated) are specified within the
 Agreement itself, rather than being defined by the Golem protocol.
 
+##### Example of negotiation
+
+To better understand the negotiation process, let’s consider an example involving the negotiation of a payment platform.
+This will illustrate how agents can use different strategies and what negotiation protocols can be built on top
+of the property language.
+
+When declaring a payment platform in an offer, the Provider lists wallet addresses for each platform it supports.
+It is the Requestor's responsibility to choose the platform by specifying the appropriate property in their demand.
+The Requestor can approach negotiations in two ways:
+
+###### 1. Static Negotiations
+Suppose the Requestor prefers payments on the Polygon network. In this case, they require the Provider to support
+Polygon and will not select a Provider that doesn’t.
+
+Since the Requestor has a specific requirement, multiple negotiation stages aren't necessary. They can simply add
+a constraint to their demand, instructing the matching algorithm to filter out Providers that don’t meet this
+requirement. In their demand, they set the chosen platform as a fixed value.
+
+###### 2. Dynamic Negotiations
+Now imagine a Requestor that can pay on multiple platforms but prioritizes them based on transaction fees. In this
+scenario, the Requestor has a larger pool of potential Providers since they don’t restrict the platform by adding
+a constraint to their demand.
+
+Instead, the Requestor collects proposals from the market and evaluates them based on estimated costs. In later stages
+of proposal exchange, they choose the platform by setting the relevant property according to the Providers' scores,
+which are based on potential transaction costs.
+
 
 #### 4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
 #### 5. Allocate promised Resources according to [Agreement](#agreement)
