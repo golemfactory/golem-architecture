@@ -124,6 +124,11 @@ The negotiation stage serves several purposes:
 - Provides an opportunity for the Provider and Requestor to negotiate additional terms that weren’t included in the  
   initial Proposals. This is possible through protocols built on top of the property language.
 
+Both the Provider and Requestor negotiate with multiple nodes simultaneously. The Requestor initiates the Agreement by
+proposing it to the Provider, who can either accept or reject the proposal. Once the Agreement is signed by both parties,
+the Requestor can begin using the resources. The Agreement remains valid until it is terminated by either party. The terms
+of termination (e.g., duration of the Agreement and conditions under which it can be terminated) are specified within the
+Agreement itself, rather than being defined by the Golem protocol.
 
 
 #### 4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
