@@ -50,20 +50,23 @@ details and establish a glossary to ensure consistency within the document.
 
 ### Selling on Golem platform
 
-This chapter explains the process of advertising resources on the Golem Network and selling
-them to Requestors. It provides a high-level overview of how the Provider Agent application
-should operate and interact with the Yagna Daemon.
+Even though currently Golem is used for trading computational resources, it has been decided
+that it can theoretically be used to trade anything. This means that the Marketplace does not
+enforce any standards on goods traded, making it conceptually more similar to [craigslist](https://craigslist.org/) than
+to a stock exchange. As a consequence, direct interaction between buyer and seller is required
+to make a transaction.
 
-The following steps are needed:
+It is the main goal of the [Provider Agent](#provider-agent) to implement logic for selling resources
+in Golem Network. From high level perspective, Agent application should do following things: 
 1. Describe Resources using property language to create [Offer](#offer)
 2. Publish Offer on market
-3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising Requestor
-4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
+3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising [Requestor](#requestor)
+4. Wait until [Requestor](#requestor) will demand [Activity](#activity) creation by listening to activity events
 5. Allocate promised Resources according to [Agreement](#agreement)
-6. Send [DebitNotes](#debit-note) to notify Requestor with update cost
-7. Terminate Agreement or wait for Agreement termination event sent by Requestor
-8. Send [Invoice](#invoice) to summarize the cost of the Agreement
-9. Listen on Payment API events for Invoice settlement and payment confirmation 
+6. Send [DebitNotes](#debit-note) to notify [Requestor](#requestor) with update cost
+7. Terminate Agreement or wait for Agreement termination event sent by [Requestor](#requestor)
+8. Send [Invoice](#invoice) to summarize the cost of the [Agreement](#agreement)
+9. Listen on Payment API events for [Invoice](#invoice) settlement and payment confirmation 
 
 #### 1. Describe Resources using property language to create [Offer](#offer)
 
@@ -71,7 +74,7 @@ The Golem design was created to support the sale of any type of computing resour
 Golem employs a generic [property and constraints language](#discovery-and-offersdemand-matching) to
 describe the resources being offered. 
 
-The Yagna market is agnostic to the specific properties used and can match Offers and Demands as long
+The [Yagna market](#market) is agnostic to the specific properties used and can match Offers and Demands as long
 as they adhere to the language specification. However, the Yagna daemon does not interpret the semantics
 of the properties in the Offer, nor does its behavior depend on the negotiated Agreement. It is the
 responsibility of the Provider Agent application to accurately interpret the semantics and implement
@@ -91,7 +94,38 @@ In this case, the Offer should include the following key aspects:
 - The [Wallet](#wallet) address for receiving payments, along with the supported [payment platforms](#payment-platform).
 
 #### 2. Publish Offer on market
+
+Golem is a decentralized network of independent [Nodes](#yagna-node), with no central repository for [Offers](#offer) or any
+central server to facilitate [Agreements](#agreement) between parties. As a result, offers must be propagated between nodes,
+and transactions are conducted through direct communication.
+
+Developers don’t need to worry about [offer propagation](#offer-propagation). The responsibility for propagating offers
+lies with the Yagna daemon, specifically its market module. The only task for the Provider Agent is to publish the offer
+on the market using its REST API. The REST endpoint returns a [subscription](#subscription) ID, which can later be used
+to listen for incoming [proposal](#proposal) events.
+
 #### 3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising Requestor
+
+The [Provider Agent](#provider-agent) plays a passive role in negotiations. Offers are propagated across the network and
+received by [Requestors](#requestor). The offer is matched locally on the Requestor's node with a [Demand](#demand).
+If the Requestor is interested, they respond by sending a [Proposal](#proposal) to the Provider. This triggers a Proposal
+event on the Provider's [subscription](#subscription) endpoint.
+
+Negotiation is the process of exchanging Proposals and adjusting their terms until the Requestor proposes an Agreement.
+The structure of a Proposal is identical to that of an Offer or Demand, using the same property and constraint language
+to describe the Agreement's conditions. During negotiations, certain aspects of the Agreement can be modified. While Offers
+and Demands represent the initial declaration of resources, terms, and conditions, the proposal exchange is a dynamic
+process of refining these terms to reach an optimal agreement for both parties.
+
+The negotiation stage serves several purposes:
+- Ensures that the Provider and Requestor communicate before signing an Agreement (since offer propagation doesn’t
+  require direct interaction between parties).
+- Allows both the Provider and Requestor to implement different strategies to maximize their benefits and select suitable partners.
+- Provides an opportunity for the Provider and Requestor to negotiate additional terms that weren’t included in the  
+  initial Proposals. This is possible through protocols built on top of the property language.
+
+
+
 #### 4. Wait until Requestor will demand [Activity](#activity) creation by listening to activity events
 #### 5. Allocate promised Resources according to [Agreement](#agreement)
 #### 6. Send [DebitNotes](#debit-note) to notify Requestor with update cost
@@ -147,6 +181,7 @@ Section should serve as dictionary to be linked by other chapters.
 ### Participating entities
 
 #### Yagna daemon
+#### Yagna Node
 #### Provider agent
 #### Requester agent
 
