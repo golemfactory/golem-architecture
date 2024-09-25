@@ -129,6 +129,72 @@ the Requestor can begin using the resources. The Agreement remains valid until i
 of termination (e.g., duration of the Agreement and conditions under which it can be terminated) are specified within the
 Agreement itself, rather than being defined by the Golem protocol.
 
+```mermaid
+---
+title: Simplified negotiations from Provider perspective
+---
+sequenceDiagram
+  box Provider Node
+    actor ProviderAgent as Provider Agent
+    participant ProviderYagna as Provider Yagna daemon
+  end
+  participant GolemNetwork as Golem Network
+  box Requestor Node
+    participant RequestorYagna as Requestor Yagna
+    actor RequestorAgent as Requestor Agent
+  end
+  
+  RequestorAgent->>RequestorAgent: Describe Resoruce Demand
+  RequestorAgent->>RequestorYagna: Publish Demand
+  RequestorAgent->>RequestorYagna: Subscribe for Proposal events
+  activate RequestorYagna
+  
+  ProviderAgent->>ProviderAgent: Describe Resources
+  ProviderAgent->>ProviderYagna: Publish Offer
+  ProviderYagna->>GolemNetwork: Offer propagation
+  activate GolemNetwork
+  ProviderAgent->>ProviderYagna: Subscribe for Proposal events
+  activate ProviderYagna
+  
+
+  GolemNetwork->>RequestorYagna: Receive Offer
+  Note over GolemNetwork,RequestorYagna: Offer wasn't received directly<br/> from Provider Node 
+  RequestorYagna->>RequestorYagna: Match Offer with Demand
+  RequestorYagna->>RequestorAgent: Generate Proposal
+
+  loop
+    RequestorAgent->>RequestorAgent: Adjust Proposal
+    RequestorAgent->>RequestorYagna: Counter Proposal
+    
+    par
+      RequestorYagna->>ProviderYagna: Counter Proposal
+      ProviderYagna->>ProviderAgent: Receive Proposal
+    and Proposals from other Nodes in the network
+      GolemNetwork->>ProviderAgent: Receive Proposals    
+    end
+
+    ProviderAgent->>ProviderAgent: Select best Proposals to respond
+    ProviderAgent->>ProviderAgent: Adjust Proposals
+    ProviderAgent->>ProviderYagna: Counter Proposal
+    ProviderYagna->>RequestorYagna: Counter Proposal
+    RequestorYagna->>RequestorAgent: Receive Proposal
+  end
+
+  RequestorAgent->>RequestorYagna: Propose Agreement
+  RequestorYagna->>ProviderYagna: Propose Agreement
+  ProviderYagna->>ProviderAgent: Receive Agreement Proposal
+  ProviderAgent->>ProviderAgent: Select best Agreement Proposal
+  ProviderAgent->>ProviderYagna: Approve Agreement
+  ProviderYagna->>RequestorYagna: Approve Agreement Proposal
+  RequestorYagna->>RequestorAgent: Agreement approval notification
+
+  ProviderAgent->>ProviderYagna: Unsubscribe Proposal events
+  deactivate ProviderYagna
+  ProviderYagna-->GolemNetwork: Stop Offer propagation
+  deactivate GolemNetwork
+  deactivate RequestorYagna
+```
+
 ##### Example of negotiation
 
 To better understand the negotiation process, let’s consider an example involving the negotiation of a payment platform.
