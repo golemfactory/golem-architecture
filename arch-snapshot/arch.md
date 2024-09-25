@@ -269,6 +269,15 @@ It’s important to note that, regardless of the payment scheme or platform used
 intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
 technology, Golem Factory has no control over these transactions.
 
+
+The ExeUnit is directly controlled by the Requestor Agent, without any intervention from the Provider. Communication
+occurs directly between the Yagna daemon and the ExeUnit process. The only responsibility of the Provider is to compute
+the cost of using resources and inform the Requestor accordingly.
+
+Debit Notes are documents used to notify the Requestor of the costs incurred. Each Debit Note specifies the amount the
+Requestor owes the Provider for a specific activity up to the moment the Debit Note is sent. Thus, each subsequent
+Debit Note effectively overwrites the previous one with the updated cost.
+
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
 The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
@@ -289,6 +298,14 @@ Agreement. While this is not mandatory, it is encouraged as it can provide valua
 serving as diagnostic information or for other purposes.
 
 #### 7. Send an Invoice summarizing the total cost of the Agreement
+
+```mermaid
+flowchart LR
+Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N] --> Invoice[Invoice]
+Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N] --> Invoice[Invoice]
+Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N] --> Invoice[Invoice]
+```
+
 
 Once the Agreement is terminated, the Provider Agent should send an [Invoice](#invoice) to the Requestor Agent summarizing
 the total costs incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all [Activities](#activity).
