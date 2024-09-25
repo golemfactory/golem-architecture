@@ -191,6 +191,14 @@ Debit Notes are formal documents used to notify the Requestor of the costs incur
 for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
 it effectively supersedes the previous one.
 
+The frequency of sending Debit Notes and the acceptance deadlines are outlined in the Agreement. It is important to note
+that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
+with payable Debit Notes identified by the due date included in the document. While payable Debit Notes are scheduled
+for processing upon acceptance, this does not necessitate immediate payment. The payment mechanism allows for the batching
+of payments or delaying them to accommodate additional Debit Notes or Invoices, thereby reducing transaction costs on
+the blockchain. Consequently, while payments are not immediate, they must be completed before the due date specified
+in the Agreement.
+
 #### 6. Terminate Agreement or wait for Agreement termination event sent by Requestor
 
 The Agreement can be terminated when either party chooses to end it. The reasons for termination are outlined in the
