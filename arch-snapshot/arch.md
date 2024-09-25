@@ -180,22 +180,43 @@ resources can only be allocated once.
 
 #### 5. Send [DebitNotes](#debit-note) to notify Requestor with update cost
 
-The ExeUnit is directly controlled by the Requestor Agent, without any intervention from the Provider. Communication
-occurs directly between the Yagna daemon and the ExeUnit process. The only responsibility of the Provider is to compute
-the cost of using resources and inform the Requestor accordingly.
+The ExeUnit is directly controlled by the Requestor Agent, with no intervention from the Provider. Communication
+happens solely between the Yagna daemon and the ExeUnit process. The Provider's responsibility is limited to calculating
+the cost of resource usage based on the pricing model defined in the Agreement and informing the Requestor accordingly.
+The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor
+via Debit Notes. The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
+the Requestor's commitment to pay the specified amount.
 
-Debit Notes are documents used to notify the Requestor of the costs incurred. Each Debit Note specifies the amount the
-Requestor owes the Provider for a specific activity up to the moment the Debit Note is sent. Thus, each subsequent
-Debit Note effectively overwrites the previous one with the updated cost.
+Debit Notes are formal documents used to notify the Requestor of the costs incurred. Each note details the amount owed 
+for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
+it effectively supersedes the previous one.
 
 #### 6. Terminate Agreement or wait for Agreement termination event sent by Requestor
+
+The Agreement can be terminated when either party chooses to end it. The reasons for termination are outlined in the
+Agreement, and different market negotiation protocols may permit termination for various reasons. Below is
+a non-exhaustive list of potential causes for termination:
+- The Agreement expires if it was established for a fixed duration.
+- The Requestor no longer needs the resources or has completed the computations.
+- One of the parties violates the terms of the Agreement, such as:
+  - The Requestor fails to accept Debit Notes within the agreed timeframe.
+  - The Provider issues Debit Notes more frequently than agreed.
+  - The Requestor fails to make timely payments, particularly in cases involving mid-agreement payments.
+
+An Agent can terminate the Agreement using the market's REST API. It should also monitor Agreement events
+to detect if the other party terminates the Agreement.
+
+An Agent has the option to attach additional information outlining the reasons for termination when ending the
+Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
+serving as diagnostic information or for other purposes.
+
 #### 7. Send [Invoice](#invoice) to summarize the cost of the Agreement
 
 ```mermaid
 flowchart LR
-Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N] --> Invoice[Invoice]
-Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N] --> Invoice[Invoice]
-Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N] --> Invoice[Invoice]
+Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
+Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
+Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
 ```
 
 #### 8. Listen on Payment API events for Invoice settlement and payment confirmation
