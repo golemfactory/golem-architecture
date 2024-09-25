@@ -360,6 +360,15 @@ blockchain. This confirmation specifies which Activities and Agreements are cove
 1-to-1 relationship between transactions and Activities or Agreements. A single blockchain transaction can cover
 multiple Activities or Agreements, while each Activity or Agreement may also be covered by multiple transactions.
 
+As previously mentioned, payments are not immediate for several reasons: they are not scheduled right away, and batching 
+may occur. Furthermore, blockchain transactions are not immediate and may take time to process. Therefore, the Provider
+Agent should monitor Payment events. This can be done by listening for status changes to Settled on Invoice and Debit Note
+events, or by tracking payment events to receive notifications for each transaction.
+
+It's important to note that, depending on the terms of the Agreement, payments may occur after the entire Agreement is
+completed or at various points during the Agreement, particularly in the case of mid-agreement payments. Monitoring
+payment events will provide insight into all payments progressively settling under the Agreement.
+
 ### Searching on market
 
 Providers or Requestors on Golem don’t always aim to buy or sell resources. Sometimes, they simply want to observe the market.
