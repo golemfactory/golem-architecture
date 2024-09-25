@@ -179,8 +179,25 @@ simultaneously may be permitted; however, this does not apply in the case of a V
 resources can only be allocated once.
 
 #### 5. Send [DebitNotes](#debit-note) to notify Requestor with update cost
+
+The ExeUnit is directly controlled by the Requestor Agent, without any intervention from the Provider. Communication
+occurs directly between the Yagna daemon and the ExeUnit process. The only responsibility of the Provider is to compute
+the cost of using resources and inform the Requestor accordingly.
+
+Debit Notes are documents used to notify the Requestor of the costs incurred. Each Debit Note specifies the amount the
+Requestor owes the Provider for a specific activity up to the moment the Debit Note is sent. Thus, each subsequent
+Debit Note effectively overwrites the previous one with the updated cost.
+
 #### 6. Terminate Agreement or wait for Agreement termination event sent by Requestor
 #### 7. Send [Invoice](#invoice) to summarize the cost of the Agreement
+
+```mermaid
+flowchart LR
+Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N] --> Invoice[Invoice]
+Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N] --> Invoice[Invoice]
+Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N] --> Invoice[Invoice]
+```
+
 #### 8. Listen on Payment API events for Invoice settlement and payment confirmation
 
 ### Searching on market
