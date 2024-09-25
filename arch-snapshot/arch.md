@@ -327,6 +327,11 @@ serving as diagnostic information or for other purposes.
 
 #### 7. Send an Invoice summarizing the total cost of the Agreement
 
+Once the Agreement is terminated, the Provider Agent should send an Invoice to the Requestor summarizing the total costs
+incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all Activities. In response,
+the Requestor must either accept or reject the Invoice. However, regardless of the acceptance status, payment is mandatory
+for the total amount indicated by the accepted Debit Notes, as their acceptance constitutes a binding commitment to pay.
+
 ```mermaid
 flowchart LR
 Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
