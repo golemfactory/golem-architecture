@@ -58,16 +58,16 @@ to make a transaction.
 
 It is the main goal of the [Provider Agent](#provider-agent) to implement logic for selling resources
 in Golem Network. From high level perspective, Agent application should do following things: 
-1. Describe Resources using property language to create [Offer](#offer)
-2. Publish Offer on market
-3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising [Requestor](#requestor)
-4. Allocate promised Resources according to [Agreement](#agreement)
-5. Send [DebitNotes](#debit-note) to notify [Requestor](#requestor) with update cost
-6. Terminate Agreement or wait for Agreement termination event sent by [Requestor](#requestor)
-7. Send [Invoice](#invoice) to summarize the cost of the [Agreement](#agreement)
-8. Listen on Payment API events for [Invoice](#invoice) settlement and payment confirmation 
+1. Describe Resources using property language to create an [Offer](#offer)
+2. Publish the Offer in the market
+3. Monitor incoming Proposal events and negotiate an [Agreement](#agreement) with the most promising [Requestor](#requestor)
+4. Allocate the promised Resources in accordance with the [Agreement](#agreement)
+5. Send [DebitNotes](#debit-note) to notify [Requestor](#requestor) of updated costs
+6. Terminate the Agreement or await the Agreement termination event from the [Requestor](#requestor)
+7. Send an [Invoice](#invoice) summarizing the total cost of the [Agreement](#agreement)
+8. Monitor Payment API events for [Invoice](#invoice) settlement and payment confirmation 
 
-#### 1. Describe Resources using property language to create [Offer](#offer)
+#### 1. Describe Resources using property language to create an [Offer](#offer)
 
 The Golem design was created to support the sale of any type of computing resource.To achieve this,
 Golem employs a generic [property and constraints language](#discovery-and-offersdemand-matching) to
@@ -92,7 +92,7 @@ In this case, the Offer should include the following key aspects:
   what is expected transaction frequency).
 - The [Wallet](#wallet) address for receiving payments, along with the supported [payment platforms](#payment-platform).
 
-#### 2. Publish Offer on market
+#### 2. Publish the Offer in the market
 
 Golem is a decentralized network of independent [Nodes](#yagna-node), with no central repository for [Offers](#offer) or any
 central server to facilitate [Agreements](#agreement) between parties. As a result, offers must be propagated between nodes,
@@ -103,7 +103,7 @@ lies with the Yagna daemon, specifically its market module. The only task for th
 on the market using its REST API. The REST endpoint returns a [subscription](#subscription) ID, which can later be used
 to listen for incoming [proposal](#proposal) events.
 
-#### 3. Listen on incoming Proposal events and negotiate [Agreement](#agreement) with the most promising Requestor
+#### 3. Monitor incoming Proposal events and negotiate an Agreement with the most promising Requestor
 
 The [Provider Agent](#provider-agent) plays a passive role in negotiations. Offers are propagated across the network and
 received by [Requestors](#requestor). The offer is matched locally on the Requestor's node with a [Demand](#demand).
@@ -156,7 +156,7 @@ Instead, the Requestor collects proposals from the market and evaluates them bas
 of proposal exchange, they choose the platform by setting the relevant property according to the Providers' scores,
 which are based on potential transaction costs.
 
-#### 4. Allocate promised Resources according to [Agreement](#agreement)
+#### 4. Allocate the promised Resources in accordance with the Agreement
 
 Once the Agreement is signed, the Provider is expected to reserve the promised resources for the Requestor’s use.
 During this time, the Provider cannot sell these resources to anyone else and must be prepared to start the Activity.
@@ -178,7 +178,7 @@ The Requestor is allowed to spawn multiple Activities consecutively. In general,
 simultaneously may be permitted; however, this does not apply in the case of a Virtual Machine, as hardware
 resources can only be allocated once.
 
-#### 5. Send [DebitNotes](#debit-note) to notify Requestor with update cost
+#### 5. Send DebitNotes to notify Requestor of updated costs
 
 The ExeUnit is directly controlled by the Requestor Agent, with no intervention from the Provider. Communication
 happens solely between the Yagna daemon and the ExeUnit process. The Provider's responsibility is limited to calculating
@@ -199,7 +199,7 @@ of payments or delaying them to accommodate additional Debit Notes or Invoices, 
 the blockchain. Consequently, while payments are not immediate, they must be completed before the due date specified
 in the Agreement.
 
-#### 6. Terminate Agreement or wait for Agreement termination event sent by Requestor
+#### 6. Terminate the Agreement or await the Agreement termination event from the Requestor
 
 The Agreement can be terminated when either party chooses to end it. The reasons for termination are outlined in the
 Agreement, and different market negotiation protocols may permit termination for various reasons. Below is
@@ -218,7 +218,7 @@ An Agent has the option to attach additional information outlining the reasons f
 Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
 serving as diagnostic information or for other purposes.
 
-#### 7. Send [Invoice](#invoice) to summarize the cost of the Agreement
+#### 7. Send an Invoice summarizing the total cost of the Agreement
 
 Once the Agreement is terminated, the Provider Agent should send an Invoice to the Requestor summarizing the total costs
 incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all Activities. In response,
@@ -232,7 +232,7 @@ Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23
 Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
 ```
 
-#### 8. Listen on Payment API events for Invoice settlement and payment confirmation
+#### 8. Monitor Payment API events for Invoice settlement and payment confirmation
 
 As previously mentioned, payments are not immediate for several reasons: they are not scheduled right away, and batching 
 may occur. Furthermore, blockchain transactions are not immediate and may take time to process. Therefore, the Provider
