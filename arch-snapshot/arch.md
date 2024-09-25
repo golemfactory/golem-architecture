@@ -234,8 +234,17 @@ Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33
 
 #### 8. Listen on Payment API events for Invoice settlement and payment confirmation
 
+As previously mentioned, payments are not immediate for several reasons: they are not scheduled right away, and batching 
+may occur. Furthermore, blockchain transactions are not immediate and may take time to process. Therefore, the Provider
+Agent should monitor Payment events. This can be done by listening for status changes to Settled on Invoice and Debit Note
+events, or by tracking payment events to receive notifications for each transaction.
+
+It's important to note that, depending on the terms of the Agreement, payments may occur after the entire Agreement is
+completed or at various points during the Agreement, particularly in the case of mid-agreement payments. Monitoring
+payment events will provide insight into all payments progressively settling under the Agreement.
+
 ### Searching on market
-### Buying on golem platform.
+### Buying on golem platform
 ### Running something
 
 ## Layers
