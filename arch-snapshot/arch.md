@@ -289,6 +289,37 @@ of payments or delaying them to accommodate additional Debit Notes or Invoices, 
 the blockchain. Consequently, while payments are not immediate, they must be completed before the due date specified
 in the Agreement.
 
+```mermaid
+sequenceDiagram
+  participant Requestor
+  participant Provider
+  Requestor-->Provider: Negotiations
+  Requestor->>Provider: Propose Agreement 
+  Provider->>Requestor: Approve Agreement
+  
+  loop Multiple Activities allowed
+    Requestor->>Provider: Create Activity
+    create participant ExeUnit
+    Provider->>ExeUnit: Spawn ExeUnit
+    Requestor-->ExeUnit: Commands controlling ExeUnit
+    activate ExeUnit
+    
+    loop Regular intervals
+      ExeUnit->>Provider: Report resources consumption
+      Provider->>Provider: Calculate costs
+      Provider->>Requestor: Send DebitNote
+      Requestor->>Provider: Accept DebitNote
+    end
+    
+    Requestor-->ExeUnit: Finish computations
+    deactivate ExeUnit
+    Requestor->>Provider: Destroy Activity
+    destroy ExeUnit
+    Provider->>ExeUnit: Terminate ExeUnit
+  end
+  Requestor->>Provider: Terminate Agreement
+```
+
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
 The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
