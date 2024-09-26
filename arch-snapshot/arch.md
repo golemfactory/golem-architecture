@@ -100,7 +100,23 @@ What their budget assumptions are.
 What their strategy is for selecting the best contractors.
 Which billing model they want to choose.
 
-#### Step 6: 
+#### Step 6: Negotiations
+
+For the created DEMAND, the Requestor receives a stream of agreement proposals. The proposals can be of two types:
+
+ Initial
+ : An offer presented to the network in general without knowledge of the other party. Such an offer should be reviewed, and the Requestor should specify their expectations regarding the contract. An example of such an interaction is reading the list of networks on which the Provider can receive payments and choosing the one preferred by the Requestor.
+
+Draft
+: An offer created after the Provider has been presented with the Requestor's expectations. The Requestor can decide to accept such an offer and proceed to create a contract, or they can continue negotiations by changing the terms. Requestor can also reject the offer.
+
+In the case of purchasing access to the Ethereum API, the Requestor needs to find 2-3 
+quality nodes. Currently, the sample application implements a naive strategy by selecting the cheapest nodes that meet the conditions. Then, in case of problems, the contract is terminated to search for another Provider.
+
+Negotiations ends with the creation of the agreement. 
+After the Provider confirms it, the agreement becomes effective.
+
+#### Step 7: Service Activation and Agreement Supervision
 
 ### Running something
 
