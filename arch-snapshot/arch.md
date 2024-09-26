@@ -50,7 +50,58 @@ details and establish a glossary to ensure consistency within the document.
 
 ### Selling on golem platform
 ### Searching on market
+
 ### Buying on golem platform.
+
+Actors: Requestor, Provider
+
+The Requestor wants to purchase a service on the Golem platform. There are multiple entry points to this scenario, but for now, let's assume that it involves purchasing a service on one's own node.
+
+#### Step 1: Starting the Golem Node
+ 
+#### Step 2: Configuring the Wallet
+
+Before the Requestor begins, they must secure appropriate funds. To do this, they should have funds on the address from which they will pay, on one of the two supported blockchains: Ethereum or Polygon. It is strongly recommended to use the Polygon network.
+
+Upon starting the node, a key is automatically generated that identifies the Requestor's identity on the network. For production use, it is recommended to secure the key with a password using the command yagna id lock or generate a new key with a password using yagna id create.
+
+#### Step 3: Funding the Wallet
+
+The Requestor buys GLM tokens on the Polygon network (address: 0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf), for example, using the Quickswap application, and transfers them to the key address generated during wallet configuration.
+
+They can also purchase funds via credit card through the onboarding portal. This can be accessed by running yagna payment fund --network polygon.
+
+#### Step 4: Creating an Allocation
+
+Since multiple applications using the same wallet can run on a single node, it is required to reserve funds for a task to reduce potential issues before creating an order. The reservation can be expanded or reduced as execution progresses.
+
+Creating an allocation verifies that:
+
+ - There are sufficient funds on the given wallet and network.
+ - There is proper communication with the blockchain node.
+ - The sum of allocations does not exceed the account balance.
+
+#### Step 5: Creating a DEMAND
+
+To negotiate an agreement, the requestor's application must create a DEMAND. This object consists of two parts: a description and conditions on the provider's description in the form of a query. Let's assume we want to purchase access to an Ethereum node.
+
+As a requestor, in the query we can specify:
+
+ - The type of runtime engine
+ - In our case, also the chain ID
+
+ Next, the DEMAND is extended with information resulting from the allocation and is submitted to the Golem API to receive 
+ offer proposals that meet the conditions.
+
+Before Entering Negotiations, the Requestor Should Know:
+
+What will be the mode of conducting the agreement: a fixed-term contract or a long-term one.
+What their budget assumptions are.
+What their strategy is for selecting the best contractors.
+Which billing model they want to choose.
+
+#### Step 6: 
+
 ### Running something
 
 ## Layers
