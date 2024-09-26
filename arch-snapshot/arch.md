@@ -116,7 +116,28 @@ quality nodes. Currently, the sample application implements a naive strategy by 
 Negotiations ends with the creation of the agreement. 
 After the Provider confirms it, the agreement becomes effective.
 
-#### Step 7: Service Activation and Agreement Supervision
+#### Step 7: Service Activation and Contract Supervision
+
+With an active contract, the Requestor activates the service by creating an Activity. Using the Activity object, they send a request to activate access to the node with a specified access password. In response, they receive the service details.
+
+The Requestor's application connects directly to the provided endpoint to verify that it is functioning correctly.
+
+From this point onward, the service is active, and the Requestor's process is responsible for monitoring the service's performance. This is done in two ways:
+- In the case of a pay-as-you-go contract, at regular intervals, billing records called DebitNotes are sent to the Requestor. These contain the number of requests made, the service uptime, and the resulting fee. The Requestor must verify that this data is accurate and either confirm the upcoming payment or terminate the contract.
+- The Requestor monitors the service on the Provider's side to avoid sending tasks to malfunctioning providers.
+
+For long-running services, it's necessary to extend the allocation to ensure sufficient funds are available.
+
+#### Step 8: Contract Closure
+
+The Requestor terminates agreement. 
+This notifies the Provider to terminate all activities associated with that contract.
+
+The Requestor receives an Invoice summarizing the expenses from all Activities active under the agreement.
+
+The Requestor confirms that the amount is correct.
+
+After some time, Golem transfers tokens to Provider wallet as payment for the service.
 
 ### Running something
 
