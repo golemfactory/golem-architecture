@@ -170,7 +170,7 @@ sequenceDiagram
 
 ```mermaid
 ---
-title: Simplified negotiations from Provider perspective
+title: Simplified negotiations from Provider's perspective
 ---
 sequenceDiagram
   box Provider Node
@@ -336,14 +336,14 @@ intermediary for payments. Since transactions occur on the blockchain, and due t
 technology, Golem Factory has no control over these transactions.
 
 
-The ExeUnit is directly controlled by the Requestor Agent, with no intervention from the Provider. Communication
-happens solely between the Yagna daemon and the ExeUnit process. The Provider's responsibility is limited to calculating
-the cost of resource usage based on the pricing model defined in the Agreement and informing the Requestor accordingly.
-The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor
+The ExeUnit is directly controlled by the Requestor Agent, with no intervention from the Provider Agent. Communication
+happens solely between the Yagna daemon and the ExeUnit process. The Provider Agent's responsibility is limited to calculating
+the cost of resource usage based on the pricing model defined in the Agreement and informing the Requestor Agent accordingly.
+The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor Agent
 via Debit Notes. The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
-the Requestor's commitment to pay the specified amount.
+the Requestor Agent's commitment to pay the specified amount.
 
-Debit Notes are formal documents used to notify the Requestor of the costs incurred. Each note details the amount owed 
+Debit Notes are formal documents used to notify the Requestor Agent of the costs incurred. Each note details the amount owed 
 for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
 it effectively supersedes the previous one.
 
@@ -409,24 +409,24 @@ The Agreement can be terminated when either party chooses to end it. The reasons
 Agreement, and different market negotiation protocols may permit termination for various reasons. Below is
 a non-exhaustive list of potential causes for termination:
 - The Agreement expires if it was established for a fixed duration.
-- The Requestor no longer needs the resources or has completed the computations.
+- The Requestor Agent no longer needs the resources or has completed the computations.
 - One of the parties violates the terms of the Agreement, such as:
-  - The Requestor fails to accept Debit Notes within the agreed timeframe.
-  - The Provider issues Debit Notes more frequently than agreed.
-  - The Requestor fails to make timely payments, particularly in cases involving mid-agreement payments.
+  - The Requestor Agent fails to accept Debit Notes within the agreed timeframe.
+  - The Provider Agent issues Debit Notes more frequently than agreed.
+  - The Requestor Agent fails to make timely payments, particularly in cases involving mid-agreement payments.
 
-An Agent can terminate the Agreement using the market's REST API. It should also monitor Agreement events
+Provider Agent can terminate the Agreement using the market's REST API. It should also monitor Agreement events
 to detect if the other party terminates the Agreement.
 
-An Agent has the option to attach additional information outlining the reasons for termination when ending the
+Provider Agent has the option to attach additional information outlining the reasons for termination when ending the
 Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
 serving as diagnostic information or for other purposes.
 
 #### 7. Send an Invoice summarizing the total cost of the Agreement
 
-Once the Agreement is terminated, the Provider Agent should send an Invoice to the Requestor summarizing the total costs
+Once the Agreement is terminated, the Provider Agent should send an Invoice to the Requestor Agent summarizing the total costs
 incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all Activities. In response,
-the Requestor must either accept or reject the Invoice. However, regardless of the acceptance status, payment is mandatory
+the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status, payment is mandatory
 for the total amount indicated by the accepted Debit Notes, as their acceptance constitutes a binding commitment to pay.
 
 ```mermaid
@@ -457,7 +457,7 @@ blockchain. This confirmation specifies which Activities and Agreements are cove
 1-to-1 relationship between transactions and Activities or Agreements. A single blockchain transaction can cover
 multiple Activities or Agreements, while each Activity or Agreement may also be covered by multiple transactions.
 
-As previously mentioned, payments are not immediate for several reasons: they are not scheduled right away, and batching 
+Payments are not immediate for several reasons: they are not scheduled right away, and batching 
 may occur. Furthermore, blockchain transactions are not immediate and may take time to process. Therefore, the Provider
 Agent should monitor Payment events. This can be done by listening for status changes to Settled on Invoice and Debit Note
 events, or by tracking payment events to receive notifications for each transaction.
