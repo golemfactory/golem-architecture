@@ -218,6 +218,17 @@ sequenceDiagram
   ProviderAgent->>GolemNetwork: Reject remaining Agreement Proposals
 ```
 
+##### Example of negotiation
+
+To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example 
+involving the negotiation of a [payment platform](#payment-platform). This will illustrate how agents can use different
+strategies and what negotiation protocols can be built on top of the [property and language](#discovery-and-offersdemand-matching).
+
+When declaring a payment platform in an [Offer](#offer), the Provider Agent lists [wallet](#wallet) addresses for each
+platform it supports. It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate
+[property](#property) in their demand. The Requestor Agent can approach negotiations in two ways:
+
+
 ###### 1. Static Negotiations
 Suppose the Requestor Agent prefers payments on the Polygon network. In this case, they require the Provider Agent to support
 Polygon and will not select a Provider Agent that doesn’t.
@@ -310,24 +321,24 @@ intermediary for payments. Since transactions occur on the blockchain, and due t
 technology, Golem Factory has no control over these transactions.
 
 
-The ExeUnit is directly controlled by the Requestor Agent, with no intervention from the Provider Agent. Communication
-happens solely between the Yagna daemon and the ExeUnit process. The Provider Agent's responsibility is limited to calculating
+The [ExeUnit](#exeunits) is directly controlled by the Requestor Agent, with no intervention from the Provider Agent. Communication
+happens solely between the Requestor Agent and the ExeUnit. The Provider Agent's responsibility is limited to calculating
 the cost of resource usage based on the pricing model defined in the Agreement and informing the Requestor Agent accordingly.
 The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor Agent
-via Debit Notes. The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
+via [Debit Notes](#debit-note). The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
 the Requestor Agent's commitment to pay the specified amount.
 
 Debit Notes are formal documents used to notify the Requestor Agent of the costs incurred. Each note details the amount owed 
 for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
 it effectively supersedes the previous one.
 
-The frequency of sending Debit Notes and the acceptance deadlines are outlined in the Agreement. It is important to note
-that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
+The frequency of sending Debit Notes and the acceptance deadlines are outlined in the [Agreement](#agreement). It is important
+to note that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
 with payable Debit Notes identified by the due date included in the document. While payable Debit Notes are scheduled
 for processing upon acceptance, this does not necessitate immediate payment. The payment mechanism allows for the batching
-of payments or delaying them to accommodate additional Debit Notes or Invoices, thereby reducing transaction costs on
-the blockchain. Consequently, while payments are not immediate, they must be completed before the due date specified
-in the Agreement.
+of payments or delaying them to accommodate additional Debit Notes or Invoices, thereby reducing [transaction](#transaction-on-blockchain)
+costs on the blockchain. Consequently, while payments are not immediate, they must be completed before the due date
+specified in the Agreement.
 
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
@@ -348,15 +359,15 @@ Provider Agent has the option to attach additional information outlining the rea
 Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
 serving as diagnostic information or for other purposes.
 
-The Agreement can be terminated when either party chooses to end it. The reasons for termination are outlined in the
+The [Agreement](#agreement) can be terminated when either party chooses to end it. The reasons for termination are outlined in the
 Agreement, and different market negotiation protocols may permit termination for various reasons. Below is
 a non-exhaustive list of potential causes for termination:
 - The Agreement expires if it was established for a fixed duration.
-- The Requestor Agent no longer needs the resources or has completed the computations.
+- The Requestor Agent no longer needs the [resources](#resource) or has completed the computations.
 - One of the parties violates the terms of the Agreement, such as:
-  - The Requestor Agent fails to accept Debit Notes within the agreed timeframe.
+  - The Requestor Agent fails to accept [Debit Notes](#debit-note) within the agreed timeframe.
   - The Provider Agent issues Debit Notes more frequently than agreed.
-  - The Requestor Agent fails to make timely payments, particularly in cases involving mid-agreement payments.
+  - The Requestor Agent fails to make timely payments, particularly in cases involving [mid-agreement payments](#mid-agreement-payments).
 
 It is the Agent—whether Requestor or Provider—who decides to terminate the Agreement. The Agent is also responsible for
 detecting if the other party has terminated the Agreement and taking the appropriate action in response.
@@ -367,10 +378,11 @@ serving as diagnostic information or for other purposes.
 
 #### 7. Send an Invoice summarizing the total cost of the Agreement
 
-Once the Agreement is terminated, the Provider Agent should send an Invoice to the Requestor Agent summarizing the total costs
-incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all Activities. In response,
-the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status, payment is mandatory
-for the total amount indicated by the accepted Debit Notes, as their acceptance constitutes a binding commitment to pay.
+Once the Agreement is terminated, the Provider Agent should send an [Invoice](#invoice) to the Requestor Agent summarizing
+the total costs incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all [Activities](#activity).
+In response, the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status,
+payment is mandatory for the total amount indicated by the accepted [Debit Notes](#debit-note), as their acceptance constitutes
+a binding commitment to pay.
 
 ```mermaid
 flowchart LR
