@@ -139,6 +139,46 @@ When declaring a payment platform in an offer, the Provider Agent lists wallet a
 It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate property in their demand.
 The Requestor Agent can approach negotiations in two ways:
 
+
+```mermaid
+---
+title: Simplified negotiations from Provider Agent's perspective
+---
+sequenceDiagram
+  actor ProviderAgent as Provider Agent
+  participant GolemNetwork as Golem Network
+  actor RequestorAgent as Requestor Agent
+
+  GolemNetwork->>RequestorAgent: Receive propagated Offer
+  Note over GolemNetwork,RequestorAgent: Offer is not necessarily received directly<br/> from Provider Node
+  RequestorAgent->>RequestorAgent: Match Offer with Demand <br/>generate Proposal as a result
+
+  loop
+    RequestorAgent->>RequestorAgent: Adjust Proposal
+    
+    par
+      RequestorAgent->>ProviderAgent: Counter Proposal
+    and Proposals from other Nodes in the network
+      GolemNetwork->>ProviderAgent: Receive Proposals    
+    end
+
+    ProviderAgent->>ProviderAgent: Select best Proposals <br/>according to implemented strategy
+    ProviderAgent->>ProviderAgent: Adjust Proposals
+    ProviderAgent->>RequestorAgent: Counter Proposal
+
+    break when the terms of Agreement are satisfactory
+      RequestorAgent->>ProviderAgent: Propose Agreement
+    end
+  end
+  
+  par Proposals from other Nodes in the network
+    GolemNetwork->>ProviderAgent: Receive other Agreement Proposals
+  end
+  ProviderAgent->>ProviderAgent: Select best Agreement Proposal
+  ProviderAgent->>RequestorAgent: Approve Agreement Proposal
+  ProviderAgent->>GolemNetwork: Reject remaining Agreement Proposals
+```
+
 ###### 1. Static Negotiations
 Suppose the Requestor Agent prefers payments on the Polygon network. In this case, they require the Provider Agent to support
 Polygon and will not select a Provider Agent that doesn’t.
