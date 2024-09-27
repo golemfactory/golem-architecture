@@ -168,72 +168,6 @@ sequenceDiagram
   ProviderAgent->>GolemNetwork: Reject remaining Agreement Proposals
 ```
 
-```mermaid
----
-title: Simplified negotiations from Provider's perspective
----
-sequenceDiagram
-  box Provider Node
-    actor ProviderAgent as Provider Agent
-    participant ProviderYagna as Provider Yagna daemon
-  end
-  participant GolemNetwork as Golem Network
-  box Requestor Node
-    participant RequestorYagna as Requestor Yagna
-    actor RequestorAgent as Requestor Agent
-  end
-  
-  RequestorAgent->>RequestorAgent: Describe Resoruce Demand
-  RequestorAgent->>RequestorYagna: Publish Demand
-  RequestorAgent->>RequestorYagna: Subscribe for Proposal events
-  activate RequestorYagna
-  
-  ProviderAgent->>ProviderAgent: Describe Resources
-  ProviderAgent->>ProviderYagna: Publish Offer
-  ProviderYagna->>GolemNetwork: Offer propagation
-  activate GolemNetwork
-  ProviderAgent->>ProviderYagna: Subscribe for Proposal events
-  activate ProviderYagna
-  
-
-  GolemNetwork->>RequestorYagna: Receive Offer
-  Note over GolemNetwork,RequestorYagna: Offer wasn't received directly<br/> from Provider Node 
-  RequestorYagna->>RequestorYagna: Match Offer with Demand
-  RequestorYagna->>RequestorAgent: Generate Proposal
-
-  loop
-    RequestorAgent->>RequestorAgent: Adjust Proposal
-    RequestorAgent->>RequestorYagna: Counter Proposal
-    
-    par
-      RequestorYagna->>ProviderYagna: Counter Proposal
-      ProviderYagna->>ProviderAgent: Receive Proposal
-    and Proposals from other Nodes in the network
-      GolemNetwork->>ProviderAgent: Receive Proposals    
-    end
-
-    ProviderAgent->>ProviderAgent: Select best Proposals to respond
-    ProviderAgent->>ProviderAgent: Adjust Proposals
-    ProviderAgent->>ProviderYagna: Counter Proposal
-    ProviderYagna->>RequestorYagna: Counter Proposal
-    RequestorYagna->>RequestorAgent: Receive Proposal
-  end
-
-  RequestorAgent->>RequestorYagna: Propose Agreement
-  RequestorYagna->>ProviderYagna: Propose Agreement
-  ProviderYagna->>ProviderAgent: Receive Agreement Proposal
-  ProviderAgent->>ProviderAgent: Select best Agreement Proposal
-  ProviderAgent->>ProviderYagna: Approve Agreement
-  ProviderYagna->>RequestorYagna: Approve Agreement Proposal
-  RequestorYagna->>RequestorAgent: Agreement approval notification
-
-  ProviderAgent->>ProviderYagna: Unsubscribe Proposal events
-  deactivate ProviderYagna
-  ProviderYagna-->GolemNetwork: Stop Offer propagation
-  deactivate GolemNetwork
-  deactivate RequestorYagna
-```
-
 ##### Example of negotiation
 
 To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example 
@@ -355,37 +289,6 @@ of payments or delaying them to accommodate additional Debit Notes or Invoices, 
 the blockchain. Consequently, while payments are not immediate, they must be completed before the due date specified
 in the Agreement.
 
-```mermaid
-sequenceDiagram
-  participant Requestor
-  participant Provider
-  Requestor-->Provider: Negotiations
-  Requestor->>Provider: Propose Agreement 
-  Provider->>Requestor: Approve Agreement
-  
-  loop Multiple Activities allowed
-    Requestor->>Provider: Create Activity
-    create participant ExeUnit
-    Provider->>ExeUnit: Spawn ExeUnit
-    Requestor-->ExeUnit: Commands controlling ExeUnit
-    activate ExeUnit
-    
-    loop Regular intervals
-      ExeUnit->>Provider: Report resources consumption
-      Provider->>Provider: Calculate costs
-      Provider->>Requestor: Send DebitNote
-      Requestor->>Provider: Accept DebitNote
-    end
-    
-    Requestor-->ExeUnit: Finish computations
-    deactivate ExeUnit
-    Requestor->>Provider: Destroy Activity
-    destroy ExeUnit
-    Provider->>ExeUnit: Terminate ExeUnit
-  end
-  Requestor->>Provider: Terminate Agreement
-```
-
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
 The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
@@ -415,8 +318,8 @@ a non-exhaustive list of potential causes for termination:
   - The Provider Agent issues Debit Notes more frequently than agreed.
   - The Requestor Agent fails to make timely payments, particularly in cases involving mid-agreement payments.
 
-Provider Agent can terminate the Agreement using the market's REST API. It should also monitor Agreement events
-to detect if the other party terminates the Agreement.
+It is the Agent—whether Requestor or Provider—who decides to terminate the Agreement. The Agent is also responsible for
+detecting if the other party has terminated the Agreement and taking the appropriate action in response.
 
 Provider Agent has the option to attach additional information outlining the reasons for termination when ending the
 Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
