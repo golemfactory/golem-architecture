@@ -50,11 +50,13 @@ details and establish a glossary to ensure consistency within the document.
 
 ### Selling on Golem platform
 
-Even though currently Golem is used for trading computational resources, it has been decided
-that it can theoretically be used to trade anything. This means that the Marketplace does not
-enforce any standards on goods traded, making it conceptually more similar to [craigslist](https://craigslist.org/) than
-to a stock exchange. As a consequence, direct interaction between buyer and seller is required
-to make a transaction.
+Golem Network allows buyers and sellers to connect and reach agreements. The market is designed to be asymmetrical:
+the sellers (Providers) publish Offers, and the buyers (Requestors) browse through these Offers. When a Requestor finds
+a suitable Offer, they contact the Provider directly to negotiate the deal.
+
+Typically, humans are not involved in the process of finding, matching, negotiating, or finalizing agreements. Instead,
+users define their needs programmatically, allowing the [Provider Agent](#provider-agent) and [Requestor Agent](#requester-agent)
+software to handle these tasks automatically.
 
 It is the main goal of the [Provider Agent](#provider-agent) to implement logic for selling resources
 in Golem Network. From high level perspective, Provider Agent application should do following things: 
@@ -69,17 +71,18 @@ in Golem Network. From high level perspective, Provider Agent application should
 
 #### 1. Describe Resources using property language to create an [Offer](#offer)
 
-The Golem design was created to support the sale of any type of computing resource.To achieve this,
-Golem employs a generic [property and constraints language](#discovery-and-offersdemand-matching) to
-describe the resources being offered. 
+While Golem is currently used for trading computational resources, it was designed to support the exchange of any type of
+[resource](#resource). This means the Marketplace does not enforce strict standards on the goods being traded.
+To enable this flexibility, Golem uses a generic [property and constraints language](#discovery-and-offersdemand-matching)
+to describe the resources being offered.
 
-The [Yagna market](#market) is agnostic to the specific properties used and can match Offers and Demands as long
-as they adhere to the language specification. However, the Yagna daemon does not interpret the semantics
-of the properties in the Offer, nor does its behavior depend on the negotiated Agreement. It is the
-responsibility of the Provider Agent application to accurately interpret the semantics and implement
+The Golem Node is agnostic to the specific properties used and can match Offers and Demands as long
+as they adhere to the [language specification](#discovery-and-offersdemand-matching). However, the Golem Node does not
+interpret the semantics of the properties in the Offer, nor does its behavior depend on the negotiated Agreement.
+It is the responsibility of the Provider Agent application to accurately interpret the semantics and implement
 the agreed-upon behavior between the parties.
 
-In this chapter, the term "resource" is used in a generic sense. However, illustrating a generic
+In this chapter, the term ["resource"](#resource) is used in a generic sense. However, illustrating a generic
 example can be challenging. Therefore, we will focus on selling computational power in a virtual
 machine (VM) to provide the reader with a clearer understanding.
 
@@ -99,7 +102,7 @@ central server to facilitate [Agreements](#agreement) between parties. As a resu
 and transactions are conducted through direct communication.
 
 Developers don’t need to worry about [offer propagation](#offer-propagation). The responsibility for propagating offers
-lies with the Yagna daemon, specifically its market module. The only task for the Provider Agent is to publish the offer
+lies with the Golem Node, specifically its market module. The only task for the Provider Agent is to publish the offer
 on the market using its REST API. The REST endpoint returns a [subscription](#subscription) ID, which can later be used
 to listen for incoming [proposal](#proposal) events.
 
@@ -110,35 +113,26 @@ received by [Requestors](#requestor). The offer is matched locally on the Reques
 If the Requestor is interested, they respond by sending a [Proposal](#proposal) to the Provider Agent. This triggers a Proposal
 event on the Provider Agent's [subscription](#subscription) endpoint.
 
-Negotiation is the process of exchanging Proposals and adjusting their terms until the Requestor proposes an Agreement.
-The structure of a Proposal is identical to that of an Offer or Demand, using the same property and constraint language
-to describe the Agreement's conditions. During negotiations, certain aspects of the Agreement can be modified. While Offers
+[Negotiation](#process-of-negotiations-and-making-an-agreement) is the process of exchanging Proposals and adjusting their
+terms until the [Requestor Agent](#requester-agent) proposes an Agreement. The structure of a Proposal is identical to
+that of an Offer or Demand, using the same [property and constraints language](#discovery-and-offersdemand-matching) to 
+describe the Agreement's conditions. During negotiations, certain aspects of the Agreement can be modified. While Offers
 and Demands represent the initial declaration of resources, terms, and conditions, the proposal exchange is a dynamic
-process of refining these terms to reach an optimal agreement for both parties.
+process of refining these terms to reach an optimal [Agreement](#agreement) for both parties.
 
 The negotiation stage serves several purposes:
 - Ensures that the Provider Agent and Requestor Agent communicate before signing an Agreement (since offer propagation
   doesn’t require direct interaction between parties).
-- Allows both the Provider Agent and Requestor Agent to implement different strategies to maximize their benefits and select suitable partners.
-- Provides an opportunity for the Provider Agent and Requestor Agent to negotiate additional terms that weren’t included in the  
-  initial Proposals. This is possible through protocols built on top of the property language.
+- Allows both the Provider Agent and Requestor Agent to implement different [strategies](#market-strategies) to maximize
+  their benefits and select suitable partners.
+- Provides an opportunity for the Provider Agent and Requestor Agent to negotiate additional terms that weren’t included
+  in the initial [Proposals](#proposal). This is possible through protocols built on top of the property language.
 
 Both the Provider Agent and Requestor Agent negotiate with multiple nodes simultaneously. The Requestor Agent initiates
-the Agreement by proposing it to the Provider Agent, who can either accept or reject the proposal. Once the Agreement is signed
+the Agreement by proposing it to the Provider Agent, who can either accept or reject the Proposal. Once the Agreement is signed
 by both parties, the Requestor Agent can begin using the resources. The Agreement remains valid until it is terminated by
 either party. The terms of termination (e.g., duration of the Agreement and conditions under which it can be terminated) are
 specified within the Agreement itself, rather than being defined by the Golem protocol.
-
-##### Example of negotiation
-
-To better understand the negotiation process, let’s consider an example involving the negotiation of a payment platform.
-This will illustrate how agents can use different strategies and what negotiation protocols can be built on top
-of the property language.
-
-When declaring a payment platform in an offer, the Provider Agent lists wallet addresses for each platform it supports.
-It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate property in their demand.
-The Requestor Agent can approach negotiations in two ways:
-
 
 ```mermaid
 ---
@@ -179,29 +173,40 @@ sequenceDiagram
   ProviderAgent->>GolemNetwork: Reject remaining Agreement Proposals
 ```
 
+##### Example of negotiation
+
+To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example 
+involving the negotiation of a [payment platform](#payment-platform). This will illustrate how agents can use different
+strategies and what negotiation protocols can be built on top of the [property and language](#discovery-and-offersdemand-matching).
+
+When declaring a payment platform in an [Offer](#offer), the Provider Agent lists [wallet](#wallet) addresses for each
+platform it supports. It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate
+[property](#property) in their demand. The Requestor Agent can approach negotiations in two ways:
+
+
 ###### 1. Static Negotiations
 Suppose the Requestor Agent prefers payments on the Polygon network. In this case, they require the Provider Agent to support
 Polygon and will not select a Provider Agent that doesn’t.
 
 Since the Requestor has a specific requirement, multiple negotiation stages aren't necessary. They can simply add
-a constraint to their demand, instructing the matching algorithm to filter out Providers that don’t meet this
-requirement. In their demand, they set the chosen platform as a fixed value.
+a [constraint](#constraint) to their [Demand](#demand), instructing the matching algorithm to filter out Providers that
+don’t meet this requirement. In their Demand, they set the chosen platform as a fixed value.
 
 ###### 2. Dynamic Negotiations
 Now imagine a Requestor Agent that can pay on multiple platforms but prioritizes them based on transaction fees. In this
 scenario, the Requestor Agent has a larger pool of potential Providers since they don’t restrict the platform by adding
 a constraint to their demand.
 
-Instead, the Requestor Agent collects proposals from the market and evaluates them based on estimated costs. In later stages
-of proposal exchange, they choose the platform by setting the relevant property according to the Providers' scores,
-which are based on potential transaction costs.
+Instead, the Requestor Agent collects Proposals from the market and evaluates them based on estimated costs. In later stages
+of Proposal exchange, they choose the platform by setting the relevant [property](#property) according to the Providers' scores,
+which are based on potential [transaction](#transaction-on-blockchain) costs.
 
 #### 4. Allocate the promised Resources in accordance with the Agreement
 
-Once the Agreement is signed, the Provider Agent is expected to reserve the promised resources for the Requestor’s use.
-During this time, the Provider Agent cannot sell these resources to anyone else and must be prepared to start the Activity.
-For instance, if the Provider Agent is selling computing power through a Virtual Machine Execution Environment, they
-declared in Agreement a specific amount of RAM and a certain number of threads to be allocated for the VM.
+Once the [Agreement](#agreement) is signed, the Provider Agent is expected to reserve the promised [resources](#resource) for the
+Requestor’s use. During this time, the Provider Agent cannot sell these resources to anyone else and must be prepared
+to start the [Activity](#activity). For instance, if the Provider Agent is selling computing power through a [Virtual Machine Execution
+Environment](#vm), they declared in Agreement a specific amount of RAM and a certain number of threads to be allocated for the VM.
 Provider Agent can only sell any remaining RAM and cores to other Requestors.
 
 Resource access always occurs within the context of an Activity. Creating an Activity is synonymous with starting an
@@ -211,45 +216,45 @@ the ["Running something"](#running-something) section.
 
 From the Provider Agent's perspective, the primary focus is to listen for incoming Activity events and create an Activity
 when requested by the Requestor Agent. Upon receiving an Activity creation event, the Provider Agent should spawn an
-ExeUnit process (and a Virtual Machine in consequence). Conversely, receiving an Activity destruction event should trigger
+[ExeUnit](#exeunits) process (and a Virtual Machine in consequence). Conversely, receiving an Activity destruction event should trigger
 the termination of the ExeUnit processes.
 
 The Requestor Agent is allowed to spawn multiple Activities consecutively. In general, multiple Activities running
-simultaneously may be permitted; however, this does not apply in the case of a Virtual Machine, as hardware
+simultaneously may be permitted; however, this does not apply in the case of a [Virtual Machine](#vm), as hardware
 resources can only be allocated once.
 
 #### 5. Send DebitNotes to notify Requestor Agent of updated costs
 
-The ExeUnit is directly controlled by the Requestor Agent, with no intervention from the Provider Agent. Communication
-happens solely between the Yagna daemon and the ExeUnit process. The Provider Agent's responsibility is limited to calculating
+The [ExeUnit](#exeunits) is directly controlled by the Requestor Agent, with no intervention from the Provider Agent. Communication
+happens solely between the Requestor Agent and the ExeUnit. The Provider Agent's responsibility is limited to calculating
 the cost of resource usage based on the pricing model defined in the Agreement and informing the Requestor Agent accordingly.
 The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor Agent
-via Debit Notes. The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
+via [Debit Notes](#debit-note). The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
 the Requestor Agent's commitment to pay the specified amount.
 
 Debit Notes are formal documents used to notify the Requestor Agent of the costs incurred. Each note details the amount owed 
 for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
 it effectively supersedes the previous one.
 
-The frequency of sending Debit Notes and the acceptance deadlines are outlined in the Agreement. It is important to note
-that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
+The frequency of sending Debit Notes and the acceptance deadlines are outlined in the [Agreement](#agreement). It is important
+to note that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
 with payable Debit Notes identified by the due date included in the document. While payable Debit Notes are scheduled
 for processing upon acceptance, this does not necessitate immediate payment. The payment mechanism allows for the batching
-of payments or delaying them to accommodate additional Debit Notes or Invoices, thereby reducing transaction costs on
-the blockchain. Consequently, while payments are not immediate, they must be completed before the due date specified
-in the Agreement.
+of payments or delaying them to accommodate additional Debit Notes or Invoices, thereby reducing [transaction](#transaction-on-blockchain)
+costs on the blockchain. Consequently, while payments are not immediate, they must be completed before the due date
+specified in the Agreement.
 
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
-The Agreement can be terminated when either party chooses to end it. The reasons for termination are outlined in the
+The [Agreement](#agreement) can be terminated when either party chooses to end it. The reasons for termination are outlined in the
 Agreement, and different market negotiation protocols may permit termination for various reasons. Below is
 a non-exhaustive list of potential causes for termination:
 - The Agreement expires if it was established for a fixed duration.
-- The Requestor Agent no longer needs the resources or has completed the computations.
+- The Requestor Agent no longer needs the [resources](#resource) or has completed the computations.
 - One of the parties violates the terms of the Agreement, such as:
-  - The Requestor Agent fails to accept Debit Notes within the agreed timeframe.
+  - The Requestor Agent fails to accept [Debit Notes](#debit-note) within the agreed timeframe.
   - The Provider Agent issues Debit Notes more frequently than agreed.
-  - The Requestor Agent fails to make timely payments, particularly in cases involving mid-agreement payments.
+  - The Requestor Agent fails to make timely payments, particularly in cases involving [mid-agreement payments](#mid-agreement-payments).
 
 It is the Agent—whether Requestor or Provider—who decides to terminate the Agreement. The Agent is also responsible for
 detecting if the other party has terminated the Agreement and taking the appropriate action in response.
@@ -260,10 +265,11 @@ serving as diagnostic information or for other purposes.
 
 #### 7. Send an Invoice summarizing the total cost of the Agreement
 
-Once the Agreement is terminated, the Provider Agent should send an Invoice to the Requestor Agent summarizing the total costs
-incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all Activities. In response,
-the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status, payment is mandatory
-for the total amount indicated by the accepted Debit Notes, as their acceptance constitutes a binding commitment to pay.
+Once the Agreement is terminated, the Provider Agent should send an [Invoice](#invoice) to the Requestor Agent summarizing
+the total costs incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all [Activities](#activity).
+In response, the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status,
+payment is mandatory for the total amount indicated by the accepted [Debit Notes](#debit-note), as their acceptance constitutes
+a binding commitment to pay.
 
 ```mermaid
 flowchart LR
@@ -337,6 +343,8 @@ Section should serve as dictionary to be linked by other chapters.
 
 ### Marketplace
 #### Offer
+##### Property
+##### Constraint
 #### Demand
 #### Subscription
 This word is used to describe Offer/Demand put on market, so we should mention it.
@@ -345,6 +353,7 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 #### Agreement
 
 ### Execution system
+#### Resource
 #### Activity
 #### Execution environment (ExeUnit)
 ##### ExeUnit Batch
@@ -392,7 +401,7 @@ RPC-like communication layer providing a way to call other modules or other
 nodes in unified way.
 ### Specialized modules layer (market, payment, activity, vpn etc.)
 #### Market negotiation protocols
-Offers/Demands property and constraint language is used to build subprotocols
+Offers/Demands property and constraint language is used to build sub-protocols
 for negotiating certain aspects of Agreements.
 ### Execution environments
 There are a few ways to implement an execution environment. We have a few APIs
@@ -421,21 +430,21 @@ them.
 
 ### Market interactions
 #### Discovery and Offers/Demand matching
-- Offer/Demand properties and constraint langauge
+- Offer/Demand properties and constraint language
 - Yagna is property agnostic - doesn't understand semantic of properties, only agent do
-- Some examples of properties and costraints and how it works
-- Links to more detailed docs for properties langauge and properties sepcification (?)
+- Some examples of properties and constraints and how it works
+- Links to more detailed docs for properties language and properties specification (?)
 #### Offer propagation
 - Link to design [decision](#only-providers-offers-are-propagated)
 - Algorithm overview
 #### Process of negotiations and making an agreement
 - Initial Proposal
 - Countering Proposal
-- What can change in counter proposal (protocols based on property langauge)?
+- What can change in counter proposal (protocols based on property language)?
 - Provider Agent possible Proposal responses (counter, reject)
 - Requestor Agent possible Proposal responses (counter, reject, propose Agreement)
 - Provider Agent possible Agreement responses (accept, reject)
-- Requestor possbility of Agreement Proposal cancallation
+- Requestor possibility of Agreement Proposal cancellation
 - Restarting negotiations (who can, who can't and how?)
 
 ```mermaid
@@ -504,6 +513,8 @@ sequenceDiagram
   deactivate RequestorYagna
 ```
 
+#### Market strategies
+
 #### Agreement termination
 - Who is allowed to terminate? In what situation?
 - What is specified by protocol and what is left to future specifications?
@@ -537,6 +548,9 @@ sequenceDiagram
 - DebitNotes/Invoices interactions (acceptance, rejection, cancellation)
 - How DebitNote/Invoice acceptance relates to payment on blockchain?
 - Payment settlement and payment confirmation for Provider
+
+##### Mid-Agreement payments
+##### Post-Agreement payments
 
 #### Payment drivers
 - Abstract concept (independance from underlying payment mechanisms)
