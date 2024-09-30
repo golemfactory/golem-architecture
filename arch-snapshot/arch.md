@@ -64,7 +64,7 @@ in Golem Network. From high level perspective, Provider Agent application should
 2. Publish the Offer in the market
 3. Monitor incoming Proposals and negotiate an [Agreement](#agreement) with the most promising [Requestor](#requestor)
 4. Allocate the promised Resources in accordance with the [Agreement](#agreement)
-5. Send [DebitNotes](#debit-note) to notify [Requestor](#requestor) of updated costs
+5. Monitor resources usage and charge Requestor Agent
 6. Terminate the Agreement or await the Agreement termination event from the [Requestor](#requestor)
 7. Send an [Invoice](#invoice) summarizing the total cost of the [Agreement](#agreement)
 8. Wait until the payment for the [Invoice](#invoice) is settled and payment confirmed. 
@@ -223,11 +223,53 @@ The Requestor Agent is allowed to spawn multiple Activities consecutively. In ge
 simultaneously may be permitted; however, this does not apply in the case of a [Virtual Machine](#vm), as hardware
 resources can only be allocated once.
 
-#### 5. Send DebitNotes to notify Requestor Agent of updated costs
+#### 5. Monitor resources usage and charge Requestor Agent
 
-The [ExeUnit](#exeunits) is directly controlled by the Requestor Agent, with no intervention from the Provider Agent. Communication
-happens solely between the Requestor Agent and the ExeUnit. The Provider Agent's responsibility is limited to calculating
-the cost of resource usage based on the pricing model defined in the Agreement and informing the Requestor Agent accordingly.
+The [ExeUnit](#exeunits) is directly controlled by the Requestor Agent, with no intervention from the Provider Agent.
+Communication happens solely between the Requestor Agent and the ExeUnit. However, this doesn't mean the Provider
+Agent is inactive during this time. The Provider Agent's responsibility is limited to calculating the cost of resource usage
+based on the pricing model defined in the Agreement and informing the Requestor Agent accordingly.
+
+There are two types of payment documents used in the Golem Network: [Debit Notes](#debit-note) and [Invoices](#invoice).
+
+Debit Notes are sent at regular intervals during the execution of an activity to inform the Requestor Agent of the
+accumulating costs of the Agreement. These notes act as building blocks that support various payment schemes.
+The handling of Debit Notes by agents is governed by the terms negotiated in the Agreement. Generally, Debit Notes
+serve the following purposes:
+
+- Informing the Requestor Agent about resource usage and activity costs, and obtaining explicit acceptance of these costs.
+- Acting as a health check, allowing the Provider Agent to monitor if the Requestor Agent is still active and hasn’t
+  abandoned the Agreement, helping avoid not getting paid.
+- Facilitating [mid-agreement payments](#mid-agreement-payments).
+
+Invoices are issued after the Agreement is terminated, providing a summary of the total costs. They allow the Provider
+Agent to include any additional costs not covered in the Debit Notes, as the final Debit Note doesn’t have to be sent
+immediately after the activity ends.
+
+```mermaid
+flowchart LR
+Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
+Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
+Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
+```
+
+Both Debit Notes and Invoices can be either accepted or rejected by the other party. Acceptance signals that the
+Requestor Agent agrees to pay the specified amount. Rejection, on the other hand, indicates refusal to pay the
+non-accepted amount. However, it’s important to note that a rejection does not absolve the Requestor Agent from paying
+for all previously accepted Debit Notes. The conditions under which rejection is allowed should be defined in the
+Agreement. Currently, the market protocol does not permit rejections.
+
+Note that accepting a Debit Note or Invoice does not result in immediate payment, meaning payment is not guaranteed.
+However, this design allows for the possibility of implementing mechanisms that can reduce or eliminate the risk of
+non-payment. For example, a payment platform could be implemented using a deposit/escrow contract
+or by integrating payment channels into the Golem Node.
+
+It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
+intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
+technology, Golem Factory has no control over these transactions.
+
+
+
 The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor Agent
 via [Debit Notes](#debit-note). The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
 the Requestor Agent's commitment to pay the specified amount.
@@ -240,7 +282,7 @@ The frequency of sending Debit Notes and the acceptance deadlines are outlined i
 to note that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
 with payable Debit Notes identified by the due date included in the document. While payable Debit Notes are scheduled
 for processing upon acceptance, this does not necessitate immediate payment. The payment mechanism allows for the batching
-of payments or delaying them to accommodate additional Debit Notes or Invoices, thereby reducing [transaction](#transaction-on-blockchain)
+of payments or delaying them to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain)
 costs on the blockchain. Consequently, while payments are not immediate, they must be completed before the due date
 specified in the Agreement.
 
@@ -270,13 +312,6 @@ the total costs incurred throughout the Agreement. This Invoice should reflect t
 In response, the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status,
 payment is mandatory for the total amount indicated by the accepted [Debit Notes](#debit-note), as their acceptance constitutes
 a binding commitment to pay.
-
-```mermaid
-flowchart LR
-Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
-Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
-Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
-```
 
 #### 8. Wait until the payment for the Invoice is settled and payment confirmed.
 
@@ -616,6 +651,7 @@ sequenceDiagram
   - Deploy, Start, Transfer, Run, Terminate
   - Querying command/batch state, receiving results
   - Transfer methods ([GFTP](#gftp), http)
+##### Usage counters
 #### ExeUnit Supervisor
 - Why splitting Supervisor and Runtime?
 - Common functionalities provided by Supervisor
