@@ -429,9 +429,10 @@ may occur. Furthermore, blockchain transactions are not immediate and may take t
 Agent should monitor Payment events. This can be done by listening for status changes to Settled on Invoice and Debit Note
 events, or by tracking payment events to receive notifications for each transaction.
 
-It's important to note that, depending on the terms of the Agreement, payments may occur after the entire Agreement is
-completed or at various points during the Agreement, particularly in the case of mid-agreement payments. Monitoring
-payment events will provide insight into all payments progressively settling under the Agreement.
+Payment confirmation is received by the Provider Agent from the Requestor once the transaction is confirmed on the
+blockchain. This confirmation specifies which Activities and Agreements are covered by the transaction. There is no
+1-to-1 relationship between transactions and Activities or Agreements. A single blockchain transaction can cover
+multiple Activities or Agreements, while each Activity or Agreement may also be covered by multiple transactions.
 
 ### Searching on market
 
