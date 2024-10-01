@@ -273,9 +273,9 @@ technology, Golem Factory has no control over these transactions.
 
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
-The [Agreement](#agreement) can be terminated when either party chooses to end it. The reasons for termination are outlined in the
-Agreement, and different market negotiation protocols may permit termination for various reasons. Below is
-a non-exhaustive list of potential causes for termination:
+The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
+specific termination rules, so the Agreement should clearly define the conditions under which termination is
+permitted. Below is a non-exhaustive list of possible reasons for termination:
 - The Agreement expires if it was established for a fixed duration.
 - The Requestor Agent no longer needs the [resources](#resource) or has completed the computations.
 - One of the parties violates the terms of the Agreement, such as:
