@@ -131,7 +131,7 @@ Both the Provider Agent and Requestor Agent negotiate with multiple nodes simult
 the Agreement by proposing it to the Provider Agent, who can either accept or reject the Proposal. Once the Agreement is signed
 by both parties, the Requestor Agent can begin using the resources. The Agreement remains valid until it is terminated by
 either party. The terms of termination (e.g., duration of the Agreement and conditions under which it can be terminated) are
-specified within the Agreement itself, rather than being defined by the Golem protocol.
+specified within the Agreement.
 
 ```mermaid
 ---
