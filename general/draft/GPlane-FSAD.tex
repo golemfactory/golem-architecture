@@ -1265,7 +1265,30 @@ The Activity Space is used to define interaction operations on these objects suc
 
 \item Description
 
-TODO
+The Control operation is implemented by a set of functions with REST API methods that allow
+to initiate the Activity process, start the computing environment, run applications on the computing environment,
+check the state of the computations and utilization (absorption) of computing resources.
+
+The CreateActivity() function call initializes the Activity process and returns a unique activityId identifier.
+All control over the Activity process is performed using ExeScript.
+The ExeScript block sent by the Activity API client will be routed directly to the ExeUnit instance by
+the Activity API Requestor implementation. The Exec() call will collect a set of commands.
+When the ExeScript command block is received by the ExeUnit instance, the commands are interpreted and executed.
+The following commands are available:
+
+\begin{itemize}
+\item The DEPLOY command starts an ExeUnit deployment/instance
+\item The DESTROY command removes an existing ExeUnit regardless of its state
+\item The START command starts an Activity on a created ExeUnit
+\item The RUN command starts any command on an ExeUnit.
+\item The SUSPEND command suspends an Activity on a created ExeUnit instance
+\item The RESUME command resumes a suspended Activity on a created ExeUnit instance
+\item The TRANSFER command transfers data to/from an ExeUnit.
+\item The FORWARD command opens a TCP communication between the ExeUnit payload (e.g. a hosted container) and the application on the Requester side.
+\item The RAISEVENT command raises an event that can be observed by the provider and potentially by other nodes, according to the Observe law.
+\item The GRANT command grants the specified Activity right to the specified golem node
+\item The REVOKE command revokes the specified Activity right from the specified golem nodes.
+\end{itemize}
 
 (Please see Figure ~\ref{fig:ACO} on page ~\pageref{fig:ACO}).
 
