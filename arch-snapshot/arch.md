@@ -102,9 +102,8 @@ central server to facilitate [Agreements](#agreement) between parties. As a resu
 and transactions are conducted through direct communication.
 
 Developers don’t need to worry about [offer propagation](#offer-propagation). The responsibility for propagating offers
-lies with the Golem Node, specifically its market module. The only task for the Provider Agent is to publish the offer
-on the market using its REST API. The REST endpoint returns a [subscription](#subscription) ID, which can later be used
-to listen for incoming [proposal](#proposal) events.
+lies with the Golem Node. The only task for the Provider Agent is to publish the offer on the market and listen
+for incoming [Proposals](#proposal).
 
 #### 3. Monitor incoming Proposals and negotiate an Agreement with the most promising Requestor
 
