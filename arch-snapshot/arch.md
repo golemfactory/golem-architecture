@@ -97,10 +97,23 @@ Section should serve as dictionary to be linked by other chapters.
 ### Participating entities
 
 #### Yagna daemon
+
+aka Golem Node.
+The Golem network client component. It provides a "low-level" API for Golem network participants.
+It delivers services for peer discovery, contract agreements,and the settlement and payment for services.
+
 #### Provider agent
+
+A resource-selling application. It uses the Golem API to broadcast an offer on the market and negotiate a contract. It is
+responsible for price negotiations and issuing an invoice for the used resources.
+
 #### Requester agent
 
+A resource buying application. It uses the Golem API to find an offer on the market and negotiate a contract. It is
+responsible for price negotiations and verifying costs during service agreement.
+
 ### Marketplace
+
 #### Offer
 #### Demand
 #### Subscription
