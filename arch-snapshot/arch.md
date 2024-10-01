@@ -51,8 +51,8 @@ details and establish a glossary to ensure consistency within the document.
 ### Selling on Golem platform
 
 Golem Network allows buyers and sellers to connect and reach agreements. The market is designed to be asymmetrical:
-the sellers (Providers) publish Offers, and the buyers (Requestors) browse through these Offers. When a Requestor finds
-a suitable Offer, they contact the Provider directly to negotiate the deal.
+the sellers ([Providers](#provider)) publish Offers, and the buyers ([Requestors](#requestor)) browse through these Offers.
+When a Requestor finds a suitable Offer, they contact the Provider directly to negotiate the deal.
 
 Typically, humans are not involved in the process of finding, matching, negotiating, or finalizing agreements. Instead,
 users define their needs programmatically, allowing the [Provider Agent](#provider-agent) and [Requestor Agent](#requester-agent)
@@ -106,7 +106,7 @@ lies with the Golem Node, specifically its market module. The only task for the 
 on the market using its REST API. The REST endpoint returns a [subscription](#subscription) ID, which can later be used
 to listen for incoming [proposal](#proposal) events.
 
-#### 3. Monitor incoming Proposal events and negotiate an Agreement with the most promising Requestor
+#### 3. Monitor incoming Proposals and negotiate an Agreement with the most promising Requestor
 
 The [Provider Agent](#provider-agent) plays a passive role in negotiations. Offers are propagated across the network and
 received by [Requestors](#requestor). The offer is matched locally on the Requestor's node with a [Demand](#demand).
@@ -234,9 +234,8 @@ There are two types of payment documents used in the Golem Network: [Debit Notes
 
 Debit Notes are sent at regular intervals during the execution of an activity to inform the Requestor Agent of the
 accumulating costs of the Agreement. These notes act as building blocks that support various payment schemes.
-The handling of Debit Notes by agents is governed by the terms negotiated in the Agreement. Generally, Debit Notes
+The handling of Debit Notes by Agents is governed by the terms negotiated in the Agreement. Generally, Debit Notes
 serve the following purposes:
-
 - Informing the Requestor Agent about resource usage and activity costs, and obtaining explicit acceptance of these costs.
 - Acting as a health check, allowing the Provider Agent to monitor if the Requestor Agent is still active and hasn’t
   abandoned the Agreement, helping avoid not getting paid.
@@ -257,34 +256,21 @@ Both Debit Notes and Invoices can be either accepted or rejected by the other pa
 Requestor Agent agrees to pay the specified amount. Rejection, on the other hand, indicates refusal to pay the
 non-accepted amount. However, it’s important to note that a rejection does not absolve the Requestor Agent from paying
 for all previously accepted Debit Notes. The conditions under which rejection is allowed should be defined in the
-Agreement. Currently, the market protocol does not permit rejections.
+Agreement. Currently, no payment scheme permits rejections.
 
-Note that accepting a Debit Note or Invoice does not result in immediate payment, meaning payment is not guaranteed.
-However, this design allows for the possibility of implementing mechanisms that can reduce or eliminate the risk of
-non-payment. For example, a payment platform could be implemented using a deposit/escrow contract
-or by integrating payment channels into the Golem Node.
+Accepting a Debit Note or Invoice does not result in immediate payment for a few reasons.
+Debit Notes can be classified as payable or non-payable, with payable Debit Notes identified by the due date included
+in the document. While payable Debit Notes are scheduled for processing upon acceptance, this still does not necessitate
+immediate payment. The payment mechanism allows for the [batching of payments](#payments-batching) or delaying them
+to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain) costs on the blockchain.
+
+The consequence of delaying payments is that they are not guaranteed. However, this design opens the possibility of
+implementing mechanisms that can mitigate or eliminate the risk of non-payment. For instance, a payment platform
+could be developed using a deposit or escrow contract, or by integrating payment channels into the Golem Node.
 
 It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
 intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
 technology, Golem Factory has no control over these transactions.
-
-
-
-The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor Agent
-via [Debit Notes](#debit-note). The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
-the Requestor Agent's commitment to pay the specified amount.
-
-Debit Notes are formal documents used to notify the Requestor Agent of the costs incurred. Each note details the amount owed 
-for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
-it effectively supersedes the previous one.
-
-The frequency of sending Debit Notes and the acceptance deadlines are outlined in the [Agreement](#agreement). It is important
-to note that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
-with payable Debit Notes identified by the due date included in the document. While payable Debit Notes are scheduled
-for processing upon acceptance, this does not necessitate immediate payment. The payment mechanism allows for the batching
-of payments or delaying them to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain)
-costs on the blockchain. Consequently, while payments are not immediate, they must be completed before the due date
-specified in the Agreement.
 
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
