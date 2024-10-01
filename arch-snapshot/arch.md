@@ -336,34 +336,21 @@ Both Debit Notes and Invoices can be either accepted or rejected by the other pa
 Requestor Agent agrees to pay the specified amount. Rejection, on the other hand, indicates refusal to pay the
 non-accepted amount. However, it’s important to note that a rejection does not absolve the Requestor Agent from paying
 for all previously accepted Debit Notes. The conditions under which rejection is allowed should be defined in the
-Agreement. Currently, the market protocol does not permit rejections.
+Agreement. Currently, no payment scheme permits rejections.
 
-Note that accepting a Debit Note or Invoice does not result in immediate payment, meaning payment is not guaranteed.
-However, this design allows for the possibility of implementing mechanisms that can reduce or eliminate the risk of
-non-payment. For example, a payment platform could be implemented using a deposit/escrow contract
-or by integrating payment channels into the Golem Node.
+Accepting a Debit Note or Invoice does not result in immediate payment for a few reasons.
+Debit Notes can be classified as payable or non-payable, with payable Debit Notes identified by the due date included
+in the document. While payable Debit Notes are scheduled for processing upon acceptance, this still does not necessitate
+immediate payment. The payment mechanism allows for the [batching of payments](#payments-batching) or delaying them
+to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain) costs on the blockchain.
+
+The consequence of delaying payments is that they are not guaranteed. However, this design opens the possibility of
+implementing mechanisms that can mitigate or eliminate the risk of non-payment. For instance, a payment platform
+could be developed using a deposit or escrow contract, or by integrating payment channels into the Golem Node.
 
 It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
 intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
 technology, Golem Factory has no control over these transactions.
-
-
-
-The ExeUnit tracks resource consumption, while the Provider Agent computes and communicates the cost to the Requestor Agent
-via [Debit Notes](#debit-note). The Provider Agent must also monitor the acceptance of these Debit Notes, as it signifies
-the Requestor Agent's commitment to pay the specified amount.
-
-Debit Notes are formal documents used to notify the Requestor Agent of the costs incurred. Each note details the amount owed 
-for a specific activity up to the time the note is issued. As each subsequent Debit Note reflects the updated costs,
-it effectively supersedes the previous one.
-
-The frequency of sending Debit Notes and the acceptance deadlines are outlined in the [Agreement](#agreement). It is important
-to note that accepting a Debit Note does not trigger immediate payment. Debit Notes can be classified as payable or non-payable,
-with payable Debit Notes identified by the due date included in the document. While payable Debit Notes are scheduled
-for processing upon acceptance, this does not necessitate immediate payment. The payment mechanism allows for the batching
-of payments or delaying them to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain)
-costs on the blockchain. Consequently, while payments are not immediate, they must be completed before the due date
-specified in the Agreement.
 
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
 
