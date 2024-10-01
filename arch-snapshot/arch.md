@@ -205,8 +205,8 @@ which are based on potential [transaction](#transaction-on-blockchain) costs.
 Once the [Agreement](#agreement) is signed, the Provider Agent is expected to reserve the promised [resources](#resource) for the
 Requestor’s use. During this time, the Provider Agent cannot sell these resources to anyone else and must be prepared
 to start the [Activity](#activity). For instance, if the Provider Agent is selling computing power through a [Virtual Machine Execution
-Environment](#vm), they declared in Agreement a specific amount of RAM and a certain number of threads to be allocated for the VM.
-Provider Agent can only sell any remaining RAM and cores to other Requestors.
+Environment](#vm), they declared in the Agreement a specific amount of RAM and a certain number of threads to be allocated for the VM.
+The Provider Agent can only sell any remaining RAM and cores to other Requestors.
 
 Resource access always occurs within the context of an Activity. Creating an Activity is synonymous with starting an
 execution environment. The Activity module enables the Requestor Agent to control the execution environment and monitor
