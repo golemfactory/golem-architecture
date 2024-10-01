@@ -208,10 +208,13 @@ to start the [Activity](#activity). For instance, if the Provider Agent is selli
 Environment](#vm), they declared in the Agreement a specific amount of RAM and a certain number of threads to be allocated for the VM.
 The Provider Agent can only sell any remaining RAM and cores to other Requestors.
 
-Resource access always occurs within the context of an Activity. Creating an Activity is synonymous with starting an
-execution environment. The Activity module enables the Requestor Agent to control the execution environment and monitor
-its state. Further details on controlling an Activity from the Requestor's perspective can be found in
-the ["Running something"](#running-something) section.
+Making an Agreement reserves the Provider's resources. To actually use these resources, the Requestor Agent must take
+an additional step by creating an [Activity](#activity). Most parameters are already included in the Agreement, but some
+additional parameters may be required and will be specified later using Activity commands. For example, if the Requestor Agent
+wants to utilize the Provider's resources by running a virtual machine, details like the [image](#vm-image) to run, RAM, and the
+number of cores are taken from the Agreement. However, to allocate an IP address or transfer necessary files, Activity
+[commands](#controlling-exeunit-basic-concepts) are used. Further details on controlling an Activity from the Requestor's
+perspective can be found in the["Running something"](#running-something) section.
 
 From the Provider Agent's perspective, the primary focus is to listen for incoming Activity events and create an Activity
 when requested by the Requestor Agent. Upon receiving an Activity creation event, the Provider Agent should spawn an
