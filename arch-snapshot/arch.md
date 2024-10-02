@@ -490,9 +490,63 @@ Following property types are supported:
   ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element),
   ‘=’ with a list verifies if the property contains a list identical to the one specified in constraint expression.
 
+###### Property example
 
-###### Properties flat form
-###### Properties json form
+To get idea of what properties are currently used, this [property list](./../standards/cheat_sheet.md) can be used (not exhaustive). 
+
+This example demonstrates how properties can be used to describe an Offer for a virtual machine execution environment:
+```json
+{
+  "golem.inf.cpu.cores": 4,
+  "golem.inf.cpu.threads": 8,
+  "golem.inf.cpu.architecture": "x86_64",
+  "golem.inf.cpu.model": "Stepping 10 Family 6 Model 158",
+  "golem.inf.cpu.vendor": "GenuineIntel",
+  "golem.inf.cpu.capabilities": ["sse3"],
+  "golem.inf.ram.gib": 16,
+  "golem.inf.storage.gib": 100,
+  "golem.runtime.capabilities": ["vpn"],
+  "golem.runtime.name": "vm",
+  "golem.runtime.version": "0.2.10"
+}
+```
+
+###### Properties flat form vs. json form
+
+The [example](#property-example) showed properties in a flattened form, where each key is a single string with dot
+separators. The Golem marketplace also supports other formats. One option is to use nested properties, which results in
+a JSON format:
+```json
+{
+  "golem": {
+    "inf": {
+      "cpu": {
+        "architecture": "x86_64",
+        "cores": 4,
+        "threads": 8,
+        "model": "Stepping 10 Family 6 Model 158",
+        "vendor": "GenuineIntel",
+        "capabilities": [
+          "sse3"
+        ]
+      },
+      "ram": {
+        "gib": 16
+      },
+      "storage": {
+        "gib": 100
+      }
+    },
+    "runtime": {
+      "capabilities": ["vpn"],
+      "name": "vm",
+      "version": "0.2.10"
+    }
+  }
+}
+```
+Formats that combine these two forms are also allowed, meaning that some keys can be partially flattened while still
+incorporating nested sub-properties.
 
 ##### Constraints
 
