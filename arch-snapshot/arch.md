@@ -435,16 +435,46 @@ responsibilities, interfaces and which other components they utilize.
 * what it is, how it works and how it imposes a code structure and how
   addressing works
 
-### Offer / negotiation
+### Market interactions
 A description of the component responsible for making offers, counter-offers,
 negotiations, etc.
 
-### Market interactions
 #### Discovery and Offers/Demand matching
-- Offer/Demand properties and constraint language
-- Yagna is property agnostic - doesn't understand semantic of properties, only agent do
-- Some examples of properties and constraints and how it works
-- Links to more detailed docs for properties language and properties specification (?)
+
+The fundamental feature of the Golem network and ecosystem is to enable Providers to offer their computing resources
+for trade, and to enable Requestors to discover those Providers and their service offers. A key element of this ecosystem
+is a generic specification language, which allows the expression of Demand and Offer artifacts—fundamental entities in
+Golem.
+
+The proposed 'language' needs to meet a broad set of requirements:
+- **General**: The language must be applicable for specifying a wide range of imaginable Services or Applications traded
+    via Golem.
+- **Versatile**: The language must allow the description of an extensive set of conceivable Demand and Offer specifications
+    (e.g., trading conditions, terms of business, etc.).
+- **Scalable**: The language should be openly extensible in an intuitive way, allowing parties in the Golem ecosystem to
+    easily add to it systematically.
+- **Constrained**: The language must prevent abuse (e.g., it must not allow the specification of resource conditions that
+    could result in endless resolution).
+- **Open**: The language should be abstract, but its possible applications must be highlighted through examples and pattern
+    repositories.
+
+##### Properties
+
+###### Properties flat form
+###### Properties json form
+
+##### Constraints
+
+##### Offer/Demand matching
+- What does it mean matching?
+- Strong matching
+- Weak matching
+- Proposals generation
+
+##### Market protocols
+
+
+
 #### Offer propagation
 - Link to design [decision](#only-providers-offers-are-propagated)
 - Algorithm overview
