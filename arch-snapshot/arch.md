@@ -346,7 +346,7 @@ to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing 
 
 The consequence of delaying payments is that they are not guaranteed. However, this design opens the possibility of
 implementing mechanisms that can mitigate or eliminate the risk of non-payment. For instance, a payment platform
-could be developed using a deposit or escrow contract, or by integrating payment channels into the Golem Node.
+could be developed using a deposit or escrow contract, or by integrating payment channels into the Core Network.
 
 It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
 intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
