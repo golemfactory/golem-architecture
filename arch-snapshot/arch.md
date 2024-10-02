@@ -576,8 +576,8 @@ negotiations, etc.
 
 The fundamental feature of the Golem network and ecosystem is to enable Providers to offer their computing resources
 for trade, and to enable Requestors to discover those Providers and their service offers. A key element of this ecosystem
-is a generic specification language, which allows the expression of Demand and Offer artifacts—fundamental entities in
-Golem.
+is a generic specification language, which allows the expression of [Demand](#demand) and [Offer](#offer)
+artifacts—fundamental entities in Golem.
 
 The proposed 'language' needs to meet a broad set of requirements:
 - **General**: The language must be applicable for specifying a wide range of imaginable Services or Applications traded
@@ -593,12 +593,47 @@ The proposed 'language' needs to meet a broad set of requirements:
 
 ##### Properties
 
+A Property can be understood as key-value pair following specific formats and conventions. Properties are used
+to describe various aspects, such as resources offered, service details, node requirements, or protocol specifications.
+
+The property language facilitates negotiations by providing a structured way to communicate these details. Additionally,
+users of the ecosystem can define and implement custom [market negotiation protocols](#market-protocols). This capability
+enables Golem to be extended and customized by users and the broader community.
+
+###### Property naming
+
+A property name may include any character apart from ‘special’ characters ([,],=,*,$). It is recommended that
+properties follow a hierarchical namespace convention, such as `golem.node.cpu.cores`, which helps categorize property
+names into specific 'topic areas' for better organization and clarity.
+
+###### Property types
+The properties are declared to be of a specific type, which is important as it has impact on how comparison operators work with properties of different types. The type of property is inferred from the literal used to specify the value.
+Following property types are supported:
+- **String** - any value declared in quotes, eg: “sample text”
+- **Bool** - any of following literals: true, True, TRUE, false, False, FALSE
+- **Number** - any value which can be successfully parsed to a numeric constant, eg. 12, 34.56, 12e-02
+- **Decimal** - any value which can be successfully parsed to a decimal constant, eg. 12, 34.56 (<prop_name>@d for JSON form and property references)
+- **DateTime** - a date/time string in quotes, prefixed by character t, eg. t”1985-04-12T23:20:50.52Z” (<prop_name>@t for JSON form and property references).
+  DateTime timestamps must be expressed in RFC 3339 format.
+- **Version** - a version number string in quotes, prefixed by character v, eg. v”1.3.0”. The version number is expected to follow semantic versioning arithmetic. (<prop_name>@v for JSON form and property references)
+- **List** - composite type indicated by syntax: “[“<item>(“,”<item>)*”]”, where <item> is a literal expressing a value of one of types mentioned earlier.
+  The first item in the list declaration indicates the type of all elements in the list. If a List declaration contains literals indicating different types - a syntax error must be signalled by the parser.
+  
+  The only operator applicable to List is ‘=’ (which is equivalent to “contains”), in 2 variants:
+  ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element),
+  ‘=’ with a list verifies if the property contains a list identical to the one specified in constraint expression.
+
+
 ###### Properties flat form
 ###### Properties json form
 
 ##### Constraints
 
 ##### Offer/Demand matching
+
+
+
+
 - What does it mean matching?
 - Strong matching
 - Weak matching
