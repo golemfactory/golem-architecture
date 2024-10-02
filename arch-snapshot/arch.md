@@ -76,8 +76,8 @@ While Golem is currently used for trading computational resources, it was design
 To enable this flexibility, Golem uses a generic [property and constraints language](#discovery-and-offersdemand-matching)
 to describe the resources being offered.
 
-The Golem Node is agnostic to the specific properties used and can match Offers and Demands as long
-as they adhere to the [language specification](#discovery-and-offersdemand-matching). However, the Golem Node does not
+The Core Network is agnostic to the specific properties used and can match Offers and Demands as long
+as they adhere to the [language specification](#discovery-and-offersdemand-matching). However, the Core Network does not
 interpret the semantics of the properties in the Offer, nor does its behavior depend on the negotiated Agreement.
 It is the responsibility of the Provider Agent application to accurately interpret the semantics and implement
 the agreed-upon behavior between the parties.
@@ -102,7 +102,7 @@ central server to facilitate [Agreements](#agreement) between parties. As a resu
 and transactions are conducted through direct communication.
 
 Developers don’t need to worry about [offer propagation](#offer-propagation). The responsibility for propagating offers
-lies with the Golem Node. The only task for the Provider Agent is to publish the offer on the market and listen
+lies with the Core Network. The only task for the Provider Agent is to publish the offer on the market and listen
 for incoming [Proposals](#proposal).
 
 #### 3. Monitor incoming Proposals and negotiate an Agreement with the most promising Requestor
@@ -268,7 +268,7 @@ to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing 
 
 The consequence of delaying payments is that they are not guaranteed. However, this design opens the possibility of
 implementing mechanisms that can mitigate or eliminate the risk of non-payment. For instance, a payment platform
-could be developed using a deposit or escrow contract, or by integrating payment channels into the Golem Node.
+could be developed using a deposit or escrow contract, or by integrating payment channels into the Core Network.
 
 It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
 intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
@@ -362,6 +362,7 @@ Section should serve as dictionary to be linked by other chapters.
 
 ### Participating entities
 
+#### Core Network
 #### Yagna daemon
 #### Yagna Node
 #### Provider agent
