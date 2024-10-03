@@ -58,10 +58,10 @@ Typically, humans are not involved in the process of finding, matching, negotiat
 users define their needs programmatically, allowing the [Provider Agent](#provider-agent) and [Requestor Agent](#requester-agent)
 software to handle these tasks automatically.
 
-It is the main goal of the [Provider Agent](#provider-agent) to implement logic for selling resources
-in Golem Network. From high level perspective, Provider Agent application should do following things: 
+The [Provider Agent](#provider-agent) is primarily responsible for implementing the logic needed to sell resources on
+the Golem Network. From high level perspective, Provider Agent application should do following things: 
 1. Describe Resources using property language to create an [Offer](#offer)
-2. Publish the Offer in the market
+2. Publish the Offer on the market
 3. Monitor incoming Proposals and negotiate an [Agreement](#agreement) with the most promising [Requestor](#requestor)
 4. Allocate the promised Resources in accordance with the [Agreement](#agreement)
 5. Monitor resources usage and charge Requestor Agent
@@ -74,20 +74,17 @@ in Golem Network. From high level perspective, Provider Agent application should
 While Golem is currently used for trading computational resources, it was designed to support the exchange of any type of
 [resource](#resource). This means the Marketplace does not enforce strict standards on the goods being traded.
 To enable this flexibility, Golem uses a generic [property and constraints language](#discovery-and-offersdemand-matching)
-to describe the resources being offered.
-
-The Core Network is agnostic to the specific properties used and can match Offers and Demands as long
-as they adhere to the [language specification](#discovery-and-offersdemand-matching). However, the Core Network does not
-interpret the semantics of the properties in the Offer, nor does its behavior depend on the negotiated Agreement.
-It is the responsibility of the Provider Agent application to accurately interpret the semantics and implement
-the agreed-upon behavior between the parties.
+to describe the resources being offered. The Core Network does not interpret the semantics of the properties in the Offer,
+nor does its behavior depend on the negotiated Agreement. It is the responsibility of the Provider Agent application to
+accurately interpret the semantics and implement the agreed-upon behavior between the parties.
 
 In this chapter, the term ["resource"](#resource) is used in a generic sense. However, illustrating a generic
 example can be challenging. Therefore, we will focus on selling computational power in a virtual
 machine (VM) to provide the reader with a clearer understanding.
 
 In this case, the Offer should include the following key aspects:
-- The type of [Execution Environment (ExeUnit)](#execution-environments) that will be used.
+- The type of [Execution Environment (ExeUnit)](#execution-environment-exeunit) that will be used. (The [VM](#vm-runtime)
+  is an example of an execution environment. [WASM runtime](#wasm-runtime) is another)
 - [Hardware specifications](https://github.com/golemfactory/golem-architecture/blob/master/standards/cheat_sheet.md#goleminfcpu),
   including the number of CPU cores, RAM, and disk space.
 - The price and the [pricing model](#payments-models) applied.
@@ -95,7 +92,7 @@ In this case, the Offer should include the following key aspects:
   what is expected transaction frequency).
 - The [Wallet](#wallet) address for receiving payments, along with the supported [payment platforms](#payment-platform).
 
-#### 2. Publish the Offer in the market
+#### 2. Publish the Offer on the market
 
 Golem is a decentralized network of independent [Nodes](#yagna-node), with no central repository for [Offers](#offer) or any
 central server to facilitate [Agreements](#agreement) between parties. As a result, offers must be propagated between nodes,
@@ -109,8 +106,7 @@ for incoming [Proposals](#proposal).
 
 The [Provider Agent](#provider-agent) plays a passive role in negotiations. Offers are propagated across the network and
 received by [Requestors](#requestor). The offer is matched locally on the Requestor's node with a [Demand](#demand).
-If the Requestor is interested, they respond by sending a [Proposal](#proposal) to the Provider Agent. This triggers a Proposal
-event on the Provider Agent's [subscription](#subscription) endpoint.
+If the Requestor is interested, they respond by sending a [Proposal](#proposal) to the Provider Agent.
 
 [Negotiation](#process-of-negotiations-and-making-an-agreement) is the process of exchanging Proposals and adjusting their
 terms until the [Requestor Agent](#requester-agent) proposes an Agreement. The structure of a Proposal is identical to
@@ -127,7 +123,7 @@ The negotiation stage serves several purposes:
 - Provides an opportunity for the Provider Agent and Requestor Agent to negotiate additional terms that weren’t included
   in the initial [Proposals](#proposal). This is possible through protocols built on top of the property language.
 
-Both the Provider Agent and Requestor Agent negotiate with multiple nodes simultaneously. The Requestor Agent initiates
+Both the Provider Agent and Requestor Agent negotiate with multiple Agents simultaneously. The Requestor Agent initiates
 the Agreement by proposing it to the Provider Agent, who can either accept or reject the Proposal. Once the Agreement is signed
 by both parties, the Requestor Agent can begin using the resources. The Agreement remains valid until it is terminated by
 either party. The terms of termination (e.g., duration of the Agreement and conditions under which it can be terminated) are
@@ -181,7 +177,6 @@ strategies and what negotiation protocols can be built on top of the [property a
 When declaring a payment platform in an [Offer](#offer), the Provider Agent lists [wallet](#wallet) addresses for each
 platform it supports. It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate
 [property](#property) in their demand. The Requestor Agent can approach negotiations in two ways:
-
 
 ###### 1. Static Negotiations
 Suppose the Requestor Agent prefers payments on the Polygon network. In this case, they require the Provider Agent to support
