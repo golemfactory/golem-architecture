@@ -474,17 +474,22 @@ properties follow a hierarchical namespace convention, such as `golem.node.cpu.c
 names into specific 'topic areas' for better organization and clarity.
 
 ###### Property types
-The properties are declared to be of a specific type, which is important as it has impact on how comparison operators work with properties of different types. The type of property is inferred from the literal used to specify the value.
+The properties are declared to be of a specific type, which is important as it has impact on how comparison operators
+work with properties of different types. The type of property is inferred from the literal used to specify the value.
 Following property types are supported:
 - **String** - any value declared in quotes, eg: “sample text”
 - **Bool** - any of following literals: true, True, TRUE, false, False, FALSE
-- **Number** - any value which can be successfully parsed to a numeric constant, eg. 12, 34.56, 12e-02
-- **Decimal** - any value which can be successfully parsed to a decimal constant, eg. 12, 34.56 (<prop_name>@d for JSON form and property references)
-- **DateTime** - a date/time string in quotes, prefixed by character t, eg. t”1985-04-12T23:20:50.52Z” (<prop_name>@t for JSON form and property references).
-  DateTime timestamps must be expressed in RFC 3339 format.
-- **Version** - a version number string in quotes, prefixed by character v, eg. v”1.3.0”. The version number is expected to follow semantic versioning arithmetic. (<prop_name>@v for JSON form and property references)
-- **List** - composite type indicated by syntax: “[“<item>(“,”<item>)*”]”, where <item> is a literal expressing a value of one of types mentioned earlier.
-  The first item in the list declaration indicates the type of all elements in the list. If a List declaration contains literals indicating different types - a syntax error must be signalled by the parser.
+- **Number** - any value which can be successfully parsed to a numeric constant, e.g. 12, 34.56, 12e-02
+- **Decimal** - any value which can be successfully parsed to a decimal constant, e.g. 12, 34.56 (<prop_name>@d for
+  JSON form and property references)
+- **DateTime** - a date/time string in quotes, prefixed by character t, e.g. t”1985-04-12T23:20:50.52Z”
+  (<prop_name>@t for JSON form and property references). DateTime timestamps must be expressed in RFC 3339 format.
+- **Version** - a version number string in quotes, prefixed by character v, e.g. v”1.3.0”. The version number is
+  expected to follow semantic versioning arithmetic. (<prop_name>@v for JSON form and property references)
+- **List** - composite type indicated by syntax: “[“<item>(“,”<item>)*”]”, where <item> is a literal expressing
+  a value of one of types mentioned earlier.
+  All elements on the list have to be of the same type. If a List declaration contains literals indicating different
+  types - a syntax error must be signalled by the parser.
   
   The only operator applicable to List is ‘=’ (which is equivalent to “contains”), in 2 variants:
   ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element),
@@ -511,9 +516,9 @@ This example demonstrates how properties can be used to describe an Offer for a 
 }
 ```
 
-###### Properties flat form vs. json form
+###### Properties flat form vs. json representation
 
-The [example](#property-example) showed properties in a flattened form, where each key is a single string with dot
+The [example](#property-example) showed properties in a flattened representation, where each key is a single string with dot
 separators. The Golem marketplace also supports other formats. One option is to use nested properties, which results in
 a JSON format:
 ```json
@@ -545,10 +550,37 @@ a JSON format:
   }
 }
 ```
+
 Formats that combine these two forms are also allowed, meaning that some keys can be partially flattened while still
-incorporating nested sub-properties.
+incorporating nested sub-properties:
+```json
+{
+  "golem.runtime": {
+    "capabilities": ["vpn"],
+    "name": "vm",
+    "version": "0.2.10"
+  }
+}
+```
+
+###### “Value-less” property
+
+In Demand/Offer negotiation scenarios it may be required to indicate that a property is supported by a node, but
+specifying its value is not possible/practical, e.g.:
+- A Provider wishes to reveal a property value only to a specific Requestor/Demand, but in a public market it wants
+  to indicate that the property is supported.
+- A property is “dynamic”, i.e. its value depends on external factors, like Requestor’s identity, current network 
+  configuration, Requestor’s specific constraints, etc. So an open Offer would only indicate that a property is 
+  supported, and the actual value would be returned on specific request, e.g. to a specific targeted Demand.
+
+The value-less property would be indicated in property set by:
+- In flat-form: A mention of property name only, with no ‘=’ operator and no value
+- In JSON-form: A property field initialized to null value.
 
 ##### Constraints
+
+###### Operators
+
 
 ##### Offer/Demand matching
 
