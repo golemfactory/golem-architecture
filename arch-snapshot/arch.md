@@ -55,13 +55,83 @@ details and establish a glossary to ensure consistency within the document.
 
 ## Layers
 
-decomposition into layers. responsibility of the layers.
+The main problem with Golem Clay was the difficulty in adding new applications. Therefore, in this iteration, it was
+decided to divide the system into layers.
 
-### Golem Node
+The goal is to enable building various solutions and testing hypotheses based on mechanisms provided by the lower
+layers.
+
+### Core Network
+
+A basic set of functionalities that allows building a decentralized application.
+
+In this layer, the logic includes:
+ - Communication between nodes
+ - Discovering offers in the network
+ - Ability to negotiate a structure representing the contract description
+ - Ability to issue invoices
+ - Ability to pay invoices
+ - Ability to transmit events leading to the start of contract execution
+
+What is not part of the Core Network:
+
+- File transfer (this needs to be addressed in other layers)
+- VPN and other substitutes for direct communication like HTTP proxies, etc.
+
+This layer is divided into fundamental areas:
+ - **Identity**: Managing identity in the network. Provides other modules with access to keys identifying the node and an API permissions model.
+ - **Market**: Includes functions for searching for offers, broadcasting offers, negotiating contracts, contract registry, and notifications about the start and end of a contract.
+ - **Payment**: Includes functions for reserving funds, notifying about costs, agreeing on settlements, and making payments.
+ - **Activity**: Transmitting information between parties that an activity needs to start or stop; notifications about resources consumed by the activity.
 
 ### Business logic
 
+This layer utilizes components from the Core Network and Execution layers to implement applications.
+
+In this layer, the logic includes:
+
+- How the contract will proceed (how long it will last, under what circumstances it can be terminated, what significance the attributes of the negotiated contract have).
+- How the contract will be settled: pre-paid, post-paid, pay-as-you-go.
+- How prices for resources will be calculated.
+- How offers will be selected for service realization.
+- Reputation management.
+- Verification of task is being performed correctly.
+- Verification of whether the costs make sense.
+
+The concept of building this layer is to create lightweight libraries in scripting languages so that various concepts can be prototyped, particularly the unsolvable problem of verifying the correctness of computations and costs.
+
+Types of applications in this area include:
+
+ - Provider Agent: An application that sells resources on the Core Network.
+ - Requestor Agent: A purchasing application.
+
 ### Execution
+
+When building applications in the "Business Logic" layer, it becomes apparent that the most variable elements are
+negotiation strategies and settlement mechanisms. Regardless of these elements, the way tasks are executed is often
+identical. Therefore, it might be beneficial to extract a layer responsible solely for task execution, on which it will
+be easy to build custom versions of the provider agent and requestor agent.
+
+This layer is responsible for:
+
+- Downloading images needed to execute the task (e.g., AI models or VM images)
+- Managing the cache of these images
+- Transferring files using various protocols
+- Launching processes and monitoring their state
+- Counting resource usage without relying on operating system processes
+- Assigning and executing scripts with commands sent to providers
+- Tools for local firewall management for outgoing traffic
+- VPN mechanisms and other communication methods between running components (e.g., message queue server, HTTP proxy)
+
+In this layer, there will be various execution engines such as:
+
+- VM
+- WASI
+- HTTP-AUTH
+- GamerHash AI runtime
+- Outbound gateway
+- SGX runtime
+
 
 ## Functional modules
 
