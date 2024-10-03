@@ -649,7 +649,7 @@ This example demonstrates how properties can be used to describe an Offer for a 
 }
 ```
 
-###### Properties flat form vs. json representation
+###### Properties flat representation vs. json
 
 The [example](#property-example) showed properties in a flattened representation, where each key is a single string with dot
 separators. The Golem marketplace also supports other formats. One option is to use nested properties, which results in
@@ -712,6 +712,34 @@ The value-less property would be indicated in property set by:
 
 ##### Constraints
 
+Properties describe specific parameters of an Offer, Demand, or potential Agreement. To fully unlock the
+language's capabilities, we need the ability to express queries. This is the primary reason for the existence
+of Constraints. Constraints allow us to specify the required values certain properties should have when an
+Agent is searching the market.
+
+The Golem ecosystem utilizes constraint language derived from [LDAP filter expressions](https://ldap.com/ldap-filters/).
+
+###### Property referencing
+
+In the Constraint expressions, the properties are referenced using following grammar:
+`<name>(“@”<typecode>)?(“[“<aspect>”]”)?<operator><value>?`
+
+Specifying no aspect means we are referencing the property value.
+
+`@<typecode>` is optional in property reference and implies a specific type of constraint value (this determines the
+behaviour of operators). If a type code is not specified, the type of property as declared in Demand/Offer determines
+the operator behaviour. Type codes are indicated in [Property types](#property-types) section.
+
+Example constraints for properties defined in [section](#property-example):
+```
+(&
+  (golem.inf.ram.gib>=16)
+  (golem.inf.cpu.architecture=x86_64)
+  (golem.inf.cpu.cores>=4)
+)
+```
+
+
 ###### Operators
 
 
@@ -719,11 +747,11 @@ The value-less property would be indicated in property set by:
 
 
 
-
 - What does it mean matching?
 - Strong matching
 - Weak matching
 - Proposals generation
+
 
 ##### Market protocols
 
