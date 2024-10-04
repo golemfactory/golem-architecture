@@ -608,11 +608,28 @@ The subset of LDAP Search Filter notation includes following features:
 - AND, OR, NOT logical operators
 - Comparison of property values ("=", "<", ">", “>=”, “<=” operators)
 - Presence operator (“=*”) - check if a property is defined
-- Wildcard-based matching of property values
 
 The only operator applicable to List is ‘=’ (which is equivalent to “contains”), in 2 variants:
 - ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element)
 - ‘=’ with a list verifies if the property contains a list identical to the one specified in constraint expression
+
+**Example:**
+```
+(&
+  (|
+    (golem.com.payment.platform.erc20-holesky-tglm.address=*)
+    (golem.com.payment.platform.erc20-goerli-tglm.address=*)
+  )
+  (golem.runtime.name=vm)
+  (golem.runtime.capabilities=vpn)
+)
+```
+
+A constraint expresses the requirement that all of the following criteria must be met:
+- The Provider must list an address on at least one of the platforms: `erc20-holesky-tglm` or `erc20-goerli-tglm`
+  (using the presence operator and logical OR).
+- The Provider must offer a VM runtime (using the string equality operator).
+- The runtime must support VPN connectivity (using the list equality operator with 'contains' semantics).
 
 ##### Offer/Demand matching
 
@@ -671,13 +688,33 @@ into what's available on the market.
 ###### Strong vs. weak matching
 TODO: Left for later, to decide if it is important to mention at all.
 
-##### Market protocols
+#### Market negotiation protocols
 
+##### Example protocols
+###### Negotiable properties
+###### Platform choice
+###### Mid-agreement payments
 
+##### Capabilities approach
+###### Example - VM runtime CUDA capability
+###### Example - ExeUnit progress events
+###### Problems - versioning
+- Capability can be implemented by different software
+- Bugs in one of implementation
+- Requestor would like to filter Providers having buggy implementation 
+
+##### Backward compatibility
+- Changing semantic of properties shouldn't be allowed
+  - Golem Factory doesn't control software running on Nodes
+- Breaking changes can split network
+##### Managing protocols specifications
+- Namespace clashes etc.
+- Experimental properties
 
 #### Offer propagation
 - Link to design [decision](#only-providers-offers-are-propagated)
 - Algorithm overview
+- Plans for future algorithm with sharding
 #### Process of negotiations and making an agreement
 - Initial Proposal
 - Countering Proposal
@@ -760,11 +797,6 @@ sequenceDiagram
 - Who is allowed to terminate? In what situation?
 - What is specified by protocol and what is left to future specifications?
 - Termination reason concept
-
-### Offer propagation
-* a description of how it happens that offers are visible to reqestors
-* Link to design [decision](#only-providers-offers-are-propagated)
-* Algorithm overview
 
 ### Payments
 * a description of current payment driver, its modes of operations and how it
