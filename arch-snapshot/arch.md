@@ -490,10 +490,6 @@ Following property types are supported:
   a value of one of types mentioned earlier.
   All elements on the list have to be of the same type. If a List declaration contains literals indicating different
   types - a syntax error must be signalled by the parser.
-  
-  The only operator applicable to List is ‘=’ (which is equivalent to “contains”), in 2 variants:
-  ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element),
-  ‘=’ with a list verifies if the property contains a list identical to the one specified in constraint expression.
 
 ###### Property example
 
@@ -606,9 +602,17 @@ Example constraints for properties defined in [section](#property-example):
 )
 ```
 
-
 ###### Operators
 
+The subset of LDAP Search Filter notation includes following features:
+- AND, OR, NOT logical operators
+- Comparison of property values ("=", "<", ">", “>=”, “<=” operators)
+- Presence operator (“=*”) - check if a property is defined
+- Wildcard-based matching of property values
+
+The only operator applicable to List is ‘=’ (which is equivalent to “contains”), in 2 variants:
+- ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element)
+- ‘=’ with a list verifies if the property contains a list identical to the one specified in constraint expression
 
 ##### Offer/Demand matching
 
