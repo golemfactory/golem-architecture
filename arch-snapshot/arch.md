@@ -616,12 +616,37 @@ The only operator applicable to List is ‘=’ (which is equivalent to “conta
 
 ##### Offer/Demand matching
 
+Constraints serve as a query language to request Offers that match the [Requestor Agent's](#requester-agent) needs.
+In reality, not only the Requestor Agent, but both parties, include constraints in their Offers and Demands.
+
+After a Demand is published on the market, the node attempts to match it with all available Offers on the Node and any
+incoming ones later. A detailed description of Offer propagation is placed [here](#offer-propagation); this chapter
+assumes that has already occurred.
+
+Each present or incoming Offer is matched with the Demand. The matching process compares the Demand's constraints
+against the properties in the Offer and vice versa.
+```mermaid
+flowchart TB
+  style OfferProperties text-align:left
+  style DemandProperties text-align:left
+  subgraph Offer
+    direction TB
+    OfferProperties[Properties]
+    OfferConstraints[Constraints]
+  end
+  
+  subgraph Demand
+    direction TB
+    DemandProperties[Properties]
+    DemandConstraints[Constraints]
+  end
+  DemandConstraints --> |Match| OfferProperties
+  OfferConstraints --> |Match| DemandProperties
+```
 
 
-- What does it mean matching?
 - Strong matching
 - Weak matching
-- Proposals generation
 
 
 ##### Market protocols
