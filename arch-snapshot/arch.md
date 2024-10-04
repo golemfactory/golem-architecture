@@ -619,7 +619,7 @@ The only operator applicable to List is ‘=’ (which is equivalent to “conta
 Constraints serve as a query language to request Offers that match the [Requestor Agent's](#requester-agent) needs.
 In reality, not only the Requestor Agent, but both parties, include constraints in their Offers and Demands.
 
-After a Demand is published on the market, the node attempts to match it with all available Offers on the Node and any
+After a Demand is published on the market, the Golem Node attempts to match it with all Offers available locally and any
 incoming ones later. A detailed description of Offer propagation is placed [here](#offer-propagation); this chapter
 assumes that has already occurred.
 
@@ -644,10 +644,32 @@ flowchart TB
   OfferConstraints --> |Match| DemandProperties
 ```
 
+Requestor and Provider Agents don’t have to use constraints. They can choose to avoid them and postpone the decision
+about filtering Proposals according to their requirements until the negotiation phase. This approach requires them to
+manually reject some Offers or Demands, instead of using built-in mechanisms, but it allows them to receive a broader 
+set of potential Proposals to choose from.
 
-- Strong matching
-- Weak matching
+On the other hand, using constraints minimizes the number of Proposals that need to be evaluated. Filtering Offers at
+the Golem Node level could potentially be more efficient and scale better.
 
+Another fact to consider is that, in a very large network with thousands or millions of nodes, it would be impossible
+to collect every available Offer. This scale is our goal. This means that our future target for the [Offers propagation 
+algorithm](#offer-propagation) could be based only on gradual sampling of the network. A well-defined set of constraints
+could be crucial for efficient market searching.
+
+###### When to use constraints?
+
+The good rule for using constraints would be to apply them when the Requestor or Provider Agent has a requirement that
+must necessarily be met. A good example could be the [runtime](#exeunit-runtime) choice. A Requestor who has prepared a
+VM image likely won't make use of a Provider offering a [wasm runtime](#wasm-runtime). Setting the constraint
+`(golem.runtime.name=vm)` will filter out a large portion of Offers that would otherwise be rejected.
+
+On the other hand, the number of CPUs or the amount of RAM might be a more flexible requirement (except for rare use
+cases). Not setting constraints would allow the Requestor Agent to rank Proposals during negotiations and gain insight
+into what's available on the market.
+
+###### Strong vs. weak matching
+TODO: Left for later, to decide if it is important to mention at all.
 
 ##### Market protocols
 
