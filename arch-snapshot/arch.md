@@ -690,7 +690,63 @@ TODO: Left for later, to decide if it is important to mention at all.
 
 #### Market negotiation protocols
 
+The Golem Node doesn’t interpret the meaning of properties and constraints (with a few exceptions). This responsibility
+is delegated to the business layer and Agent applications. This design allows Golem to support the creation of new
+protocols for market interactions without requiring modifications to the Golem Protocol itself.
+
+During market negotiations, the Provider and Requestor Agents exchange Proposals until both parties agree on the terms
+of the Agreement. Throughout this exchange, both Agents can add, remove, or change the value of properties. The
+negotiation protocol is defined as a set of rules that governs the actions required to reach an agreement on a specific
+aspect of the negotiations. Multiple aspects can be negotiated simultaneously by the Agents; for example, payment details
+can be negotiated independently from internet access for the Virtual Machine.
+
 ##### Example protocols
+
+The following chapters will provide examples of how the property language can be used to define negotiation protocols.
+These examples will be based on real cases that have already been solved in the current implementation.
+
+###### Subnets
+
+This is the simplest example that doesn’t require multiple phases of Proposal exchanges. Subnets are a debugging
+mechanism used to isolate specific Nodes from the rest of the network. They are useful when testing new features or
+debugging, as they provide full control over the participating Nodes, making it easier to analyze logs.
+
+It's important to understand that subnets operate at the market level, meaning the Nodes aren't truly separated from
+the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
+
+
+| Provider                                                               | Requestor |
+|------------------------------------------------------------------------|-----------|
+| Properties:<br/>"golem.node.subnet": "private" <br/> Constraints:<br/>(golem.node.subnet=private) |           |
+|                                                                        |           |
+|                                                                        |           |
+
+```mermaid
+flowchart TB
+    subgraph Requestor 
+        subgraph Demand 
+           subgraph PropertiesR[Properties]
+             P1["#quot;golem.node.subnet#quot;: #quot;private#quot;"] 
+           end
+           subgraph ConstraintsR[Constraints]
+             C1["(golem.node.subnet=private)"]   
+           end
+        end
+    end
+    
+    subgraph Provider 
+        subgraph Offer
+          subgraph PropertiesP[Properties]
+            P2["#quot;golem.node.subnet#quot;: #quot;private#quot;"]
+          end
+          subgraph ConstraintsP[Constraints]
+            C2["(golem.node.subnet=private)"]
+          end
+        end
+    end
+    
+```
+
 ###### Negotiable properties
 ###### Platform choice
 ###### Mid-agreement payments
