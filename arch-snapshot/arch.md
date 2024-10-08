@@ -850,7 +850,7 @@ support them. Although the list is far from complete, it is valuable to continue
   supported by Provider Agent
 - ExeUnit [capabilities](https://github.com/golemfactory/yagna/blob/master/docs/provider/capabilities.md#exeunit)
 
-###### Example - VM runtime GPU capability
+###### Example 1 - VM runtime GPU capability
 
 Various implementations of the VM runtime can be envisioned—some may include GPU access, while others may not. When
 searching on the market, the Requestor Agent should focus on specifying the required capabilities to find all
@@ -861,7 +861,27 @@ For example, a Requestor Agent needing GPU access should set the constraint `(go
 
 A list of different runtime capabilities (not exhaustive) can be found [here](../standards/0-commons/golem/runtime.md#golemruntimecapabilities--liststring-).
 
-###### Example - ExeUnit progress events
+###### Example 2 - ExeUnit progress events
+
+The same approach of using capabilities can be applied to seamlessly adding new features. Golem Factory doesn’t control
+which version of the Golem Node is used by Providers. When a new feature is introduced, it takes time for Node operators
+to update their software. If a Requestor wants to use this new feature, they may encounter the issue that only a subset
+of Nodes supports it.
+
+One solution could be to introduce versioning in Offers. However, strictly binding Offers to specific software versions
+would reduce the number of Providers available to take on the work. Requestors using newer SDK versions, but not
+necessarily utilizing new features, would miss potential opportunities to hire Providers.
+
+The solution chosen by Golem is to introduce a new capability for each new feature. An example of this approach is the
+ExeUnit progress reporting feature. The [specification](../specs/command-progress.md) outlines the
+properties added for this feature:
+
+| Property                                            | Description                                    |
+|:----------------------------------------------------|:-----------------------------------------------|
+| "golem.activity.caps.transfer.report-progress=true" | ExeUnit can report `transfer` command progress |
+| "golem.activity.caps.deploy.report-progress=true"   | ExeUnit can report `deploy` command progress   |
+
+The Requestor Agent can filter Providers based on these capabilities by using constraints.
 
 ###### Problems - versioning
 
