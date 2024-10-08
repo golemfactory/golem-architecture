@@ -798,7 +798,7 @@ debugging, as they provide full control over the participating Nodes, making it 
 It's important to understand that subnets operate at the market level, meaning the Nodes aren't truly separated from
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
-| Provider                             | Requestor                            |
+| Provider Proposal                    | Requestor Proposal                   |
 |:-------------------------------------|:-------------------------------------|
 | "golem.node.debug.subnet": "private" | "golem.node.debug.subnet": "private" |
 | (golem.node.debug.subnet=private)    | (golem.node.debug.subnet=private)    |
@@ -807,6 +807,26 @@ Both sides set the subnet property and constraint simultaneously. Even if one pa
 constraint ensures protection from being matched with that Agent.
 
 ###### Negotiable properties
+
+[Negotiable properties](../standards/README.md#-fact--vs--negotiable--properties) is a negotiation scheme and property
+naming convention that enables the Provider and Requestor Agents to negotiate the value of a single parameter.
+As an example, the negotiation of the `golem.com.payment.debit-notes.accept-timeout?` property, which indicates how long
+the Requestor Agent has to accept a Debit Note, will be demonstrated.
+
+As a starting point both agents set their initial values for preferred timeout.
+
+| Provider Proposal                                    |                          | Requestor Proposal                                   |
+|:-----------------------------------------------------|--------------------------|:-----------------------------------------------------|
+| "golem.com.payment.debit-notes.accept-timeout?": 600 | Initial Offer/Demand     | "golem.com.payment.debit-notes.accept-timeout?": 240 |
+|                                                      | &larr; Counter Proposal  | "golem.com.payment.debit-notes.accept-timeout?": 300 |
+| "golem.com.payment.debit-notes.accept-timeout?": 450 | Counter Proposal &rarr;  |                                                      |
+|                                                      | &larr; Counter Proposal  | "golem.com.payment.debit-notes.accept-timeout?": 400 |
+| "golem.com.payment.debit-notes.accept-timeout?": 400 | Counter Proposal &rarr;  |                                                      |
+|                                                      | &larr; Propose Agreement | "golem.com.payment.debit-notes.accept-timeout?": 400 |
+
+Placing the property in the Offer or Demand signals to the other party that the Agent recognizes and understands the
+property. If one of the Agents does not include the property, the other party should remove it from their Proposal.
+Negotiations are complete when both parties include the property in their Proposal with the same agreed-upon value.
 
 ###### Mid-agreement payments
 
