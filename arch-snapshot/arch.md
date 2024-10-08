@@ -968,7 +968,29 @@ payments demonstrate how to specify and implement various aspects of Golem behav
 
 ##### Capabilities approach
 
-###### Example - VM runtime CUDA capability
+The Golem design is built around components that implement different capabilities. This is also reflected in the
+Offer/Demand model and resource descriptions. Each Provider or Requestor is assumed to have their own implementation
+of the Golem protocol, which may support only a subset of the features specified by Golem Factory.
+For this reason, the properties reflect the capabilities of the implementation rather than the software version.
+
+An effort is being made to collect possible capabilities and identify which components maintained by Golem Factory
+support them. Although the list is far from complete, it is valuable to continue expanding:
+- [List of capabilities](../specs/capabilities.md) required for communication between Golem Nodes and Agents
+- [Capabilities](https://github.com/golemfactory/yagna/blob/master/docs/yagna/capabilities.md) supported by yagna daemon
+- [Capabilities](https://github.com/golemfactory/yagna/blob/master/docs/provider/capabilities.md#provider-agent-capabilities-list)
+  supported by Provider Agent
+- ExeUnit [capabilities](https://github.com/golemfactory/yagna/blob/master/docs/provider/capabilities.md#exeunit)
+
+###### Example - VM runtime GPU capability
+
+Various implementations of the VM runtime can be envisioned—some may include GPU access, while others may not. When
+searching on the market, the Requestor Agent should focus on specifying the required capabilities to find all
+implementations that meet those conditions.
+
+For this purpose, the `golem.runtime.capabilities` property can be used to specify the capabilities of the VM runtime.
+For example, a Requestor Agent needing GPU access should set the constraint `(golem.runtime.capabilities=!exp:gpu)`.
+
+A list of different runtime capabilities (not exhaustive) can be found [here](../standards/0-commons/golem/runtime.md#golemruntimecapabilities--liststring-).
 
 ###### Example - ExeUnit progress events
 
