@@ -830,6 +830,11 @@ Negotiations are complete when both parties include the property in their Propos
 
 ###### Mid-agreement payments
 
+A more complex example of negotiation are mid-agreement payments. [The Specification](../gaps/gap-3_mid_agreement_payments)
+of mid-agreement payments covers not only the negotiation protocol
+but also defines the behavior of Agents after the Agreement is signed and computations are in progress. Mid-agreement
+payments demonstrate how to specify and implement various aspects of Golem behavior, such as different payment schemes.
+
 ##### Capabilities approach
 
 ###### Example - VM runtime CUDA capability
