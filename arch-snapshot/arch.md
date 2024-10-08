@@ -1,10 +1,12 @@
 # Golem — current architecture
+
 Authors: Witold Dzięcioł, Przemysław Rekucki, Marek Dopiera,
-\<YOUR NAME GOES HERE\>\
-Reviewers: Maciej Maciejowski, Paweł Burgchardt\
+\<YOUR NAME GOES HERE\>
+Reviewers: Maciej Maciejowski, Paweł Burgchardt
 Status: WIP
 
 # About this document
+
 The goal of this document is to describe present Golem architecture in enough
 detail for an outside person to understand how it works under the hood. The
 intended audience is assumed to be technical but not necessarily have deep
@@ -27,22 +29,32 @@ very high level description of what they are.
 ## What Golem is not
 
 ## Actors
+
 This section describes the actors using Golem Network and their role in the
 system.
+
 ### Provider
+
 ### Requestor
+
 Note: We use term Requestor not Requester.
+
 ### Developer
+
 ### End User
+
 Consumer of resources can be different person than Requestor.
 For example we can have web service which forwards computationally expensive jobs
 to Golem Network. Example: [Deposits](https://github.com/golemfactory/golem-architecture/blob/master/specs/deposits.md)
 
 #### Service Owner
+
 #### Funder
+
 #### Spender
 
 ## Activities
+
 This section describes what actors can do to the system. The descriptions are
 only as detailed as to explain how the actors control the artifacts. The goal is
 to give the reader an overview of the terms introduced by Golem without any
@@ -59,7 +71,7 @@ users define their needs programmatically, allowing the [Provider Agent](#provid
 software to handle these tasks automatically.
 
 The [Provider Agent](#provider-agent) is primarily responsible for implementing the logic needed to sell resources on
-the Golem Network. From high level perspective, Provider Agent application should do following things: 
+the Golem Network. From high level perspective, Provider Agent application should do following things:
 1. Describe Resources using property language to create an [Offer](#offer)
 2. Publish the Offer on the market
 3. Monitor incoming Proposals and negotiate an [Agreement](#agreement) with the most promising [Requestor](#requestor)
@@ -67,7 +79,7 @@ the Golem Network. From high level perspective, Provider Agent application shoul
 5. Monitor resources usage and charge Requestor Agent
 6. Terminate the Agreement or await the Agreement termination event from the [Requestor](#requestor)
 7. Send an [Invoice](#invoice) summarizing the total cost of the [Agreement](#agreement)
-8. Wait until the payment for the [Invoice](#invoice) is settled and payment confirmed. 
+8. Wait until the payment for the [Invoice](#invoice) is settled and payment confirmed.
 
 #### 1. Describe Resources using property language to create an [Offer](#offer)
 
@@ -83,6 +95,7 @@ example can be challenging. Therefore, we will focus on selling computational po
 machine (VM) to provide the reader with a clearer understanding.
 
 In this case, the Offer should include the following key aspects:
+
 - The type of [Execution Environment (ExeUnit)](#execution-environment-exeunit) that will be used. (The [VM](#vm-runtime)
   is an example of an execution environment. [WASM runtime](#wasm-runtime) is another)
 - [Hardware specifications](https://github.com/golemfactory/golem-architecture/blob/master/standards/cheat_sheet.md#goleminfcpu),
@@ -110,12 +123,13 @@ If the Requestor is interested, they respond by sending a [Proposal](#proposal) 
 
 [Negotiation](#process-of-negotiations-and-making-an-agreement) is the process of exchanging Proposals and adjusting their
 terms until the [Requestor Agent](#requester-agent) proposes an Agreement. The structure of a Proposal is identical to
-that of an Offer or Demand, using the same [property and constraints language](#discovery-and-offersdemand-matching) to 
+that of an Offer or Demand, using the same [property and constraints language](#discovery-and-offersdemand-matching) to
 describe the Agreement's conditions. During negotiations, certain aspects of the Agreement can be modified. While Offers
 and Demands represent the initial declaration of resources, terms, and conditions, the proposal exchange is a dynamic
 process of refining these terms to reach an optimal [Agreement](#agreement) for both parties.
 
 The negotiation stage serves several purposes:
+
 - Ensures that the Provider Agent and Requestor Agent communicate before signing an Agreement (since offer propagation
   doesn’t require direct interaction between parties).
 - Allows both the Provider Agent and Requestor Agent to implement different [strategies](#market-strategies) to maximize
@@ -194,11 +208,11 @@ sequenceDiagram
 
   loop
     RequestorAgent->>RequestorAgent: Adjust Proposal
-    
+  
     par
       RequestorAgent->>ProviderAgent: Counter Proposal
     and Proposals from other Nodes in the network
-      GolemNetwork->>ProviderAgent: Receive Proposals    
+      GolemNetwork->>ProviderAgent: Receive Proposals  
     end
 
     ProviderAgent->>ProviderAgent: Select best Proposals <br/>according to implemented strategy
@@ -220,7 +234,7 @@ sequenceDiagram
 
 ##### Example of negotiation
 
-To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example 
+To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example
 involving the negotiation of a [payment platform](#payment-platform). This will illustrate how agents can use different
 strategies and what negotiation protocols can be built on top of the [property and language](#discovery-and-offersdemand-matching).
 
@@ -228,8 +242,8 @@ When declaring a payment platform in an [Offer](#offer), the Provider Agent list
 platform it supports. It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate
 [property](#property) in their demand. The Requestor Agent can approach negotiations in two ways:
 
-
 ###### 1. Static Negotiations
+
 Suppose the Requestor Agent prefers payments on the Polygon network. In this case, they require the Provider Agent to support
 Polygon and will not select a Provider Agent that doesn’t.
 
@@ -238,6 +252,7 @@ a [constraint](#constraint) to their [Demand](#demand), instructing the matching
 don’t meet this requirement. In their Demand, they set the chosen platform as a fixed value.
 
 ###### 2. Dynamic Negotiations
+
 Now imagine a Requestor Agent that can pay on multiple platforms but prioritizes them based on transaction fees. In this
 scenario, the Requestor Agent has a larger pool of potential Providers since they don’t restrict the platform by adding
 a constraint to their demand.
@@ -284,6 +299,7 @@ Debit Notes are sent at regular intervals during the execution of an activity to
 accumulating costs of the Agreement. These notes act as building blocks that support various payment schemes.
 The handling of Debit Notes by Agents is governed by the terms negotiated in the Agreement. Generally, Debit Notes
 serve the following purposes:
+
 - Informing the Requestor Agent about resource usage and activity costs, and obtaining explicit acceptance of these costs.
 - Acting as a health check, allowing the Provider Agent to monitor if the Requestor Agent is still active and hasn’t
   abandoned the Agreement, helping avoid not getting paid.
@@ -357,6 +373,7 @@ technology, Golem Factory has no control over these transactions.
 The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
 specific termination rules, so the Agreement should clearly define the conditions under which termination is
 permitted. Below is a non-exhaustive list of possible reasons for termination:
+
 - The Agreement expires if it was established for a fixed duration.
 - The Requestor Agent no longer needs the [resources](#resource) or has completed the computations.
 - One of the parties violates the terms of the Agreement, such as:
@@ -450,6 +467,7 @@ information in their Offer or Demand. This is a more lightweight approach compar
 process.
 
 ### Buying on golem platform
+
 ### Running something
 
 ## Layers
@@ -467,9 +485,13 @@ decomposition into layers. responsibility of the layers.
 decomposition into functional areas and scopes of responsibility of these layers.
 
 ### Market
+
 ### Payment
+
 ### Activity
+
 ### Identity
+
 ### Net
 
 ## Applications/Exe-Units
@@ -482,7 +504,7 @@ a brief overview of sample applications.
 
 ### GH/AI Runtime
 
-### HTTP Auth Runtime 
+### HTTP Auth Runtime
 
 ## Artifacts
 
@@ -496,65 +518,108 @@ Section should serve as dictionary to be linked by other chapters.
 ### Participating entities
 
 #### Core Network
+
 #### Yagna daemon
+
 #### Yagna Node
+
 #### Provider agent
+
 #### Requester agent
 
 ### Marketplace
+
 #### Offer
+
 ##### Property
+
 ##### Constraint
+
 #### Demand
+
 #### Subscription
+
 This word is used to describe Offer/Demand put on market, so we should mention it.
+
 #### Proposal
+
 #### Negotiation
+
 #### Agreement
 
 ### Execution system
+
 #### Resource
+
 #### Activity
+
 #### Execution environment (ExeUnit)
+
 ##### ExeUnit Batch
+
 ##### ExeUnit Command
+
 ##### VM
+
 ##### VM Image
+
 ##### WASM
+
 ##### WASM image
 
 ### VPN
+
 #### Network
 
 ### Payment System
+
 #### Payment Driver
+
 #### Payment Platform
+
 #### Token
+
 #### Wallet
+
 #### Allocation
+
 #### Debit Note
+
 #### Invoice
+
 #### Payment
+
 #### Transaction (on blockchain)
 
-
 ## Key architectural decisions
+
 ### GLM is built on XYZ
+
 ### GLM is used for clearing
+
 ### No centralized offer matching rules
+
 ### Only providers' offers are propagated
+
 ### Agreements are not stored on the blockchain
-### Offline requestors are not supported 
+
+### Offline requestors are not supported
+
 ### Local storage (TODO: what role does the local DB play?)
 
 ## Technical view - components
+
 This section describes key components of Golem Network, i.e. their
 responsibilities, interfaces and which other components they utilize.
 
 ### Networking
+
 * how it works that two separate Yagnas can talk to each other
+
 #### Central net
+
 #### Hybrid net
+
 - Identification
 - Relay
 - Discovering Nodes
@@ -565,10 +630,12 @@ responsibilities, interfaces and which other components they utilize.
   - Communication encryption
 
 ### GSB
+
 * what it is, how it works and how it imposes a code structure and how
   addressing works
 
 ### Market interactions
+
 A description of the component responsible for making offers, counter-offers,
 negotiations, etc.
 
@@ -580,16 +647,17 @@ is a generic specification language, which allows the expression of [Demand](#de
 artifacts—fundamental entities in Golem.
 
 The proposed 'language' needs to meet a broad set of requirements:
+
 - **General**: The language must be applicable for specifying a wide range of imaginable Services or Applications traded
-    via Golem.
+  via Golem.
 - **Versatile**: The language must allow the description of an extensive set of conceivable Demand and Offer specifications
-    (e.g., trading conditions, terms of business, etc.).
+  (e.g., trading conditions, terms of business, etc.).
 - **Scalable**: The language should be openly extensible in an intuitive way, allowing parties in the Golem ecosystem to
-    easily add to it systematically.
+  easily add to it systematically.
 - **Constrained**: The language must prevent abuse (e.g., it must not allow the specification of resource conditions that
-    could result in endless resolution).
+  could result in endless resolution).
 - **Open**: The language should be abstract, but its possible applications must be highlighted through examples and pattern
-    repositories.
+  repositories.
 
 ##### Properties
 
@@ -607,9 +675,11 @@ properties follow a hierarchical namespace convention, such as `golem.node.cpu.c
 names into specific 'topic areas' for better organization and clarity.
 
 ###### Property types
+
 The properties are declared to be of a specific type, which is important as it has impact on how comparison operators
 work with properties of different types. The type of property is inferred from the literal used to specify the value.
 Following property types are supported:
+
 - **String** - any value declared in quotes, eg: “sample text”
 - **Bool** - any of following literals: true, True, TRUE, false, False, FALSE
 - **Number** - any value which can be successfully parsed to a numeric constant, e.g. 12, 34.56, 12e-02
@@ -626,9 +696,10 @@ Following property types are supported:
 
 ###### Property example
 
-To get idea of what properties are currently used, this [property list](./../standards/cheat_sheet.md) can be used (not exhaustive). 
+To get idea of what properties are currently used, this [property list](./../standards/cheat_sheet.md) can be used (not exhaustive).
 
 This example demonstrates how properties can be used to describe an Offer for a virtual machine execution environment:
+
 ```json
 {
   "golem.inf.cpu.cores": 4,
@@ -650,6 +721,7 @@ This example demonstrates how properties can be used to describe an Offer for a 
 The [example](#property-example) showed properties in a flattened representation, where each key is a single string with dot
 separators. The Golem marketplace also supports other formats. One option is to use nested properties, which results in
 a JSON format:
+
 ```json
 {
   "golem": {
@@ -682,6 +754,7 @@ a JSON format:
 
 Formats that combine these two forms are also allowed, meaning that some keys can be partially flattened while still
 incorporating nested sub-properties:
+
 ```json
 {
   "golem.runtime": {
@@ -696,13 +769,15 @@ incorporating nested sub-properties:
 
 In Demand/Offer negotiation scenarios it may be required to indicate that a property is supported by a node, but
 specifying its value is not possible/practical, e.g.:
+
 - A Provider wishes to reveal a property value only to a specific Requestor/Demand, but in a public market it wants
   to indicate that the property is supported.
-- A property is “dynamic”, i.e. its value depends on external factors, like Requestor’s identity, current network 
-  configuration, Requestor’s specific constraints, etc. So an open Offer would only indicate that a property is 
+- A property is “dynamic”, i.e. its value depends on external factors, like Requestor’s identity, current network
+  configuration, Requestor’s specific constraints, etc. So an open Offer would only indicate that a property is
   supported, and the actual value would be returned on specific request, e.g. to a specific targeted Demand.
 
 The value-less property would be indicated in property set by:
+
 - In flat-form: A mention of property name only, with no ‘=’ operator and no value
 - In JSON-form: A property field initialized to null value.
 
@@ -727,6 +802,7 @@ behaviour of operators). If a type code is not specified, the type of property a
 the operator behaviour. Type codes are indicated in [Property types](#property-types) section.
 
 Example constraints for properties defined in [section](#property-example):
+
 ```
 (&
   (golem.inf.ram.gib>=16)
@@ -738,15 +814,18 @@ Example constraints for properties defined in [section](#property-example):
 ###### Operators
 
 The subset of LDAP Search Filter notation includes following features:
+
 - AND, OR, NOT logical operators
 - Comparison of property values ("=", "<", ">", “>=”, “<=” operators)
 - Presence operator (“=*”) - check if a property is defined
 
 The only operator applicable to List is ‘=’ (which is equivalent to “contains”), in 2 variants:
+
 - ‘=’ with a scalar value is resolved as “contains” (does a list contain one particular element)
 - ‘=’ with a list verifies if the property contains a list identical to the one specified in constraint expression
 
 **Example:**
+
 ```
 (&
   (|
@@ -759,6 +838,7 @@ The only operator applicable to List is ‘=’ (which is equivalent to “conta
 ```
 
 A constraint expresses the requirement that all of the following criteria must be met:
+
 - The Provider must list an address on at least one of the platforms: `erc20-holesky-tglm` or `erc20-goerli-tglm`
   (using the presence operator and logical OR).
 - The Provider must offer a VM runtime (using the string equality operator).
@@ -775,6 +855,7 @@ assumes that has already occurred.
 
 Each present or incoming Offer is matched with the Demand. The matching process compares the Demand's constraints
 against the properties in the Offer and vice versa.
+
 ```mermaid
 flowchart TB
   style OfferProperties text-align:left
@@ -796,14 +877,14 @@ flowchart TB
 
 Requestor and Provider Agents don’t have to use constraints. They can choose to avoid them and postpone the decision
 about filtering Proposals according to their requirements until the negotiation phase. This approach requires them to
-manually reject some Offers or Demands, instead of using built-in mechanisms, but it allows them to receive a broader 
+manually reject some Offers or Demands, instead of using built-in mechanisms, but it allows them to receive a broader
 set of potential Proposals to choose from.
 
 On the other hand, using constraints minimizes the number of Proposals that need to be evaluated. Filtering Offers at
 the Golem Node level could potentially be more efficient and scale better.
 
 Another fact to consider is that, in a very large network with thousands or millions of nodes, it would be impossible
-to collect every available Offer. This scale is our goal. This means that our future target for the [Offers propagation 
+to collect every available Offer. This scale is our goal. This means that our future target for the [Offers propagation
 algorithm](#offer-propagation) could be based only on gradual sampling of the network. A well-defined set of constraints
 could be crucial for efficient market searching.
 
@@ -819,6 +900,7 @@ cases). Not setting constraints would allow the Requestor Agent to rank Proposal
 into what's available on the market.
 
 ###### Strong vs. weak matching
+
 TODO: Left for later, to decide if it is important to mention at all.
 
 #### Market negotiation protocols
@@ -847,64 +929,49 @@ debugging, as they provide full control over the participating Nodes, making it 
 It's important to understand that subnets operate at the market level, meaning the Nodes aren't truly separated from
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
+| Provider                             | Requestor                            |
+|:-------------------------------------|:-------------------------------------|
+| "golem.node.debug.subnet": "private" | "golem.node.debug.subnet": "private" |
+| (golem.node.debug.subnet=private)    | (golem.node.debug.subnet=private)    |
 
-| Provider                                                               | Requestor |
-|------------------------------------------------------------------------|-----------|
-| Properties:<br/>"golem.node.subnet": "private" <br/> Constraints:<br/>(golem.node.subnet=private) |           |
-|                                                                        |           |
-|                                                                        |           |
-
-```mermaid
-flowchart TB
-    subgraph Requestor 
-        subgraph Demand 
-           subgraph PropertiesR[Properties]
-             P1["#quot;golem.node.subnet#quot;: #quot;private#quot;"] 
-           end
-           subgraph ConstraintsR[Constraints]
-             C1["(golem.node.subnet=private)"]   
-           end
-        end
-    end
-    
-    subgraph Provider 
-        subgraph Offer
-          subgraph PropertiesP[Properties]
-            P2["#quot;golem.node.subnet#quot;: #quot;private#quot;"]
-          end
-          subgraph ConstraintsP[Constraints]
-            C2["(golem.node.subnet=private)"]
-          end
-        end
-    end
-    
-```
+Both sides set the subnet property and constraint simultaneously. Even if one party doesn’t follow the protocol, the
+constraint ensures protection from being matched with that Agent.
 
 ###### Negotiable properties
-###### Platform choice
+
 ###### Mid-agreement payments
 
 ##### Capabilities approach
+
 ###### Example - VM runtime CUDA capability
+
 ###### Example - ExeUnit progress events
+
 ###### Problems - versioning
+
 - Capability can be implemented by different software
 - Bugs in one of implementation
-- Requestor would like to filter Providers having buggy implementation 
+- Requestor would like to filter Providers having buggy implementation
 
 ##### Backward compatibility
+
 - Changing semantic of properties shouldn't be allowed
   - Golem Factory doesn't control software running on Nodes
 - Breaking changes can split network
+
 ##### Managing protocols specifications
+
 - Namespace clashes etc.
 - Experimental properties
 
 #### Offer propagation
+
 - Link to design [decision](#only-providers-offers-are-propagated)
 - Algorithm overview
 - Plans for future algorithm with sharding
+
 #### Process of negotiations and making an agreement
+
 - Initial Proposal
 - Countering Proposal
 - What can change in counter proposal (protocols based on property language)?
@@ -950,12 +1017,12 @@ sequenceDiagram
   loop
     RequestorAgent->>RequestorAgent: Adjust Proposal
     RequestorAgent->>RequestorYagna: Counter Proposal
-    
+  
     par
       RequestorYagna->>ProviderYagna: Counter Proposal
       ProviderYagna->>ProviderAgent: Receive Proposal
     and Proposals from other Nodes in the network
-      GolemNetwork->>ProviderAgent: Receive Proposals    
+      GolemNetwork->>ProviderAgent: Receive Proposals  
     end
 
     ProviderAgent->>ProviderAgent: Select best Proposals to respond
@@ -983,18 +1050,24 @@ sequenceDiagram
 #### Market strategies
 
 #### Agreement termination
+
 - Who is allowed to terminate? In what situation?
 - What is specified by protocol and what is left to future specifications?
 - Termination reason concept
 
 ### Payments
+
 * a description of current payment driver, its modes of operations and how it
   can be extended
+
 #### Payments models
+
 - Describe generic model which is open for new implementations
 - Payment model specification in Offer/Demand language
 - Linear Payment model as an example
+
 #### Payments flow during Agreement
+
 - Negotiating payment platform and other payment details
 - Testnet(s) vs. mainnet(s)
 - Tokens
@@ -1004,14 +1077,19 @@ sequenceDiagram
 - Payment settlement and payment confirmation for Provider
 
 ##### Mid-Agreement payments
+
 ##### Post-Agreement payments
 
 #### Payment drivers
+
 - Abstract concept (independance from underlying payment mechanisms)
 - How payment platform relates to payment driver?
 - Examples: erc20 driver, zksync (?)
+
 #### Payments batching
+
 #### Deposits payments
+
 - Overview of the concept
 - Link to external documentation describing details
 
@@ -1031,14 +1109,14 @@ sequenceDiagram
     Provider->>ExeUnit: Spawn ExeUnit
     Requestor-->ExeUnit: Commands controlling ExeUnit
     activate ExeUnit
-    
+  
     loop Regular intervals
       ExeUnit->>Provider: Report resources consumption
       Provider->>Provider: Calculate costs
       Provider->>Requestor: Send DebitNote
       Requestor->>Provider: Accept DebitNote
     end
-    
+  
     Requestor-->ExeUnit: Finish computations
     deactivate ExeUnit
     Requestor->>Provider: Destroy Activity
@@ -1049,11 +1127,13 @@ sequenceDiagram
 ```
 
 ### Activity
+
 * How the actions on behalf of the requestor are performed
 * We should dive into each important and general implementation, i.e. WASM and
   VM
 
 #### Abstract concept
+
 - ExeUnit concept is generic enough to sell any kind of computation resources
 - Generic ExeUnits (for example VM, WASM etc.) vs. specialized ExeUnits for specific tasks like:
   - [GamerHash](https://github.com/golemfactory/ya-runtime-ai)
@@ -1065,7 +1145,9 @@ sequenceDiagram
 - Interaction with yagna through GSB
 - Control flow between Requestor and ExeUnit
 - Extensible commands list (ExeUnit implementation dependent)
+
 ##### Controlling ExeUnit (basic concepts)
+
 - Spawning ExeUnit (contract between Provider Agent and ExeUnit)
   - Self-test
   - Offer template
@@ -1075,42 +1157,60 @@ sequenceDiagram
   - Deploy, Start, Transfer, Run, Terminate
   - Querying command/batch state, receiving results
   - Transfer methods ([GFTP](#gftp), http)
+
 ##### Usage counters
+
 #### ExeUnit Supervisor
+
 - Why splitting Supervisor and Runtime?
 - Common functionalities provided by Supervisor
+
 #### ExeUnit Runtime
+
 #### GFTP
+
 #### VM runtime
+
 - Virtual machine desciption (so the reader knows what is there, but not details)
 - Functionalities (outbound, VPN, process output capturing)
 - VM images, gvmkit-build etc
+
 #### WASM runtime
+
 - WASM supported execution engines
 - WASM images
 
 ### VPN
+
 * The component responsible for creating a VPN between VMs
 
 ### Reputation
+
 * a description of how it is evaluated, distributed and used
 
 ### SDK
+
 * which of the logic useful to the user ends up in the SDK
 
 ## Technical view - deployment
+
 How the components are reflected in processes, where the processes are run, what
 is their relation ship, etc.
 
 ## Technical view - flows & algorithms
+
 This section documents how control and responsibility flows through the listed
 components to achieve Golem's functionalities. Any non-trivial algorithms
 spanning more than one component are also described here.
 
 ### Starting a provider and publishing an offer
+
 ### Receiving and executing work
+
 ### Finding a provider and requesting work
+
 ### Starting a cluster of VMs
+
 ### Creating a custom image
 
 PR: this is part of the business logic layer. you would need to think about how to add objects from this layer and SDK implementations in different versions to this document. and the concept of building various reputation methods.
@@ -1118,11 +1218,13 @@ PR: this is part of the business logic layer. you would need to think about how 
 PR: ya-provider is also from this layer and you could write down what configurations it supports. e.g. node attestation, authorization certificates, etc.
 
 ## Key architectural shortcomings
+
 This section contains known shortcomings of the implemented architecture —
 irrespective of whether they were intentional or unintentional.
 
 ### Preexisting two categories of actors
+
 The preexisting categories of actors (providers and requesters) and their
 asymmetric roles are limiting in certain scenarios. FIXME FIXME FIME
-### TODO
 
+### TODO
