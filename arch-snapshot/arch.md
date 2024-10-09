@@ -928,6 +928,13 @@ the design of market interactions, such as:
 - New negotiation protocol specifications should ensure that they are designed in a way that prevents Nodes following
   the new specification from signing Agreements with Nodes that don't understand it.
 
+###### Example - payment protocol version
+
+[The payment protocol version](../specs/payment-version.md) i is a good example of how to introduce changes and protect
+Nodes from incompatibilities. A new payment driver implementation altered the way payments are processed, which could
+have caused Providers to be unable to validate transactions. The introduction of the `golem.com.payment.protocol.version`
+property prevents Agents from signing Agreements with incompatible Nodes, ensuring smooth interactions.
+
 ##### Managing protocols specifications
 
 - Namespace clashes etc.
