@@ -541,9 +541,45 @@ sequenceDiagram
 - Termination reason concept
 
 ### Offer propagation
-* a description of how it happens that offers are visible to reqestors
-* Link to design [decision](#only-providers-offers-are-propagated)
-* Algorithm overview
+
+One important [design decision](#only-providers-offers-are-propagated) in Golem's market protocol is that only Offers are
+propagated across the network, while Demands are not. This decision addresses an issue encountered in earlier versions of
+Golem, where Requestors joining the network were flooded with work Offers from all Nodes. By focusing on propagating
+Offers, the system prevents overload and ensures smoother interactions. Additionally, this approach enables Offers to be
+available for other operations, such as [market searching](#searching-on-market).
+
+The Golem market was planned to be implemented in different phases:
+- Proof of Concept (PoC) version: A centralized market collects all Offers and is responsible for matching them with
+  Demands.
+- Decentralized version: Features network propagation and local Offers-Demands matching. Nodes maintain a full
+  list of Offers in the network (this is the current stage).
+- Fully scalable market: Implements Offer sharding, allowing each Node to store only a subset of Offers. Searching
+  the market is done progressively and in a more probabilistic manner.
+
+The phases of market development should not be confused with the centralization and decentralization of the Network Layer.
+The implementation of the Network Layer is completely transparent and does not need to be known to the Market module.
+There are a few exceptions where the market checks the type of network modules used, but this is primarily for network
+traffic optimization and is not crucial for the protocol.
+
+The market broadcasting protocol is built on top of the Network Layer and makes only a few assumptions about it:
+- The Network Layer has broadcasting functionality that propagates messages to a specific neighborhood (the market
+  does not need to know specific Nodes).
+- The Market Layer can send and respond to GSB calls to and from other Nodes using their Node IDs.
+
+#### Algorithm overview
+
+Further content:
+- Offers/Demands identification: derived from content as cryptographic hash:
+  - Reduces chance of id collision
+  - Protects Offers integrity - changing Offer content can be detected  
+  - Prevents potential attacks with Offers substitution
+
+When propagation happens:
+- Offer published on market
+- In regular randomized intervals
+- After new Node joins the network (NewNeighbor broadcast) (additional mechanism for faster Requestor start)
+
+Propagation suppression mechanisms to avoid infinite broadcasts.
 
 ### Payments
 * a description of current payment driver, its modes of operations and how it
