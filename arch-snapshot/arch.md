@@ -1014,11 +1014,17 @@ properties added for this feature:
 
 The Requestor Agent can filter Providers based on these capabilities by using constraints.
 
-###### Problems - versioning
+###### Problems with capabilities-based approach - versioning
 
-- Capability can be implemented by different software
-- Bugs in one of implementation
-- Requestor would like to filter Providers having buggy implementation
+The capabilities-based approach has some limitations. For instance, if a known bug exists in one of the implementations
+and is later fixed, Requestor Agents may want to filter out Providers with the buggy implementation. However, with pure
+capabilities, this is not possible. Including software versioning would force Requestor Agents to bind their code to
+specific implementations, which is undesirable.
+
+One potential solution is to introduce versioning for capabilities. However, this would mean the version is updated
+not when the protocol changes, but when one of its implementations does. This approach isn't ideal either.
+
+At present, there is no perfect solution to this problem.
 
 ##### Backward compatibility
 
@@ -1288,6 +1294,8 @@ PR: ya-provider is also from this layer and you could write down what configurat
 
 This section contains known shortcomings of the implemented architecture —
 irrespective of whether they were intentional or unintentional.
+
+- [Problem with capabilities-based approach](#problems-with-capabilities-based-approach---versioning)
 
 ### Preexisting two categories of actors
 
