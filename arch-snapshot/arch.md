@@ -897,9 +897,36 @@ At present, there is no perfect solution to this problem.
 
 ##### Backward compatibility
 
-- Changing semantic of properties shouldn't be allowed
-  - Golem Factory doesn't control software running on Nodes
-- Breaking changes can split network
+The Golem protocol must accommodate numerous individual Nodes running various software versions, many of which Golem
+Factory neither controls nor tracks. The protocol was designed to support workloads that weren't directly considered
+during its initial development and can be implemented by the community.
+
+This is the core challenge Golem is trying to address, and measures must be taken to mitigate the issues that arise from
+it. One key consideration is ensuring backward compatibility within the protocol. Two important aspects should be
+addressed:
+- Breaking changes can fragment the network, disrupting communication between newer and older software versions.
+- New features should be implemented in a way that avoids silently breaking existing implementations
+
+While the first problem may seem more important, the second is actually more dangerous. Breaking the network should be
+avoided whenever possible, but given that Golem is still in its early stages of development, it would be unrealistic to
+exert excessive effort to maintain compatibility at all costs. Each instance of breaking changes should be considered
+individually, with potential risks, impact, and the value of new features carefully evaluated.
+
+The second problem is more critical because carelessly introducing new features can lead to silent failures in the later
+stages of an Agreement, making them difficult to diagnose or detect. This can increase maintenance costs. While in the
+first case we can choose whether to preserve compatibility or not, in this case, there is no choice but to implement
+measures to avoid potential issues.
+
+###### Negotiation protocols compatibility
+
+Negotiation protocols are the most critical area where compatibility issues should be addressed. The simplest solution
+is to prevent incompatible Provider and Requestor Agents from signing an Agreement. This requires careful discipline in
+the design of market interactions, such as:
+- The semantics of properties should never change. Altering semantics leads to Agents interpreting the protocol
+  differently, yet still signing Agreements.
+- When necessary, new properties should be introduced rather than modifying existing ones.
+- New negotiation protocol specifications should ensure that they are designed in a way that prevents Nodes following
+  the new specification from signing Agreements with Nodes that don't understand it.
 
 ##### Managing protocols specifications
 
