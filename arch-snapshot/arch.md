@@ -930,15 +930,21 @@ the design of market interactions, such as:
 
 ###### Example - payment protocol version
 
-[The payment protocol version](../specs/payment-version.md) i is a good example of how to introduce changes and protect
+[The payment protocol version](../specs/payment-version.md) is a good example of how to introduce changes and protect
 Nodes from incompatibilities. A new payment driver implementation altered the way payments are processed, which could
 have caused Providers to be unable to validate transactions. The introduction of the `golem.com.payment.protocol.version`
 property prevents Agents from signing Agreements with incompatible Nodes, ensuring smooth interactions.
 
 ##### Managing protocols specifications
 
-- Namespace clashes etc.
-- Experimental properties
+Since the protocol is open to extensions and contributions from outside Golem Factory, certain issues may arise.
+Introducing new properties could conflict with existing protocols, leading to naming clashes when multiple parties
+introduce them simultaneously.
+
+Currently, Golem has no formal strategy for managing these conflicts. Although solutions such as
+[experimental features](../gaps/gap-32_experimental_features) have been proposed (mainly for internal purposes), a
+more comprehensive process for managing protocols would be necessary if Golem reaches full decentralization. However,
+at this moment, the problem remains non-existent.
 
 #### Offer propagation
 
