@@ -311,6 +311,20 @@ blockchain. This confirmation specifies which Activities and Agreements are cove
 multiple Activities or Agreements, while each Activity or Agreement may also be covered by multiple transactions.
 
 ### Searching on market
+
+Providers or Requestors on Golem don’t always aim to buy or sell resources. Sometimes, they simply want to observe the market.
+There are several possible reasons for this:
+- Checking which resources are available on the network
+- Estimating potential computation costs
+- Gathering insights to better adjust negotiation strategies
+- Collecting statistics about the network
+
+The approach to observing the market is similar to the methods described in the chapters on buying and selling resources.
+An agent specifies their Offer or Demand using a property and constraints specification language.
+The key difference is that they are not required to negotiate with other agents, nor must they provide all necessary
+information in their Offer or Demand. This is a more lightweight approach compared to going through the full negotiation
+process.
+
 ### Buying on golem platform
 ### Running something
 
