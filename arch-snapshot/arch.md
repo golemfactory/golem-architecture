@@ -568,6 +568,152 @@ The market broadcasting protocol is built on top of the Network Layer and makes 
 
 #### Algorithm overview
 
+Assuming network topology:
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 --- Node2
+  Node1 --- Node3
+  Node2 --- Node4
+  Node3 --- Node6
+  Node4 --- Node6
+  Node5 --- Node2
+  Node6 --- Node9
+  Node8 --- Node7
+  Node8 --- Node5
+  Node9 --- Node7
+```
+Considering that `Node 8` starts broadcasting Offers:
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8(((Node 8)))
+  Node9((Node 9))
+  
+  Node1 --- Node2
+  Node1 --- Node3
+  Node2 --- Node4
+  Node3 --- Node6
+  Node4 --- Node6
+  Node5 --- Node2
+  Node6 --- Node9
+  Node8 === |Offer Id| Node7
+  Node8 === |Offer Id| Node5
+  Node9 --- Node7
+```
+Offer Id reaches first Nodes. Since both `Node 5` and `Node 7` didn't see this Offer yet, they will re-propagate it to their neighbors.
+At the same time they will ask for full Offer the source Node from which they received it.
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5(((Node 5)))
+  Node6((Node 6))
+  Node7(((Node 7)))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 --- Node2
+  Node1 --- Node3
+  Node2 --- Node4
+  Node3 --- Node6
+  Node4 --- Node6
+  Node5 === |Offer Id| Node2
+  Node6 --- Node9
+  Node8 x---x |Offer Id| Node7
+  Node8 x---x |Offer Id| Node5
+  Node9 === |Offer Id| Node7
+```
+In the next iteration only Nodes for which received Offer was new, re-propagate it. 
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2(((Node 2)))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9(((Node 9)))
+  
+  Node1 === |Offer Id| Node2
+  Node1 --- Node3
+  Node2 === |Offer Id| Node4
+  Node3 --- Node6
+  Node4 --- Node6
+  Node5 x---x |Offer Id| Node2
+  Node6 === |Offer Id| Node9
+  Node8 --- Node7
+  Node8 --- Node5
+  Node9 x---x |Offer Id| Node7
+```
+Offer reaches the most distant Nodes in the network:
+```mermaid
+flowchart LR
+  Node1(((Node 1)))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4(((Node 4)))
+  Node5((Node 5))
+  Node6(((Node 6)))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 x--x |Offer Id| Node2
+  Node1 === |Offer Id| Node3
+  Node2 x---x |Offer Id| Node4
+  Node3 === |Offer Id| Node6
+  Node4 x---x |Offer Id| Node6
+  Node5 --- Node2
+  Node6 x---x |Offer Id| Node9
+  Node8 --- Node7
+  Node8 --- Node5
+  Node9 --- Node7
+```
+All neighbors of `Node 3` already know the Offer so propagation ends
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3(((Node 3)))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 --- Node2
+  Node1 x--x |Offer Id| Node3
+  Node2 --- Node4
+  Node3 x--x |Offer Id| Node6
+  Node4 --- Node6
+  Node5 --- Node2
+  Node6 --- Node9
+  Node8 --- Node7
+  Node8 --- Node5
+  Node9 --- Node7
+```
+
 Further content:
 - Offers/Demands identification: derived from content as cryptographic hash:
   - Reduces chance of id collision
@@ -580,6 +726,7 @@ When propagation happens:
 - After new Node joins the network (NewNeighbor broadcast) (additional mechanism for faster Requestor start)
 
 Propagation suppression mechanisms to avoid infinite broadcasts.
+Neighborhood function (how network splits are avoided)
 
 ### Payments
 * a description of current payment driver, its modes of operations and how it
