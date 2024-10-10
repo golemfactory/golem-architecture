@@ -753,6 +753,18 @@ flowchart LR
 
 ##### Neighborhood function
 
+To prevent clustering of Nodes and accidental splits in the network, where subsets of Nodes become unreachable, a proper
+neighborhood function must be utilized. This function is defined by the network module, and the market relies on the
+broadcast function, leaving it with no alternative in this regard.
+
+Optimal guarantees can be achieved when two neighboring Nodes have distinctly different neighborhoods, minimizing their
+number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
+distance between Node IDs.
+
+##### Broadcast triggers
+
+
+
 #### Central Net vs. Hybrid Net
 
 ### Payments
