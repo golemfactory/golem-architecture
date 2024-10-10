@@ -581,16 +581,16 @@ flowchart LR
   Node8((Node 8))
   Node9((Node 9))
   
-  Node1 --- Node2
-  Node1 --- Node3
-  Node2 --- Node4
-  Node3 --- Node6
-  Node4 --- Node6
-  Node5 --- Node2
-  Node6 --- Node9
-  Node8 --- Node7
-  Node8 --- Node5
-  Node9 --- Node7
+  Node1 -.- Node2
+  Node1 -.- Node3
+  Node2 -.- Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 -.- Node2
+  Node6 -.- Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 -.- Node7
 ```
 Considering that `Node 8` starts broadcasting Offers:
 ```mermaid
@@ -605,16 +605,16 @@ flowchart LR
   Node8(((Node 8)))
   Node9((Node 9))
   
-  Node1 --- Node2
-  Node1 --- Node3
-  Node2 --- Node4
-  Node3 --- Node6
-  Node4 --- Node6
-  Node5 --- Node2
-  Node6 --- Node9
+  Node1 -.- Node2
+  Node1 -.- Node3
+  Node2 -.- Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 -.- Node2
+  Node6 -.- Node9
   Node8 === |Offer Id| Node7
   Node8 === |Offer Id| Node5
-  Node9 --- Node7
+  Node9 -.- Node7
 ```
 Offer Id reaches first Nodes. Since both `Node 5` and `Node 7` didn't see this Offer yet, they will re-propagate it to their neighbors.
 At the same time they will ask for full Offer the source Node from which they received it.
@@ -630,15 +630,15 @@ flowchart LR
   Node8((Node 8))
   Node9((Node 9))
   
-  Node1 --- Node2
-  Node1 --- Node3
-  Node2 --- Node4
-  Node3 --- Node6
-  Node4 --- Node6
+  Node1 -.- Node2
+  Node1 -.- Node3
+  Node2 -.- Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
   Node5 === |Offer Id| Node2
-  Node6 --- Node9
-  Node8 x---x |Offer Id| Node7
-  Node8 x---x |Offer Id| Node5
+  Node6 -.- Node9
+  Node8 x===x |Offer Id| Node7
+  Node8 x===x |Offer Id| Node5
   Node9 === |Offer Id| Node7
 ```
 In the next iteration only Nodes for which received Offer was new, re-propagate it. 
@@ -655,15 +655,15 @@ flowchart LR
   Node9(((Node 9)))
   
   Node1 === |Offer Id| Node2
-  Node1 --- Node3
+  Node1 -.- Node3
   Node2 === |Offer Id| Node4
-  Node3 --- Node6
-  Node4 --- Node6
-  Node5 x---x |Offer Id| Node2
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 x===x |Offer Id| Node2
   Node6 === |Offer Id| Node9
-  Node8 --- Node7
-  Node8 --- Node5
-  Node9 x---x |Offer Id| Node7
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 x===x |Offer Id| Node7
 ```
 Offer reaches the most distant Nodes in the network:
 ```mermaid
@@ -678,16 +678,16 @@ flowchart LR
   Node8((Node 8))
   Node9((Node 9))
   
-  Node1 x--x |Offer Id| Node2
+  Node1 x==x |Offer Id| Node2
   Node1 === |Offer Id| Node3
-  Node2 x---x |Offer Id| Node4
+  Node2 x===x |Offer Id| Node4
   Node3 === |Offer Id| Node6
-  Node4 x---x |Offer Id| Node6
-  Node5 --- Node2
-  Node6 x---x |Offer Id| Node9
-  Node8 --- Node7
-  Node8 --- Node5
-  Node9 --- Node7
+  Node4 x===x |Offer Id| Node6
+  Node5 -.- Node2
+  Node6 x===x |Offer Id| Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 -.- Node7
 ```
 All neighbors of `Node 3` already know the Offer so propagation ends
 ```mermaid
@@ -702,16 +702,16 @@ flowchart LR
   Node8((Node 8))
   Node9((Node 9))
   
-  Node1 --- Node2
-  Node1 x--x |Offer Id| Node3
-  Node2 --- Node4
-  Node3 x--x |Offer Id| Node6
-  Node4 --- Node6
-  Node5 --- Node2
-  Node6 --- Node9
-  Node8 --- Node7
-  Node8 --- Node5
-  Node9 --- Node7
+  Node1 -.- Node2
+  Node1 x==x |Offer Id| Node3
+  Node2 -.- Node4
+  Node3 x==x |Offer Id| Node6
+  Node4 -.- Node6
+  Node5 -.- Node2
+  Node6 -.- Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 -.- Node7
 ```
 
 Further content:
