@@ -761,11 +761,38 @@ Optimal guarantees can be achieved when two neighboring Nodes have distinctly di
 number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
 distance between Node IDs.
 
+##### Central Net vs. Hybrid Net
+
+The net module implementation is transparent for the market module, but certain details must be addressed for network
+traffic optimization. The primary difference between the central and hybrid networks from the market perspective is that
+the central net has only global broadcasting, whereas the hybrid net utilizes local broadcasting to neighborhoods.
+
+Due to this distinction, different broadcasting settings are required—especially regarding broadcasting frequency—to
+prevent overwhelming the network with excessive messages.
+
 ##### Broadcast triggers
 
+All three broadcast triggers mentioned in the [previous chapter](#algorithm-overview) serve distinct purposes.
 
+The primary mechanism triggers a broadcast when a new Offer is published. However, this does not guarantee that new
+Nodes joining the network afterward will receive the Offer. To address this, cyclic propagation was introduced.
 
-#### Central Net vs. Hybrid Net
+Cyclic broadcasts are sent at random intervals, with a configurable mean time between broadcasts. This ensures that
+if many Nodes are spawned using a script, the network will not experience spikes in bandwidth usage. Each cyclic
+broadcast includes all Offers owned by the Node, along with a random subset of other stored Offers. This mechanism
+provides an opportunity for new Nodes joining the network to receive the latest Offers.
+
+The last mechanism, the new neighbor-triggered broadcast, was introduced after transitioning to the hybrid net implementation.
+When a new Requestor joins the network, they are not immediately visible to other Nodes. To minimize unnecessary network traffic,
+the network module does not query the relay server for neighborhood updates with each broadcast call. This can result in a
+delay in Offer delivery, meaning that, regardless of cyclic broadcast interval settings, a Node may not receive any Offers
+during the initial minutes of operation.
+
+To address this issue, when a Node joins the network, it sends a notification to its neighbors to announce its presence.
+In response, the receiving Nodes invalidate their current neighborhood for updates and promptly send a set of Offers.
+
+#### Offers expiration and unsubscribing
+
 
 ### Payments
 * a description of current payment driver, its modes of operations and how it
