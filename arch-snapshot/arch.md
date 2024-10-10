@@ -568,7 +568,34 @@ The market broadcasting protocol is built on top of the Network Layer and makes 
 
 #### Algorithm overview
 
-Assuming network topology:
+There are three primary triggers for Offer propagation in the network:
+- When an Offer is published on the market.
+- At regular, randomized intervals after a certain amount of time has elapsed.
+- When a new Node joins the network (via a NewNeighbor broadcast).
+
+While each of these triggers has specific implementation details, the general concept remains consistent across all
+cases. These details will be explained in later sections.
+
+To minimize unnecessary data transfers, the propagation algorithm operates in two phases:
+- In the first phase, only the Offer IDs are broadcast to neighboring Nodes.
+- Second, details of any new, previously unseen Offers are requested based on the received IDs.
+
+##### Offers identification
+
+A Node often receives an Offer indirectly, relayed through intermediary Nodes rather than directly from its publisher.
+To mitigate potential risks and attacks from malicious Nodes, Offer and Demand IDs are derived from their content. This
+approach offers several benefits:
+- It reduces the likelihood of Offer ID collisions across the network. When requesting an Offer by its ID, the content
+  received will always match.
+- It ensures the integrity of Offers, as malicious Nodes cannot alter an Offer's content to disadvantage its owner.
+  Any such changes are easily detectable.
+
+Although Offers lack cryptographic signatures, which means that other Nodes could theoretically create Offers on behalf of
+someone else, this type of fraud would be uncovered during the negotiation stage.
+
+##### Algorithm in practise
+
+Consider the following network topology:
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -592,7 +619,7 @@ flowchart LR
   Node8 -.- Node5
   Node9 -.- Node7
 ```
-Considering that `Node 8` starts broadcasting Offers:
+`Node 8` begins broadcasting Offers to its direct neighbors::
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -616,8 +643,12 @@ flowchart LR
   Node8 === |Offer Id| Node5
   Node9 -.- Node7
 ```
-Offer Id reaches first Nodes. Since both `Node 5` and `Node 7` didn't see this Offer yet, they will re-propagate it to their neighbors.
-At the same time they will ask for full Offer the source Node from which they received it.
+The Offer ID reaches `Node 5` and `Node 7`. Since neither has encountered this Offer before, they will propagate it
+further to their respective neighbors. Simultaneously, they will request the full Offer details from the source Node
+that initially sent it.
+
+As the original sender of the Offer, `Node 8` will reject any additional broadcasts, effectively halting the propagation
+process at this point.
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -641,7 +672,12 @@ flowchart LR
   Node8 x===x |Offer Id| Node5
   Node9 === |Offer Id| Node7
 ```
-In the next iteration only Nodes for which received Offer was new, re-propagate it. 
+In the next iteration, `Node 2` and `Node 9` act as the sources for broadcasts. Offers will be successfully propagated 
+to `Node 1`, `Node 4`, and `Node 6`, while `Node 5` and `Node 7` will reject these broadcasts.
+
+Both `Node 2` and `Node 9` will retrieve the full Offer details from the Nodes they received the IDs from, rather
+than attempting to reach the original source, `Node 8`.
+ 
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -665,7 +701,8 @@ flowchart LR
   Node8 -.- Node5
   Node9 x===x |Offer Id| Node7
 ```
-Offer reaches the most distant Nodes in the network:
+The Offer successfully reaches the most distant Nodes within the network - `Node 3`.
+Since two Nodes attempt to send the same Offer to `Node 3` simultaneously, only the first broadcast will be accepted.
 ```mermaid
 flowchart LR
   Node1(((Node 1)))
@@ -681,7 +718,7 @@ flowchart LR
   Node1 x==x |Offer Id| Node2
   Node1 === |Offer Id| Node3
   Node2 x===x |Offer Id| Node4
-  Node3 === |Offer Id| Node6
+  Node3 x===x |Offer Id| Node6
   Node4 x===x |Offer Id| Node6
   Node5 -.- Node2
   Node6 x===x |Offer Id| Node9
@@ -689,7 +726,7 @@ flowchart LR
   Node8 -.- Node5
   Node9 -.- Node7
 ```
-All neighbors of `Node 3` already know the Offer so propagation ends
+All neighbors of `Node 3` are already aware of the Offer, so the propagation process concludes.
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -714,19 +751,9 @@ flowchart LR
   Node9 -.- Node7
 ```
 
-Further content:
-- Offers/Demands identification: derived from content as cryptographic hash:
-  - Reduces chance of id collision
-  - Protects Offers integrity - changing Offer content can be detected  
-  - Prevents potential attacks with Offers substitution
+##### Neighborhood function
 
-When propagation happens:
-- Offer published on market
-- In regular randomized intervals
-- After new Node joins the network (NewNeighbor broadcast) (additional mechanism for faster Requestor start)
-
-Propagation suppression mechanisms to avoid infinite broadcasts.
-Neighborhood function (how network splits are avoided)
+#### Central Net vs. Hybrid Net
 
 ### Payments
 * a description of current payment driver, its modes of operations and how it
