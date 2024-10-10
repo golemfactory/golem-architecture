@@ -1544,6 +1544,13 @@ In response, the receiving Nodes invalidate their current neighborhood for updat
 
 #### Offers expiration and unsubscribing
 
+Since each Node stores the full state of Offers within the network, it's crucial to protect the market from being overwhelmed.
+Offers do not have an indefinite lifetime; they come with a predefined expiration. Expired Offers are not propagated, and
+Proposals are not generated from them when matching with Demands on the market.
+
+The second mechanism allows a Provider Agent to unpublish their Offer. When an Agent unsubscribes from the market, this
+information is propagated to other Nodes in a manner similar to how Offers are broadcasted. While this mechanism is not
+essential for the market's functionality, it optimistically helps reduce clutter within the market.
 
 ### Payments
 The Payment component is a singleton service running in the background of the
