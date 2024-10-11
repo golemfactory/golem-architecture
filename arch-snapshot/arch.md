@@ -662,13 +662,13 @@ The Golem ecosystem utilizes constraint language derived from [LDAP filter expre
 ###### Property referencing
 
 In the Constraint expressions, the properties are referenced using following grammar:
-`<name>(“@”<typecode>)?(“[“<aspect>”]”)?<operator><value>?`
+`<name>(“@”<typecode>)?<operator><value>?`
 
 Specifying no aspect means we are referencing the property value.
 
 `@<typecode>` is optional in property reference and implies a specific type of constraint value (this determines the
 behaviour of operators). If a type code is not specified, the type of property as declared in Demand/Offer determines
-the operator behaviour. Type codes are indicated in [Property types](#property-types) section.
+the [operator](#operators) behaviour. Type codes are indicated in [Property types](#property-types) section.
 
 Example constraints for properties defined in [section](#property-example):
 
@@ -722,8 +722,8 @@ After a Demand is published on the market, the Golem Node attempts to match it w
 incoming ones later. A detailed description of Offer propagation is placed [here](#offer-propagation); this chapter
 assumes that has already occurred.
 
-Each present or incoming Offer is matched with the Demand. The matching process compares the Demand's constraints
-against the properties in the Offer and vice versa.
+Each present or incoming [Offer](#offer) is matched with the [Demand](#demand). The matching process compares the
+Demand's constraints against the properties in the Offer and vice versa.
 
 ```mermaid
 flowchart TB
@@ -744,24 +744,24 @@ flowchart TB
   OfferConstraints --> |Match| DemandProperties
 ```
 
-Requestor and Provider Agents don’t have to use constraints. They can choose to avoid them and postpone the decision
-about filtering Proposals according to their requirements until the negotiation phase. This approach requires them to
-manually reject some Offers or Demands, instead of using built-in mechanisms, but it allows them to receive a broader
-set of potential Proposals to choose from.
+###### When to use constraints?
+
+[Requestor](#requester-agent) and [Provider Agents](#provider-agent) don’t have to use constraints. They can choose to avoid them 
+and postpone the decision about filtering Proposals according to their requirements until the [negotiation phase](#process-of-negotiations-and-making-an-agreement).
+This approach requires them to manually reject some Offers or Demands, instead of using built-in mechanisms, but it
+allows them to receive a broader set of potential [Proposals](#proposal) to choose from.
 
 On the other hand, using constraints minimizes the number of Proposals that need to be evaluated. Filtering Offers at
-the Golem Node level could potentially be more efficient and scale better.
+the [Golem Node](#golem-node) level could potentially be more efficient and scale better.
 
-Another fact to consider is that, in a very large network with thousands or millions of nodes, it would be impossible
+Another fact to consider is that, in a very large network with thousands or millions of Nodes, it would be impossible
 to collect every available Offer. This scale is our goal. This means that our future target for the [Offers propagation
 algorithm](#offer-propagation) could be based only on gradual sampling of the network. A well-defined set of constraints
 could be crucial for efficient market searching.
 
-###### When to use constraints?
-
 The good rule for using constraints would be to apply them when the Requestor or Provider Agent has a requirement that
 must necessarily be met. A good example could be the [runtime](#exeunit-runtime) choice. A Requestor who has prepared a
-VM image likely won't make use of a Provider offering a [wasm runtime](#wasm-runtime). Setting the constraint
+[VM image](#vm-image) likely won't make use of a Provider offering a [wasm runtime](#wasm-runtime). Setting the constraint
 `(golem.runtime.name=vm)` will filter out a large portion of Offers that would otherwise be rejected.
 
 On the other hand, the number of CPUs or the amount of RAM might be a more flexible requirement (except for rare use
@@ -774,37 +774,39 @@ TODO: Left for later, to decide if it is important to mention at all.
 
 #### Market negotiation protocols
 
-The Golem Node doesn’t interpret the meaning of properties and constraints (with a few exceptions). This responsibility
-is delegated to the business layer and Agent applications. This design allows Golem to support the creation of new
-protocols for market interactions without requiring modifications to the Golem Protocol itself.
+[The Golem Node](#golem-node) doesn’t interpret the meaning of properties and constraints (with a few exceptions). This 
+responsibility is delegated to the [business layer](#business-logic) and Agent applications. This design allows Golem to support 
+the creation of new protocols for market interactions without requiring modifications to the Golem Protocol itself.
 
-During market negotiations, the Provider and Requestor Agents exchange Proposals until both parties agree on the terms
-of the Agreement. Throughout this exchange, both Agents can add, remove, or change the value of properties. The
-negotiation protocol is defined as a set of rules that governs the actions required to reach an agreement on a specific
-aspect of the negotiations. Multiple aspects can be negotiated simultaneously by the Agents; for example, payment details
-can be negotiated independently from internet access for the Virtual Machine.
+During market negotiations, the Provider and Requestor Agents exchange [Proposals](#proposal) until both parties agree on 
+the terms of the [Agreement](#agreement). Throughout this exchange, both Agents can add, remove, or change the value of
+[properties](#properties). The negotiation protocol is defined as a set of rules that governs the actions required to 
+reach an agreement on a specific aspect of the negotiations. Multiple aspects can be negotiated simultaneously by the
+Agents; for example, payment details can be negotiated independently from internet access for the Virtual Machine.
 
 ##### Example protocols
 
-The following chapters will provide examples of how the property language can be used to define negotiation protocols.
+The following chapters will provide examples of how the [property language](#discovery-and-offersdemand-matching) can be
+used to define negotiation protocols.
 These examples will be based on real cases that have already been solved in the current implementation.
 
 ###### Subnets
 
 This is the simplest example that doesn’t require multiple phases of Proposal exchanges. Subnets are a debugging
-mechanism used to isolate specific Nodes from the rest of the network. They are useful when testing new features or
-debugging, as they provide full control over the participating Nodes, making it easier to analyze logs.
+mechanism used to isolate specific [Nodes](#golem-node) from the rest of the network. They are useful when testing new 
+features or debugging, as they provide full control over the participating Nodes, making it easier to analyze logs.
 
 It's important to understand that subnets operate at the market level, meaning the Nodes aren't truly separated from
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
-| Provider Proposal                    | Requestor Proposal                   |
-|:-------------------------------------|:-------------------------------------|
-| "golem.node.debug.subnet": "private" | "golem.node.debug.subnet": "private" |
-| (golem.node.debug.subnet=private)    | (golem.node.debug.subnet=private)    |
+| Provider Proposal                         | Requestor Proposal                        |
+|:------------------------------------------|:------------------------------------------|
+| "golem.node.debug.subnet": "private-1234" | "golem.node.debug.subnet": "private-1234" |
+| (golem.node.debug.subnet=private-1234)    | (golem.node.debug.subnet=private-1234)    |
 
-Both sides set the subnet property and constraint simultaneously. Even if one party doesn’t follow the protocol, the
-constraint ensures protection from being matched with that Agent.
+Both parties select a name and set the subnet  [property](#properties) and [constraint](#constraints) to the same 
+value simultaneously. Even if one side fails to adhere to the protocol by omitting the constraint in their Offer or
+Demand, the other party's constraint ensures protection, preventing them from being matched with the non-compliant Agent.
 
 ###### Negotiable properties
 
@@ -813,7 +815,8 @@ naming convention that enables the Provider and Requestor Agents to negotiate th
 As an example, the negotiation of the `golem.com.payment.debit-notes.accept-timeout?` property, which indicates how long
 the Requestor Agent has to accept a Debit Note, will be demonstrated.
 
-As a starting point both agents set their initial values for preferred timeout.
+Both agents begin by setting their initial preferred timeout values. With each turn, they adjust the value until 
+they either agree on a specific value or one party rejects the proposals, ending the negotiation.
 
 | Provider Proposal                                    |                          | Requestor Proposal                                   |
 |:-----------------------------------------------------|--------------------------|:-----------------------------------------------------|
@@ -830,25 +833,27 @@ Negotiations are complete when both parties include the property in their Propos
 
 ###### Mid-agreement payments
 
-A more complex example of negotiation are mid-agreement payments. [The Specification](../gaps/gap-3_mid_agreement_payments)
-of mid-agreement payments covers not only the negotiation protocol
-but also defines the behavior of Agents after the Agreement is signed and computations are in progress. Mid-agreement
-payments demonstrate how to specify and implement various aspects of Golem behavior, such as different payment schemes.
+A more complex example of negotiation are [mid-agreement payments](#mid-agreement-payments-1).
+[The Specification](../gaps/gap-3_mid_agreement_payments/gap-3_mid_agreement_payments.md)
+of mid-agreement payments covers not only the negotiation protocol but also defines the behavior of Agents after the 
+Agreement is signed and computations are in progress. Mid-agreement payments demonstrate how to specify and 
+implement various aspects of Golem behavior, such as different payment schemes.
 
 ##### Capabilities approach
 
 The Golem design is built around components that implement different capabilities. This is also reflected in the
-Offer/Demand model and resource descriptions. Each Provider or Requestor is assumed to have their own implementation
-of the Golem protocol, which may support only a subset of the features specified by Golem Factory.
+Offer/Demand model and resource descriptions. Each [Provider](#provider) or [Requestor](#requestor) can have their own 
+implementation of the Golem Protocol, which may support only a subset of the features specified by Golem Factory.
 For this reason, the properties reflect the capabilities of the implementation rather than the software version.
 
 An effort is being made to collect possible capabilities and identify which components maintained by Golem Factory
 support them. Although the list is far from complete, it is valuable to continue expanding:
-- [List of capabilities](../specs/capabilities.md) required for communication between Golem Nodes and Agents
+- [List of capabilities](../specs/capabilities.md) required for communication between [Golem Nodes](#golem-node) and Agents
 - [Capabilities](https://github.com/golemfactory/yagna/blob/master/docs/yagna/capabilities.md) supported by yagna daemon
 - [Capabilities](https://github.com/golemfactory/yagna/blob/master/docs/provider/capabilities.md#provider-agent-capabilities-list)
-  supported by Provider Agent
-- ExeUnit [capabilities](https://github.com/golemfactory/yagna/blob/master/docs/provider/capabilities.md#exeunit)
+  supported by [Provider Agent](#provider-agent)
+- ExeUnit Supervisor [capabilities](https://github.com/golemfactory/yagna/blob/master/docs/provider/capabilities.md#exeunit)
+- ExeUnit Runtime [capabilities](../standards/0-commons/golem/runtime.md#golemruntimecapabilities--liststring-)
 
 ###### Example 1 - VM runtime GPU capability
 
@@ -856,17 +861,20 @@ Various implementations of the VM runtime can be envisioned—some may include G
 searching on the market, the Requestor Agent should focus on specifying the required capabilities to find all
 implementations that meet those conditions.
 
-For this purpose, the `golem.runtime.capabilities` property can be used to specify the capabilities of the VM runtime.
-For example, a Requestor Agent needing GPU access should set the constraint `(golem.runtime.capabilities=!exp:gpu)`.
+For this purpose, the `golem.runtime.capabilities` property can be used to specify the capabilities of the
+[VM runtime](#vm-runtime-1). For example, [a Requestor Agent](#requester-agent) needing GPU access should set the
+[constraint](#constraints) `(golem.runtime.capabilities=!exp:gpu)`. This constraint specifies the required 
+capabilities without enforcing any particular implementation of the VM runtime.
 
-A list of different runtime capabilities (not exhaustive) can be found [here](../standards/0-commons/golem/runtime.md#golemruntimecapabilities--liststring-).
+A list of different [Runtime](#exeunit-runtime) capabilities (not exhaustive) can be found
+[here](../standards/0-commons/golem/runtime.md#golemruntimecapabilities--liststring-).
 
 ###### Example 2 - ExeUnit progress events
 
-The same approach of using capabilities can be applied to seamlessly adding new features. Golem Factory doesn’t control
-which version of the Golem Node is used by Providers. When a new feature is introduced, it takes time for Node operators
-to update their software. If a Requestor wants to use this new feature, they may encounter the issue that only a subset
-of Nodes supports it.
+The same approach of using [capabilities](#capabilities-approach) can be applied to seamlessly adding new features. Golem Factory doesn’t 
+control which version of the [Golem Node](#golem-node) is used by Providers. When a new feature is introduced, it takes time 
+for Node operators to update their software. If a Requestor Agent wants to use this new feature, they may encounter the 
+issue that only a subset of Nodes supports it.
 
 One solution could be to introduce versioning in Offers. However, strictly binding Offers to specific software versions
 would reduce the number of Providers available to take on the work. Requestors using newer SDK versions, but not
@@ -885,10 +893,10 @@ The Requestor Agent can filter Providers based on these capabilities by using co
 
 ###### Problems with capabilities-based approach - versioning
 
-The capabilities-based approach has some limitations. For instance, if a known bug exists in one of the implementations
-and is later fixed, Requestor Agents may want to filter out Providers with the buggy implementation. However, with pure
-capabilities, this is not possible. Including software versioning would force Requestor Agents to bind their code to
-specific implementations, which is undesirable.
+[The capabilities-based approach](#capabilities-approach) has some limitations. For instance, if a known bug exists in one of the 
+implementations and is later fixed, Requestor Agents may want to filter out Providers with the buggy implementation.
+However, with pure capabilities, this is not possible. Including software versioning would force Requestor Agents 
+to bind their code to specific implementations, which is undesirable.
 
 One potential solution is to introduce versioning for capabilities. However, this would mean the version is updated
 not when the protocol changes, but when one of its implementations does. This approach isn't ideal either.
@@ -897,7 +905,7 @@ At present, there is no perfect solution to this problem.
 
 ##### Backward compatibility
 
-The Golem protocol must accommodate numerous individual Nodes running various software versions, many of which Golem
+The Golem Protocol must accommodate numerous individual Nodes running various software versions, many of which Golem
 Factory neither controls nor tracks. The protocol was designed to support workloads that weren't directly considered
 during its initial development and can be implemented by the community.
 
@@ -905,7 +913,7 @@ This is the core challenge Golem is trying to address, and measures must be take
 it. One key consideration is ensuring backward compatibility within the protocol. Two important aspects should be
 addressed:
 - Breaking changes can fragment the network, disrupting communication between newer and older software versions.
-- New features should be implemented in a way that avoids silently breaking existing implementations
+- Seemingly compatible new features might silently break existing implementations, causing unexpected failures.
 
 While the first problem may seem more important, the second is actually more dangerous. Breaking the network should be
 avoided whenever possible, but given that Golem is still in its early stages of development, it would be unrealistic to
@@ -933,7 +941,8 @@ the design of market interactions, such as:
 [The payment protocol version](../specs/payment-version.md) is a good example of how to introduce changes and protect
 Nodes from incompatibilities. A new payment driver implementation altered the way payments are processed, which could
 have caused Providers to be unable to validate transactions. The introduction of the `golem.com.payment.protocol.version`
-property prevents Agents from signing Agreements with incompatible Nodes, ensuring smooth interactions.
+property along with the corresponding constraint prevents Agents from signing Agreements with incompatible Nodes, ensuring smooth 
+interactions.
 
 ##### Managing protocols specifications
 
