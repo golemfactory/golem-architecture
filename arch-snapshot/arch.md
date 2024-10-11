@@ -915,6 +915,19 @@ the terms of the [Agreement](#agreement). Throughout this exchange, both Agents 
 reach an agreement on a specific aspect of the negotiations. Multiple aspects can be negotiated simultaneously by the
 Agents; for example, payment details can be negotiated independently from internet access for the Virtual Machine.
 
+Each protocol specification must define how entities signal their understanding of a given protocol. This can be 
+achieved in various ways, including:
+- The mere presence of specific properties may signal that an Agent understands the protocol. Some properties are 
+  simple factual statements, like the existence of certain features, and a Requestor not understanding them is 
+  harmless. An example is [reporting transfers progress](#example-2---exeunit-progress-events).
+- When a protocol requires two parties not to match, constraints may be necessary to enforce this behavior. This is 
+  illustrated in the [subnets example](#subnets).
+- In more complex scenarios, a schema URL may be included in the Offer/Demand to indicate conformance to a specific 
+  standard, as seen in ([Node descriptors](../gaps/gap-31_node_descriptor/gap-31_node_descriptor.md) and
+  [Golem certificates](../gaps/gap-25_golem_certificates).
+- Another approach is requiring a property to be repeated in both Provider and Requestor Proposals to finalize 
+  negotiations, as used with [negotiable properties](#negotiable-properties).
+  
 ##### Example protocols
 
 The following chapters will provide examples of how the [property language](#discovery-and-offersdemand-matching) can be
