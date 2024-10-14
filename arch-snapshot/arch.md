@@ -959,6 +959,13 @@ interactions.
 
 ##### Managing protocols specifications
 
+There is no single, comprehensive document listing all properties and protocols. However, specifications are stored
+in several places:
+- Some features are initially proposed through [Golem Amendment Proposals](../gaps/) (GAPs) and then implemented.
+- Other features are documented after implementation in the [specs](../specs/) directory.
+- Certain properties not tied to specific features can be found in the [standards](../standards) directory and the  
+  corresponding entry in [cheat sheet](../standards/cheat_sheet.md).
+
 Since the protocol is open to extensions and contributions from outside Golem Factory, certain issues may arise.
 Introducing new properties could conflict with existing protocols, leading to naming clashes when multiple parties
 introduce them simultaneously.
