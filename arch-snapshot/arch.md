@@ -441,6 +441,29 @@ networking layer.
 The [Net Module interface](#net-module-interface) chapter will focus on general networking concepts, while specific 
 implementations will be covered in the [Hybrid net](#hybrid-net) and [Central net](#central-net) chapters. 
 
+```mermaid
+flowchart TB
+  GolemNetwork(((GolemNetwork)))
+  
+  subgraph Node1[Golem Node 1]
+      Net1>Net]
+      Market1[Market] <--->|GSB| Net1
+      Activity1[Activity] <--->|GSB| Net1
+      Payment1[Payment] <--->|GSB| Net1
+      VPN1[VPN] <--->|GSB| Net1
+  end
+  Net1 <-...-> GolemNetwork
+  
+  subgraph Node2[Golem Node 2]
+    Net2>Net]
+    Market2[Market] <--->|GSB| Net2
+    Activity2[Activity] <--->|GSB| Net2
+    Payment2[Payment] <--->|GSB| Net2
+    VPN2[VPN] <--->|GSB| Net2
+  end
+  Net2 <-...-> GolemNetwork
+```
+
 #### Net Module interface
 
 Net module is middlemen between other modules on yagna daemon and Golem Network.
