@@ -56,7 +56,7 @@ The address of GLM payment receiver (Provider) for indicated payment platform.
 
 ### Specification
 
-[Payment Version Spec](../../../spec/payment_version.md)
+[Payment Version Spec](../../../spec/payment-version.md)
 
 ## Payment platform selection convention
 
