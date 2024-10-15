@@ -95,7 +95,6 @@ example can be challenging. Therefore, we will focus on selling computational po
 machine (VM) to provide the reader with a clearer understanding.
 
 In this case, the Offer should include the following key aspects:
-
 - The type of [Execution Environment (ExeUnit)](#execution-environment-exeunit) that will be used. (The [VM](#vm-runtime)
   is an example of an execution environment. [WASM runtime](#wasm-runtime) is another)
 - [Hardware specifications](https://github.com/golemfactory/golem-architecture/blob/master/standards/cheat_sheet.md#goleminfcpu),
@@ -129,7 +128,6 @@ and Demands represent the initial declaration of resources, terms, and condition
 process of refining these terms to reach an optimal [Agreement](#agreement) for both parties.
 
 The negotiation stage serves several purposes:
-
 - Ensures that the Provider Agent and Requestor Agent communicate before signing an Agreement (since offer propagation
   doesn’t require direct interaction between parties).
 - Allows both the Provider Agent and Requestor Agent to implement different [strategies](#market-strategies) to maximize
@@ -163,56 +161,6 @@ sequenceDiagram
       RequestorAgent->>ProviderAgent: Counter Proposal
     and Proposals from other Nodes in the network
       GolemNetwork->>ProviderAgent: Receive Proposals    
-    end
-
-    ProviderAgent->>ProviderAgent: Select best Proposals <br/>according to implemented strategy
-    ProviderAgent->>ProviderAgent: Adjust Proposals
-    ProviderAgent->>RequestorAgent: Counter Proposal
-
-    break when the terms of Agreement are satisfactory
-      RequestorAgent->>ProviderAgent: Propose Agreement
-    end
-  end
-  
-  par Proposals from other Nodes in the network
-    GolemNetwork->>ProviderAgent: Receive other Agreement Proposals
-  end
-  ProviderAgent->>ProviderAgent: Select best Agreement Proposal
-  ProviderAgent->>RequestorAgent: Approve Agreement Proposal
-  ProviderAgent->>GolemNetwork: Reject remaining Agreement Proposals
-```
-
-##### Example of negotiation
-
-To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example 
-involving the negotiation of a [payment platform](#payment-platform). This will illustrate how agents can use different
-strategies and what negotiation protocols can be built on top of the [property and language](#discovery-and-offersdemand-matching).
-
-When declaring a payment platform in an [Offer](#offer), the Provider Agent lists [wallet](#wallet) addresses for each
-platform it supports. It is the Requestor Agent's responsibility to choose the platform by specifying the appropriate
-[property](#property) in their demand. The Requestor Agent can approach negotiations in two ways:
-
-
-```mermaid
----
-title: Simplified negotiations from Provider Agent's perspective
----
-sequenceDiagram
-  actor ProviderAgent as Provider Agent
-  participant GolemNetwork as Golem Network
-  actor RequestorAgent as Requestor Agent
-
-  GolemNetwork->>RequestorAgent: Receive propagated Offer
-  Note over GolemNetwork,RequestorAgent: Offer is not necessarily received directly<br/> from Provider Node
-  RequestorAgent->>RequestorAgent: Match Offer with Demand <br/>generate Proposal as a result
-
-  loop
-    RequestorAgent->>RequestorAgent: Adjust Proposal
-  
-    par
-      RequestorAgent->>ProviderAgent: Counter Proposal
-    and Proposals from other Nodes in the network
-      GolemNetwork->>ProviderAgent: Receive Proposals  
     end
 
     ProviderAgent->>ProviderAgent: Select best Proposals <br/>according to implemented strategy
@@ -336,57 +284,7 @@ It’s important to note that, regardless of the payment scheme or platform used
 intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
 technology, Golem Factory has no control over these transactions.
 
-
-Invoices are issued after the Agreement is terminated, providing a summary of the total costs. They allow the Provider
-Agent to include any additional costs not covered in the Debit Notes, as the final Debit Note doesn’t have to be sent
-immediately after the activity ends.
-
-```mermaid
-flowchart LR
-Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
-Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
-Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
-```
-
-Both Debit Notes and Invoices can be either accepted or rejected by the other party. Acceptance signals that the
-Requestor Agent agrees to pay the specified amount. Rejection, on the other hand, indicates refusal to pay the
-non-accepted amount. However, it’s important to note that a rejection does not absolve the Requestor Agent from paying
-for all previously accepted Debit Notes. The conditions under which rejection is allowed should be defined in the
-Agreement. Currently, no payment scheme permits rejections.
-
-Accepting a Debit Note or Invoice does not result in immediate payment for a few reasons.
-Debit Notes can be classified as payable or non-payable, with payable Debit Notes identified by the due date included
-in the document. While payable Debit Notes are scheduled for processing upon acceptance, this still does not necessitate
-immediate payment. The payment mechanism allows for the [batching of payments](#payments-batching) or delaying them
-to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain) costs on the blockchain.
-
-The consequence of delaying payments is that they are not guaranteed. However, this design opens the possibility of
-implementing mechanisms that can mitigate or eliminate the risk of non-payment. For instance, a payment platform
-could be developed using a deposit or escrow contract, or by integrating payment channels into the Core Network.
-
-It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
-intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
-technology, Golem Factory has no control over these transactions.
-
 #### 6. Terminate the Agreement or await the Agreement termination event from the Requestor Agent
-
-The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
-specific termination rules, so the Agreement should clearly define the conditions under which termination is
-permitted. Below is a non-exhaustive list of possible reasons for termination:
-
-- The Agreement expires if it was established for a fixed duration.
-- The Requestor Agent no longer needs the [resources](#resource) or has completed the computations.
-- One of the parties violates the terms of the Agreement, such as:
-  - The Requestor Agent fails to accept [Debit Notes](#debit-note) within the agreed timeframe.
-  - The Provider Agent issues Debit Notes more frequently than agreed.
-  - The Requestor Agent fails to make timely payments, particularly in cases involving [mid-agreement payments](#mid-agreement-payments).
-
-It is the Agent—whether Requestor or Provider—who decides to terminate the Agreement. The Agent is also responsible for
-detecting if the other party has terminated the Agreement and taking the appropriate action in response.
-
-Provider Agent has the option to attach additional information outlining the reasons for termination when ending the
-Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
-serving as diagnostic information or for other purposes.
 
 The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
 specific termination rules, so the Agreement should clearly define the conditions under which termination is
@@ -413,20 +311,6 @@ In response, the Requestor Agent must either accept or reject the Invoice. Howev
 payment is mandatory for the total amount indicated by the accepted [Debit Notes](#debit-note), as their acceptance constitutes
 a binding commitment to pay.
 
-```mermaid
-flowchart LR
-Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
-Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
-Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
-```
-
-
-Once the Agreement is terminated, the Provider Agent should send an [Invoice](#invoice) to the Requestor Agent summarizing
-the total costs incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all [Activities](#activity).
-In response, the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status,
-payment is mandatory for the total amount indicated by the accepted [Debit Notes](#debit-note), as their acceptance constitutes
-a binding commitment to pay.
-
 #### 8. Wait until the payment for the Invoice is settled and payment confirmed.
 
 It's important for the Provider to monitor payments after the Agreement is completed. This is when the Provider Agent
@@ -435,16 +319,6 @@ the Provider Agent should implement measures to prevent being exploited by Reque
 non-paying Requestors and prioritizing those with a good reputation. Lack of payment isn't the only reason for
 declining a Requestor in the future. The Provider Agent may also choose to reject subsequent Agreements with
 Requestors who break the Agreement conditions.
-
-Payment confirmation is received by the Provider Agent from the Requestor once the transaction is confirmed on the
-blockchain. This confirmation specifies which Activities and Agreements are covered by the transaction. There is no
-1-to-1 relationship between transactions and Activities or Agreements. A single blockchain transaction can cover
-multiple Activities or Agreements, while each Activity or Agreement may also be covered by multiple transactions.
-
-Payments are not immediate for several reasons: they are not scheduled right away, and batching 
-may occur. Furthermore, blockchain transactions are not immediate and may take time to process. Therefore, the Provider
-Agent should monitor Payment events. This can be done by listening for status changes to Settled on Invoice and Debit Note
-events, or by tracking payment events to receive notifications for each transaction.
 
 Payment confirmation is received by the Provider Agent from the Requestor once the transaction is confirmed on the
 blockchain. This confirmation specifies which Activities and Agreements are covered by the transaction. There is no
