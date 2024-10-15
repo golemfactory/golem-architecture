@@ -427,9 +427,44 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 This section describes key components of Golem Network, i.e. their
 responsibilities, interfaces and which other components they utilize.
 
+### GSB
+* what it is, how it works and how it imposes a code structure and how
+  addressing works
+
 ### Networking
-* how it works that two separate Yagnas can talk to each other
-#### Central net
+
+The core networking component in Golem is the yagna Net module. It acts as a middleman between the other modules on 
+the yagna daemon and the Golem Network by facilitating message exchange with [GSB (Golem Service Bus)](#gsb) and the 
+network itself. The Net module provides a uniform interface that allows for different implementations of the 
+networking layer.  
+
+The [Net Module interface](#net-module-interface) chapter will focus on general networking concepts, while specific 
+implementations will be covered in the [Hybrid net](#hybrid-net) and [Central net](#central-net) chapters. 
+
+#### Net Module interface
+
+Net module is middlemen between other modules on yagna daemon and Golem Network.
+Central Net and Hybrid Net are two different implementations of Net module, exposing the same interface that is transparent
+from perspective of other modules.
+The communication between net and other modules happens through GSB.
+Net module translates addresses form network to GSB and vice versa.
+
+Functionalities:
+- Sending Message to other Node and receiving response
+- Listening for RPC calls from other Nodes and responding
+- Sending broadcasts
+- Receiving broadcasts
+
+##### Address translation
+
+##### Broadcasting
+
+Listening on topics.
+Registering messages on topics.
+
+
+##### Handling identities
+
 #### Hybrid net
 - Identification
 - Relay
@@ -440,9 +475,7 @@ responsibilities, interfaces and which other components they utilize.
   - Node identity verification (challenges)
   - Communication encryption
 
-### GSB
-* what it is, how it works and how it imposes a code structure and how
-  addressing works
+#### Central net
 
 ### Offer / negotiation
 A description of the component responsible for making offers, counter-offers,
