@@ -589,6 +589,32 @@ block-beta
     Address2["/market/protocol/mk1/discovery/offers/Get"]
 ```
 
+The Net module follows specific GSB address naming conventions to enable cooperation with other modules. Addresses 
+prefixed with `/net/{NodeId}` are reserved for the Net module, where it listens for incoming messages and forwards 
+them to the Golem Network. Conversely, addresses starting with `/public/...` are available for yagna modules to expose 
+public methods that can be called from other Nodes.   
+
+When the Net module receives a local incoming message, it extracts the NodeId from the address prefix and uses it to 
+forward the message into the Golem Network. On the receiving end, messages coming from the Network are processed, 
+and the address is checked to extract the NodeId. If the NodeId belongs to the recipient Node, the address is routed to 
+the appropriate GSB handler registered under the `/public/...` address.   
+
+```mermaid
+block-beta
+    columns 2
+    Prefix{{"Prefix"}}
+    Address{{"Address"}}
+    
+    Prefix1["/net/0x467ab03ac10877d0ccff89fac547a4ce8aa0cc5e"]
+    Address1["/market/protocol/mk1/discovery/offers/Get"]
+    
+    arrow1<["Translate"]>(down)
+    space
+    
+    Prefix2["/public"]
+    Address2["/market/protocol/mk1/discovery/offers/Get"]
+```
+
 ##### Broadcasting
 
 Message broadcasting in the Net module is organized around the concept of 'topics,' which can be thought of as 
