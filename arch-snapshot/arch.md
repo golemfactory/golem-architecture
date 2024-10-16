@@ -503,11 +503,34 @@ block-beta
 
 ##### Broadcasting
 
-Listening on topics.
-Registering messages on topics.
+Message broadcasting in the Net module is organized around the concept of 'topics,' which can be thought of as 
+message categories. Different modules can register a message handler with the Net module that gets triggered 
+whenever a message for a specific topic is received. 
 
+To send a broadcast, a module must send a GSB message to the Net module on the designated topic. The Net module then 
+forwards this message to the network. Depending on the network's implementation, the message may be routed either to 
+neighboring Nodes or to all Nodes across the network.  
+
+```mermaid
+sequenceDiagram
+    participant Market
+    participant Net
+    participant GolemNetwork
+    
+    Note over Market, Net: Those are only example addresses for illustration 
+    Market->>Market: Bind GSB handler for Offers broadcast (for example '/market/offers')
+    Market->>Net: Subscribe topic `OffersBcast`, register handler '/market/offers'
+    GolemNetwork->>Net: Broadcast for topic `OffersBcast
+    Net->>Net: Find all handlers for topic `OffersBcast
+    Net->>Market: Call '/market/offers'
+    Market->>Market: Select previously unseen Offers
+    Market->>Net: Send re-broadcast of new Offers
+    Net->>GolemNetwork: Broadcast new Offers to neighborhood
+```
 
 ##### Handling identities
+
+
 
 ##### Reliable, unreliable messages and transfers
 
