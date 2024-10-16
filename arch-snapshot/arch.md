@@ -644,6 +644,8 @@ sequenceDiagram
 
 ##### Handling identities
 
+
+
 Each Golem Node can have multiple identities, with one of them (the default identity) used to identify the Node 
 within the network. However, operations on a Golem Node can also be performed in the context of secondary identities.
 The Net module must be able to handle messages sent to and from any of these identities. For more information on 
