@@ -544,7 +544,21 @@ Another important aspect is that the Net module always checks if the target iden
 it does, the message is routed back to the local GSB instead of being sent over the network. This mechanism allows 
 GSB calls to be handled uniformly by the calling code, regardless of whether the target is local or remote.
 
-##### Reliable, unreliable messages and transfers
+##### Reliable, unreliable and transfers channels
+
+The Net module supports multiple channels for message transmission. The basic channel provides reliable message 
+delivery via GSB, which is used for most control messages between Nodes.
+
+However, certain functionalities require different handling. For example, VPN embeds IP packets into GSB messages 
+and routes them through the Golem Protocol. Although VPN users can choose any protocol, TCP is typically used 
+because many higher-level protocols rely on it. Sending VPN messages through a reliable protocol would hurt 
+performance, as this would essentially embed TCP within TCP (or another reliable protocol implemented in Net). To 
+address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
+guarantee.   
+
+The third option is the transfer channel. Mixing transfers with GSB control messages can cause delays, as large file 
+transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
+specifically for transfers.
 
 #### Hybrid net
 - Identification
