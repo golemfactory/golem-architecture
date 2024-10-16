@@ -560,7 +560,20 @@ The third option is the transfer channel. Mixing transfers with GSB control mess
 transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
 specifically for transfers.
 
-#### Hybrid net
+#### Hybrid Net
+
+Hybrid Net was developed as an intermediate step towards decentralization, enabling peer-to-peer (P2P) communication 
+between Golem Nodes. However, since most of the network operates behind NATs, P2P cannot be the sole communication
+method. To address this, the Net implementation supports communication forwarding through specialized Node known
+as relay.  
+
+An additional advantage of relay server is it's ability to expedite Node discovery. In a pure P2P network, Node
+discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
+Relay server can also facilitate P2P communication between Nodes when direct connections are not possible.
+
+
+
+
 - Identification
 - Relay
 - Discovering Nodes
