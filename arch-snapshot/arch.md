@@ -530,8 +530,11 @@ sequenceDiagram
 
 ##### Handling identities
 
-Each Golem Node can have multiple identities, though only one is used to identify the Node within the network. The 
-Net module must be capable of handling messages sent to and from any of these identities.
+Each Golem Node can have multiple identities, with one of them (the default identity) used to identify the Node 
+within the network. However, operations on a Golem Node can also be performed in the context of secondary identities.
+The Net module must be able to handle messages sent to and from any of these identities. For more information on 
+identification, refer to the chapter about the [identity module](#identity). This section focuses solely on the Net 
+module interface.
 
 In addition to the GSB endpoints bound to the `/net/{NodeId}` prefix, as described in the [Address Translation 
 chapter](#address-translation), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
