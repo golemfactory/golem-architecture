@@ -530,7 +530,16 @@ sequenceDiagram
 
 ##### Handling identities
 
+Each Golem Node can have multiple identities, though only one is used to identify the Node within the network. The 
+Net module must be capable of handling messages sent to and from any of these identities.
 
+In addition to the GSB endpoints bound to the `/net/{NodeId}` prefix, as described in the [Address Translation 
+chapter](#address-translation), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
+be sent from a specific identity on one Node to a specific identity on a remote Node.
+
+Another important aspect is that the Net module always checks if the target identity belongs to the local Node. If 
+it does, the message is routed back to the local GSB instead of being sent over the network. This mechanism allows 
+GSB calls to be handled uniformly by the calling code, regardless of whether the target is local or remote.
 
 ##### Reliable, unreliable messages and transfers
 
