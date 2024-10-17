@@ -591,6 +591,36 @@ concurrently, ensuring decent scalability.
 
 ###### Connecting to relay server
 
+The Hybrid Net protocol introduces the concept of a Session, which operates on top of the UDP protocol. All requests 
+to the Relay server and network traffic routing occur within the context of a Session. To establish a Session with 
+the Relay server, a Node must undergo a handshake process that serves several purposes:
+1. Verifies that the Node presenting its NodeId possesses the private key corresponding to that NodeId.
+2. Collects and verifies any secondary identities associated with the Node.
+3. Gathers additional Node information, such as supported symmetric encryption algorithms.
+4. Determines if the Node is behind a NAT or if it has a public IP address and exposed port. The public IP acquired in 
+   this step may later be used by other Nodes to establish a peer-to-peer Session.
+
+**Challenge**
+
+Identity verification is performed via a challenge mechanism, where the Relay server sends random bytes to the Node, 
+which must compute a hash with a specified number of leading zeros. The difficulty level, set by the Relay server, 
+determines the number of leading zeros required. This computationally expensive task protects the Relay server from 
+DDoS attacks by forcing the Node to complete a certain amount of work before establishing a Session.  
+
+The challenge is cryptographically signed using the private key of each identity associated with the Node. The Relay 
+server can then recover the Node's identities and public keys from these signatures, verifying that the Node 
+possesses the corresponding private keys. The recovered public keys are later made available to other Nodes that 
+request information about the Node.
+
+**Public IP check**
+
+When a Node initiates a Session, an additional mechanism is required to determine whether the IP address from which 
+the packets are received is behind a NAT. This is achieved by sending Ping packets (network protocol ping, not to be 
+confused with the Linux command) from a different UDP port than the one used for receiving incoming Sessions. This 
+ensures that any network devices between the Node and the Relay server won't recognize these Ping packets as part of 
+the same communication stream. If the ports are not publicly exposed, the Ping packets will be dropped, confirming 
+that the Node is behind a NAT.
+
 ```mermaid
 sequenceDiagram
     participant GolemNode
@@ -617,13 +647,23 @@ sequenceDiagram
         GolemNode->>RelayServer: Ping
         RelayServer->>GolemNode: Pong
     end
+    
+    opt Close Session
+        GolemNode->>RelayServer: Disconnect
+    end
 ```
+
+Important note: The Relay server does not possess private keys, and its identity is not verified in the current 
+implementation. This marks a significant distinction compared to the process of establishing peer-to-peer Sessions 
+with regular Nodes.
 
 ##### Establishing connections between Nodes
 
 ##### Network Traffic
 
 ##### Virtual TCP
+
+##### Broadcasting
 
 ##### Node identification
 
