@@ -634,10 +634,15 @@ sequenceDiagram
     RelayServer->>RelayServer: Verify solution
     RelayServer->>RelayServer: Recover identities from signatures
     RelayServer->>GolemNode: Session established response
+    
     GolemNode->>RelayServer: Register
     activate RelayServer
     RelayServer-->>GolemNode: Ping from different UDP port (Check if IP address is public)
-    GolemNode-->>RelayServer: Ping response
+    alt 
+        GolemNode-->>RelayServer: Ping response
+    else Timeout
+        GolemNode--xRelayServer: Packet dropped due to NAT
+    end
     RelayServer->>GolemNode: Register response (discovered public address)
     deactivate RelayServer
 
