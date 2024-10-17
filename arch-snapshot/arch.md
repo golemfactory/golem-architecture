@@ -560,15 +560,209 @@ The third option is the transfer channel. Mixing transfers with GSB control mess
 transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
 specifically for transfers.
 
-#### Hybrid net
-- Identification
-- Relay
-- Discovering Nodes
-- P2P communication
-- Relayed communication
-- Cryptography
-  - Node identity verification (challenges)
-  - Communication encryption
+#### Hybrid Net
+
+Hybrid Net was developed as an intermediate step towards decentralization, enabling peer-to-peer (P2P) communication 
+between Golem Nodes. However, since most of the network operates behind NATs, P2P cannot be the sole communication
+method. To address this, the Net implementation supports communication forwarding through specialized Node known
+as relay.  
+
+An additional advantage of relay server is it's ability to expedite Node discovery. In a pure P2P network, Node
+discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
+Relay server can also facilitate P2P communication between Nodes when direct connections are not possible.
+
+##### Relay server
+
+The Relay server is a core component of the networking layer in the Golem Network. All newly connected Nodes 
+register with the Relay server, providing the necessary information for discovery and connection. The Relay server:
+- Maintains a list of Nodes present in the network.
+- Stores each Node's identity, public key, and IP address.
+- Assists in establishing peer-to-peer (p2p) connections when possible.
+- Routes traffic between Nodes if a p2p connection cannot be established.
+- Checks if connecting Nodes have public IP port exposed
+- Offers functions for:
+  - Discovering Nodes and querying their information.
+  - Retrieving a Node's neighborhood.
+
+Communication with the Relay server is handled through a custom protocol built on top of UDP, defined using Protocol 
+Buffers (protobuf). UDP was chosen for its lightweight nature, as it does not require maintaining open connections, 
+which would consume more system resources compared to TCP. This makes it possible to handle a large number of Nodes 
+concurrently, ensuring decent scalability.
+
+###### Connecting to relay server
+
+The Hybrid Net protocol introduces the concept of a Session, which operates on top of the UDP protocol. All requests 
+to the Relay server and network traffic routing occur within the context of a Session. To establish a Session with 
+the Relay server, a Node must undergo a handshake process that serves several purposes:
+1. Verifies that the Node presenting its NodeId possesses the private key corresponding to that NodeId.
+2. Collects and verifies any secondary identities associated with the Node.
+3. Gathers additional Node information, such as supported symmetric encryption algorithms.
+4. Determines if the Node is behind a NAT or if it has a public IP address and exposed port. The public IP acquired in 
+   this step may later be used by other Nodes to establish a peer-to-peer Session.
+
+**Challenge**
+
+Identity verification is performed via a challenge mechanism, where the Relay server sends random bytes to the Node, 
+which must compute a hash with a specified number of leading zeros. The difficulty level, set by the Relay server, 
+determines the number of leading zeros required. This computationally expensive task protects the Relay server from 
+DDoS attacks by forcing the Node to complete a certain amount of work before establishing a Session.  
+
+The challenge is cryptographically signed using the private key of each identity associated with the Node. The Relay 
+server can then recover the Node's identities and public keys from these signatures, verifying that the Node 
+possesses the corresponding private keys. The recovered public keys are later made available to other Nodes that 
+request information about the Node.
+
+**Public IP check**
+
+When a Node initiates a Session, an additional mechanism is required to determine whether the IP address from which 
+the packets are received is behind a NAT. This is achieved by sending Ping packets (network protocol ping, not to be 
+confused with the Linux command) from a different UDP port than the one used for receiving incoming Sessions. This 
+ensures that any network devices between the Node and the Relay server won't recognize these Ping packets as part of 
+the same communication stream. If the ports are not publicly exposed, the Ping packets will be dropped, confirming 
+that the Node is behind a NAT.
+
+```mermaid
+sequenceDiagram
+    participant GolemNode as Golem Node 1
+    participant RelayServer as Relay Server
+    
+    GolemNode->>RelayServer: Session request
+    RelayServer->>GolemNode: Challenge
+    GolemNode->>GolemNode: Solve challenge
+    GolemNode->>GolemNode: Sign solution with Node's identities
+    GolemNode->>RelayServer: Challenge response
+    RelayServer->>RelayServer: Verify solution
+    RelayServer->>RelayServer: Recover identities from signatures
+    RelayServer->>GolemNode: Session established response
+    
+    GolemNode->>RelayServer: Register
+    activate RelayServer
+    RelayServer-->>GolemNode: Ping from different UDP port (Check if IP address is public)
+    alt 
+        GolemNode-->>RelayServer: Ping response
+    else Timeout
+        GolemNode--xRelayServer: Packet dropped due to NAT
+    end
+    RelayServer->>GolemNode: Register response (discovered public address)
+    deactivate RelayServer
+
+    Note right of GolemNode: Use session to discover Nodes 
+
+    loop In regular intervals to keep session alive
+        GolemNode->>RelayServer: Ping
+        RelayServer->>GolemNode: Pong
+    end
+    
+    opt Close Session
+        GolemNode->>RelayServer: Disconnect
+    end
+```
+
+Important note: The Relay server does not possess private keys, and its identity is not verified in the current 
+implementation. This marks a significant distinction compared to the process of establishing peer-to-peer Sessions 
+with regular Nodes.
+
+##### Establishing connections between Nodes
+
+Currently, a peer-to-peer (p2p) session can be established in two scenarios. In the first, if the target Node has a 
+public IP, the initiating Node can directly connect to it. In the second scenario, where the initiating Node has a 
+public IP but the target Node is behind a NAT, the connection is facilitated by the Relay server. The initiating 
+Node first sends a Reverse Connection message to the Relay server, which forwards it to the target Node. The target 
+Node then attempts to establish a direct connection with the initiating Node. Whether the target Node has a public 
+IP can be determined based on information returned by the Relay server.    
+
+Since the current Net implementation does not support NAT punching, if both Nodes are behind NAT, communication must 
+be routed through the Relay server.
+
+```mermaid
+---
+title: Scenarios of communication between Nodes   
+---
+sequenceDiagram
+    participant GolemNode1 as Golem Node 1
+    participant RelayServer as Relay Server
+    participant GolemNode2 as Golem Node 2
+
+    GolemNode1-->RelayServer: Established Session
+    GolemNode2-->RelayServer: Established  Session
+
+    GolemNode1->>RelayServer: Get Node 2's information
+    RelayServer->>GolemNode1: Node 2's information
+    
+    alt Golem Node 2 has public IP
+        GolemNode1->>GolemNode2: Establish P2P connection
+    else Golem Node 1 has public IP
+        GolemNode1->>RelayServer: Reverse Connection message
+        RelayServer->>GolemNode2: Reverse Connection message
+
+        GolemNode2->>RelayServer: Get Node 1's information
+        RelayServer->>GolemNode2: Node 1's information
+        
+        GolemNode2->>GolemNode1: Establish P2P connection
+    else Golem Node 1 and 2 are behind NAT
+        par Communication routed through relay
+          GolemNode1->>RelayServer: Forward packet
+          RelayServer->>GolemNode2: Forward packet
+          GolemNode2->>RelayServer: Forward packet
+          RelayServer->>GolemNode1: Forward packet 
+        end
+    end
+```
+
+**Peer-to-peer connection handshake**
+
+Establishing a peer-to-peer (p2p) connection between Nodes is similar to the Relay server handshake but with a few 
+key differences:
+- Both Nodes must solve a challenge and prove their identities to each other.
+- There is no registration step or public IP check, as the public IP of the Nodes is already known.
+- The initiating Node sends a "Resume Forwarding" control message to the target Node, informing it that it can begin 
+  sending packets. This step ensures that packets arriving too early are not dropped.
+
+```mermaid
+---
+title: Protocol for establishing peer-to-peer Session   
+---
+sequenceDiagram
+    participant GolemNode1 as Golem Node 1
+    participant GolemNode2 as Golem Node 2
+    
+    GolemNode1->>GolemNode2: Session request (+challenge)
+    GolemNode2->>GolemNode1: Challenge
+    
+    GolemNode1->>GolemNode1: Solve challenge
+    GolemNode2->>GolemNode2: Solve challenge
+    GolemNode1->>GolemNode1: Sign solution with Node's identities
+    GolemNode2->>GolemNode2: Sign solution with Node's identities
+    
+    GolemNode1->>GolemNode2: Challenge response
+    GolemNode2->>GolemNode2: Verify solution
+    GolemNode2->>GolemNode2: Recover identities from signatures
+    GolemNode2->>GolemNode1: Challenge response
+
+    GolemNode1->>GolemNode1: Verify solution
+    GolemNode1->>GolemNode1: Recover identities from signatures
+    Note over GolemNode1: Node can start sending packets from this moment
+
+    GolemNode1->>GolemNode2: Resume Forwarding control message
+    Note over GolemNode2: Node can start sending packets from this moment
+
+    loop In regular intervals to keep session alive
+        GolemNode1->>GolemNode2: Ping
+        GolemNode2->>GolemNode1: Pong
+    end
+    
+    opt Close Session
+        GolemNode1->>GolemNode2: Disconnect
+    end
+```
+
+##### Network Traffic
+
+##### Virtual TCP
+
+##### Broadcasting
+
+##### Node identification
 
 #### Central net
 
