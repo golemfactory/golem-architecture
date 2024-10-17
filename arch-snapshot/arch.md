@@ -571,7 +571,31 @@ An additional advantage of relay server is it's ability to expedite Node discove
 discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
 Relay server can also facilitate P2P communication between Nodes when direct connections are not possible.
 
+##### Relay server
 
+The Relay server is a core component of the networking layer in the Golem Network. All newly connected Nodes 
+register with the Relay server, providing the necessary information for discovery and connection. The Relay server:
+- Maintains a list of Nodes present in the network.
+- Stores each Node's identity, public key, and IP address.
+- Assists in establishing peer-to-peer (p2p) connections when possible.
+- Routes traffic between Nodes if a p2p connection cannot be established.
+- Offers functions for:
+  - Discovering Nodes and querying their information.
+  - Retrieving a Node's neighborhood.
+
+Communication with the Relay server is handled through a custom protocol built on top of UDP, defined using Protocol 
+Buffers (protobuf). UDP was chosen for its lightweight nature, as it does not require maintaining open connections, 
+which would consume more system resources compared to TCP. This makes it possible to handle a large number of Nodes 
+concurrently, ensuring decent scalability.
+
+###### Connecting to relay server
+
+
+##### Establishing connections
+
+##### Network Traffic
+
+##### Virtual TCP
 
 
 - Identification
