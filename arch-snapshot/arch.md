@@ -676,7 +676,7 @@ be routed through the Relay server.
 
 ```mermaid
 ---
-title: Options to establish P2P connection  
+title: Scenarios of communication between Nodes   
 ---
 sequenceDiagram
     participant GolemNode1 as Golem Node 1
@@ -709,6 +709,52 @@ sequenceDiagram
     end
 ```
 
+**Peer-to-peer connection handshake**
+
+Establishing a peer-to-peer (p2p) connection between Nodes is similar to the Relay server handshake but with a few 
+key differences:
+- Both Nodes must solve a challenge and prove their identities to each other.
+- There is no registration step or public IP check, as the public IP of the Nodes is already known.
+- The initiating Node sends a "Resume Forwarding" control message to the target Node, informing it that it can begin 
+  sending packets. This step ensures that packets arriving too early are not dropped.
+
+```mermaid
+---
+title: Protocol for establishing peer-to-peer Session   
+---
+sequenceDiagram
+    participant GolemNode1 as Golem Node 1
+    participant GolemNode2 as Golem Node 2
+    
+    GolemNode1->>GolemNode2: Session request (+challenge)
+    GolemNode2->>GolemNode1: Challenge
+    
+    GolemNode1->>GolemNode1: Solve challenge
+    GolemNode2->>GolemNode2: Solve challenge
+    GolemNode1->>GolemNode1: Sign solution with Node's identities
+    GolemNode2->>GolemNode2: Sign solution with Node's identities
+    
+    GolemNode1->>GolemNode2: Challenge response
+    GolemNode2->>GolemNode2: Verify solution
+    GolemNode2->>GolemNode2: Recover identities from signatures
+    GolemNode2->>GolemNode1: Challenge response
+
+    GolemNode1->>GolemNode1: Verify solution
+    GolemNode1->>GolemNode1: Recover identities from signatures
+    Note over GolemNode1: Node can start sending packets from this moment
+
+    GolemNode1->>GolemNode2: Resume Forwarding control message
+    Note over GolemNode2: Node can start sending packets from this moment
+
+    loop In regular intervals to keep session alive
+        GolemNode1->>GolemNode2: Ping
+        GolemNode2->>GolemNode1: Pong
+    end
+    
+    opt Close Session
+        GolemNode1->>GolemNode2: Disconnect
+    end
+```
 
 ##### Network Traffic
 
