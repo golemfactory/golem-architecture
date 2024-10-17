@@ -579,6 +579,7 @@ register with the Relay server, providing the necessary information for discover
 - Stores each Node's identity, public key, and IP address.
 - Assists in establishing peer-to-peer (p2p) connections when possible.
 - Routes traffic between Nodes if a p2p connection cannot be established.
+- Checks if connecting Nodes have public IP port exposed
 - Offers functions for:
   - Discovering Nodes and querying their information.
   - Retrieving a Node's neighborhood.
@@ -590,22 +591,41 @@ concurrently, ensuring decent scalability.
 
 ###### Connecting to relay server
 
+```mermaid
+sequenceDiagram
+    participant GolemNode
+    participant RelayServer
+    
+    GolemNode->>RelayServer: Session request
+    RelayServer->>GolemNode: Challenge
+    GolemNode->>GolemNode: Solve challenge
+    GolemNode->>GolemNode: Sign solution with Node's identities
+    GolemNode->>RelayServer: Challenge response
+    RelayServer->>RelayServer: Verify solution
+    RelayServer->>RelayServer: Recover identities from signatures
+    RelayServer->>GolemNode: Session established response
+    GolemNode->>RelayServer: Register
+    activate RelayServer
+    RelayServer-->>GolemNode: Ping from different UDP port (Check if IP address is public)
+    GolemNode-->>RelayServer: Ping response
+    RelayServer->>GolemNode: Register response (discovered public address)
+    deactivate RelayServer
 
-##### Establishing connections
+    Note right of GolemNode: Use session to discover Nodes 
+
+    loop In regular intervals to keep session alive
+        GolemNode->>RelayServer: Ping
+        RelayServer->>GolemNode: Pong
+    end
+```
+
+##### Establishing connections between Nodes
 
 ##### Network Traffic
 
 ##### Virtual TCP
 
-
-- Identification
-- Relay
-- Discovering Nodes
-- P2P communication
-- Relayed communication
-- Cryptography
-  - Node identity verification (challenges)
-  - Communication encryption
+##### Node identification
 
 #### Central net
 
