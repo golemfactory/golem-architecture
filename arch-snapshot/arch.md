@@ -623,8 +623,8 @@ that the Node is behind a NAT.
 
 ```mermaid
 sequenceDiagram
-    participant GolemNode
-    participant RelayServer
+    participant GolemNode as Golem Node 1
+    participant RelayServer as Relay Server
     
     GolemNode->>RelayServer: Session request
     RelayServer->>GolemNode: Challenge
@@ -663,6 +663,52 @@ implementation. This marks a significant distinction compared to the process of 
 with regular Nodes.
 
 ##### Establishing connections between Nodes
+
+Currently, a peer-to-peer (p2p) session can be established in two scenarios. In the first, if the target Node has a 
+public IP, the initiating Node can directly connect to it. In the second scenario, where the initiating Node has a 
+public IP but the target Node is behind a NAT, the connection is facilitated by the Relay server. The initiating 
+Node first sends a Reverse Connection message to the Relay server, which forwards it to the target Node. The target 
+Node then attempts to establish a direct connection with the initiating Node. Whether the target Node has a public 
+IP can be determined based on information returned by the Relay server.    
+
+Since the current Net implementation does not support NAT punching, if both Nodes are behind NAT, communication must 
+be routed through the Relay server.
+
+```mermaid
+---
+title: Options to establish P2P connection  
+---
+sequenceDiagram
+    participant GolemNode1 as Golem Node 1
+    participant RelayServer as Relay Server
+    participant GolemNode2 as Golem Node 2
+
+    GolemNode1-->RelayServer: Established Session
+    GolemNode2-->RelayServer: Established  Session
+
+    GolemNode1->>RelayServer: Get Node 2's information
+    RelayServer->>GolemNode1: Node 2's information
+    
+    alt Golem Node 2 has public IP
+        GolemNode1->>GolemNode2: Establish P2P connection
+    else Golem Node 1 has public IP
+        GolemNode1->>RelayServer: Reverse Connection message
+        RelayServer->>GolemNode2: Reverse Connection message
+
+        GolemNode2->>RelayServer: Get Node 1's information
+        RelayServer->>GolemNode2: Node 1's information
+        
+        GolemNode2->>GolemNode1: Establish P2P connection
+    else Golem Node 1 and 2 are behind NAT
+        par Communication routed through relay
+          GolemNode1->>RelayServer: Forward packet
+          RelayServer->>GolemNode2: Forward packet
+          GolemNode2->>RelayServer: Forward packet
+          RelayServer->>GolemNode1: Forward packet 
+        end
+    end
+```
+
 
 ##### Network Traffic
 
