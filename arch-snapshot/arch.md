@@ -545,8 +545,7 @@ sequenceDiagram
 One important [design decision](#only-providers-offers-are-propagated) in Golem's market protocol is that only Offers are
 propagated across the network, while Demands are not. This decision addresses an issue encountered in earlier versions of
 Golem, where Requestors joining the network were flooded with work Offers from all Nodes. By focusing on propagating
-Offers, the system prevents overload and ensures smoother interactions. Additionally, this approach enables Offers to be
-available for other operations, such as [market searching](#searching-on-market).
+Offers, the system prevents overload and ensures smoother interactions.
 
 The Golem market was planned to be implemented in different phases:
 - Proof of Concept (PoC) version: A centralized market collects all Offers and is responsible for matching them with
@@ -562,13 +561,14 @@ There are a few exceptions where the market checks the type of network modules u
 traffic optimization and is not crucial for the protocol.
 
 The market broadcasting protocol is built on top of the Network Layer and makes only a few assumptions about it:
-- The Network Layer has broadcasting functionality that propagates messages to a specific neighborhood (the market
-  does not need to know specific Nodes).
+- The Network Layer provides broadcasting functionality that propagates messages to a subset of Nodes within the 
+  network. The market does not need to be aware of the specific nodes involved.
+- Upon receiving a message, the Market must be able to identify the sender's Node ID.
 - The Market Layer can send and respond to GSB calls to and from other Nodes using their Node IDs.
 
 #### Algorithm overview
 
-There are three primary triggers for Offer propagation in the network:
+There are three main triggers that can initiate Offer propagation across the network for a Node:
 - When an Offer is published on the market.
 - At regular, randomized intervals after a certain amount of time has elapsed.
 - When a new Node joins the network (via a NewNeighbor broadcast).
@@ -775,18 +775,18 @@ prevent overwhelming the network with excessive messages.
 All three broadcast triggers mentioned in the [previous chapter](#algorithm-overview) serve distinct purposes.
 
 The primary mechanism triggers a broadcast when a new Offer is published. However, this does not guarantee that new
-Nodes joining the network afterward will receive the Offer. To address this, cyclic propagation was introduced.
+Nodes joining the network afterward will receive the Offer. To address this, recurrent propagation was introduced.
 
-Cyclic broadcasts are sent at random intervals, with a configurable mean time between broadcasts. This ensures that
-if many Nodes are spawned using a script, the network will not experience spikes in bandwidth usage. Each cyclic
-broadcast includes all Offers owned by the Node, along with a random subset of other stored Offers. This mechanism
-provides an opportunity for new Nodes joining the network to receive the latest Offers.
+Recurrent broadcasts are sent at random intervals, with a configurable mean time between broadcasts. The randomness 
+ensures that if many Nodes are spawned using a script, the network will not experience spikes in bandwidth usage. 
+Each recurrent broadcast includes all Offers owned by the Node, along with a random subset of other stored Offers. 
+This mechanism provides an opportunity for new Nodes joining the network to receive the latest Offers.
 
-The last mechanism, the new neighbor-triggered broadcast, was introduced after transitioning to the hybrid net implementation.
-When a new Requestor joins the network, they are not immediately visible to other Nodes. To minimize unnecessary network traffic,
-the network module does not query the relay server for neighborhood updates with each broadcast call. This can result in a
-delay in Offer delivery, meaning that, regardless of cyclic broadcast interval settings, a Node may not receive any Offers
-during the initial minutes of operation.
+The last mechanism, the new neighbor-triggered broadcast, was introduced after transitioning to the hybrid net 
+implementation. When a new Requestor joins the network, they are not immediately visible to other Nodes. To minimize 
+unnecessary network traffic, the network module does not query the relay server for neighborhood updates with each 
+broadcast call. This can result in a delay in Offer delivery, meaning that, regardless of recurrent broadcast 
+interval settings, a Node may not receive any Offers during the initial minutes of operation.
 
 To address this issue, when a Node joins the network, it sends a notification to its neighbors to announce its presence.
 In response, the receiving Nodes invalidate their current neighborhood for updates and promptly send a set of Offers.
@@ -795,7 +795,7 @@ In response, the receiving Nodes invalidate their current neighborhood for updat
 
 Since each Node stores the full state of Offers within the network, it's crucial to protect the market from being overwhelmed.
 Offers do not have an indefinite lifetime; they come with a predefined expiration. Expired Offers are not propagated, and
-Proposals are not generated from them when matching with Demands on the market.
+Proposals are not generated in response to them when matching with Demands on the market.
 
 The second mechanism allows a Provider Agent to unpublish their Offer. When an Agent unsubscribes from the market, this
 information is propagated to other Nodes in a manner similar to how Offers are broadcasted. While this mechanism is not
