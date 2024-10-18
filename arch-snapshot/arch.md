@@ -541,9 +541,265 @@ sequenceDiagram
 - Termination reason concept
 
 ### Offer propagation
-* a description of how it happens that offers are visible to reqestors
-* Link to design [decision](#only-providers-offers-are-propagated)
-* Algorithm overview
+
+One important [design decision](#only-providers-offers-are-propagated) in Golem's market protocol is that only Offers are
+propagated across the network, while Demands are not. This decision addresses an issue encountered in earlier versions of
+Golem, where Requestors joining the network were flooded with work Offers from all Nodes. By focusing on propagating
+Offers, the system prevents overload and ensures smoother interactions.
+
+The Golem market was planned to be implemented in different phases:
+- Proof of Concept (PoC) version: A centralized market collects all Offers and is responsible for matching them with
+  Demands.
+- Decentralized version: Features network propagation and local Offers-Demands matching. Nodes maintain a full
+  list of Offers in the network (this is the current stage).
+- Fully scalable market: Implements Offer sharding, allowing each Node to store only a subset of Offers. Searching
+  the market is done progressively and in a more probabilistic manner.
+
+The phases of market development should not be confused with the centralization and decentralization of the Network Layer.
+The implementation of the Network Layer is completely transparent and does not need to be known to the Market module.
+There are a few exceptions where the market checks the type of network modules used, but this is primarily for network
+traffic optimization and is not crucial for the protocol.
+
+The market broadcasting protocol is built on top of the Network Layer and makes only a few assumptions about it:
+- The Network Layer provides broadcasting functionality that propagates messages to a subset of Nodes within the 
+  network. The market does not need to be aware of the specific nodes involved.
+- Upon receiving a message, the Market must be able to identify the sender's Node ID.
+- The Market Layer can send and respond to GSB calls to and from other Nodes using their Node IDs.
+
+#### Algorithm overview
+
+There are three main triggers that can initiate Offer propagation across the network for a Node:
+- When an Offer is published on the market.
+- At regular, randomized intervals after a certain amount of time has elapsed.
+- When a new Node joins the network (via a NewNeighbor broadcast).
+
+While each of these triggers has specific implementation details, the general concept remains consistent across all
+cases. These details will be explained in later sections.
+
+To minimize unnecessary data transfers, the propagation algorithm operates in two phases:
+- In the first phase, only the Offer IDs are broadcast to neighboring Nodes.
+- Second, details of any new, previously unseen Offers are requested based on the received IDs.
+
+##### Offers identification
+
+A Node often receives an Offer indirectly, relayed through intermediary Nodes rather than directly from its publisher.
+To mitigate potential risks and attacks from malicious Nodes, Offer and Demand IDs are derived from their content. This
+approach offers several benefits:
+- It reduces the likelihood of Offer ID collisions across the network. When requesting an Offer by its ID, the content
+  received will always match.
+- It ensures the integrity of Offers, as malicious Nodes cannot alter an Offer's content to disadvantage its owner.
+  Any such changes are easily detectable.
+
+Although Offers lack cryptographic signatures, which means that other Nodes could theoretically create Offers on behalf of
+someone else, this type of fraud would be uncovered during the negotiation stage.
+
+##### Algorithm in practise
+
+Consider the following network topology:
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 -.- Node2
+  Node1 -.- Node3
+  Node2 -.- Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 -.- Node2
+  Node6 -.- Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 -.- Node7
+```
+`Node 8` begins broadcasting Offers to its direct neighbors::
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8(((Node 8)))
+  Node9((Node 9))
+  
+  Node1 -.- Node2
+  Node1 -.- Node3
+  Node2 -.- Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 -.- Node2
+  Node6 -.- Node9
+  Node8 === |Offer Id| Node7
+  Node8 === |Offer Id| Node5
+  Node9 -.- Node7
+```
+The Offer ID reaches `Node 5` and `Node 7`. Since neither has encountered this Offer before, they will propagate it
+further to their respective neighbors. Simultaneously, they will request the full Offer details from the source Node
+that initially sent it.
+
+As the original sender of the Offer, `Node 8` will reject any additional broadcasts, effectively halting the propagation
+process at this point.
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5(((Node 5)))
+  Node6((Node 6))
+  Node7(((Node 7)))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 -.- Node2
+  Node1 -.- Node3
+  Node2 -.- Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 === |Offer Id| Node2
+  Node6 -.- Node9
+  Node8 x===x |Offer Id| Node7
+  Node8 x===x |Offer Id| Node5
+  Node9 === |Offer Id| Node7
+```
+In the next iteration, `Node 2` and `Node 9` act as the sources for broadcasts. Offers will be successfully propagated 
+to `Node 1`, `Node 4`, and `Node 6`, while `Node 5` and `Node 7` will reject these broadcasts.
+
+Both `Node 2` and `Node 9` will retrieve the full Offer details from the Nodes they received the IDs from, rather
+than attempting to reach the original source, `Node 8`.
+ 
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2(((Node 2)))
+  Node3((Node 3))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9(((Node 9)))
+  
+  Node1 === |Offer Id| Node2
+  Node1 -.- Node3
+  Node2 === |Offer Id| Node4
+  Node3 -.- Node6
+  Node4 -.- Node6
+  Node5 x===x |Offer Id| Node2
+  Node6 === |Offer Id| Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 x===x |Offer Id| Node7
+```
+The Offer successfully reaches the most distant Nodes within the network - `Node 3`.
+Since two Nodes attempt to send the same Offer to `Node 3` simultaneously, only the first broadcast will be accepted.
+```mermaid
+flowchart LR
+  Node1(((Node 1)))
+  Node2((Node 2))
+  Node3((Node 3))
+  Node4(((Node 4)))
+  Node5((Node 5))
+  Node6(((Node 6)))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 x==x |Offer Id| Node2
+  Node1 === |Offer Id| Node3
+  Node2 x===x |Offer Id| Node4
+  Node3 x===x |Offer Id| Node6
+  Node4 x===x |Offer Id| Node6
+  Node5 -.- Node2
+  Node6 x===x |Offer Id| Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 -.- Node7
+```
+All neighbors of `Node 3` are already aware of the Offer, so the propagation process concludes.
+```mermaid
+flowchart LR
+  Node1((Node 1))
+  Node2((Node 2))
+  Node3(((Node 3)))
+  Node4((Node 4))
+  Node5((Node 5))
+  Node6((Node 6))
+  Node7((Node 7))
+  Node8((Node 8))
+  Node9((Node 9))
+  
+  Node1 -.- Node2
+  Node1 x==x |Offer Id| Node3
+  Node2 -.- Node4
+  Node3 x==x |Offer Id| Node6
+  Node4 -.- Node6
+  Node5 -.- Node2
+  Node6 -.- Node9
+  Node8 -.- Node7
+  Node8 -.- Node5
+  Node9 -.- Node7
+```
+
+##### Neighborhood function
+
+To prevent clustering of Nodes and accidental splits in the network, where subsets of Nodes become unreachable, a proper
+neighborhood function must be utilized. This function is defined by the network module, and the market relies on the
+broadcast function, leaving it with no alternative in this regard.
+
+Optimal guarantees can be achieved when two neighboring Nodes have distinctly different neighborhoods, minimizing their
+number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
+distance between Node IDs.
+
+##### Central Net vs. Hybrid Net
+
+The net module implementation is transparent for the market module, but certain details must be addressed for network
+traffic optimization. The primary difference between the central and hybrid networks from the market perspective is that
+the central net has only global broadcasting, whereas the hybrid net utilizes local broadcasting to neighborhoods.
+
+Due to this distinction, different broadcasting settings are required—especially regarding broadcasting frequency—to
+prevent overwhelming the network with excessive messages.
+
+##### Broadcast triggers
+
+All three broadcast triggers mentioned in the [previous chapter](#algorithm-overview) serve distinct purposes.
+
+The primary mechanism triggers a broadcast when a new Offer is published. However, this does not guarantee that new
+Nodes joining the network afterward will receive the Offer. To address this, recurrent propagation was introduced.
+
+Recurrent broadcasts are sent at random intervals, with a configurable mean time between broadcasts. The randomness 
+ensures that if many Nodes are spawned using a script, the network will not experience spikes in bandwidth usage. 
+Each recurrent broadcast includes all Offers owned by the Node, along with a random subset of other stored Offers. 
+This mechanism provides an opportunity for new Nodes joining the network to receive the latest Offers.
+
+The last mechanism, the new neighbor-triggered broadcast, was introduced after transitioning to the hybrid net 
+implementation. When a new Requestor joins the network, they are not immediately visible to other Nodes. To minimize 
+unnecessary network traffic, the network module does not query the relay server for neighborhood updates with each 
+broadcast call. This can result in a delay in Offer delivery, meaning that, regardless of recurrent broadcast 
+interval settings, a Node may not receive any Offers during the initial minutes of operation.
+
+To address this issue, when a Node joins the network, it sends a notification to its neighbors to announce its presence.
+In response, the receiving Nodes invalidate their current neighborhood for updates and promptly send a set of Offers.
+
+#### Offers expiration and unsubscribing
+
+Since each Node stores the full state of Offers within the network, it's crucial to protect the market from being overwhelmed.
+Offers do not have an indefinite lifetime; they come with a predefined expiration. Expired Offers are not propagated, and
+Proposals are not generated in response to them when matching with Demands on the market.
+
+The second mechanism allows a Provider Agent to unpublish their Offer. When an Agent unsubscribes from the market, this
+information is propagated to other Nodes in a manner similar to how Offers are broadcasted. While this mechanism is not
+essential for the market's functionality, it optimistically helps reduce clutter within the market.
 
 ### Payments
 * a description of current payment driver, its modes of operations and how it
