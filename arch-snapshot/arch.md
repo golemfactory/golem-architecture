@@ -781,9 +781,26 @@ The sender can also opt to use the unreliable channel, where GSB messages are se
 without message fragmentation. A key implication of this is that large GSB messages could exceed the Maximum 
 Transmission Unit (MTU) and may be dropped by network devices along the packet's route.
 
-##### Broadcasting
+##### Broadcasting and neighborhood
 
-##### Node identification
+Hybrid Net implements local broadcasting to the nearest neighborhood of each Node. To query its neighbors, a Node 
+can send a `Neighborhood` request to the Relay server. The Relay server then responds with a list of Nodes that are 
+closest to the querying Node, based on a predefined metric. 
+
+After receiving the list of neighbors, the Node attempts to establish connections with them, as described in the 
+chapter on [communication](#establishing-connections-between-nodes). The neighborhood algorithm does not 
+differentiate between Nodes capable of establishing peer-to-peer connections and those that require relayed 
+communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission. 
+
+**Neighborhood - distance function** 
+
+To prevent clustering of Nodes and accidental splits in the network, where subsets of Nodes become unreachable, a proper
+neighborhood function must be utilized. This function is defined by the network module, and the market relies on the
+broadcast function, leaving it with no alternative in this regard.
+
+Optimal guarantees can be achieved when two neighboring Nodes have distinctly different neighborhoods, minimizing their
+number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
+distance between Node IDs.
 
 #### Central net
 
