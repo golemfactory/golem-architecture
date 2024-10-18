@@ -756,9 +756,19 @@ sequenceDiagram
     end
 ```
 
-##### Network Traffic
+##### Forwarding Network Traffic
+
+The low-level abstraction provides a single message type for sending data: the `Forward` packet. This packet can be 
+used to send arbitrary content between Nodes, either directly or through the Relay server. Like UDP, the Forward 
+packet does not offer delivery guarantees. It is the responsibility of higher-level layers to ensure the correct and 
+reliable delivery of data in case it is necessary.  
 
 ##### Virtual TCP
+
+To enable reliable data delivery, the hybrid Net utilizes an embedded TCP stack implementation. This stack takes an 
+input data stream and generates IP packets, which are then sent using Forward packets. The receiving Node employs 
+the TCP stack to decode incoming packets back into a message stream. These messages are subsequently dispatched as 
+GSB messages and passed to the appropriate modules, as detailed in the [Address Translation chapter](#address-translation).
 
 ##### Broadcasting
 
