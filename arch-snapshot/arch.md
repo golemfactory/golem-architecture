@@ -554,7 +554,7 @@ and routes them through the Golem Protocol. Although VPN users can choose any pr
 because many higher-level protocols rely on it. Sending VPN messages through a reliable protocol would hurt 
 performance, as this would essentially embed TCP within TCP (or another reliable protocol implemented in Net). To 
 address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
-guarantee.   
+guarantee.
 
 The third option is the transfer channel. Mixing transfers with GSB control messages can cause delays, as large file 
 transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
@@ -564,8 +564,8 @@ specifically for transfers.
 
 Hybrid Net was developed as an intermediate step towards decentralization, enabling peer-to-peer (P2P) communication 
 between Golem Nodes. However, since most of the network operates behind NATs, P2P cannot be the sole communication
-method. To address this, the Net implementation supports communication forwarding through specialized Node known
-as relay.  
+method. To address this, the Net implementation supports communication forwarding through specialized component known
+as Relay.  
 
 An additional advantage of relay server is it's ability to expedite Node discovery. In a pure P2P network, Node
 discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
@@ -581,7 +581,7 @@ register with the Relay server, providing the necessary information for discover
 - Routes traffic between Nodes if a p2p connection cannot be established.
 - Checks if connecting Nodes have public IP port exposed
 - Offers functions for:
-  - Discovering Nodes and querying their information.
+  - Querying Node's information.
   - Retrieving a Node's neighborhood.
 
 Communication with the Relay server is handled through a custom protocol built on top of UDP, defined using Protocol 
@@ -605,10 +605,10 @@ the Relay server, a Node must undergo a handshake process that serves several pu
 Identity verification is performed via a challenge mechanism, where the Relay server sends random bytes to the Node, 
 which must compute a hash with a specified number of leading zeros. The difficulty level, set by the Relay server, 
 determines the number of leading zeros required. This computationally expensive task protects the Relay server from 
-DDoS attacks by forcing the Node to complete a certain amount of work before establishing a Session.  
+DDoS attacks by forcing the Node to complete a certain amount of work before establishing a Session.
 
-The challenge is cryptographically signed using the private key of each identity associated with the Node. The Relay 
-server can then recover the Node's identities and public keys from these signatures, verifying that the Node 
+The challenge response is cryptographically signed using the private key of each identity associated with the Node.
+The Relay server can then recover the Node's identities and public keys from these signatures, verifying that the Node 
 possesses the corresponding private keys. The recovered public keys are later made available to other Nodes that 
 request information about the Node.
 
@@ -616,7 +616,7 @@ request information about the Node.
 
 When a Node initiates a Session, an additional mechanism is required to determine whether the IP address from which 
 the packets are received is behind a NAT. This is achieved by sending Ping packets (network protocol ping, not to be 
-confused with the Linux command) from a different UDP port than the one used for receiving incoming Sessions. This 
+confused with the ICMP packet) from a different UDP port than the one used for receiving incoming Sessions. This 
 ensures that any network devices between the Node and the Relay server won't recognize these Ping packets as part of 
 the same communication stream. If the ports are not publicly exposed, the Ping packets will be dropped, confirming 
 that the Node is behind a NAT.
@@ -669,9 +669,9 @@ public IP, the initiating Node can directly connect to it. In the second scenari
 public IP but the target Node is behind a NAT, the connection is facilitated by the Relay server. The initiating 
 Node first sends a Reverse Connection message to the Relay server, which forwards it to the target Node. The target 
 Node then attempts to establish a direct connection with the initiating Node. Whether the target Node has a public 
-IP can be determined based on information returned by the Relay server.    
+IP can be determined based on information returned by the Relay server.
 
-Since the current Net implementation does not support NAT punching, if both Nodes are behind NAT, communication must 
+Since the current Net implementation does not support NAT hole punching, if both Nodes are behind NAT, communication must 
 be routed through the Relay server.
 
 ```mermaid
