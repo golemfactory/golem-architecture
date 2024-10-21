@@ -783,6 +783,24 @@ Transmission Unit (MTU) and may be dropped by network devices along the packet's
 
 ##### Broadcasting and neighborhood
 
+**What is neighborhood?**
+
+Before describing broadcasting the concept of neighborhood must be introduced. Neighborhood is subset of Nodes in the
+network that are closest to a given Node in terms of some abstract metric. Each Node has it's own neighborhood.
+This metric doesn't need to have any relation to any real world closeness of Nodes. For example Nodes on other part of
+the globe can be neighbors, whereas 2 Nodes in the same physical network could be too far to be in neighborhood.
+
+In peer-to-peer networks concept of Nodes distance is often used for faster Node discovery. Since current Golem network
+layer implementation uses Relay server for finding Nodes, neighborhood doesn't serve this purpose. Although it can be
+easily imaginable to have kademlia implementation as a fallback in case of Relay downtime, currently the only reason for
+having this concept is broadcasting.
+
+Broadcasting can be used by various algorithms to propagate certain information through the network. The most important
+usage of this functionality is [Offers propagation](#offer-propagation) algorithm. Implementing algorithms is 
+responsibility of other modules, net module provides only set of operations that can be used as building blocks.
+
+**Broadcasting**
+
 Hybrid Net implements local broadcasting to the nearest neighborhood of each Node. To query its neighbors, a Node 
 can send a `Neighborhood` request to the Relay server. The Relay server then responds with a list of Nodes that are 
 closest to the querying Node, based on a predefined metric. 
@@ -792,7 +810,7 @@ chapter on [communication](#establishing-connections-between-nodes). The neighbo
 differentiate between Nodes capable of establishing peer-to-peer connections and those that require relayed 
 communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission. 
 
-**Neighborhood - distance function** 
+**Neighborhood - distance function**
 
 To prevent clustering of Nodes and accidental splits in the network, where subsets of Nodes become unreachable, a proper
 neighborhood function must be utilized. This function is defined by the network module, and the market relies on the
