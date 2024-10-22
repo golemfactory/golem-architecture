@@ -531,14 +531,28 @@ The proposed 'language' needs to meet a broad set of requirements:
 - **Constrained**: The language must prevent abuse (e.g., it must not allow the specification of resource conditions that
   could result in endless resolution).
 
+##### Language
+
+The language consists of set of [Properties](#properties), set of [Constraints](#constraints) and
+[matching algorithm](#offerdemand-matching) that allows market engine to decide which Offers should be presented to 
+Requestor as [Proposal](#proposal) in response to his [Demand](#demand). Each Demand and Offer has its own set of 
+properties and constraints. Matching algorithm is responsible for cross-checking constraints against properties to 
+pre-reject Offers that don't meet Requestor's requirements.
+
+The language is composed of a set of [Properties](#properties), a set of [Constraints](#constraints), and a 
+[matching algorithm](#offerdemand-matching). This algorithm enables the market engine to determine which Offers 
+should be presented to a Requestor as a [Proposal](#proposal) in response to their [Demand](#demand). Each Demand 
+and [Offer](#offer) includes its own set of properties and constraints. The matching algorithm cross-checks 
+constraints against properties to pre-reject Offers that don't meet the Requestor's requirements.
+
 ##### Properties
 
 A Property can be understood as key-value pair following specific formats and conventions. Properties are used
 to describe various aspects, such as resources offered, service details, node requirements, or protocol specifications.
 
 The property language facilitates negotiations by providing a structured way to communicate these details. Additionally,
-users of the ecosystem can define and implement custom [market negotiation protocols](#market-protocols). This capability
-enables Golem to be extended and customized by users and the broader community.
+users of the ecosystem can define and implement custom [market negotiation protocols](#market-negotiation-protocols).
+This capability enables Golem to be extended and customized by users and the broader community.
 
 ###### Property naming
 
@@ -552,15 +566,17 @@ The properties are declared to be of a specific type, which is important as it h
 work with properties of different types. The type of property is inferred from the literal used to specify the value.
 Following property types are supported:
 
-- **String** - any value declared in quotes, eg: “sample text”
+- **String** - any value declared in quotes, eg: “sample text”, escaped according to
+  [JSON rules](https://www.ietf.org/rfc/rfc4627.txt)
 - **Bool** - any of following literals: true, True, TRUE, false, False, FALSE
 - **Number** - any value which can be successfully parsed to a numeric constant, e.g. 12, 34.56, 12e-02
 - **Decimal** - any value which can be successfully parsed to a decimal constant, e.g. 12, 34.56 (<prop_name>@d for
   JSON form and property references)
 - **DateTime** - a date/time string in quotes, prefixed by character t, e.g. t”1985-04-12T23:20:50.52Z”
-  (<prop_name>@t for JSON form and property references). DateTime timestamps must be expressed in RFC 3339 format.
+  (<prop_name>@t for JSON form and property references). DateTime timestamps must be expressed in
+  [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format.
 - **Version** - a version number string in quotes, prefixed by character v, e.g. v”1.3.0”. The version number is
-  expected to follow semantic versioning arithmetic. (<prop_name>@v for JSON form and property references)
+  expected to follow [semantic versioning](https://semver.org/) arithmetic. (<prop_name>@v for JSON form and property references)
 - **Struct** - a composite type which can contain any number of properties of other types.
 - **List** - composite type indicated by syntax: “[“<item>(“,”<item>)*”]”, where <item> is a literal expressing
   a value of one of types mentioned earlier.
@@ -806,8 +822,8 @@ the terms of the [Agreement](#agreement). Throughout this exchange, both Agents 
 reach an agreement on a specific aspect of the negotiations. Multiple aspects can be negotiated simultaneously by the
 Agents; for example, payment details can be negotiated independently from internet access for the Virtual Machine.
 
-Each protocol specification must define how entities signal their understanding of a given protocol. This can be 
-achieved in various ways, including:
+Each [protocol specification](#managing-protocols-specifications) must define how entities signal their 
+understanding of a given protocol. This can be achieved in various ways, including:
 - The mere presence of specific properties may signal that an Agent understands the protocol. Some properties are 
   simple factual statements, like the existence of certain features, and a Requestor not understanding them is 
   harmless. An example is [reporting transfers progress](#example-2---exeunit-progress-events).
