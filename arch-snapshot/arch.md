@@ -783,21 +783,23 @@ Transmission Unit (MTU) and may be dropped by network devices along the packet's
 
 ##### Broadcasting and neighborhood
 
-**What is neighborhood?**
+**What is a Neighborhood?**
 
-Before describing broadcasting the concept of neighborhood must be introduced. Neighborhood is subset of Nodes in the
-network that are closest to a given Node in terms of some abstract metric. Each Node has it's own neighborhood.
-This metric doesn't need to have any relation to any real world closeness of Nodes. For example Nodes on other part of
-the globe can be neighbors, whereas 2 Nodes in the same physical network could be too far to be in neighborhood.
+Before diving into broadcasting, it's essential to understand the concept of a neighborhood. In a network, a 
+neighborhood is a subset of Nodes that are considered closest to a given Node based on an abstract metric. Each Node 
+has its own neighborhood. This metric doesn't necessarily reflect the real-world proximity of Nodes. For instance, 
+two Nodes on opposite sides of the globe could be neighbors, while two Nodes within the same physical network may be 
+too distant in terms of this metric to be in the same neighborhood.
 
-In peer-to-peer networks concept of Nodes distance is often used for faster Node discovery. Since current Golem network
-layer implementation uses Relay server for finding Nodes, neighborhood doesn't serve this purpose. Although it can be
-easily imaginable to have kademlia implementation as a fallback in case of Relay downtime, currently the only reason for
-having this concept is broadcasting.
+In peer-to-peer networks, the concept of Node distance is often used for efficient Node discovery. However, since 
+the current Golem network layer relies on the Relay server for Node discovery, neighborhoods don't serve that 
+purpose. Although it’s conceivable that a fallback, such as a Kademlia-like implementation, could be used in the 
+event of a Relay server downtime, for now, the primary purpose of the neighborhood concept is broadcasting.
 
-Broadcasting can be used by various algorithms to propagate certain information through the network. The most important
-usage of this functionality is [Offers propagation](#offer-propagation) algorithm. Implementing algorithms is 
-responsibility of other modules, net module provides only set of operations that can be used as building blocks.
+Broadcasting is a mechanism used by various algorithms to propagate information throughout the network. Its most 
+significant application is in [the Offer Propagation algorithm](#offer-propagation). While the implementation of 
+specific algorithms is handled by other modules, the network module provides the necessary operations as building 
+blocks for these processes.
 
 **Broadcasting**
 
