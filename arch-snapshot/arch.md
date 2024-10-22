@@ -1,12 +1,10 @@
 # Golem — current architecture
-
 Authors: Witold Dzięcioł, Przemysław Rekucki, Marek Dopiera,
-\<YOUR NAME GOES HERE\>
-Reviewers: Maciej Maciejowski, Paweł Burgchardt
+\<YOUR NAME GOES HERE\>\
+Reviewers: Maciej Maciejowski, Paweł Burgchardt\
 Status: WIP
 
 # About this document
-
 The goal of this document is to describe present Golem architecture in enough
 detail for an outside person to understand how it works under the hood. The
 intended audience is assumed to be technical but not necessarily have deep
@@ -29,32 +27,22 @@ very high level description of what they are.
 ## What Golem is not
 
 ## Actors
-
 This section describes the actors using Golem Network and their role in the
 system.
-
 ### Provider
-
 ### Requestor
-
 Note: We use term Requestor not Requester.
-
 ### Developer
-
 ### End User
-
 Consumer of resources can be different person than Requestor.
 For example we can have web service which forwards computationally expensive jobs
 to Golem Network. Example: [Deposits](https://github.com/golemfactory/golem-architecture/blob/master/specs/deposits.md)
 
 #### Service Owner
-
 #### Funder
-
 #### Spender
 
 ## Activities
-
 This section describes what actors can do to the system. The descriptions are
 only as detailed as to explain how the actors control the artifacts. The goal is
 to give the reader an overview of the terms introduced by Golem without any
@@ -71,7 +59,7 @@ users define their needs programmatically, allowing the [Provider Agent](#provid
 software to handle these tasks automatically.
 
 The [Provider Agent](#provider-agent) is primarily responsible for implementing the logic needed to sell resources on
-the Golem Network. From high level perspective, Provider Agent application should do following things:
+the Golem Network. From high level perspective, Provider Agent application should do following things: 
 1. Describe Resources using property language to create an [Offer](#offer)
 2. Publish the Offer on the market
 3. Monitor incoming Proposals and negotiate an [Agreement](#agreement) with the most promising [Requestor](#requestor)
@@ -79,7 +67,7 @@ the Golem Network. From high level perspective, Provider Agent application shoul
 5. Monitor resources usage and charge Requestor Agent
 6. Terminate the Agreement or await the Agreement termination event from the [Requestor](#requestor)
 7. Send an [Invoice](#invoice) summarizing the total cost of the [Agreement](#agreement)
-8. Wait until the payment for the [Invoice](#invoice) is settled and payment confirmed.
+8. Wait until the payment for the [Invoice](#invoice) is settled and payment confirmed. 
 
 #### 1. Describe Resources using property language to create an [Offer](#offer)
 
@@ -122,7 +110,7 @@ If the Requestor is interested, they respond by sending a [Proposal](#proposal) 
 
 [Negotiation](#process-of-negotiations-and-making-an-agreement) is the process of exchanging Proposals and adjusting their
 terms until the [Requestor Agent](#requester-agent) proposes an Agreement. The structure of a Proposal is identical to
-that of an Offer or Demand, using the same [property and constraints language](#discovery-and-offersdemand-matching) to
+that of an Offer or Demand, using the same [property and constraints language](#discovery-and-offersdemand-matching) to 
 describe the Agreement's conditions. During negotiations, certain aspects of the Agreement can be modified. While Offers
 and Demands represent the initial declaration of resources, terms, and conditions, the proposal exchange is a dynamic
 process of refining these terms to reach an optimal [Agreement](#agreement) for both parties.
@@ -182,7 +170,7 @@ sequenceDiagram
 
 ##### Example of negotiation
 
-To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example
+To better understand the [Negotiation](#process-of-negotiations-and-making-an-agreement) process, let’s consider an example 
 involving the negotiation of a [payment platform](#payment-platform). This will illustrate how agents can use different
 strategies and what negotiation protocols can be built on top of the [property and language](#discovery-and-offersdemand-matching).
 
@@ -191,7 +179,6 @@ platform it supports. It is the Requestor Agent's responsibility to choose the p
 [property](#property) in their demand. The Requestor Agent can approach negotiations in two ways:
 
 ###### 1. Static Negotiations
-
 Suppose the Requestor Agent prefers payments on the Polygon network. In this case, they require the Provider Agent to support
 Polygon and will not select a Provider Agent that doesn’t.
 
@@ -200,7 +187,6 @@ a [constraint](#constraint) to their [Demand](#demand), instructing the matching
 don’t meet this requirement. In their Demand, they set the chosen platform as a fixed value.
 
 ###### 2. Dynamic Negotiations
-
 Now imagine a Requestor Agent that can pay on multiple platforms but prioritizes them based on transaction fees. In this
 scenario, the Requestor Agent has a larger pool of potential Providers since they don’t restrict the platform by adding
 a constraint to their demand.
@@ -247,11 +233,42 @@ Debit Notes are sent at regular intervals during the execution of an activity to
 accumulating costs of the Agreement. These notes act as building blocks that support various payment schemes.
 The handling of Debit Notes by Agents is governed by the terms negotiated in the Agreement. Generally, Debit Notes
 serve the following purposes:
-
 - Informing the Requestor Agent about resource usage and activity costs, and obtaining explicit acceptance of these costs.
 - Acting as a health check, allowing the Provider Agent to monitor if the Requestor Agent is still active and hasn’t
   abandoned the Agreement, helping avoid not getting paid.
 - Facilitating [mid-agreement payments](#mid-agreement-payments).
+
+Invoices are issued after the Agreement is terminated, providing a summary of the total costs. They allow the Provider
+Agent to include any additional costs not covered in the Debit Notes, as the final Debit Note doesn’t have to be sent
+immediately after the activity ends.
+
+```mermaid
+flowchart LR
+Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
+Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
+Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
+```
+
+Both Debit Notes and Invoices can be either accepted or rejected by the other party. Acceptance signals that the
+Requestor Agent agrees to pay the specified amount. Rejection, on the other hand, indicates refusal to pay the
+non-accepted amount. However, it’s important to note that a rejection does not absolve the Requestor Agent from paying
+for all previously accepted Debit Notes. The conditions under which rejection is allowed should be defined in the
+Agreement. Currently, no payment scheme permits rejections.
+
+Accepting a Debit Note or Invoice does not result in immediate payment for a few reasons.
+Debit Notes can be classified as payable or non-payable, with payable Debit Notes identified by the due date included
+in the document. While payable Debit Notes are scheduled for processing upon acceptance, this still does not necessitate
+immediate payment. The payment mechanism allows for the [batching of payments](#payments-batching) or delaying them
+to accommodate additional Debit Notes or [Invoices](#invoice), thereby reducing [transaction](#transaction-on-blockchain) costs on the blockchain.
+
+The consequence of delaying payments is that they are not guaranteed. However, this design opens the possibility of
+implementing mechanisms that can mitigate or eliminate the risk of non-payment. For instance, a payment platform
+could be developed using a deposit or escrow contract, or by integrating payment channels into the Core Network.
+
+It’s important to note that, regardless of the payment scheme or platform used, Golem Factory does not act as an
+intermediary for payments. Since transactions occur on the blockchain, and due to the decentralized nature of blockchain
+technology, Golem Factory has no control over these transactions.
+
 
 Invoices are issued after the Agreement is terminated, providing a summary of the total costs. They allow the Provider
 Agent to include any additional costs not covered in the Debit Notes, as the final Debit Note doesn’t have to be sent
@@ -303,7 +320,38 @@ Provider Agent has the option to attach additional information outlining the rea
 Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
 serving as diagnostic information or for other purposes.
 
+The [Agreement](#agreement) can be terminated when either party chooses to end it. Core Network doesn't enforce any
+specific termination rules, so the Agreement should clearly define the conditions under which termination is
+permitted. Below is a non-exhaustive list of possible reasons for termination:
+- The Agreement expires if it was established for a fixed duration.
+- The Requestor Agent no longer needs the [resources](#resource) or has completed the computations.
+- One of the parties violates the terms of the Agreement, such as:
+  - The Requestor Agent fails to accept [Debit Notes](#debit-note) within the agreed timeframe.
+  - The Provider Agent issues Debit Notes more frequently than agreed.
+  - The Requestor Agent fails to make timely payments, particularly in cases involving [mid-agreement payments](#mid-agreement-payments).
+
+It is the Agent—whether Requestor or Provider—who decides to terminate the Agreement. The Agent is also responsible for
+detecting if the other party has terminated the Agreement and taking the appropriate action in response.
+
+Provider Agent has the option to attach additional information outlining the reasons for termination when ending the
+Agreement. While this is not mandatory, it is encouraged as it can provide valuable context for the other party,
+serving as diagnostic information or for other purposes.
+
 #### 7. Send an Invoice summarizing the total cost of the Agreement
+
+Once the Agreement is terminated, the Provider Agent should send an [Invoice](#invoice) to the Requestor Agent summarizing
+the total costs incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all [Activities](#activity).
+In response, the Requestor Agent must either accept or reject the Invoice. However, regardless of the acceptance status,
+payment is mandatory for the total amount indicated by the accepted [Debit Notes](#debit-note), as their acceptance constitutes
+a binding commitment to pay.
+
+```mermaid
+flowchart LR
+Activity1((Activity 1)) --o D11[Debit Note 1] --> D12[Debit Note 2] -->|...| D13[Debit Note N-th] --> Invoice[Invoice]
+Activity2((Activity 2)) --o D21[Debit Note 1] --> D22[Debit Note 2] -->|...| D23[Debit Note N-th] --> Invoice[Invoice]
+Activity3((Activity 3)) --o D31[Debit Note 1] --> D32[Debit Note 2] -->|...| D33[Debit Note N-th] --> Invoice[Invoice]
+```
+
 
 Once the Agreement is terminated, the Provider Agent should send an [Invoice](#invoice) to the Requestor Agent summarizing
 the total costs incurred throughout the Agreement. This Invoice should reflect the cumulative costs from all [Activities](#activity).
@@ -319,6 +367,16 @@ the Provider Agent should implement measures to prevent being exploited by Reque
 non-paying Requestors and prioritizing those with a good reputation. Lack of payment isn't the only reason for
 declining a Requestor in the future. The Provider Agent may also choose to reject subsequent Agreements with
 Requestors who break the Agreement conditions.
+
+Payment confirmation is received by the Provider Agent from the Requestor once the transaction is confirmed on the
+blockchain. This confirmation specifies which Activities and Agreements are covered by the transaction. There is no
+1-to-1 relationship between transactions and Activities or Agreements. A single blockchain transaction can cover
+multiple Activities or Agreements, while each Activity or Agreement may also be covered by multiple transactions.
+
+Payments are not immediate for several reasons: they are not scheduled right away, and batching 
+may occur. Furthermore, blockchain transactions are not immediate and may take time to process. Therefore, the Provider
+Agent should monitor Payment events. This can be done by listening for status changes to Settled on Invoice and Debit Note
+events, or by tracking payment events to receive notifications for each transaction.
 
 Payment confirmation is received by the Provider Agent from the Requestor once the transaction is confirmed on the
 blockchain. This confirmation specifies which Activities and Agreements are covered by the transaction. There is no
@@ -341,7 +399,6 @@ information in their Offer or Demand. This is a more lightweight approach compar
 process.
 
 ### Buying on golem platform
-
 ### Running something
 
 ## Layers
@@ -359,13 +416,9 @@ decomposition into layers. responsibility of the layers.
 decomposition into functional areas and scopes of responsibility of these layers.
 
 ### Market
-
 ### Payment
-
 ### Activity
-
 ### Identity
-
 ### Net
 
 ## Applications/Exe-Units
@@ -378,7 +431,7 @@ a brief overview of sample applications.
 
 ### GH/AI Runtime
 
-### HTTP Auth Runtime
+### HTTP Auth Runtime 
 
 ## Artifacts
 
@@ -392,108 +445,65 @@ Section should serve as dictionary to be linked by other chapters.
 ### Participating entities
 
 #### Core Network
-
 #### Yagna daemon
-
 #### Yagna Node
-
 #### Provider agent
-
 #### Requester agent
 
 ### Marketplace
-
 #### Offer
-
 ##### Property
-
 ##### Constraint
-
 #### Demand
-
 #### Subscription
-
 This word is used to describe Offer/Demand put on market, so we should mention it.
-
 #### Proposal
-
 #### Negotiation
-
 #### Agreement
 
 ### Execution system
-
 #### Resource
-
 #### Activity
-
 #### Execution environment (ExeUnit)
-
 ##### ExeUnit Batch
-
 ##### ExeUnit Command
-
 ##### VM
-
 ##### VM Image
-
 ##### WASM
-
 ##### WASM image
 
 ### VPN
-
 #### Network
 
 ### Payment System
-
 #### Payment Driver
-
 #### Payment Platform
-
 #### Token
-
 #### Wallet
-
 #### Allocation
-
 #### Debit Note
-
 #### Invoice
-
 #### Payment
-
 #### Transaction (on blockchain)
 
+
 ## Key architectural decisions
-
 ### GLM is built on XYZ
-
 ### GLM is used for clearing
-
 ### No centralized offer matching rules
-
 ### Only providers' offers are propagated
-
 ### Agreements are not stored on the blockchain
-
-### Offline requestors are not supported
-
+### Offline requestors are not supported 
 ### Local storage (TODO: what role does the local DB play?)
 
 ## Technical view - components
-
 This section describes key components of Golem Network, i.e. their
 responsibilities, interfaces and which other components they utilize.
 
 ### Networking
-
 * how it works that two separate Yagnas can talk to each other
-
 #### Central net
-
 #### Hybrid net
-
 - Identification
 - Relay
 - Discovering Nodes
@@ -504,12 +514,10 @@ responsibilities, interfaces and which other components they utilize.
   - Communication encryption
 
 ### GSB
-
 * what it is, how it works and how it imposes a code structure and how
   addressing works
 
 ### Market interactions
-
 A description of the component responsible for making offers, counter-offers,
 negotiations, etc.
 
@@ -521,7 +529,6 @@ is a generic specification language, which allows the expression of [Demand](#de
 artifacts—fundamental entities in Golem.
 
 The proposed 'language' needs to meet a broad set of requirements:
-
 - **General**: The language must be applicable for specifying a wide range of imaginable Services or Applications traded
   via Golem.
 - **Versatile**: The language must allow the description of an extensive set of conceivable Demand and Offer specifications
@@ -561,10 +568,10 @@ properties follow a hierarchical namespace convention, such as `golem.node.cpu.c
 names into specific 'topic areas' for better organization and clarity.
 
 ###### Property types
-
 The properties are declared to be of a specific type, which is important as it has impact on how comparison operators
 work with properties of different types. The type of property is inferred from the literal used to specify the value.
 Following property types are supported:
+- **String** - any value declared in quotes, eg: “sample text”
 
 - **String** - any value declared in quotes, eg: “sample text”, escaped according to
   [JSON rules](https://www.ietf.org/rfc/rfc4627.txt)
@@ -858,6 +865,31 @@ the network. Instead, only the Offers from other Nodes are excluded from being m
 Both parties select a name and set the subnet [property](#properties) and [constraint](#constraints) to the same 
 value simultaneously. Even if one side fails to adhere to the protocol by omitting the constraint in their Offer or
 Demand, the other party's constraint ensures protection, preventing them from being matched with the non-compliant Agent.
+```mermaid
+flowchart TB
+    subgraph Requestor 
+        subgraph Demand 
+           subgraph PropertiesR[Properties]
+             P1["#quot;golem.node.subnet#quot;: #quot;private#quot;"] 
+           end
+           subgraph ConstraintsR[Constraints]
+             C1["(golem.node.subnet=private)"]   
+           end
+        end
+    end
+    
+    subgraph Provider 
+        subgraph Offer
+          subgraph PropertiesP[Properties]
+            P2["#quot;golem.node.subnet#quot;: #quot;private#quot;"]
+          end
+          subgraph ConstraintsP[Constraints]
+            C2["(golem.node.subnet=private)"]
+          end
+        end
+    end
+    
+```
 
 ###### Negotiable properties
 
@@ -1066,12 +1098,12 @@ sequenceDiagram
   loop
     RequestorAgent->>RequestorAgent: Adjust Proposal
     RequestorAgent->>RequestorYagna: Counter Proposal
-  
+    
     par
       RequestorYagna->>ProviderYagna: Counter Proposal
       ProviderYagna->>ProviderAgent: Receive Proposal
     and Proposals from other Nodes in the network
-      GolemNetwork->>ProviderAgent: Receive Proposals  
+      GolemNetwork->>ProviderAgent: Receive Proposals    
     end
 
     ProviderAgent->>ProviderAgent: Select best Proposals to respond
@@ -1099,24 +1131,18 @@ sequenceDiagram
 #### Market strategies
 
 #### Agreement termination
-
 - Who is allowed to terminate? In what situation?
 - What is specified by protocol and what is left to future specifications?
 - Termination reason concept
 
 ### Payments
-
 * a description of current payment driver, its modes of operations and how it
   can be extended
-
 #### Payments models
-
 - Describe generic model which is open for new implementations
 - Payment model specification in Offer/Demand language
 - Linear Payment model as an example
-
 #### Payments flow during Agreement
-
 - Negotiating payment platform and other payment details
 - Testnet(s) vs. mainnet(s)
 - Tokens
@@ -1126,19 +1152,14 @@ sequenceDiagram
 - Payment settlement and payment confirmation for Provider
 
 ##### Mid-Agreement payments
-
 ##### Post-Agreement payments
 
 #### Payment drivers
-
 - Abstract concept (independance from underlying payment mechanisms)
 - How payment platform relates to payment driver?
 - Examples: erc20 driver, zksync (?)
-
 #### Payments batching
-
 #### Deposits payments
-
 - Overview of the concept
 - Link to external documentation describing details
 
@@ -1158,14 +1179,14 @@ sequenceDiagram
     Provider->>ExeUnit: Spawn ExeUnit
     Requestor-->ExeUnit: Commands controlling ExeUnit
     activate ExeUnit
-  
+    
     loop Regular intervals
       ExeUnit->>Provider: Report resources consumption
       Provider->>Provider: Calculate costs
       Provider->>Requestor: Send DebitNote
       Requestor->>Provider: Accept DebitNote
     end
-  
+    
     Requestor-->ExeUnit: Finish computations
     deactivate ExeUnit
     Requestor->>Provider: Destroy Activity
@@ -1176,13 +1197,11 @@ sequenceDiagram
 ```
 
 ### Activity
-
 * How the actions on behalf of the requestor are performed
 * We should dive into each important and general implementation, i.e. WASM and
   VM
 
 #### Abstract concept
-
 - ExeUnit concept is generic enough to sell any kind of computation resources
 - Generic ExeUnits (for example VM, WASM etc.) vs. specialized ExeUnits for specific tasks like:
   - [GamerHash](https://github.com/golemfactory/ya-runtime-ai)
@@ -1194,9 +1213,7 @@ sequenceDiagram
 - Interaction with yagna through GSB
 - Control flow between Requestor and ExeUnit
 - Extensible commands list (ExeUnit implementation dependent)
-
 ##### Controlling ExeUnit (basic concepts)
-
 - Spawning ExeUnit (contract between Provider Agent and ExeUnit)
   - Self-test
   - Offer template
@@ -1206,60 +1223,42 @@ sequenceDiagram
   - Deploy, Start, Transfer, Run, Terminate
   - Querying command/batch state, receiving results
   - Transfer methods ([GFTP](#gftp), http)
-
 ##### Usage counters
-
 #### ExeUnit Supervisor
-
 - Why splitting Supervisor and Runtime?
 - Common functionalities provided by Supervisor
-
 #### ExeUnit Runtime
-
 #### GFTP
-
 #### VM runtime
-
 - Virtual machine desciption (so the reader knows what is there, but not details)
 - Functionalities (outbound, VPN, process output capturing)
 - VM images, gvmkit-build etc
-
 #### WASM runtime
-
 - WASM supported execution engines
 - WASM images
 
 ### VPN
-
 * The component responsible for creating a VPN between VMs
 
 ### Reputation
-
 * a description of how it is evaluated, distributed and used
 
 ### SDK
-
 * which of the logic useful to the user ends up in the SDK
 
 ## Technical view - deployment
-
 How the components are reflected in processes, where the processes are run, what
 is their relation ship, etc.
 
 ## Technical view - flows & algorithms
-
 This section documents how control and responsibility flows through the listed
 components to achieve Golem's functionalities. Any non-trivial algorithms
 spanning more than one component are also described here.
 
 ### Starting a provider and publishing an offer
-
 ### Receiving and executing work
-
 ### Finding a provider and requesting work
-
 ### Starting a cluster of VMs
-
 ### Creating a custom image
 
 PR: this is part of the business logic layer. you would need to think about how to add objects from this layer and SDK implementations in different versions to this document. and the concept of building various reputation methods.
@@ -1267,15 +1266,13 @@ PR: this is part of the business logic layer. you would need to think about how 
 PR: ya-provider is also from this layer and you could write down what configurations it supports. e.g. node attestation, authorization certificates, etc.
 
 ## Key architectural shortcomings
-
 This section contains known shortcomings of the implemented architecture —
 irrespective of whether they were intentional or unintentional.
 
 - [Problem with capabilities-based approach](#problems-with-capabilities-based-approach---versioning)
 
 ### Preexisting two categories of actors
-
 The preexisting categories of actors (providers and requesters) and their
 asymmetric roles are limiting in certain scenarios. FIXME FIXME FIME
-
 ### TODO
+
