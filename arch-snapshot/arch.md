@@ -526,12 +526,10 @@ The proposed 'language' needs to meet a broad set of requirements:
   via Golem.
 - **Versatile**: The language must allow the description of an extensive set of conceivable Demand and Offer specifications
   (e.g., trading conditions, terms of business, etc.).
-- **Scalable**: The language should be openly extensible in an intuitive way, allowing parties in the Golem ecosystem to
-  easily add to it systematically.
+- **Scalable**: The language should be flexible enough to describe resources that are not known upfront, allowing for 
+  extensions by participants within the Golem ecosystem to systematically add new elements easily.
 - **Constrained**: The language must prevent abuse (e.g., it must not allow the specification of resource conditions that
   could result in endless resolution).
-- **Open**: The language should be abstract, but its possible applications must be highlighted through examples and pattern
-  repositories.
 
 ##### Properties
 
