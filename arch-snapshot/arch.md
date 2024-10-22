@@ -563,6 +563,7 @@ Following property types are supported:
   (<prop_name>@t for JSON form and property references). DateTime timestamps must be expressed in RFC 3339 format.
 - **Version** - a version number string in quotes, prefixed by character v, e.g. v”1.3.0”. The version number is
   expected to follow semantic versioning arithmetic. (<prop_name>@v for JSON form and property references)
+- **Struct** - a composite type which can contain any number of properties of other types.
 - **List** - composite type indicated by syntax: “[“<item>(“,”<item>)*”]”, where <item> is a literal expressing
   a value of one of types mentioned earlier.
   All elements on the list have to be of the same type. If a List declaration contains literals indicating different
@@ -586,7 +587,13 @@ This example demonstrates how properties can be used to describe an Offer for a 
   "golem.inf.storage.gib": 100,
   "golem.runtime.capabilities": ["vpn"],
   "golem.runtime.name": "vm",
-  "golem.runtime.version": "0.2.10"
+  "golem.runtime.version": "0.2.10",
+  "golem.com.pricing.model": "linear",
+  "golem.com.pricing.model.linear.coeffs": [
+    0.0002777777777777778,
+    0.001388888888888889,
+    0.0
+  ]
 }
 ```
 
@@ -621,6 +628,20 @@ a JSON format:
       "capabilities": ["vpn"],
       "name": "vm",
       "version": "0.2.10"
+    },
+    "com": {
+      "pricing": {
+        "model": {
+          "@tag": "linear",
+          "linear": {
+            "coeffs": [
+              0.0002777777777777778,
+              0.001388888888888889,
+              0.0
+            ]
+          }
+        }
+      }
     }
   }
 }
@@ -658,7 +679,7 @@ The value-less property would be indicated in property set by:
 ##### Constraints
 
 Properties describe specific parameters of an Offer, Demand, or potential Agreement. To fully unlock the
-language's capabilities, we need the ability to express queries. This is the primary reason for the existence
+language's capabilities, the ability to express queries is needed. This is the primary reason for the existence
 of Constraints. Constraints allow us to specify the required values certain properties should have when an
 Agent is searching the market.
 
@@ -668,8 +689,6 @@ The Golem ecosystem utilizes constraint language derived from [LDAP filter expre
 
 In the Constraint expressions, the properties are referenced using following grammar:
 `<name>(“@”<typecode>)?<operator><value>?`
-
-Specifying no aspect means we are referencing the property value.
 
 `@<typecode>` is optional in property reference and implies a specific type of constraint value (this determines the
 behaviour of operators). If a type code is not specified, the type of property as declared in Demand/Offer determines
@@ -723,7 +742,7 @@ A constraint expresses the requirement that all of the following criteria must b
 Constraints serve as a query language to request Offers that match the [Requestor Agent's](#requester-agent) needs.
 In reality, not only the Requestor Agent, but both parties, include constraints in their Offers and Demands.
 
-After a Demand is published on the market, the Golem Node attempts to match it with all Offers available locally and any
+After a Demand is created on the market, the Golem Node attempts to match it with all Offers available locally and any
 incoming ones later. A detailed description of Offer propagation is placed [here](#offer-propagation); this chapter
 assumes that has already occurred.
 
@@ -814,15 +833,15 @@ This is the simplest example that doesn’t require multiple phases of Proposal 
 mechanism used to isolate specific [Nodes](#golem-node) from the rest of the network. They are useful when testing new 
 features or debugging, as they provide full control over the participating Nodes, making it easier to analyze logs.
 
-It's important to understand that subnets operate at the market level, meaning the Nodes aren't truly separated from
+Subnets operate at the market level, meaning the Nodes aren't truly separated from
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
-| Provider Proposal                         | Requestor Proposal                        |
-|:------------------------------------------|:------------------------------------------|
-| "golem.node.debug.subnet": "private-1234" | "golem.node.debug.subnet": "private-1234" |
-| (golem.node.debug.subnet=private-1234)    | (golem.node.debug.subnet=private-1234)    |
+|             | Provider Proposal                         | Requestor Proposal                        |
+|-------------|:------------------------------------------|:------------------------------------------|
+| Properties  | "golem.node.debug.subnet": "private-1234" | "golem.node.debug.subnet": "private-1234" |
+| Constraints | (golem.node.debug.subnet=private-1234)    | (golem.node.debug.subnet=private-1234)    |
 
-Both parties select a name and set the subnet  [property](#properties) and [constraint](#constraints) to the same 
+Both parties select a name and set the subnet [property](#properties) and [constraint](#constraints) to the same 
 value simultaneously. Even if one side fails to adhere to the protocol by omitting the constraint in their Offer or
 Demand, the other party's constraint ensures protection, preventing them from being matched with the non-compliant Agent.
 
