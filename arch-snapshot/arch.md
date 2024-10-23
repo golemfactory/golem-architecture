@@ -563,9 +563,9 @@ specifically for transfers.
 #### Hybrid Net
 
 Hybrid Net was developed as an intermediate step towards decentralization, enabling peer-to-peer (P2P) communication 
-between Golem Nodes. However, since most of the network operates behind NATs, P2P cannot be the sole communication
-method. To address this, the Net implementation supports communication forwarding through specialized component known
-as Relay.  
+between some of Golem Nodes. However, since most of the network operates behind NATs, P2P cannot be the sole 
+communication method. To address this, the Net implementation supports communication forwarding through specialized 
+component known as Relay.
 
 An additional advantage of relay server is it's ability to expedite Node discovery. In a pure P2P network, Node
 discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
