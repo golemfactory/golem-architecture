@@ -571,12 +571,23 @@ An additional advantage of relay server is it's ability to expedite Node discove
 discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
 Relay server can also facilitate P2P communication between Nodes when direct connections are not possible.
 
+##### Nodes identification
+
+A Golem Node is identified by its NodeId, which is derived from its public key. This NodeId allows the Node to be 
+located within the network, and the public key is used to verify the Node’s identity. This ensures that only one 
+Node can claim a specific ID within the network.
+
+Additionally, each Node may have multiple secondary identities, each associated with its own public/private key pair.
+The Net module must be capable of locating a Golem Node based on these secondary identities as well as the primary 
+identity.
+
 ##### Relay server
 
 The Relay server is a core component of the networking layer in the Golem Network. All newly connected Nodes 
 register with the Relay server, providing the necessary information for discovery and connection. The Relay server:
 - Maintains a list of Nodes present in the network.
-- Stores each Node's identity, public key, and IP address.
+- Stores each Node's public key, [identity](#identity) derived from the public key, and associated IP address.
+- Stores information about which secondary identities are associated with specific Nodes.
 - Assists in establishing peer-to-peer (p2p) connections when possible.
 - Routes traffic between Nodes if a p2p connection cannot be established.
 - Checks if connecting Nodes have public IP port exposed
@@ -821,6 +832,33 @@ broadcast function, leaving it with no alternative in this regard.
 Optimal guarantees can be achieved when two neighboring Nodes have distinctly different neighborhoods, minimizing their
 number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
 distance between Node IDs.
+
+##### Encryption
+
+The currently released version of Hybrid Net does not support encryption, but this feature is in progress. This 
+chapter is important to help the reader understand the relationship between identities and how different keys will 
+be used once encryption is implemented.
+
+The [Nodes identification chapter](#nodes-identification) explains how identities are used within the Network. 
+However, the public key pairs associated with these identities are only used to verify whether a Node accurately 
+claims its identity. For encryption purposes, symmetric keys are employed, which are not related to the identity keys.
+
+**Symmetric encryption algorithm choice**
+
+The encryption algorithm chosen must meet the following criteria:
+1. Independent Message Encryption: The algorithm must not assume an order for messages; each packet must be 
+   encrypted independently. Since the entire network traffic between Nodes should be encrypted, and part of the 
+   communication occurs over an unreliable channel, the encryption algorithm must be capable of handling individual 
+   UDP packets. Some packets may be lost, while others could arrive out of order.
+2. No Key Exchange Required: There should be no need for explicit key or information exchange between Nodes. In cases 
+   where communication is relayed, there is no session-establishing phase between parties sending relayed packets, 
+   so key exchanges aren't feasible.
+
+For these reasons, the AES-GCM-SIV variant of the AES algorithm was chosen.
+
+**Symmetric keys derivation**
+
+
 
 #### Central net
 
