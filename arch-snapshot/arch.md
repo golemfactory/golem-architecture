@@ -571,6 +571,9 @@ An additional advantage of relay server is it's ability to expedite Node discove
 discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
 Relay server can also facilitate P2P communication between Nodes when direct connections are not possible.
 
+Although HybridNet remains centralized for node discovery and relaying communication between Nodes behind NATs, 
+broadcasting has already been designed in a decentralized manner as a step toward full network decentralization.
+
 ##### Nodes identification
 
 A Golem Node is identified by its NodeId, which is derived from its public key. This NodeId allows the Node to be 
@@ -584,12 +587,12 @@ identity.
 ##### Relay server
 
 The Relay server is a core component of the networking layer in the Golem Network. All newly connected Nodes 
-register with the Relay server, providing the necessary information for discovery and connection. The Relay server:
+register with the Relay server, providing the necessary information for discovery and communication. The Relay server:
 - Maintains a list of Nodes present in the network.
 - Stores each Node's public key, [identity](#identity) derived from the public key, and associated IP address.
 - Stores information about which secondary identities are associated with specific Nodes.
-- Assists in establishing peer-to-peer (p2p) connections when possible.
-- Routes traffic between Nodes if a p2p connection cannot be established.
+- Assists in establishing peer-to-peer (p2p) communication when possible.
+- Routes traffic between Nodes if a p2p communication cannot be established.
 - Checks if connecting Nodes have public IP port exposed
 - Offers functions for:
   - Querying Node's information.
@@ -600,11 +603,12 @@ Buffers (protobuf). UDP was chosen for its lightweight nature, as it does not re
 which would consume more system resources compared to TCP. This makes it possible to handle a large number of Nodes 
 concurrently, ensuring decent scalability.
 
-###### Connecting to relay server
+###### Connecting to Relay server
 
 The Hybrid Net protocol introduces the concept of a Session, which operates on top of the UDP protocol. All requests 
-to the Relay server and network traffic routing occur within the context of a Session. To establish a Session with 
-the Relay server, a Node must undergo a handshake process that serves several purposes:
+to the Relay server and network traffic routing occur within the context of a Session, with only one Session allowed 
+at a time. To establish a Session with the Relay server, a Node must undergo a handshake process that serves several 
+purposes:
 1. Verifies that the Node presenting its NodeId possesses the private key corresponding to that NodeId.
 2. Collects and verifies any secondary identities associated with the Node.
 3. Gathers additional Node information, such as supported symmetric encryption algorithms.
@@ -673,17 +677,17 @@ Important note: The Relay server does not possess private keys, and its identity
 implementation. This marks a significant distinction compared to the process of establishing peer-to-peer Sessions 
 with regular Nodes.
 
-##### Establishing connections between Nodes
+##### Establishing Sessions between Nodes
 
-Currently, a peer-to-peer (p2p) session can be established in two scenarios. In the first, if the target Node has a 
+Currently, a peer-to-peer (p2p) Session can be established in two scenarios. In the first, if the target Node has a 
 public IP, the initiating Node can directly connect to it. In the second scenario, where the initiating Node has a 
-public IP but the target Node is behind a NAT, the connection is facilitated by the Relay server. The initiating 
+public IP but the target Node is behind a NAT, the Session is facilitated by the Relay server. The initiating 
 Node first sends a Reverse Connection message to the Relay server, which forwards it to the target Node. The target 
-Node then attempts to establish a direct connection with the initiating Node. Whether the target Node has a public 
+Node then attempts to establish a direct Session with the initiating Node. Whether the target Node has a public 
 IP can be determined based on information returned by the Relay server.
 
-Since the current Net implementation does not support NAT hole punching, if both Nodes are behind NAT, communication must 
-be routed through the Relay server.
+Since the current Net implementation does not support NAT hole punching, if both Nodes are behind NAT, communication 
+must be routed through the Relay server.
 
 ```mermaid
 ---
@@ -695,13 +699,13 @@ sequenceDiagram
     participant GolemNode2 as Golem Node 2
 
     GolemNode1-->RelayServer: Established Session
-    GolemNode2-->RelayServer: Established  Session
+    GolemNode2-->RelayServer: Established Session
 
     GolemNode1->>RelayServer: Get Node 2's information
     RelayServer->>GolemNode1: Node 2's information
     
     alt Golem Node 2 has public IP
-        GolemNode1->>GolemNode2: Establish P2P connection
+        GolemNode1->>GolemNode2: Establish P2P Session
     else Golem Node 1 has public IP
         GolemNode1->>RelayServer: Reverse Connection message
         RelayServer->>GolemNode2: Reverse Connection message
@@ -709,7 +713,7 @@ sequenceDiagram
         GolemNode2->>RelayServer: Get Node 1's information
         RelayServer->>GolemNode2: Node 1's information
         
-        GolemNode2->>GolemNode1: Establish P2P connection
+        GolemNode2->>GolemNode1: Establish P2P Session
     else Golem Node 1 and 2 are behind NAT
         par Communication routed through relay
           GolemNode1->>RelayServer: Forward packet
@@ -720,9 +724,9 @@ sequenceDiagram
     end
 ```
 
-**Peer-to-peer connection handshake**
+**Peer-to-peer Session handshake**
 
-Establishing a peer-to-peer (p2p) connection between Nodes is similar to the Relay server handshake but with a few 
+Establishing a peer-to-peer (p2p) Session between Nodes is similar to the Relay server handshake but with a few 
 key differences:
 - Both Nodes must solve a challenge and prove their identities to each other.
 - There is no registration step or public IP check, as the public IP of the Nodes is already known.
@@ -757,7 +761,7 @@ sequenceDiagram
     GolemNode1->>GolemNode2: Resume Forwarding control message
     Note over GolemNode2: Node can start sending packets from this moment
 
-    loop In regular intervals to keep session alive
+    loop In regular intervals to keep Session alive
         GolemNode1->>GolemNode2: Ping
         GolemNode2->>GolemNode1: Pong
     end
@@ -807,20 +811,20 @@ the current Golem network layer relies on the Relay server for Node discovery, n
 purpose. Although it’s conceivable that a fallback, such as a Kademlia-like implementation, could be used in the 
 event of a Relay server downtime, for now, the primary purpose of the neighborhood concept is broadcasting.
 
-Broadcasting is a mechanism used by various algorithms to propagate information throughout the network. Its most 
-significant application is in [the Offer Propagation algorithm](#offer-propagation). While the implementation of 
+Sending broadcast message is an operation used by various algorithms to disseminate information throughout the network. 
+Its most significant application is in [the Offer Propagation algorithm](#offer-propagation). While the implementation of 
 specific algorithms is handled by other modules, the network module provides the necessary operations as building 
 blocks for these processes.
 
 **Broadcasting**
 
-Hybrid Net implements local broadcasting to the nearest neighborhood of each Node. To query its neighbors, a Node 
-can send a `Neighborhood` request to the Relay server. The Relay server then responds with a list of Nodes that are 
-closest to the querying Node, based on a predefined metric. 
+Hybrid Net implements local broadcast operation that sends message to the nearest neighborhood of the Node. To query 
+its neighbors, a Node can send a `Neighborhood` request to the Relay server. The Relay server then responds with a 
+list of Nodes that are closest to the querying Node, based on a predefined metric. 
 
-After receiving the list of neighbors, the Node attempts to establish connections with them, as described in the 
+After receiving the list of neighbors, the Node attempts to establish Sessions with them, as described in the 
 chapter on [communication](#establishing-connections-between-nodes). The neighborhood algorithm does not 
-differentiate between Nodes capable of establishing peer-to-peer connections and those that require relayed 
+differentiate between Nodes capable of establishing peer-to-peer Sessions and those that require relayed 
 communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission. 
 
 **Neighborhood - distance function**
@@ -851,7 +855,7 @@ The encryption algorithm chosen must meet the following criteria:
    communication occurs over an unreliable channel, the encryption algorithm must be capable of handling individual 
    UDP packets. Some packets may be lost, while others could arrive out of order.
 2. No Key Exchange Required: There should be no need for explicit key or information exchange between Nodes. In cases 
-   where communication is relayed, there is no session-establishing phase between parties sending relayed packets, 
+   where communication is relayed, there is no Session-establishing phase between parties sending relayed packets, 
    so key exchanges aren't feasible.
 
 For these reasons, the AES-GCM-SIV variant of the AES algorithm was chosen.
