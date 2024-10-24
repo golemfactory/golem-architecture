@@ -500,9 +500,149 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 This section describes key components of Golem Network, i.e. their
 responsibilities, interfaces and which other components they utilize.
 
+### GSB
+* what it is, how it works and how it imposes a code structure and how
+  addressing works
+
 ### Networking
-* how it works that two separate Yagnas can talk to each other
-#### Central net
+
+The core networking component in Golem is the yagna Net module. It acts as a middleman between the other modules on 
+the yagna daemon and the Golem Network by facilitating message exchange with [GSB (Golem Service Bus)](#gsb) and the 
+network itself. The Net module provides a uniform interface that allows for different implementations of the 
+networking layer.  
+
+The [Net Module interface](#net-module-interface) chapter will focus on general networking concepts, while specific 
+implementations will be covered in the [Hybrid net](#hybrid-net) and [Central net](#central-net) chapters. 
+
+```mermaid
+flowchart TB
+  GolemNetwork(((GolemNetwork)))
+  
+  subgraph Node1[Golem Node]
+      Net1>Net]
+      Market1[Market] <--->|GSB| Net1
+      Activity1[Activity] <--->|GSB| Net1
+      Payment1[Payment] <--->|GSB| Net1
+      VPN1[VPN] <--->|GSB| Net1
+      ExeUnit1[ExeUnit] <--->|GSB| Net1
+  end
+  Net1 <-...-> GolemNetwork
+  
+  subgraph Node2[Golem Node]
+    Net2>Net]
+    Market2[Market] <--->|GSB| Net2
+    Activity2[Activity] <--->|GSB| Net2
+    Payment2[Payment] <--->|GSB| Net2
+    VPN2[VPN] <--->|GSB| Net2
+  end
+  Net2 <-...-> GolemNetwork
+```
+
+#### Net Module interface
+
+The Network module offers the following functionalities:
+- Sending messages to other Nodes
+- Forwarding received messages to the appropriate modules
+- Broadcasting messages to the network
+- Receiving and processing broadcasted messages
+
+##### GSB prefix mappings
+
+The Net module follows specific GSB address naming conventions to enable cooperation with other modules. Addresses 
+prefixed with `/net/{NodeId}` are reserved for the Net module, where it listens for incoming messages and forwards 
+them to the Golem Network. Conversely, addresses starting with `/public/...` are available for yagna modules to expose 
+public methods that can be called from other Nodes.   
+
+When the Net module receives a local incoming message, it extracts the NodeId from the address prefix and uses it to 
+forward the message into the Golem Network. On the receiving end, messages coming from the Network are processed, 
+and the address is checked to extract the NodeId. If the NodeId belongs to the recipient Node, the address is routed to 
+the appropriate GSB handler registered under the `/public/...` address.
+
+```mermaid
+block-beta
+    columns 2
+    Prefix{{"Prefix"}}
+    Address{{"Address"}}
+    
+    Prefix1["/net/0x467ab03ac10877d0ccff89fac547a4ce8aa0cc5e"]
+    Address1["/market/protocol/mk1/discovery/offers/Get"]
+    
+    arrow1<["Translate"]>(down)
+    space
+    
+    Prefix2["/public"]
+    Address2["/market/protocol/mk1/discovery/offers/Get"]
+```
+
+##### Broadcasting
+
+Message broadcasting in the Net module is organized around the concept of 'topics,' which can be thought of as 
+message categories. Different modules can register a message handler with the Net module that gets triggered 
+whenever a message for a specific topic is received. 
+
+To send a broadcast, a module must send a GSB message to the Net module on the designated topic. The Net module then 
+forwards this message to the network. Depending on the network's implementation, the message may be routed either to 
+neighboring Nodes or to all Nodes across the network.  
+
+```mermaid
+sequenceDiagram
+    participant Market
+    participant Net
+    participant GolemNetwork
+    
+    Note over Market, Net: Those are only example addresses for illustration 
+    Market->>Market: Bind GSB handler for Offers broadcast (for example '/market/offers')
+    Market->>Net: Subscribe topic `OffersBcast`, register handler '/market/offers'
+    GolemNetwork->>Net: Broadcast for topic `OffersBcast
+    Net->>Net: Find all handlers for topic `OffersBcast
+    Net->>Market: Call '/market/offers'
+    Market->>Market: Select previously unseen Offers
+    Market->>Net: Send re-broadcast of new Offers
+    Net->>GolemNetwork: Broadcast new Offers to neighborhood
+```
+
+##### Handling identities
+
+Each Golem Node can have multiple identities, with one of them (the default identity) used to identify the Node 
+within the network. However, operations on a Golem Node can also be performed in the context of secondary identities.
+The Net module must be able to handle messages sent to and from any of these identities. For more information on 
+identification, refer to the chapter about the [identity module](#identity). This section focuses solely on the Net 
+module interface.
+
+In addition to the GSB endpoints bound to the `/net/{NodeId}` prefix, as described in the [Address Translation 
+chapter](#gsb-prefix-mappings), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
+be sent from a specific identity on one Node to a specific identity on a remote Node.
+
+The Net module always checks if the target identity belongs to the local Node. If it does, the message is routed 
+back to the local GSB instead of being sent over the network. This mechanism allows GSB calls to be handled 
+uniformly by the calling code, regardless of whether the target is local or remote.
+
+##### Reliable, unreliable and transfers channels
+
+The Net module provides various types channels for message transmission. The basic channel provides reliable message 
+delivery via GSB, which is used for most control messages between Nodes.
+
+However, certain functionalities require different handling. For example, VPN embeds IP packets into GSB messages 
+and routes them through the Golem Protocol. Although VPN users can choose any protocol, TCP is typically used 
+because many higher-level protocols rely on it. Sending VPN messages through a reliable protocol would hurt 
+performance, as this would essentially embed TCP within TCP (or another reliable protocol implemented in Net). To 
+address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
+guarantee.   
+
+The third option is the transfer channel. Mixing transfers with GSB control messages can cause delays, as large file 
+transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
+specifically for transfers.
+
+All channels are accessible to other modules via GSB under the following prefixes:
+- `/net/{RemoteId}`
+- `/udp/net/{RemoteId}`
+- `/transfer/net/{RemoteId}`
+
+For messages sent from non-default identities, the prefixes are:
+- `/from/{LocalId}/to/{RemoteId}`
+- `/udp/from/{LocalId}/to/{RemoteId}`
+- `/transfer/from/{LocalId}/to/{RemoteId}`
+
 #### Hybrid net
 - Identification
 - Relay
@@ -513,9 +653,7 @@ responsibilities, interfaces and which other components they utilize.
   - Node identity verification (challenges)
   - Communication encryption
 
-### GSB
-* what it is, how it works and how it imposes a code structure and how
-  addressing works
+#### Central net
 
 ### Market interactions
 A description of the component responsible for making offers, counter-offers,
