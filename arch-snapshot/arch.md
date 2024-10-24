@@ -536,15 +536,9 @@ The proposed 'language' needs to meet a broad set of requirements:
 - **Scalable**: The language should be flexible enough to describe resources that are not known upfront, allowing for 
   extensions by participants within the Golem ecosystem to systematically add new elements easily.
 - **Constrained**: The language must prevent abuse (e.g., it must not allow the specification of resource conditions that
-  could result in endless resolution).
+  could result in endless evaluation).
 
 ##### Language
-
-The language consists of set of [Properties](#properties), set of [Constraints](#constraints) and
-[matching algorithm](#offerdemand-matching) that allows market engine to decide which Offers should be presented to 
-Requestor as [Proposal](#proposal) in response to his [Demand](#demand). Each Demand and Offer has its own set of 
-properties and constraints. Matching algorithm is responsible for cross-checking constraints against properties to 
-pre-reject Offers that don't meet Requestor's requirements.
 
 The language is composed of a set of [Properties](#properties), a set of [Constraints](#constraints), and a 
 [matching algorithm](#offerdemand-matching). This algorithm enables the market engine to determine which Offers 
@@ -571,8 +565,6 @@ names into specific 'topic areas' for better organization and clarity.
 The properties are declared to be of a specific type, which is important as it has impact on how comparison operators
 work with properties of different types. The type of property is inferred from the literal used to specify the value.
 Following property types are supported:
-- **String** - any value declared in quotes, eg: “sample text”
-
 - **String** - any value declared in quotes, eg: “sample text”, escaped according to
   [JSON rules](https://www.ietf.org/rfc/rfc4627.txt)
 - **Bool** - any of following literals: true, True, TRUE, false, False, FALSE
@@ -667,6 +659,12 @@ a JSON format:
   }
 }
 ```
+The JSON representation has certain limitations. For instance, you cannot have both the `golem.com.pricing.model` 
+property and the `golem.com.pricing.model.linear.coeffs` property simultaneously. To resolve this, the `@tag` field is 
+used, enabling you to assign values to a property that includes both a direct value and nested properties, as shown 
+in the example above.
+
+**Mixed representation**
 
 Formats that combine these two forms are also allowed, meaning that some keys can be partially flattened while still
 incorporating nested sub-properties:
@@ -709,7 +707,9 @@ The Golem ecosystem utilizes constraint language derived from [LDAP filter expre
 ###### Property referencing
 
 In the Constraint expressions, the properties are referenced using following grammar:
-`<name>(“@”<typecode>)?<operator><value>?`
+`<name>(“@”<typecode>)?<operator><value>`
+
+Additionally, in the case of the [existence operator](#operators) `=*`, the value can be omitted."
 
 `@<typecode>` is optional in property reference and implies a specific type of constraint value (this determines the
 behaviour of operators). If a type code is not specified, the type of property as declared in Demand/Offer determines
@@ -893,10 +893,11 @@ flowchart TB
 
 ###### Negotiable properties
 
-[Negotiable properties](../standards/README.md#-fact--vs--negotiable--properties) is a negotiation scheme and property
-naming convention that enables the Provider and Requestor Agents to negotiate the value of a single parameter.
-As an example, the negotiation of the `golem.com.payment.debit-notes.accept-timeout?` property, which indicates how long
-the Requestor Agent has to accept a Debit Note, will be demonstrated.
+[Negotiable properties](../standards/README.md#-fact--vs--negotiable--properties) is a negotiation scheme that 
+enables the Provider and Requestor Agents to negotiate the value of a single parameter. As an example, the 
+negotiation of the `golem.com.payment.debit-notes.accept-timeout?` property, which indicates how long
+the Requestor Agent has to accept a Debit Note, will be demonstrated. Although the `?` symbol appears to be an 
+operator, it holds no special meaning and is merely part of the property naming convention.
 
 Both agents begin by setting their initial preferred timeout values. With each turn, they adjust the value until 
 they either agree on a specific value or one party rejects the proposals, ending the negotiation.
