@@ -790,7 +790,8 @@ GSB messages and passed to the appropriate modules, as detailed in the [Address 
 Different channels can be utilized to send messages, as explained in the [reliable, unreliable, and transfers 
 channels chapter](#reliable-unreliable-and-transfers-channels). In the Hybrid Net, reliable and transfer channels 
 are distinguished by using separate TCP connections. This separation ensures that independent sender buffers are 
-maintained, preventing messages in one channel from being blocked by messages in the other.  
+maintained, preventing messages in one channel from being blocked by messages in the other. Each channel type has 
+its own single TCP connection. This means that independent transfer still can interfere with each other.
 
 The sender can also opt to use the unreliable channel, where GSB messages are sent directly as `Forward` packets 
 without message fragmentation. A key implication of this is that large GSB messages could exceed the Maximum 
@@ -862,7 +863,16 @@ For these reasons, the AES-GCM-SIV variant of the AES algorithm was chosen.
 
 **Symmetric keys derivation**
 
+Hybrid Net employs Elliptic Curve Diffie-Hellman (ECDH) to derive symmetric encryption keys. Each Node generates a 
+new private/public key pair, separate from its identity keys, which is specifically used for communication. The 
+public key is exchanged during the [p2p handshake](#establishing-sessions-between-nodes), and a shared secret is 
+derived from this key to enable AES encryption.
 
+In cases of relayed communication, where no direct Session is established, the public key is retrieved from the 
+Relay server. The shared secret is then derived using the Node's private key, enabling encrypted communication 
+through the Relay. The recipient Node also requests the sender's public key from the Relay server and uses it to 
+derive the shared secret, allowing it to decrypt the message. No special control packet exchanges are required 
+between the sender and receiver.
 
 #### Central net
 
