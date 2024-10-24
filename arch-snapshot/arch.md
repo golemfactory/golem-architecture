@@ -325,7 +325,94 @@ The key difference is that they are not required to negotiate with other agents,
 information in their Offer or Demand. This is a more lightweight approach compared to going through the full negotiation
 process.
 
-### Buying on golem platform
+### Buying on golem platform.
+
+Actors: Requestor, Provider
+
+The Requestor wants to purchase a service on the Golem platform. There are multiple entry points to this scenario, but for now, let's assume that it involves purchasing a service on one's own node.
+
+#### Step 1: Starting the Golem Node
+ 
+#### Step 2: Configuring the Wallet
+
+Before the Requestor begins, they must secure appropriate funds. To do this, they should have funds on the address from which they will pay, on one of the two supported blockchains: Ethereum or Polygon. It is strongly recommended to use the Polygon network.
+
+Upon starting the node, a key is automatically generated that identifies the Requestor's identity on the network. For production use, it is recommended to secure the key with a password using the command yagna id lock or generate a new key with a password using yagna id create.
+
+#### Step 3: Funding the Wallet
+
+The Requestor buys GLM tokens on the Polygon network (address: 0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf), for example, using the Quickswap application, and transfers them to the key address generated during wallet configuration.
+
+They can also purchase funds via credit card through the onboarding portal. This can be accessed by running yagna payment fund --network polygon.
+
+#### Step 4: Creating an Allocation
+
+Since multiple applications using the same wallet can run on a single node, it is required to reserve funds for a task to reduce potential issues before creating an order. The reservation can be expanded or reduced as execution progresses.
+
+Creating an allocation verifies that:
+
+ - There are sufficient funds on the given wallet and network.
+ - There is proper communication with the blockchain node.
+ - The sum of allocations does not exceed the account balance.
+
+#### Step 5: Creating a DEMAND
+
+To negotiate an agreement, the requestor's application must create a DEMAND. This object consists of two parts: a description and conditions on the provider's description in the form of a query. Let's assume we want to purchase access to an Ethereum node.
+
+As a requestor, in the query we can specify:
+
+ - The type of runtime engine
+ - In our case, also the chain ID
+
+ Next, the DEMAND is extended with information resulting from the allocation and is submitted to the Golem API to receive 
+ offer proposals that meet the conditions.
+
+Before Entering Negotiations, the Requestor Should Know:
+
+What will be the mode of conducting the agreement: a fixed-term contract or a long-term one.
+What their budget assumptions are.
+What their strategy is for selecting the best contractors.
+Which billing model they want to choose.
+
+#### Step 6: Negotiations
+
+For the created DEMAND, the Requestor receives a stream of agreement proposals. The proposals can be of two types:
+
+ Initial
+ : An offer presented to the network in general without knowledge of the other party. Such an offer should be reviewed, and the Requestor should specify their expectations regarding the contract. An example of such an interaction is reading the list of networks on which the Provider can receive payments and choosing the one preferred by the Requestor.
+
+Draft
+: An offer created after the Provider has been presented with the Requestor's expectations. The Requestor can decide to accept such an offer and proceed to create a contract, or they can continue negotiations by changing the terms. Requestor can also reject the offer.
+
+In the case of purchasing access to the Ethereum API, the Requestor needs to find 2-3 
+quality nodes. Currently, the sample application implements a naive strategy by selecting the cheapest nodes that meet the conditions. Then, in case of problems, the contract is terminated to search for another Provider.
+
+Negotiations ends with the creation of the agreement. 
+After the Provider confirms it, the agreement becomes effective.
+
+#### Step 7: Service Activation and Contract Supervision
+
+With an active contract, the Requestor activates the service by creating an Activity. Using the Activity object, they send a request to activate access to the node with a specified access password. In response, they receive the service details.
+
+The Requestor's application connects directly to the provided endpoint to verify that it is functioning correctly.
+
+From this point onward, the service is active, and the Requestor's process is responsible for monitoring the service's performance. This is done in two ways:
+- In the case of a pay-as-you-go contract, at regular intervals, billing records called DebitNotes are sent to the Requestor. These contain the number of requests made, the service uptime, and the resulting fee. The Requestor must verify that this data is accurate and either confirm the upcoming payment or terminate the contract.
+- The Requestor monitors the service on the Provider's side to avoid sending tasks to malfunctioning providers.
+
+For long-running services, it's necessary to extend the allocation to ensure sufficient funds are available.
+
+#### Step 8: Contract Closure
+
+The Requestor terminates agreement. 
+This notifies the Provider to terminate all activities associated with that contract.
+
+The Requestor receives an Invoice summarizing the expenses from all Activities active under the agreement.
+
+The Requestor confirms that the amount is correct.
+
+After some time, Golem transfers tokens to Provider wallet as payment for the service.
+
 ### Running something
 
 ## Layers
