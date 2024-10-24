@@ -473,7 +473,7 @@ The Network module offers the following functionalities:
 - Broadcasting messages to the network
 - Receiving and processing broadcasted messages
 
-##### Address translation
+##### GSB prefix mappings
 
 The Net module follows specific GSB address naming conventions to enable cooperation with other modules. Addresses 
 prefixed with `/net/{NodeId}` are reserved for the Net module, where it listens for incoming messages and forwards 
@@ -483,7 +483,7 @@ public methods that can be called from other Nodes.
 When the Net module receives a local incoming message, it extracts the NodeId from the address prefix and uses it to 
 forward the message into the Golem Network. On the receiving end, messages coming from the Network are processed, 
 and the address is checked to extract the NodeId. If the NodeId belongs to the recipient Node, the address is routed to 
-the appropriate GSB handler registered under the `/public/...` address.   
+the appropriate GSB handler registered under the `/public/...` address.
 
 ```mermaid
 block-beta
@@ -537,16 +537,16 @@ identification, refer to the chapter about the [identity module](#identity). Thi
 module interface.
 
 In addition to the GSB endpoints bound to the `/net/{NodeId}` prefix, as described in the [Address Translation 
-chapter](#address-translation), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
+chapter](#gsb-prefix-mappings), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
 be sent from a specific identity on one Node to a specific identity on a remote Node.
 
-Another important aspect is that the Net module always checks if the target identity belongs to the local Node. If 
-it does, the message is routed back to the local GSB instead of being sent over the network. This mechanism allows 
-GSB calls to be handled uniformly by the calling code, regardless of whether the target is local or remote.
+The Net module always checks if the target identity belongs to the local Node. If it does, the message is routed 
+back to the local GSB instead of being sent over the network. This mechanism allows GSB calls to be handled 
+uniformly by the calling code, regardless of whether the target is local or remote.
 
 ##### Reliable, unreliable and transfers channels
 
-The Net module supports multiple channels for message transmission. The basic channel provides reliable message 
+The Net module provides various types channels for message transmission. The basic channel provides reliable message 
 delivery via GSB, which is used for most control messages between Nodes.
 
 However, certain functionalities require different handling. For example, VPN embeds IP packets into GSB messages 
@@ -559,6 +559,16 @@ guarantee.
 The third option is the transfer channel. Mixing transfers with GSB control messages can cause delays, as large file 
 transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
 specifically for transfers.
+
+All channels are accessible to other modules via GSB under the following prefixes:
+- `/net/{RemoteId}`
+- `/udp/net/{RemoteId}`
+- `/transfer/net/{RemoteId}`
+
+For messages sent from non-default identities, the prefixes are:
+- `/from/{LocalId}/to/{RemoteId}`
+- `/udp/from/{LocalId}/to/{RemoteId}`
+- `/transfer/from/{LocalId}/to/{RemoteId}`
 
 #### Hybrid net
 - Identification
