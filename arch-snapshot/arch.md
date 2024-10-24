@@ -15,32 +15,111 @@ implement the needed functionalities.
 The aim is not to dive deep into every integration, but to capture architectural
 decisions and their consequences.
 
-# Framework Concept
+# General Concept
 
-This section describes what comprises Golem network, namely the actors,
-technical artifacts and activities they actors may perform on those activities.
-The objective of this paragraph is to tie together all the terms and provide a
-very high level description of what they are.
+This section outlines the components of the Golem Network, including the actors,
+technical artifacts, and the activities these actors may perform. The goal is to
+provide a high-level overview that ties together all key terms, offering a clear
+understanding of the network’s ecosystem.
 
-## What Golem is
+## What Golem Network Is
 
-## What Golem is not
+Golem Network is an open-source, decentralized platform for trading and
+utilizing computing power.
+
+The following comparisons help build an intuitive understanding of Golem
+Network. While each of them has its limitations, together they provide a first
+approximation of what the Golem Network is.
+
+### A Decentralized Compute Cloud
+
+Golem Network can be compared to traditional cloud platforms like AWS or GCP, as
+it enables users to run workloads on machines owned by others. However, there
+are key differences:
+
+* AWS and GCP own the infrastructure, whereas Golem Network relies on users
+  renting out their own machines to others.
+* Amazon and Google act as central authorities, but Golem gives no additional
+  power to any single entity (including itself). Users can fork, modify, or
+  build on top of the platform.
+* Golem is not a service provider; it simply provides the tools for sellers and
+  buyers to find each other and exchange resources for value.
+* The range of predefined "services" on Golem is far smaller compared to
+  traditional cloud providers.
+
+### A Decentralized eBay or Craigslist for Compute Resources
+
+Golem Network can also be likened to eBay or Craigslist, but for compute
+resources. It allows users to publish unstandardized offers, negotiate, and
+finalize deals. However, there are notable differences:
+
+* Golem does not take a cut of the transaction price.
+* Instead of humans, machines are the ones browsing offers, negotiating, and
+  sealing deals.
+* Offers are structured rather than free-form text.
+* Golem provides mechanisms to execute deals, such as running workloads on
+  remote machines.
+
+### libp2p for Utilizing Third-Party Resources
+
+Golem Network is comparable to [libp2p](https://libp2p.io), as it consists of
+open-source frameworks and libraries that collectively form a P2P network stack.
+The key differences include:
+
+* Golem focuses on a decentralized marketplace for compute resources rather than
+  being generic.
+* Users can begin using Golem without writing code, thanks to ready-made
+  binaries for both selling and buying compute power.
+
+## What Golem Is Not
+
+To further clarify what Golem Network is, it may help to define what it is not.
+
+### A Compute Resource Provider
+
+Golem Network does not own the compute resources available on the market.
+Transactions occur directly between buyers and sellers.
+
+### A Middleman or Market Maker
+
+Golem does not mediate or participate in the buying and selling of compute
+resources. Deals are made directly between the involved parties.
+
+### A Blockchain-Based Hosting Service
+
+Golem is not designed to provide hosting services backed by users' machines.
+While such services can be built on top of Golem (e.g.,
+[modelserve.ai](https://modelserve.ai/)), the network itself is not
+intended to offer this directly.
 
 ## Actors
-This section describes the actors using Golem Network and their role in the
-system.
-### Provider
-### Requestor
-Note: We use term Requestor not Requester.
-### Developer
-### End User
-Consumer of resources can be different person than Requestor.
-For example we can have web service which forwards computationally expensive jobs
-to Golem Network. Example: [Deposits](https://github.com/golemfactory/golem-architecture/blob/master/specs/deposits.md)
 
-#### Service Owner
-#### Funder
-#### Spender
+In Golem Network, there are two primary types of actors. While this is a
+simplification, it is sufficient to grasp the core abstractions introduced by
+the Golem Network.
+
+### Provider
+
+A **Provider** is a seller, someone who rents out their computing resources.
+This could be as simple as renting out a personal laptop, or as extensive as
+offering the resources of an entire data center.
+
+The Provider sets the price for their resources, selects preferred payment
+methods, and configures the necessary software, either provided by or built on
+top of the Golem Network, to run on their machines. Once set up, these resources
+can be utilized by others, and the Provider is compensated for their usage.
+
+### Requestor
+
+A **Requestor** is buyer, someone who wants to borrow computing resources. They
+might do this to experiment with hardware they don’t own, to speed up
+computations that would take too long on a single machine, or even to build a
+service powered by resources from multiple Providers.
+
+The Requestor needs to have a certain level of technical knowledge to interact
+with Golem Network's APIs (e.g., using the Python or Node.js SDKs). Through
+these APIs, they specify what resources they require and how they intend to pay
+for them.
 
 ## Activities
 This section describes what actors can do to the system. The descriptions are
