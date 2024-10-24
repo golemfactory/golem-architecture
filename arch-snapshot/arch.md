@@ -554,21 +554,325 @@ and routes them through the Golem Protocol. Although VPN users can choose any pr
 because many higher-level protocols rely on it. Sending VPN messages through a reliable protocol would hurt 
 performance, as this would essentially embed TCP within TCP (or another reliable protocol implemented in Net). To 
 address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
-guarantee.   
+guarantee.
 
 The third option is the transfer channel. Mixing transfers with GSB control messages can cause delays, as large file 
 transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
 specifically for transfers.
 
-#### Hybrid net
-- Identification
-- Relay
-- Discovering Nodes
-- P2P communication
-- Relayed communication
-- Cryptography
-  - Node identity verification (challenges)
-  - Communication encryption
+#### Hybrid Net
+
+Hybrid Net was developed as an intermediate step towards decentralization, enabling peer-to-peer (P2P) communication 
+between some of Golem Nodes. However, since most of the network operates behind NATs, P2P cannot be the sole 
+communication method. To address this, the Net implementation supports communication forwarding through specialized 
+component known as Relay.
+
+An additional advantage of relay server is it's ability to expedite Node discovery. In a pure P2P network, Node
+discovery can be slow, as no single Node has a complete view of the network, requiring multiple hops to find new Nodes.
+Relay server can also facilitate P2P communication between Nodes when direct connections are not possible.
+
+Although HybridNet remains centralized for node discovery and relaying communication between Nodes behind NATs, 
+broadcasting has already been designed in a decentralized manner as a step toward full network decentralization.
+
+##### Nodes identification
+
+A Golem Node is identified by its NodeId, which is derived from its public key. This NodeId allows the Node to be 
+located within the network, and the public key is used to verify the Node’s identity. This ensures that only one 
+Node can claim a specific ID within the network.
+
+Additionally, each Node may have multiple secondary identities, each associated with its own public/private key pair.
+The Net module must be capable of locating a Golem Node based on these secondary identities as well as the primary 
+identity.
+
+##### Relay server
+
+The Relay server is a core component of the networking layer in the Golem Network. All newly connected Nodes 
+register with the Relay server, providing the necessary information for discovery and communication. The Relay server:
+- Maintains a list of Nodes present in the network.
+- Stores each Node's public key, [identity](#identity) derived from the public key, and associated IP address.
+- Stores information about which secondary identities are associated with specific Nodes.
+- Assists in establishing peer-to-peer (p2p) communication when possible.
+- Routes traffic between Nodes if a p2p communication cannot be established.
+- Checks if connecting Nodes have public IP port exposed
+- Offers functions for:
+  - Querying Node's information.
+  - Retrieving a Node's neighborhood.
+
+Communication with the Relay server is handled through a custom protocol built on top of UDP, defined using Protocol 
+Buffers (protobuf). UDP was chosen for its lightweight nature, as it does not require maintaining open connections, 
+which would consume more system resources compared to TCP. This makes it possible to handle a large number of Nodes 
+concurrently, ensuring decent scalability.
+
+###### Connecting to Relay server
+
+The Hybrid Net protocol introduces the concept of a Session, which operates on top of the UDP protocol. All requests 
+to the Relay server and network traffic routing occur within the context of a Session, with only one Session allowed 
+at a time. To establish a Session with the Relay server, a Node must undergo a handshake process that serves several 
+purposes:
+1. Verifies that the Node presenting its NodeId possesses the private key corresponding to that NodeId.
+2. Collects and verifies any secondary identities associated with the Node.
+3. Gathers additional Node information, such as supported symmetric encryption algorithms.
+4. Determines if the Node is behind a NAT or if it has a public IP address and exposed port. The public IP acquired in 
+   this step may later be used by other Nodes to establish a peer-to-peer Session.
+
+**Challenge**
+
+Identity verification is performed via a challenge mechanism, where the Relay server sends random bytes to the Node, 
+which must compute a hash with a specified number of leading zeros. The difficulty level, set by the Relay server, 
+determines the number of leading zeros required. This computationally expensive task protects the Relay server from 
+DDoS attacks by forcing the Node to complete a certain amount of work before establishing a Session.
+
+The challenge response is cryptographically signed using the private key of each identity associated with the Node.
+The Relay server can then recover the Node's identities and public keys from these signatures, verifying that the Node 
+possesses the corresponding private keys. The recovered public keys are later made available to other Nodes that 
+request information about the Node.
+
+**Public IP check**
+
+When a Node initiates a Session, an additional mechanism is required to determine whether the IP address from which 
+the packets are received is behind a NAT. This is achieved by sending Ping packets (network protocol ping, not to be 
+confused with the ICMP packet) from a different UDP port than the one used for receiving incoming Sessions. This 
+ensures that any network devices between the Node and the Relay server won't recognize these Ping packets as part of 
+the same communication stream. If the ports are not publicly exposed, the Ping packets will be dropped, confirming 
+that the Node is behind a NAT.
+
+```mermaid
+sequenceDiagram
+    participant GolemNode as Golem Node 1
+    participant RelayServer as Relay Server
+    
+    GolemNode->>RelayServer: Session request
+    RelayServer->>GolemNode: Challenge
+    GolemNode->>GolemNode: Solve challenge
+    GolemNode->>GolemNode: Sign solution with Node's identities
+    GolemNode->>RelayServer: Challenge response
+    RelayServer->>RelayServer: Verify solution
+    RelayServer->>RelayServer: Recover identities from signatures
+    RelayServer->>GolemNode: Session established response
+    
+    GolemNode->>RelayServer: Register
+    activate RelayServer
+    RelayServer-->>GolemNode: Ping from different UDP port (Check if IP address is public)
+    alt 
+        GolemNode-->>RelayServer: Ping response
+    else Timeout
+        GolemNode--xRelayServer: Packet dropped due to NAT
+    end
+    RelayServer->>GolemNode: Register response (discovered public address)
+    deactivate RelayServer
+
+    Note right of GolemNode: Use session to discover Nodes 
+
+    loop In regular intervals to keep session alive
+        GolemNode->>RelayServer: Ping
+        RelayServer->>GolemNode: Pong
+    end
+    
+    opt Close Session
+        GolemNode->>RelayServer: Disconnect
+    end
+```
+
+Important note: The Relay server does not possess private keys, and its identity is not verified in the current 
+implementation. This marks a significant distinction compared to the process of establishing peer-to-peer Sessions 
+with regular Nodes.
+
+##### Establishing Sessions between Nodes
+
+Currently, a peer-to-peer (p2p) Session can be established in two scenarios. In the first, if the target Node has a 
+public IP, the initiating Node can directly connect to it. In the second scenario, where the initiating Node has a 
+public IP but the target Node is behind a NAT, the Session is facilitated by the Relay server. The initiating 
+Node first sends a Reverse Connection message to the Relay server, which forwards it to the target Node. The target 
+Node then attempts to establish a direct Session with the initiating Node. Whether the target Node has a public 
+IP can be determined based on information returned by the Relay server.
+
+Since the current Net implementation does not support NAT hole punching, if both Nodes are behind NAT, communication 
+must be routed through the Relay server.
+
+```mermaid
+---
+title: Scenarios of communication between Nodes   
+---
+sequenceDiagram
+    participant GolemNode1 as Golem Node 1
+    participant RelayServer as Relay Server
+    participant GolemNode2 as Golem Node 2
+
+    GolemNode1-->RelayServer: Established Session
+    GolemNode2-->RelayServer: Established Session
+
+    GolemNode1->>RelayServer: Get Node 2's information
+    RelayServer->>GolemNode1: Node 2's information
+    
+    alt Golem Node 2 has public IP
+        GolemNode1->>GolemNode2: Establish P2P Session
+    else Golem Node 1 has public IP
+        GolemNode1->>RelayServer: Reverse Connection message
+        RelayServer->>GolemNode2: Reverse Connection message
+
+        GolemNode2->>RelayServer: Get Node 1's information
+        RelayServer->>GolemNode2: Node 1's information
+        
+        GolemNode2->>GolemNode1: Establish P2P Session
+    else Golem Node 1 and 2 are behind NAT
+        par Communication routed through relay
+          GolemNode1->>RelayServer: Forward packet
+          RelayServer->>GolemNode2: Forward packet
+          GolemNode2->>RelayServer: Forward packet
+          RelayServer->>GolemNode1: Forward packet 
+        end
+    end
+```
+
+**Peer-to-peer Session handshake**
+
+Establishing a peer-to-peer (p2p) Session between Nodes is similar to the Relay server handshake but with a few 
+key differences:
+- Both Nodes must solve a challenge and prove their identities to each other.
+- There is no registration step or public IP check, as the public IP of the Nodes is already known.
+- The initiating Node sends a "Resume Forwarding" control message to the target Node, informing it that it can begin 
+  sending packets. This step ensures that packets arriving too early are not dropped.
+
+```mermaid
+---
+title: Protocol for establishing peer-to-peer Session   
+---
+sequenceDiagram
+    participant GolemNode1 as Golem Node 1
+    participant GolemNode2 as Golem Node 2
+    
+    GolemNode1->>GolemNode2: Session request (+challenge)
+    GolemNode2->>GolemNode1: Challenge
+    
+    GolemNode1->>GolemNode1: Solve challenge
+    GolemNode2->>GolemNode2: Solve challenge
+    GolemNode1->>GolemNode1: Sign solution with Node's identities
+    GolemNode2->>GolemNode2: Sign solution with Node's identities
+    
+    GolemNode1->>GolemNode2: Challenge response
+    GolemNode2->>GolemNode2: Verify solution
+    GolemNode2->>GolemNode2: Recover identities from signatures
+    GolemNode2->>GolemNode1: Challenge response
+
+    GolemNode1->>GolemNode1: Verify solution
+    GolemNode1->>GolemNode1: Recover identities from signatures
+    Note over GolemNode1: Node can start sending packets from this moment
+
+    GolemNode1->>GolemNode2: Resume Forwarding control message
+    Note over GolemNode2: Node can start sending packets from this moment
+
+    loop In regular intervals to keep Session alive
+        GolemNode1->>GolemNode2: Ping
+        GolemNode2->>GolemNode1: Pong
+    end
+    
+    opt Close Session
+        GolemNode1->>GolemNode2: Disconnect
+    end
+```
+
+##### Forwarding Network Traffic
+
+The low-level abstraction provides a single message type for sending data: the `Forward` packet. This packet can be 
+used to send arbitrary content between Nodes, either directly or through the Relay server. Like UDP, the Forward 
+packet does not offer delivery guarantees. It is the responsibility of higher-level layers to ensure the correct and 
+reliable delivery of data in case it is necessary.  
+
+##### Virtual TCP
+
+To enable reliable data delivery, the hybrid Net utilizes an embedded TCP stack implementation. This stack takes an 
+input data stream and generates IP packets, which are then sent using Forward packets. The receiving Node employs 
+the TCP stack to decode incoming packets back into a message stream. These messages are subsequently dispatched as 
+GSB messages and passed to the appropriate modules, as detailed in the [Address Translation chapter](#address-translation).
+
+##### Reliable, unreliable and transfers channels in Hybrid Net
+
+Different channels can be utilized to send messages, as explained in the [reliable, unreliable, and transfers 
+channels chapter](#reliable-unreliable-and-transfers-channels). In the Hybrid Net, reliable and transfer channels 
+are distinguished by using separate TCP connections. This separation ensures that independent sender buffers are 
+maintained, preventing messages in one channel from being blocked by messages in the other. Each channel type has 
+its own single TCP connection. This means that independent transfer still can interfere with each other.
+
+The sender can also opt to use the unreliable channel, where GSB messages are sent directly as `Forward` packets 
+without message fragmentation. A key implication of this is that large GSB messages could exceed the Maximum 
+Transmission Unit (MTU) and may be dropped by network devices along the packet's route.
+
+##### Broadcasting and neighborhood
+
+**What is a Neighborhood?**
+
+Before diving into broadcasting, it's essential to understand the concept of a neighborhood. In a network, a 
+neighborhood is a subset of Nodes that are considered closest to a given Node based on an abstract metric. Each Node 
+has its own neighborhood. This metric doesn't necessarily reflect the real-world proximity of Nodes. For instance, 
+two Nodes on opposite sides of the globe could be neighbors, while two Nodes within the same physical network may be 
+too distant in terms of this metric to be in the same neighborhood.
+
+In peer-to-peer networks, the concept of Node distance is often used for efficient Node discovery. However, since 
+the current Golem network layer relies on the Relay server for Node discovery, neighborhoods don't serve that 
+purpose. Although it’s conceivable that a fallback, such as a Kademlia-like implementation, could be used in the 
+event of a Relay server downtime, for now, the primary purpose of the neighborhood concept is broadcasting.
+
+Sending broadcast message is an operation used by various algorithms to disseminate information throughout the network. 
+Its most significant application is in [the Offer Propagation algorithm](#offer-propagation). While the implementation of 
+specific algorithms is handled by other modules, the network module provides the necessary operations as building 
+blocks for these processes.
+
+**Broadcasting**
+
+Hybrid Net implements local broadcast operation that sends message to the nearest neighborhood of the Node. To query 
+its neighbors, a Node can send a `Neighborhood` request to the Relay server. The Relay server then responds with a 
+list of Nodes that are closest to the querying Node, based on a predefined metric. 
+
+After receiving the list of neighbors, the Node attempts to establish Sessions with them, as described in the 
+chapter on [communication](#establishing-connections-between-nodes). The neighborhood algorithm does not 
+differentiate between Nodes capable of establishing peer-to-peer Sessions and those that require relayed 
+communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission. 
+
+**Neighborhood - distance function**
+
+To prevent clustering of Nodes and accidental splits in the network, where subsets of Nodes become unreachable, a proper
+neighborhood function must be utilized. This function is defined by the network module, and the market relies on the
+broadcast function, leaving it with no alternative in this regard.
+
+Optimal guarantees can be achieved when two neighboring Nodes have distinctly different neighborhoods, minimizing their
+number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
+distance between Node IDs.
+
+##### Encryption
+
+The currently released version of Hybrid Net does not support encryption, but this feature is in progress. This 
+chapter is important to help the reader understand the relationship between identities and how different keys will 
+be used once encryption is implemented.
+
+The [Nodes identification chapter](#nodes-identification) explains how identities are used within the Network. 
+However, the public key pairs associated with these identities are only used to verify whether a Node accurately 
+claims its identity. For encryption purposes, symmetric keys are employed, which are not related to the identity keys.
+
+**Symmetric encryption algorithm choice**
+
+The encryption algorithm chosen must meet the following criteria:
+1. Independent Message Encryption: The algorithm must not assume an order for messages; each packet must be 
+   encrypted independently. Since the entire network traffic between Nodes should be encrypted, and part of the 
+   communication occurs over an unreliable channel, the encryption algorithm must be capable of handling individual 
+   UDP packets. Some packets may be lost, while others could arrive out of order.
+2. No Key Exchange Required: There should be no need for explicit key or information exchange between Nodes. In cases 
+   where communication is relayed, there is no Session-establishing phase between parties sending relayed packets, 
+   so key exchanges aren't feasible.
+
+For these reasons, the AES-GCM-SIV variant of the AES algorithm was chosen.
+
+**Symmetric keys derivation**
+
+Hybrid Net employs Elliptic Curve Diffie-Hellman (ECDH) to derive symmetric encryption keys. Each Node generates a 
+new private/public key pair, separate from its identity keys, which is specifically used for communication. The 
+public key is exchanged during the [p2p handshake](#establishing-sessions-between-nodes), and a shared secret is 
+derived from this key to enable AES encryption.
+
+In cases of relayed communication, where no direct Session is established, the public key is retrieved from the 
+Relay server. The shared secret is then derived using the Node's private key, enabling encrypted communication 
+through the Relay. The recipient Node also requests the sender's public key from the Relay server and uses it to 
+derive the shared secret, allowing it to decrypt the message. No special control packet exchanges are required 
+between the sender and receiver.
 
 #### Central net
 
