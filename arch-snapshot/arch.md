@@ -1165,7 +1165,11 @@ sequenceDiagram
 - Link to external documentation describing details
 
 ### ExeUnits
+Abstractly speaking, ExeUnit performs work on behalf of the Requestor utilizing
+Provider's resources. What this work pertains to is part of the Agreement
+negotiated by the Provider and Requestor.
 
+The following graph describes the lifetime and operation of an ExeUnit:
 ```mermaid
 sequenceDiagram
   participant Requestor
@@ -1197,46 +1201,128 @@ sequenceDiagram
   Requestor->>Provider: Terminate Agreement
 ```
 
-### Activity
-* How the actions on behalf of the requestor are performed
-* We should dive into each important and general implementation, i.e. WASM and
-  VM
+#### Generic ExeUnits
+The most work has been directed into a generic ExeUnit bundled with Golem Node
+installations that performs arbitrary computation. It has currently two modes
+of operation, determined by a swappable *Runtime*.
 
-#### Abstract concept
-- ExeUnit concept is generic enough to sell any kind of computation resources
-- Generic ExeUnits (for example VM, WASM etc.) vs. specialized ExeUnits for specific tasks like:
-  - [GamerHash](https://github.com/golemfactory/ya-runtime-ai)
-  - [outbound gateway](https://github.com/golemfactory/ya-runtime-outbound)
-  - [http authentication](https://github.com/golemfactory/ya-runtime-http-auth)
-  - SGX variant of ExeUnit
-  - These points are not meant to document those ExeUnits, rather show possible variaty based
-    on these examples
-- Interaction with yagna through GSB
-- Control flow between Requestor and ExeUnit
-- Extensible commands list (ExeUnit implementation dependent)
-##### Controlling ExeUnit (basic concepts)
-- Spawning ExeUnit (contract between Provider Agent and ExeUnit)
-  - Self-test
-  - Offer template
-- Binding to GSB (addressing based on activity id)
-- Requestor state control
-- Commands and batches:
-  - Deploy, Start, Transfer, Run, Terminate
-  - Querying command/batch state, receiving results
-  - Transfer methods ([GFTP](#gftp), http)
-##### Usage counters
+- VM – the widely used Runtime offering VPS-like experience. One can deploy
+  images built from a mostly Dockerfile-compatible GVMI format via
+  [gvmkit-build](https://github.com/golemfactory/gvmkit-build-rs) and, if the
+  image supports SSH, create a tunnel to the VM. See (VM runtime)(#VM-Runtime).
+- WASM – [TODO: Never worked on it]. See (WASM runtime)(#WASM-Runtime).
+
+ SGX – [TODO: Removal approved by reqc but not merged yet, should we document?]
+
+#### Specialized ExeUnits
+Some ExeUnits with much narrower applicability have been developed over
+time.
+- AI Evaluation ExeUnit designed for GamerHash –
+  [ya-runtime-ai](https://github.com/golemfactory/ya-runtime-ai)
+- Outbound Gateway which is limited to routing traffic through a provider --
+  [ya-runtime-outbound](https://github.com/golemfactory/ya-runtime-outbound).
+  Note that this kind of traffic is possible with the generic VM ExeUnit
+  as well.
+- Gateway between the Golem Marketplace and an HTTP-based service accessible
+  over the Internet –
+  [ya-runtime-http-auth](https://github.com/golemfactory/ya-runtime-http-auth).
+
+#### Interaction between Golem Node and ExeUnits
+ExeUnits are controlled by the Golem Node using GSB, the same message-passing
+protocol that is used for internal implementation of the Node as well as
+inter-node communication.
+
+In case of the Generic ExeUnits the GSB messages are split into two services:
+- Counters Service
+  - `GetCounters` returns the Usage Counters relevant for the pricing according
+    to the choosen payment model.
+  - `SetCounter` overrides the value of a specific counter.
+  - `Shutdown` informs the service of imminent shutdown.
+- Transfer Service
+  - `DeployImage` transfers the GVMI image and starts the underlying Runtime.*
+  - `TransferResource` transfers a resource (usually a file) between
+    the Provider and the Runtime.*
+  - `AddVolumes` creates additional points within Runtime filesystem writing
+    to which will allow files to be accessed via `TransferResource` by the
+    Requestor. That is, `TransferResource` cannot operate on arbitrary paths
+    when accessing Runtime data, but is instead limited to the *Volumes*
+    created by this GSB call.
+  - `AbortTransfers` cancels all ongoing transfers.
+  - `Shutdown` informs the service of imminent shutdown.
+
+*Note regarding transfers: The destination of a transfer must always implement
+a specific GSB-based interface, but the source can be either a symmetric GSB-API
+*or* an HTTP resource. For the details of the GSB Transfer APIs, see
+[gftp implementation](https://github.com/golemfactory/yagna/tree/master/core/gftp).
+
+Additionally, some endpoints are exposed directly to the Requestor Agent,
+such as:
+- `Exec`
+- `GetExecBatchResults`
+
+(Details below)
+
+#### ExeUnit Commands
+The Requestor Agent does not control the ExeUnit by GSB, but by using
+a dedicated REST API that maps user-friendly messages to the `Exec` GSB message
+that is then sent directly to the ExeUnit.
+
+The specification of the command (so-called `ExeScriptCommand`) can be found
+in [ya-client OpenAPI Activity Specification](https://github.com/golemfactory/ya-client/blob/master/specs/activity-api.yaml).
+
+##### Batches
+Commands are to be sent in *Batches* which are considered done after each
+command has completed in order.
+
+##### Results
+The Requestor Agent can obtain the results of a Batch by sending the
+`GetExecBatchResults` GSB message, which will be received directly by the
+ExeUnit.
+
+#### Before any Agreements
+##### Offer Template
+Before the Golem Node propagates any of its offers, it queries each of its
+ExeUnits for so called *Offer Templates*. This template identifies the kind
+of ExeUnit that will be invoked if this offer is chosen and the pricing model
+that's configured for that ExeUnit. The Golem Node then only has to patch
+some fields before broadcasting the Offer.
+
+##### Self-Test
+ExeUnits have the capability of verifying that they will be able to fulfil their
+role by invoked a built-in test. For example, the VM ExeUnit will spawn a VM
+with a simple image, assert some of its properties and then close it to verify
+that virtualization works.
+
+If the Self-Test fails, Offers regarding such ExeUnit will not be broadcasted.
+
 #### ExeUnit Supervisor
-- Why splitting Supervisor and Runtime?
-- Common functionalities provided by Supervisor
+The Supervisor abstracts over common components of ExeUnits to allow easier
+development of new computation modes – one only needs to implement the
+[ExeUnit Runtime](#ExeUnit-Runtime).
+
 #### ExeUnit Runtime
-#### GFTP
-#### VM runtime
-- Virtual machine desciption (so the reader knows what is there, but not details)
-- Functionalities (outbound, VPN, process output capturing)
-- VM images, gvmkit-build etc
+The Runtime models specific kind of computation compatible with the ExeUnit
+Supervisor.
+
+#### VM Runtime
+- Operates by running code within a virtual machine, which prevents malicious
+  code submitted by the Requestor from negatively impacting the machine on which
+  the Provider Agent runs.
+- Functionalities:
+  - Outbound allows communicating with the internet via a virtual network
+    interface that filters network traffic according to Provider's configuration
+    as means of protection against illegal activities to the Provider.
+  - VPN is also implemented using a virtual network interface so that various
+    instances of the Runtime (from different Activities and possibly Providers)
+    and the Requestor Agent can communicate using conventional networking
+    solutions.
+  - Process output capture allows the Requestor Agent to obtain standard output,
+    standard error as well as the return code of the process.
+- The images for the VM are built via gvmkit-build from a Dockerfile-like
+  format to lower the steepness of the learning curve.
+
 #### WASM runtime
-- WASM supported execution engines
-- WASM images
+[TODO]
 
 ### VPN
 * The component responsible for creating a VPN between VMs
