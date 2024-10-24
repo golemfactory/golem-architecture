@@ -726,7 +726,7 @@ necessarily being a blockchain or using the ERC20 standard.
   Smart Contract on an EVM-compatible blockchain. The address at which this
   contract resides is preconfigured as part of the Payment Driver and not
   subject to negotiation.
-- zksync – Now obsolete, another Payment Driver build on Ethereum
+- zksync – Now obsolete, another Payment Driver built on Ethereum
 
 ##### Current Erc20 Payment Driver
 - Requires tokens to be compliant with the ERC20 standard.
