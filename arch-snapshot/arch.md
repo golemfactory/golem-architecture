@@ -51,7 +51,7 @@ details and establish a glossary to ensure consistency within the document.
 ### Selling on Golem platform
 
 Golem Network allows buyers and sellers to connect and reach agreements. The market is designed to be asymmetrical:
-the sellers ([Providers](#provider)) publish Offers, and the buyers ([Requestors](#requestor)) browse through these Offers.
+the sellers ([Providers](#provider)) publish Offers, and the buyers ([Requestors](#Requestor)) browse through these Offers.
 When a Requestor finds a suitable Offer, they contact the Provider directly to negotiate the deal.
 
 Typically, humans are not involved in the process of finding, matching, negotiating, or finalizing agreements. Instead,
@@ -62,10 +62,10 @@ The [Provider Agent](#provider-agent) is primarily responsible for implementing 
 the Golem Network. From high level perspective, Provider Agent application should do following things: 
 1. Describe Resources using property language to create an [Offer](#offer)
 2. Publish the Offer on the market
-3. Monitor incoming Proposals and negotiate an [Agreement](#agreement) with the most promising [Requestor](#requestor)
+3. Monitor incoming Proposals and negotiate an [Agreement](#agreement) with the most promising [Requestor](#Requestor)
 4. Allocate the promised Resources in accordance with the [Agreement](#agreement)
 5. Monitor resources usage and charge Requestor Agent
-6. Terminate the Agreement or await the Agreement termination event from the [Requestor](#requestor)
+6. Terminate the Agreement or await the Agreement termination event from the [Requestor](#Requestor)
 7. Send an [Invoice](#invoice) summarizing the total cost of the [Agreement](#agreement)
 8. Wait until the payment for the [Invoice](#invoice) is settled and payment confirmed. 
 
@@ -105,7 +105,7 @@ for incoming [Proposals](#proposal).
 #### 3. Monitor incoming Proposals and negotiate an Agreement with the most promising Requestor
 
 The [Provider Agent](#provider-agent) plays a passive role in negotiations. Offers are propagated across the network and
-received by [Requestors](#requestor). The offer is matched locally on the Requestor's node with a [Demand](#demand).
+received by [Requestors](#Requestor). The offer is matched locally on the Requestor's node with a [Demand](#demand).
 If the Requestor is interested, they respond by sending a [Proposal](#proposal) to the Provider Agent.
 
 [Negotiation](#process-of-negotiations-and-making-an-agreement) is the process of exchanging Proposals and adjusting their
@@ -493,7 +493,7 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 ### No centralized offer matching rules
 ### Only providers' offers are propagated
 ### Agreements are not stored on the blockchain
-### Offline requestors are not supported 
+### Offline Requestors are not supported 
 ### Local storage (TODO: what role does the local DB play?)
 
 ## Technical view - components
@@ -1137,32 +1137,236 @@ sequenceDiagram
 - Termination reason concept
 
 ### Payments
-* a description of current payment driver, its modes of operations and how it
-  can be extended
-#### Payments models
-- Describe generic model which is open for new implementations
-- Payment model specification in Offer/Demand language
-- Linear Payment model as an example
-#### Payments flow during Agreement
-- Negotiating payment platform and other payment details
-- Testnet(s) vs. mainnet(s)
-- Tokens
-- Partial payments vs. payments after Agreement finish
-- DebitNotes/Invoices interactions (acceptance, rejection, cancellation)
-- How DebitNote/Invoice acceptance relates to payment on blockchain?
-- Payment settlement and payment confirmation for Provider
+#### Important terms
+- Payment Driver – a component responsible for executing and confirming
+  transactions.
+- Payment Platform – a 3-part identifier uniquely describing a mode of
+  exchanging funds. It is composed of 3 fields:
+  - driver – Determines which driver to select, see below for details.
+  - network – Defined by the driver.
+  - token – Defined by the driver.
 
-##### Mid-Agreement payments
-##### Post-Agreement payments
+  The payment platform is opaque to Golem and is only relevant for payments.
+  It is serialized as `{dirver}-{network}-{token}`.
+- Allocation – a budget definition in the Golem Node. It is not part of the
+  protocol and is only used for internal bookkeeping for the convenience
+  of Requestors. One can create an Allocation via REST API which defines the
+  following constraints:
+    - Payment Platform
+      - Must match exactly
+    - Payee address
+      - Must match exactly
+    - Amount of token
+      - Cannot be exceeded
+    - Lifetime (via a UTC timestamp)
+      - The allocation will cease to exist the moment it passes
+  
+  The allocation is neccessary for all operations that may lead to expending
+  funds and it is transparently checked at all relevant points. If any of the
+  constraints are not satisfied, the operation will fail. Allocations *DO NOT* affect semantics of the Golem Network and can be considered an implementation detail.
+#### Payments models
+A payment model is an algorithm for determining the amount due based on resource usage (AKA Usage Counters, see [ExeUnits section](#ExeUnits)).
+
+The linear Payment Model is the only one currently in use. It multiplies usage
+counters by constant coefficients and adds a constant on top of that, thus
+forming a linear function. The counters used today by yagna are cpu-time
+and total run-time.
+
+The model parameters (for example coefficients of the linear Payment Model) are
+declared by the provider in the offer. Based on those, the Requestor can make
+an informed decision about whether to enter such an agreement or not.
+
+Because Payment Models operate on ExeUnit-defined Usage Counters, they are
+ExeUnit-dependent, but one Payment Model may work for multiple ExeUnits
+assuming they define interchangeable counters.
+
+#### Negotiation
+A Payment Model must be negotiated between the Provider and Requestor to
+estimate pricing before the agreement is signed.
+
+- Offer shall expose a property `golem.com.pricing.model` which is a string
+    containing the model name, e.g. `linear`, as well as
+    `golem.com.pricing.model.{model_name}` which is an object containing
+    model-specific parameters.
+- Demand may put constraints on those properties in order to limit spending.
+
+#### Payments flow during the lifetime of the Agreement
+##### Negotiation
+Provider and Requestor must establish the mechanics of payments (Payment Driver,
+its parameters, Payment Model) during the agreement Negotiation. This is
+achieved as follows:
+- Offer defines properties `golem.com.payment.platform.<platform>.address`
+  of the form which identify the recipients of funds for the given platform.
+  Note that in case of blockchain payments this adress need not be the same
+  as the Node ID. One can operate multiple provider nodes and have them all
+  collect payments to a single account.
+- The demand puts a constraint requiring that at least one such entry exisits
+  for the payment platforms it itself supports.
+  e.g. `(golem.com.payment.platform.erc20-polygon-glm.address=*)`.
+
+In order to make experimentation on Golem Network simple, a pool of Providers is made available to users at no cost. It has been decided that the best way of achieving it is by utilising different payment platforms on the same network.
+- For-profit providers will declare platforms that are used for actual funds,
+  e.g. `erc20-mainnet-glm` and `erc20-polygon-glm`. Those correspond to,
+  respectivelly, Ethereum Mainnet and Polygon L2, on both of which no new GLM
+  tokens can be minted.
+- Non-profit providers will declare platforms on which GLM tokens can be
+  minted, and native tokens can be obtained from faucets, such as
+  `erc20-amoy-tglm` or `erc20-holesky-tglm`.
+- As there's currently only one driver in use and it requires a 1-to-1
+  relationship between properties `token` and `network` of the payment platform,
+  one usually refers to networks instead of the entire platforms. This has
+  resulted in terms Mainnet(s) (for-profit) and Testnet(s) (non-profit).
+
+##### Payable documents
+A provider will send to the Requestor two kinds of documents relating
+to payments - DebitNotes and Invoices. Those documents are used for accounting
+and are persistent (retained in the database even after the agreement concludes)
+which makes them useful for statistics and long-term debugging.
+- DebitNotes are emitted while the agreement is still in effect, they contain
+  the current amount due, the activity they relate to and optionally a deadline
+  for payment for this amount (deducted by previous payments made for the
+  given activity) to be made. If it is present, the DebitNote shall be called
+  *payable*.
+  - Payable DebitNotes frequency is negotiated by the property
+    `golem.com.scheme.payu.debit-note.interval-sec?` and the duration between
+    DebitNote creation and its due date by
+    `golem.com.scheme.payu.payment-timeout-sec?`.
+- Invoices are emitted after the agreement concludes, and they contain the
+  total amount due for all activities.
+
+##### Interaction between provider and Requestor
+Whenever a provider sends a payment-related document, the Requestor may take one
+of three actions:
+- Accept the document (sending a message to Provider), obligating itself
+  to pay the amount in case of invoices and payable DebitNotes.
+- Reject the document (sending a message to Provider), signaling to the
+  provider that it does not intend to make the payment. Will lead to
+  termination of the agreement if it's a DebitNote.
+- Ignore the document. Will lead to termination of agreement if it's
+  a DebitNote.
+
+##### Accepted documents
+Accepting a document automatically schedules a payment to be made by
+the Requestor. If the document specifies a deadline for the payment, it is
+respected.
+- Partial payments for DebitNotes should never exceed the final amount declared
+  by the Invoice, as there is no mechanism for the provider to pay back the
+  Requestor the surplus. It's not a problem for the current Linear Payment Model,
+  as cpu-time and run-time counters are monotonically increasing.
+- Whenever the Requestor makes a payment and considers it done (in practice by
+  doing the same confirmation the provider would), it sends a driver-defined
+  blob to the Provider so that the other node can confirm the payment itself.
+    - *Confirmation* pertains to verifying whether a specific transaction from
+      the Requestor (identified by its Transaction ID that the Requestor
+      sends to the Provider) has been processed and that it's parameters
+      (notably amount of token sent, token address and receiver address) all
+      match what the Provider expects. Due to the nature of Blockchain this
+      process is not completely deterministic, but conservative assumptions
+      made in the current implementation of the Golem Node offer acceptable
+      level of certainty.
+- If the provider cannot confirm the payment, the result is the same as if no
+  payment has been made.
 
 #### Payment drivers
-- Abstract concept (independance from underlying payment mechanisms)
-- How payment platform relates to payment driver?
-- Examples: erc20 driver, zksync (?)
-#### Payments batching
+##### Abstract idea
+A Payment Driver is intended to be an abstraction of an arbitrary mode
+of payments. It must expose a collection of capabilities defined by
+the implementation of the Golem Node, thus not being subject to network or
+REST API backwards compatibility concerns. The current implementation requires
+the following capabilities:
+- Handling account events (locked / unlocked).
+  - An account (private Ethereum key) on the Golem Node may be either accessible
+    or encrypted. In the latter case it cannot be used for signing transactions,
+    so the driver must be kept up-to-date with the status of all accounts.
+- Listing RPC endpoints*.
+  - Accessing Ethereum is done via servers commonly called RPC endpoints.
+    A faulty endpoint could cause issues with transaction processing, so the
+    driver exposes them with some metadata to allow checking whether they work. 
+- Reporting account balance*.
+  - For proper operation of the node one needs both Gas (native token) and GLM,
+    this method yields the amount of both.
+- Reporting its name.
+  - Driver's name is a unique UTF-8 identifier. For the erc20 driver it'
+    `"erc20"`.
+- Reporting the default network.
+  - Drivers have a preferred payment network for operation, which is to be used
+    when the network is not supplied (some REST endpoints allow that).
+- Reporting the list of supported networks.
+  - Drivers can list all networks they can interact with.
+- Initialization.
+  - Drivers may need to carry out certain tasks specific to them before they
+    can begin working. This method is called before any transactions
+    are scheduled.
+- Reporting the need for initialization for confirming incoming payments.
+  - If the driver needs to also do work before confirming payments, it can
+    report that via this method – then initialization will be called before
+    any confirmation requests as well.
+- Funding – automatic obtaining funds for for Testnets.
+  - Some Testnets allow obtaining funds (both native token and GLM)
+    programmatically. This method does this if possible.
+- Transfers – transfering funds to a given address at a given platform
+  w/o an allocation.
+- Scheduling payments – transfering funds to a given address at a given
+  platform with an allocation.
+- Confirming payments.
+  - A driver defines a heuristic for deciding whether a payment has been done
+    correctly and is to be trusted.
+- Verifying allocations.
+  - Drivers ensure that an allocation cannot be created beyond the available
+    funds and that the account tied to the allocation is usable. If the
+    allocation contains a deposit, it is also validated. See the Deposit
+    Payments section.
+- Releasing deposits.
+  - See the Deposit Payments section.
+- Reporting its status*.
+  - Drivers may encounter problems during their operations. The interface
+    requires that drivers expose any errors encountered via a list of problems.
+    An empty list implies that the driver is functioning 100% correctly.
+
+Points marked with `*` leak information about the underlying mode of payments
+necessarily being a blockchain or using the ERC20 standard.
+
+##### Examples of payment drivers
+- erc20 – Considers the currency to be a token defined by an ERC20-compliant
+  Smart Contract on an EVM-compatible blockchain. The address at which this
+  contract resides is preconfigured as part of the Payment Driver and not
+  subject to negotiation.
+- zksync – Now obsolete, another Payment Driver built on Ethereum
+
+##### Current Erc20 Payment Driver
+- Requires tokens to be compliant with the ERC20 standard.
+- Only accepts `glm` token value for Mainnets and `tglm` for Testnets.
+- Optimizes gas usage:
+  - Use a multi-payment contract when available (hardcoded into the driver
+    for each network) to execute multiple transfers within a single transaction.
+  - Adds multiple transfers to a single account together.
+
+##### Payments Batching
+Payments Batching refers to collecting multiple transactions into one to optimize
+gas usage. The only currently used Payment Driver implements this, [see this
+section](#Current-Erc20-Payment-Driver).
+
 #### Deposits payments
-- Overview of the concept
-- Link to external documentation describing details
+Detailed specification is in [golem-architecture](https://github.com/golemfactory/golem-architecture/blob/master/specs/deposits.md).
+
+Deposits are a means for Requestor to pay with funds of external clients without
+ever keeping them on their accounts. This is enabled by a smart contract on
+the blockchain to which the 3rd parties may Deposit their funds and allow
+a specific address (the Requestor's account) to transfer them out of the Deposit.
+
+Terms:
+- Funder – 3rd party creating the Deposit.
+- Spender – Requestor permitted to spend the funds from a given Deposit.
+
+This ties into existing concepts as follows:
+- After the Funder creates a Deposit, they send the Deposit ID to the Spender.
+  - Typically the creation of the Deposit would be done via a service operated
+    by the spender.
+- The Spender creates an allocation with the Deposit ID attached, this allows
+  the Payment Driver to validate the allocation parameters against the deposit
+  instead of the funds of the Spender themselves.
+- Whenever a payment is scheduled, the Payment Driver will be able to transfer
+  the funds directly from the deposit to the provider.
 
 ### ExeUnits
 
@@ -1198,7 +1402,7 @@ sequenceDiagram
 ```
 
 ### Activity
-* How the actions on behalf of the requestor are performed
+* How the actions on behalf of the Requestor are performed
 * We should dive into each important and general implementation, i.e. WASM and
   VM
 
