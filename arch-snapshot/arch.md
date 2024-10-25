@@ -433,12 +433,30 @@ responsibilities, interfaces and which other components they utilize.
 
 ### Networking
 
-The core networking component in Golem is the yagna Net module. It acts as a middleman between the other modules on 
-the yagna daemon and the Golem Network by facilitating message exchange with [GSB (Golem Service Bus)](#gsb) and the 
-network itself. The Net module provides a uniform interface that allows for different implementations of the 
-networking layer.  
+The network layers aim to provide a developer-friendly interface for Node-to-Node communication within the Golem 
+Network, abstracting the complexity of underlying network operations. Communication is achieved through the
+[GSB (Golem Service Bus)](#gsb), allowing remote calls between Nodes to feel as seamless as local service calls.
 
-The [Net Module interface](#net-module-interface) chapter will focus on general networking concepts, while specific 
+The Network module offers the following core functionalities:
+- Sending RPC-like messages to other Nodes (addressed by NodeId), with or without waiting for a response
+- Sending RPC-like messages with a stream response
+- Forwarding network-received messages to the appropriate modules listening on the GSB
+- Sending broadcast messages on specific topics across the network (The Network module provides functionality to send
+messages to a subset of Nodes. It is the responsibility of other modules to implement algorithms that ensure
+network-wide message reach if required)
+- Registering handlers for incoming broadcast messages based on specified topics
+
+These requirements give rise to the following responsibilities that the Network module must address in its
+implementation:
+- **Node Discovery**: The Network module must locate Nodes by their NodeId to enable message delivery.
+- **Creating Communication Channels**: The Network module must establish channels for two-way communication between
+Nodes, accounting for Nodes that may be behind NAT or firewalls.
+- **Defining Network Topology for Broadcasts**: The module determines which subset of Nodes will receive each
+broadcast message.
+- **Managing Broadcast Topics**: The module keeps track of broadcast topics and GSB handlers, which should be
+triggered when a broadcast message is received.
+
+The [Networking](#networking) chapter will focus on general networking concepts, while specific 
 implementations will be covered in the [Hybrid net](#hybrid-net) and [Central net](#central-net) chapters. 
 
 ```mermaid
@@ -464,14 +482,6 @@ flowchart TB
   end
   Net2 <-...-> GolemNetwork
 ```
-
-#### Net Module interface
-
-The Network module offers the following functionalities:
-- Sending messages to other Nodes
-- Forwarding received messages to the appropriate modules
-- Broadcasting messages to the network
-- Receiving and processing broadcasted messages
 
 ##### GSB prefix mappings
 
