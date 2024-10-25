@@ -438,9 +438,10 @@ Network, abstracting the complexity of underlying network operations. Communicat
 [GSB (Golem Service Bus)](#gsb), allowing remote calls between Nodes to feel as seamless as local service calls.
 
 The Network module offers the following core functionalities:
-- Sending RPC-like messages to other Nodes (addressed by NodeId), with or without waiting for a response
-- Sending RPC-like messages with a stream response
-- Forwarding network-received messages to the appropriate modules listening on the GSB
+- Sending RPC messages to other Nodes (addressed by NodeId), with or without waiting for a response
+- Sending RPC messages with a stream response
+- Support for choosing between reliable and unreliable message delivery options.
+- Forwarding network-received RPC messages to the appropriate modules listening on the GSB
 - Sending broadcast messages on specific topics across the network (The Network module provides functionality to send
 messages to a subset of Nodes. It is the responsibility of other modules to implement algorithms that ensure
 network-wide message reach if required)
@@ -455,9 +456,11 @@ Nodes, accounting for Nodes that may be behind NAT or firewalls.
 broadcast message.
 - **Managing Broadcast Topics**: The module keeps track of broadcast topics and GSB handlers, which should be
 triggered when a broadcast message is received.
+- **Supporting Different Transport Types**: The underlying protocol must support both reliable message delivery and 
+  a simpler, fire-and-forget mode.
 
-The [Networking](#networking) chapter will focus on general networking concepts, while specific 
-implementations will be covered in the [Hybrid net](#hybrid-net) and [Central net](#central-net) chapters. 
+The [Networking](#networking) chapter will focus on general networking concepts, while specific
+implementations will be covered in the [Hybrid net](#hybrid-net) and [Central net](#central-net) chapters.
 
 ```mermaid
 flowchart TB
@@ -488,7 +491,7 @@ flowchart TB
 The Net module follows specific GSB address naming conventions to enable cooperation with other modules. Addresses 
 prefixed with `/net/{NodeId}` are reserved for the Net module, where it listens for incoming messages and forwards 
 them to the Golem Network. Conversely, addresses starting with `/public/...` are available for yagna modules to expose 
-public methods that can be called from other Nodes.   
+public methods that can be called from other Nodes.
 
 When the Net module receives a local incoming message, it extracts the NodeId from the address prefix and uses it to 
 forward the message into the Golem Network. On the receiving end, messages coming from the Network are processed, 
@@ -515,11 +518,11 @@ block-beta
 
 Message broadcasting in the Net module is organized around the concept of 'topics,' which can be thought of as 
 message categories. Different modules can register a message handler with the Net module that gets triggered 
-whenever a message for a specific topic is received. 
+whenever a message for a specific topic is received.
 
-To send a broadcast, a module must send a GSB message to the Net module on the designated topic. The Net module then 
-forwards this message to the network. Depending on the network's implementation, the message may be routed either to 
-neighboring Nodes or to all Nodes across the network.  
+To send a broadcast message, a module must send a GSB message to the Net module on the designated topic. The Net module 
+then forwards this message to the network. Depending on the network's implementation, the message may be routed 
+either to neighboring Nodes or to all Nodes across the network.
 
 ```mermaid
 sequenceDiagram
@@ -546,17 +549,17 @@ The Net module must be able to handle messages sent to and from any of these ide
 identification, refer to the chapter about the [identity module](#identity). This section focuses solely on the Net 
 module interface.
 
-In addition to the GSB endpoints bound to the `/net/{NodeId}` prefix, as described in the [Address Translation 
-chapter](#gsb-prefix-mappings), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
+In addition to the GSB endpoints bound to the `/net/{NodeId}` prefix, as described in the [GSB prefix 
+mappings](#gsb-prefix-mappings), there is another prefix: `/from/{LocalId}/to/{RemoteId}`. This enables messages to 
 be sent from a specific identity on one Node to a specific identity on a remote Node.
 
 The Net module always checks if the target identity belongs to the local Node. If it does, the message is routed 
 back to the local GSB instead of being sent over the network. This mechanism allows GSB calls to be handled 
 uniformly by the calling code, regardless of whether the target is local or remote.
 
-##### Reliable, unreliable and transfers channels
+##### Reliable, unreliable and transfers transport types
 
-The Net module provides various types channels for message transmission. The basic channel provides reliable message 
+The Net module provides various transport types for message transmission. The basic type provides reliable message 
 delivery via GSB, which is used for most control messages between Nodes.
 
 However, certain functionalities require different handling. For example, VPN embeds IP packets into GSB messages 
@@ -564,13 +567,13 @@ and routes them through the Golem Protocol. Although VPN users can choose any pr
 because many higher-level protocols rely on it. Sending VPN messages through a reliable protocol would hurt 
 performance, as this would essentially embed TCP within TCP (or another reliable protocol implemented in Net). To 
 address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
-guarantee.   
+guarantee.
 
-The third option is the transfer channel. Mixing transfers with GSB control messages can cause delays, as large file 
-transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
+The third option is the transfer transport typ. Mixing transfers with GSB control messages can cause delays, as large 
+file transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
 specifically for transfers.
 
-All channels are accessible to other modules via GSB under the following prefixes:
+All transport types are accessible to other modules via GSB under the following prefixes:
 - `/net/{RemoteId}`
 - `/udp/net/{RemoteId}`
 - `/transfer/net/{RemoteId}`
