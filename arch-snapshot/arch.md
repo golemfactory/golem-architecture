@@ -574,9 +574,10 @@ sequenceDiagram
 - Link to external documentation describing details
 
 ### ExeUnits
-Abstractly speaking, ExeUnit performs work on behalf of the Requestor utilizing
-Provider's resources. What this work pertains to is part of the Agreement
-negotiated by the Provider and Requestor.
+Abstractly speaking, *an* ExeUnit performs work on behalf of the Requestor
+utilizing Provider's resources. What this work pertains to is part of the
+Agreement negotiated by the Provider and Requestor. The negotiation selects
+which ExeUnit will be used.
 
 The following graph describes the lifetime and operation of an ExeUnit:
 ```mermaid
@@ -621,12 +622,10 @@ of operation, determined by a swappable *Runtime*.
   image supports SSH, create a tunnel to the VM. See (VM runtime)(#VM-Runtime).
 - WASM – [TODO: Never worked on it]. See (WASM runtime)(#WASM-Runtime).
 
- SGX – [TODO: Removal approved by reqc but not merged yet, should we document?]
-
 #### Specialized ExeUnits
 Some ExeUnits with much narrower applicability have been developed over
 time.
-- AI Evaluation ExeUnit designed for GamerHash –
+- AI Inference ExeUnit designed for GamerHash –
   [ya-runtime-ai](https://github.com/golemfactory/ya-runtime-ai)
 - Outbound Gateway which is limited to routing traffic through a provider --
   [ya-runtime-outbound](https://github.com/golemfactory/ya-runtime-outbound).
@@ -664,7 +663,7 @@ a specific GSB-based interface, but the source can be either a symmetric GSB-API
 *or* an HTTP resource. For the details of the GSB Transfer APIs, see
 [gftp implementation](https://github.com/golemfactory/yagna/tree/master/core/gftp).
 
-Additionally, some endpoints are exposed directly to the Requestor Agent,
+Additionally, some GSB endpoints are exposed directly to the Requestor Agent,
 such as:
 - `Exec`
 - `GetExecBatchResults`
@@ -673,8 +672,8 @@ such as:
 
 #### ExeUnit Commands
 The Requestor Agent does not control the ExeUnit by GSB, but by using
-a dedicated REST API that maps user-friendly messages to the `Exec` GSB message
-that is then sent directly to the ExeUnit.
+a dedicated REST API (exposed by their yagna) that maps user-friendly messages
+to the `Exec` GSB message that is then sent directly to the ExeUnit.
 
 The specification of the command (so-called `ExeScriptCommand`) can be found
 in [ya-client OpenAPI Activity Specification](https://github.com/golemfactory/ya-client/blob/master/specs/activity-api.yaml).
@@ -704,20 +703,20 @@ that virtualization works.
 
 If the Self-Test fails, Offers regarding such ExeUnit will not be broadcasted.
 
-#### ExeUnit Supervisor
-The Supervisor abstracts over common components of ExeUnits to allow easier
-development of new computation modes – one only needs to implement the
-[ExeUnit Runtime](#ExeUnit-Runtime).
-
-#### ExeUnit Runtime
-The Runtime models specific kind of computation compatible with the ExeUnit
-Supervisor.
-
 #### VM Runtime
 - Operates by running code within a virtual machine, which prevents malicious
   code submitted by the Requestor from negatively impacting the machine on which
-  the Provider Agent runs.
+  the Provider Agent runs. Currently utilizes QEMU with KVM.
 - Functionalities:
+  - Prevents the Task from consuming more resources than specified in the
+    Agreement by setting VM configuration. The converse is not guaranteed,
+    the task may *not* get the agreed-upon resources because the Provider can
+    lie about CPUs or RAM capacity, or simply patch in a malicious ExeUnit.
+  - There is no persistent storage. Rootfs is built using an overlay of `tmpfs`
+    on top of the `squashfs` contained within the GVMI image.
+  - The VM is controlled from the outside by passing messages to the init
+    process. This is necessary for implementing the functionalities below this
+    point. 
   - Outbound allows communicating with the internet via a virtual network
     interface that filters network traffic according to Provider's configuration
     as means of protection against illegal activities to the Provider.
