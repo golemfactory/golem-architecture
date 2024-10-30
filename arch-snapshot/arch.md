@@ -952,8 +952,10 @@ the current Golem network layer relies on the Relay server for Node discovery, n
 purpose. Although it’s conceivable that a fallback, such as a Kademlia-like implementation, could be used in the 
 event of a Relay server downtime, for now, the primary purpose of the neighborhood concept is broadcasting.
 
-Sending broadcast message is an operation used by various algorithms to disseminate information throughout the network. 
-Its most significant application is in [the Offer Propagation algorithm](#offer-propagation). While the implementation of 
+A technique used in various broadcasting algorithms ([example](https://docs.libp2p.io/concepts/pubsub/overview/))
+involves disseminating information through the network by having each node send broadcast messages only to its 
+neighbors, relying on those neighbors to forward the information further. HybridNet uses it as well. Its most 
+significant application is in [the Offer Propagation algorithm](#offer-propagation). While the implementation of 
 specific algorithms is handled by other modules, the network module provides the necessary operations as building 
 blocks for these processes.
 
@@ -964,7 +966,7 @@ its neighbors, a Node can send a `Neighborhood` request to the Relay server. The
 list of Nodes that are closest to the querying Node, based on a predefined metric.
 
 After receiving the list of neighbors, the Node attempts to establish Sessions with them, as described in the 
-chapter on [communication](#establishing-connections-between-nodes). The neighborhood algorithm does not 
+chapter on [communication](#establishing-sessions-between-nodes). The neighborhood algorithm does not 
 differentiate between Nodes capable of establishing peer-to-peer Sessions and those that require relayed 
 communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission.
 
