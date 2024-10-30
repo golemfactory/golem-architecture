@@ -830,9 +830,9 @@ blocks for these processes.
 
 **Broadcasting**
 
-Hybrid Net implements local broadcast operation that sends message to the nearest neighborhood of the Node. To query 
-its neighbors, a Node can send a `Neighborhood` request to the Relay server. The Relay server then responds with a 
-list of Nodes that are closest to the querying Node, based on a predefined metric.
+HybridNet implements the broadcast operation via sending broadcast messages to the nearest neighborhood of the Node.
+To query its neighbors, a Node can send a `Neighborhood` request to the Relay server. The Relay server then responds
+with a list of Nodes that are closest to the querying Node, based on a predefined metric.
 
 After receiving the list of neighbors, the Node attempts to establish Sessions with them, as described in the 
 chapter on [communication](#establishing-sessions-between-nodes). The neighborhood algorithm does not 
