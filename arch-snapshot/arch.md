@@ -791,7 +791,7 @@ Different transport types can be utilized to send messages, as explained in the 
 channels chapter](#reliable-unreliable-and-transfers-channels). In the Hybrid Net, reliable and transfer transport 
 types are distinguished by using separate TCP connections. This separation ensures that independent sender buffers 
 are maintained, preventing messages in one channel from being blocked by messages in the other. Each transport type 
-has its own single TCP connection. This means that independent transfer still can interfere with each other.
+has its own single TCP connection. This means that independent transfers still can interfere with each other.
 
 The sender can also opt to use the unreliable transport, where GSB messages are sent directly as `Forward` packets 
 without message fragmentation. A key implication of this is that large GSB messages could exceed the Maximum 
@@ -803,13 +803,18 @@ Session.
 
 ##### Broadcasting and neighborhood
 
+Naively broadcasting information, where each Node contacts every other Node, poses significant scalability limitations.
+Thus, a more efficient method of information dissemination is necessary. Hybrid Net's implementation draws inspiration
+from the [Kademlia algorithm](https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf), which utilizes distance metrics to minimize the number of control messages Nodes
+need to exchange for discovery. While Kademlia serves a different purpose, Hybrid Net adapts its principles
+by introducing the concept of a neighborhood.
+
 **What is a Neighborhood?**
 
-Before diving into broadcasting, it's essential to understand the concept of a neighborhood. In a network, a 
-neighborhood is a subset of Nodes that are considered closest to a given Node based on an abstract metric. Each Node 
-has its own neighborhood. This metric doesn't necessarily reflect the real-world proximity of Nodes. For instance, 
-two Nodes on opposite sides of the globe could be neighbors, while two Nodes within the same physical network may be 
-too distant in terms of this metric to be in the same neighborhood.
+A neighborhood is a subset of Nodes that are considered closest to a given Node based on an abstract metric.
+Each Node has its own neighborhood. This metric doesn't necessarily reflect the real-world proximity of Nodes.
+For instance, two Nodes on opposite sides of the globe could be neighbors, while two Nodes within the same physical
+network may be too distant in terms of this metric to be in the same neighborhood.
 
 In peer-to-peer networks, the concept of Node distance is often used for efficient Node discovery. However, since 
 the current Golem network layer relies on the Relay server for Node discovery, neighborhoods don't serve that 
