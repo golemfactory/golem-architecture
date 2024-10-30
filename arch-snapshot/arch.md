@@ -785,17 +785,21 @@ input data stream and generates IP packets, which are then sent using Forward pa
 the TCP stack to decode incoming packets back into a message stream. These messages are subsequently dispatched as 
 GSB messages and passed to the appropriate modules, as detailed in the [Address Translation chapter](#address-translation).
 
-##### Reliable, unreliable and transfers channels in Hybrid Net
+##### Reliable, unreliable and transfers transport types in Hybrid Net
 
-Different channels can be utilized to send messages, as explained in the [reliable, unreliable, and transfers 
-channels chapter](#reliable-unreliable-and-transfers-channels). In the Hybrid Net, reliable and transfer channels 
-are distinguished by using separate TCP connections. This separation ensures that independent sender buffers are 
-maintained, preventing messages in one channel from being blocked by messages in the other. Each channel type has 
-its own single TCP connection. This means that independent transfer still can interfere with each other.
+Different transport types can be utilized to send messages, as explained in the [reliable, unreliable, and transfers 
+channels chapter](#reliable-unreliable-and-transfers-channels). In the Hybrid Net, reliable and transfer transport 
+types are distinguished by using separate TCP connections. This separation ensures that independent sender buffers 
+are maintained, preventing messages in one channel from being blocked by messages in the other. Each transport type 
+has its own single TCP connection. This means that independent transfer still can interfere with each other.
 
-The sender can also opt to use the unreliable channel, where GSB messages are sent directly as `Forward` packets 
+The sender can also opt to use the unreliable transport, where GSB messages are sent directly as `Forward` packets 
 without message fragmentation. A key implication of this is that large GSB messages could exceed the Maximum 
 Transmission Unit (MTU) and may be dropped by network devices along the packet's route.
+
+Transport channels are built on top of the underlying [sessions](#establishing-sessions-between-nodes). This means 
+that regardless of the chosen transport, all incoming and outgoing packets are consistently sent through a single 
+Session.
 
 ##### Broadcasting and neighborhood
 
