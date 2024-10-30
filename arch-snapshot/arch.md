@@ -478,12 +478,12 @@ The Network module offers the following functionalities:
 The Net module follows specific GSB address naming conventions to enable cooperation with other modules. Addresses 
 prefixed with `/net/{NodeId}` are reserved for the Net module, where it listens for incoming messages and forwards 
 them to the Golem Network. Conversely, addresses starting with `/public/...` are available for yagna modules to expose 
-public methods that can be called from other Nodes.   
+public methods that can be called from other Nodes.
 
 When the Net module receives a local incoming message, it extracts the NodeId from the address prefix and uses it to 
 forward the message into the Golem Network. On the receiving end, messages coming from the Network are processed, 
 and the address is checked to extract the NodeId. If the NodeId belongs to the recipient Node, the address is routed to 
-the appropriate GSB handler registered under the `/public/...` address.   
+the appropriate GSB handler registered under the `/public/...` address.
 
 ```mermaid
 block-beta
@@ -505,11 +505,11 @@ block-beta
 
 Message broadcasting in the Net module is organized around the concept of 'topics,' which can be thought of as 
 message categories. Different modules can register a message handler with the Net module that gets triggered 
-whenever a message for a specific topic is received. 
+whenever a message for a specific topic is received.
 
 To send a broadcast, a module must send a GSB message to the Net module on the designated topic. The Net module then 
 forwards this message to the network. Depending on the network's implementation, the message may be routed either to 
-neighboring Nodes or to all Nodes across the network.  
+neighboring Nodes or to all Nodes across the network.
 
 ```mermaid
 sequenceDiagram
@@ -776,7 +776,7 @@ sequenceDiagram
 The low-level abstraction provides a single message type for sending data: the `Forward` packet. This packet can be 
 used to send arbitrary content between Nodes, either directly or through the Relay server. Like UDP, the Forward 
 packet does not offer delivery guarantees. It is the responsibility of higher-level layers to ensure the correct and 
-reliable delivery of data in case it is necessary.  
+reliable delivery of data in case it is necessary.
 
 ##### Virtual TCP
 
@@ -821,12 +821,12 @@ blocks for these processes.
 
 Hybrid Net implements local broadcast operation that sends message to the nearest neighborhood of the Node. To query 
 its neighbors, a Node can send a `Neighborhood` request to the Relay server. The Relay server then responds with a 
-list of Nodes that are closest to the querying Node, based on a predefined metric. 
+list of Nodes that are closest to the querying Node, based on a predefined metric.
 
 After receiving the list of neighbors, the Node attempts to establish Sessions with them, as described in the 
 chapter on [communication](#establishing-connections-between-nodes). The neighborhood algorithm does not 
 differentiate between Nodes capable of establishing peer-to-peer Sessions and those that require relayed 
-communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission. 
+communication. Unlike IP-level broadcasts, Hybrid Net uses reliable channels for message transmission.
 
 **Neighborhood - distance function**
 
