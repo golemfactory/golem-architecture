@@ -1376,7 +1376,7 @@ flowchart LR
   Node8 -.- Node5
   Node9 -.- Node7
 ```
-`Node 8` begins broadcasting Offers to its direct neighbors::
+`Node 8` begins by sending Offers broadcast message to its direct neighbors:
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -1400,12 +1400,12 @@ flowchart LR
   Node8 === |Offer Id| Node5
   Node9 -.- Node7
 ```
-The Offer ID reaches `Node 5` and `Node 7`. Since neither has encountered this Offer before, they will propagate it
-further to their respective neighbors. Simultaneously, they will request the full Offer details from the source Node
-that initially sent it.
+The Offer ID reaches `Node 5` and `Node 7`. Since neither has encountered this Offer before, they will disseminate
+it further to their respective neighbors. Simultaneously, they will request the full Offer details from the source
+Node that initially sent it.
 
-As the original sender of the Offer, `Node 8` will reject any additional broadcasts, effectively halting the propagation
-process at this point.
+As the original sender of the Offer, `Node 8` will reject any additional broadcast message, effectively halting
+the dissemination process at this point.
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -1429,8 +1429,8 @@ flowchart LR
   Node8 x===x |Offer Id| Node5
   Node9 === |Offer Id| Node7
 ```
-In the next iteration, `Node 2` and `Node 9` act as the sources for broadcasts. Offers will be successfully propagated 
-to `Node 1`, `Node 4`, and `Node 6`, while `Node 5` and `Node 7` will reject these broadcasts.
+In the next iteration, `Node 2` and `Node 9` act as the sources for broadcast messages. Offers will be successfully
+disseminated to `Node 1`, `Node 4`, and `Node 6`, while `Node 5` and `Node 7` will reject these messages.
 
 Both `Node 2` and `Node 9` will retrieve the full Offer details from the Nodes they received the IDs from, rather
 than attempting to reach the original source, `Node 8`.
@@ -1459,7 +1459,8 @@ flowchart LR
   Node9 x===x |Offer Id| Node7
 ```
 The Offer successfully reaches the most distant Nodes within the network - `Node 3`.
-Since two Nodes attempt to send the same Offer to `Node 3` simultaneously, only the first broadcast will be accepted.
+Since two Nodes attempt to send the same Offer to `Node 3` simultaneously, only the first broadcast message will
+be accepted.
 ```mermaid
 flowchart LR
   Node1(((Node 1)))
@@ -1483,7 +1484,7 @@ flowchart LR
   Node8 -.- Node5
   Node9 -.- Node7
 ```
-All neighbors of `Node 3` are already aware of the Offer, so the propagation process concludes.
+All neighbors of `Node 3` are already aware of the Offer, so the dissemination process concludes.
 ```mermaid
 flowchart LR
   Node1((Node 1))
@@ -1512,7 +1513,7 @@ flowchart LR
 
 To prevent clustering of Nodes and accidental splits in the network, where subsets of Nodes become unreachable, a proper
 neighborhood function must be utilized. This function is defined by the network module, and the market relies on the
-broadcast function, leaving it with no alternative in this regard.
+broadcast operation, leaving it with no alternative in this regard.
 
 Optimal guarantees can be achieved when two neighboring Nodes have distinctly different neighborhoods, minimizing their
 number of common neighbors. Currently, in the Hybrid Net, neighborhood is determined based on the reversed Hamming
