@@ -529,47 +529,107 @@ Section should serve as dictionary to be linked by other chapters.
 ### Participating entities
 
 #### Core Network
+The Core Network is the P2P network of nodes compatible with Golem.
 #### Yagna daemon
+Yagna is the reference implementation of the node participating in the Golem
+Network. The Yagna daemon refers to the process of Yagna running on a machine.
 #### Yagna Node
-#### Provider agent
-#### Requester agent
+Yagna Node is a node participating in the Golem Network that uses the reference
+implementation – yagna.
+#### Provider Agent
+Provider Agent is software operating the Golem Network node serving as a Provider
+on the network. Yagna bundles a reference implementation.
+#### Requester Agent
+Requestor Agent is software operating the Golem Network node for a requestor.
+This role is usually fulfilled by SDKs.
 
 ### Marketplace
 #### Offer
+Offer is a document specifying Provider's capabilities.
 ##### Property
+Property is a key-value pair present in Offers and Demands specifying properties
+of the Node producing the document.
 ##### Constraint
+Constraints describe the required values of properties during Agreement matching.
+A constraint in an Offer will reject Demands that whose properties don't match
+the constraint and vice-versa.
 #### Demand
-#### Subscription
-This word is used to describe Offer/Demand put on market, so we should mention it.
+Demand is a document describing a need for computation used for filtering Offers.
 #### Proposal
+Proposal is formed when the Requestor Agent finds a suitable Offer matching a
+Demand, and then sent to the Provider. In a happy path, this leads to creation
+of an Agreement.
 #### Negotiation
+Negotiation is a process of augmenting negotiable properties if they don't match
+the constraints.
 #### Agreement
+Agreement is a document that refers to matched Offer and Demand after the
+Provider Agent accepts a Proposal. Performing work on the Provider requires
+having an Agreement.
 
 ### Execution system
 #### Resource
+A Resource can be CPU-time, storage, total runtime or anything else that is
+defined to be a resource by the Provider. This closely ties to Usage Counters,
+see [ExeUnits section](#ExeUnits).
 #### Activity
+Activity is created by the Requestor Agent when they wish to actually perform
+work within an Agreement. A successfully created Activity leads to spawning an
+ExeUnit.
 #### Execution environment (ExeUnit)
-##### ExeUnit Batch
+*An* ExeUnit is software that performs work on the Provider's machine on behalf
+of the Requestor.
 ##### ExeUnit Command
+ExeUnit Command is an instruction to the ExeUnit running within an activity.
+This can pertain to transferring files or deploying an image.
+##### ExeUnit Batch
+ExeUnit Batch is a sequence of commands submitted to the ExeUnit at once.
 ##### VM
+VM is the Virtual Machine created by the [VM Runtime](#vm-runtime) which
+isolates Requestor's work from the Provider's machine.
 ##### VM Image
+VM Image is a squashfs image with Golem-specific metadata.
 ##### WASM
+WASM is a method of computation used by the [WASM Runtime](#wasm-runtime). This
+too is sandboxed from the perspective of the machine running the Provider Agent.
 ##### WASM image
+WASM Images are binaries compliant with the WASI standard to be executed by
+Wasmtime.
 
 ### VPN
+VPN is a kind of Virtual Private Network simulated on Golem Network. It allows
+communication between the Requestor and instances of the VM Runtime as if they
+were in a local network.
 #### Network
+TODO
 
 ### Payment System
 #### Payment Driver
+Payment Driver abstracts away the underlying payment mechanism and only exposes
+a unified interface for the Payment Component of the Golem Node to consume.
 #### Payment Platform
+See `Important terms` in [Payments](#payments).
 #### Token
+Tokens are ERC20-compatible.
 #### Wallet
+Yagna serves as a blockchain wallet – it stores Ethereum private keys (see
+[Identity](#identity)) and allows checking owned funds as well as making
+transactions via a [Payment Driver](#payment-driver)
 #### Allocation
+An Allocation is a means of budgeting funds on the Golem Node.
 #### Debit Note
+Debit Note is an optionally payable document describing the amount due for
+a given activity produced in regular intervals by the Provider Agent *before*
+the Agreement is closed.
 #### Invoice
+An Invoice is a payable document produced by Provider Agent *after* the
+Agreement concludes.
 #### Payment
+Payment is a transfer of funds from the Requestor to the Provider done via the
+payment mechanism agreed upon in the Agreement.
 #### Transaction (on blockchain)
-
+Blockchain transactions are the only currently supported means of transferring
+funds.
 
 ## Key architectural decisions
 ### GLM is built on XYZ
