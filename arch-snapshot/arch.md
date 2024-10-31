@@ -449,11 +449,6 @@ The Network module offers the following core functionalities:
     "topics" for convenience
   - Registering handlers for incoming broadcast messages based on specified topics
 
-- Sending broadcast messages on specific topics across the network (The Network module provides functionality to send
-messages to a subset of Nodes. It is the responsibility of other modules to implement algorithms that ensure
-network-wide message reach if required)
-- Registering handlers for incoming broadcast messages based on specified topics
-
 These requirements give rise to the following responsibilities that the Network module must address in its
 implementation:
 - **Node Discovery**: The Network module must locate Nodes by their NodeId to enable message delivery.
