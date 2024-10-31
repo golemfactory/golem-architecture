@@ -891,7 +891,9 @@ Different transport types can be utilized to send messages, as explained in the 
 channels chapter](#reliable-unreliable-and-transfers-channels). In the Hybrid Net, reliable and transfer transport 
 types are distinguished by using separate TCP connections. This separation ensures that independent sender buffers 
 are maintained, preventing messages in one channel from being blocked by messages in the other. Each transport type 
-has its own single TCP connection. This means that independent transfers still can interfere with each other.
+has its own single TCP connection. If multiple components within the same process need to use the transfer channel,
+they will share a single TCP connection, competing for bandwidth. As there is no fair scheduling mechanism, one
+component can easily starve another by producing messages at a sufficiently high rate.
 
 The sender can also opt to use the unreliable transport, where GSB messages are sent directly as `Forward` packets 
 without message fragmentation. A key implication of this is that large GSB messages could exceed the Maximum 
