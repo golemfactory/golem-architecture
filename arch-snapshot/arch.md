@@ -532,6 +532,12 @@ sequenceDiagram
 * Algorithm overview
 
 ### Payments
+The Payment component is a singleton service running in the background of the
+Golem Node. It is responsible for making payments, veryfing payments made by
+other nodes and accounting. The latter pertains to budgeting, aggregating
+information about the history of Invoices and Debit Notes, including whether
+they were paid, amounts etc.
+
 #### Important terms
 - Payment Driver – a component responsible for executing and confirming
   transactions.
@@ -559,6 +565,16 @@ sequenceDiagram
   The allocation is neccessary for all operations that may lead to expending
   funds and it is transparently checked at all relevant points. If any of the
   constraints are not satisfied, the operation will fail. Allocations *DO NOT* affect semantics of the Golem Network and can be considered an implementation detail.
+
+#### Interactions with other components
+The Payment component is invoked by the REST API, CLI or by messages from the
+Payment component running on another node in the Golem Network. When operating,
+it relies on Net to communicate with other nodes and on Identity to sign
+messages. Last but not least, it interacts with Payment Drivers that implement
+actual interactions with the underlying payment mechanisms (in our case, ERC20
+on Ethereum). Payment Drivers are considered to be a submodule of the Payments
+component.
+
 #### Payments models
 A payment model is an algorithm for determining the amount due based on resource usage (AKA Usage Counters, see [ExeUnits section](#ExeUnits)).
 
