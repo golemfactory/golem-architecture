@@ -794,8 +794,9 @@ unnecessary network traffic, the network module does not query the relay server 
 broadcast call. This can result in a delay in Offer delivery, meaning that, regardless of recurrent broadcast 
 interval settings, a Node may not receive any Offers during the initial minutes of operation.
 
-To address this issue, when a Node joins the network, it sends a notification to its neighbors to announce its presence.
-In response, the receiving Nodes invalidate their current neighborhood for updates and promptly send a set of Offers.
+To address this, when a Node joins the network, it sends a notification to its neighbors to announce its presence.
+In response, neighboring Nodes request updated neighborhood information from the Relay server and promptly send
+a set of Offers.
 
 #### Offers expiration and unsubscribing
 
