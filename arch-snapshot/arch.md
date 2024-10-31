@@ -445,7 +445,7 @@ The Network module offers the following core functionalities:
 - Introducing a network topology, i.e.
   - The concept of neighbors - a subset of nodes on the network which the topology considers closest
   - The ability to send messages to the nearest neighborhood; we call those "broadcast messages" and they are used
-    by upper layers for broadcasting information across the network; these broadcast messages are sent for opaque
+    by upper layers for broadcasting information across the network; these broadcast messages are sent for
     "topics" for convenience
   - Registering handlers for incoming broadcast messages based on specified topics
 
