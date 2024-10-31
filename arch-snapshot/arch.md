@@ -571,9 +571,11 @@ performance, as this would essentially embed TCP within TCP (or another reliable
 address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
 guarantee.
 
-The third option is the transfer transport type. Mixing transfers with GSB control messages can cause delays, as large 
-file transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
-specifically for transfers.
+The third option is the transfer transport type. Functionally, this transport is equivalent to first transport type.
+The only reason for its existence is prioritization of control messages. It is desirable that control messages be sent
+right away, while high-bandwidth workloads (e.g. transferring an image) can be delayed. By splitting the channels
+we're avoiding a situation when a control message awaits to be sent behind a huge back-log of non-latency-sensitive
+messages. The network layer may implement this transport type by having a second TCP connection to ensure that.
 
 All transport types are accessible to other modules via GSB under the following prefixes:
 - `/net/{RemoteId}`
