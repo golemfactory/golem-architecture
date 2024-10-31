@@ -577,7 +577,7 @@ While each of these triggers has specific implementation details, the general co
 cases. These details will be explained in later sections.
 
 To minimize unnecessary data transfers, the propagation algorithm operates in two phases:
-- In the first phase, only the Offer IDs are sent to neighboring Nodes.
+- In the first phase, only the Offer IDs are sent to subset of Nodes using Net broadcast operation.
 - Second, details of any new, previously unseen Offers are requested based on the received IDs.
 
 ##### Offers identification
@@ -764,8 +764,8 @@ distance between Node IDs.
 ##### Central Net vs. Hybrid Net
 
 The net module implementation is transparent for the market module, but certain details must be addressed for network
-traffic optimization. The primary difference between the central and hybrid networks from the market perspective is that
-the central net has only global broadcasting, whereas the hybrid net utilizes local broadcasting to neighborhoods.
+traffic optimization. The primary difference between Central and Hybrid Net from the market perspective is that
+Hybrid Net broadcast messages to a subset of Nodes, while Central Net sends it to all Nodes.
 
 Due to this distinction, different broadcasting settings are required—especially regarding broadcasting frequency—to
 prevent overwhelming the network with excessive messages.
