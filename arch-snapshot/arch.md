@@ -434,7 +434,7 @@ responsibilities, interfaces and which other components they utilize.
 ### Networking
 
 The network layers aim to provide a developer-friendly interface for Node-to-Node communication within the Golem 
-Network, abstracting the complexity of underlying network operations. Communication is achieved through the
+Network, abstracting the complexity of underlying network operations. Developers interact with the network layer via
 [GSB (Golem Service Bus)](#gsb), allowing remote calls between Nodes to feel as seamless as local service calls.
 
 The Network module offers the following core functionalities:
@@ -442,6 +442,13 @@ The Network module offers the following core functionalities:
 - Sending RPC messages with a stream response
 - Support for choosing between reliable and unreliable message delivery options.
 - Forwarding network-received RPC messages to the appropriate modules listening on the GSB
+- Introducing a network topology, i.e.
+  - The concept of neighbors - a subset of nodes on the network which the topology considers closest
+  - The ability to send messages to the nearest neighborhood; we call those "broadcast messages" and they are used
+    by upper layers for broadcasting information across the network; these broadcast messages are sent for opaque
+    "topics" for convenience
+  - Registering handlers for incoming broadcast messages based on specified topics
+
 - Sending broadcast messages on specific topics across the network (The Network module provides functionality to send
 messages to a subset of Nodes. It is the responsibility of other modules to implement algorithms that ensure
 network-wide message reach if required)
@@ -569,7 +576,7 @@ performance, as this would essentially embed TCP within TCP (or another reliable
 address this, the Net module also allows for sending messages in an unreliable manner without packet delivery 
 guarantee.
 
-The third option is the transfer transport typ. Mixing transfers with GSB control messages can cause delays, as large 
+The third option is the transfer transport type. Mixing transfers with GSB control messages can cause delays, as large 
 file transfers can quickly fill the sender’s buffer queue. To avoid this, it is recommended to use a separate channel 
 specifically for transfers.
 
