@@ -551,7 +551,7 @@ The Golem market was planned to be implemented in different phases:
 - Proof of Concept (PoC) version: A centralized market collects all Offers and is responsible for matching them with
   Demands.
 - Decentralized version: Features network propagation and local Offers-Demands matching. Nodes maintain a full
-   list of Offers in the network (this is the current stage).
+  list of Offers in the network (this is the current stage).
 - Fully scalable market: Implements Offer sharding, allowing each Node to store only a subset of Offers. Searching
   the market is done progressively and in a more probabilistic manner.
 
@@ -579,6 +579,12 @@ cases. These details will be explained in later sections.
 To minimize unnecessary data transfers, the propagation algorithm operates in two phases:
 - In the first phase, only the Offer IDs are sent to subset of Nodes using Net broadcast operation.
 - Second, details of any new, previously unseen Offers are requested based on the received IDs.
+
+The market aims to collect all active Offers circulating in the network, with each Node storing new incoming Offers
+in its local database. Although the algorithm doesn’t require Offers to be stored persistently across Node restarts,
+for effective operation, all active Offers—those that haven’t expired or been explicitly removed by their
+Provider—must be retained. Additionally, the market should keep at least the Offer IDs for any Offers that have been
+unpublished by their creators.
 
 ##### Offers identification
 
