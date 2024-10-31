@@ -1294,15 +1294,15 @@ sequenceDiagram
 ### Offer propagation
 
 One important [design decision](#only-providers-offers-are-propagated) in Golem's market protocol is that only Offers are
-propagated across the network, while Demands are not. This decision addresses an issue encountered in earlier versions of
-Golem, where Requestors joining the network were flooded with work Offers from all Nodes. By focusing on propagating
+disseminated across the network, while Demands are not. This decision addresses an issue encountered in earlier versions
+of Golem, where Requestors joining the network were flooded with work Offers from all Nodes. By focusing on disseminating
 Offers, the system prevents overload and ensures smoother interactions.
 
 The Golem market was planned to be implemented in different phases:
 - Proof of Concept (PoC) version: A centralized market collects all Offers and is responsible for matching them with
   Demands.
 - Decentralized version: Features network propagation and local Offers-Demands matching. Nodes maintain a full
-  list of Offers in the network (this is the current stage).
+   list of Offers in the network (this is the current stage).
 - Fully scalable market: Implements Offer sharding, allowing each Node to store only a subset of Offers. Searching
   the market is done progressively and in a more probabilistic manner.
 
@@ -1312,14 +1312,14 @@ There are a few exceptions where the market checks the type of network modules u
 traffic optimization and is not crucial for the protocol.
 
 The market broadcasting protocol is built on top of the Network Layer and makes only a few assumptions about it:
-- The Network Layer provides broadcasting functionality that propagates messages to a subset of Nodes within the 
+- The Network Layer provides broadcasting functionality that disseminates messages to a subset of Nodes within the 
   network. The market does not need to be aware of the specific nodes involved.
 - Upon receiving a message, the Market must be able to identify the sender's Node ID.
 - The Market Layer can send and respond to GSB calls to and from other Nodes using their Node IDs.
 
 #### Algorithm overview
 
-There are three main triggers that can initiate Offer propagation across the network for a Node:
+There are three main triggers that can initiate Offer dissemination across the network for a Node:
 - When an Offer is published on the market.
 - At regular, randomized intervals after a certain amount of time has elapsed.
 - When a new Node joins the network (via a NewNeighbor broadcast).
@@ -1328,7 +1328,7 @@ While each of these triggers has specific implementation details, the general co
 cases. These details will be explained in later sections.
 
 To minimize unnecessary data transfers, the propagation algorithm operates in two phases:
-- In the first phase, only the Offer IDs are broadcast to neighboring Nodes.
+- In the first phase, only the Offer IDs are sent to neighboring Nodes.
 - Second, details of any new, previously unseen Offers are requested based on the received IDs.
 
 ##### Offers identification
@@ -1525,7 +1525,7 @@ prevent overwhelming the network with excessive messages.
 
 All three broadcast triggers mentioned in the [previous chapter](#algorithm-overview) serve distinct purposes.
 
-The primary mechanism triggers a broadcast when a new Offer is published. However, this does not guarantee that new
+The first mechanism triggers a broadcast when a new Offer is published. However, this does not guarantee that new
 Nodes joining the network afterward will receive the Offer. To address this, recurrent propagation was introduced.
 
 Recurrent broadcasts are sent at random intervals, with a configurable mean time between broadcasts. The randomness 
