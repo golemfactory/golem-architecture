@@ -500,6 +500,66 @@ This word is used to describe Offer/Demand put on market, so we should mention i
 This section describes key components of Golem Network, i.e. their
 responsibilities, interfaces and which other components they utilize.
 
+### Identity
+Identity is a unique identifier of a Node in the Golem Network which is used to
+name other nodes. This comes up in a number of cases:
+- Sending a message to a node on the Golem Network requires the identity, so
+  e.g. broadcasting Offers requires first discovering some Nodes as identified
+  by their Identities.
+- Documents such as Agreements, Invoices or DebitNotes refer to Nodes by their
+  Identities.
+
+The identities are stored and managed by the Identity module in Yagna. It allows
+creation, deletion, exportion, importing and encrypting (locking) identities.
+If an identity is locked, it cannot be used until the user enters the password.
+
+### Identity Management
+- The identities are managed via CLI commands implemented by the Identity Module.
+- Exporting a locked identity requires it first be unlocked.
+- Identities are exported either as encrypted secrets in a JSON file or plaintext
+  private key, the second of which is mostly recommended for testing.
+
+#### Cryptography
+Golem Network relies on ECDSA keypairs created with the secp256k1 elliptic curve,
+same as Ethereum. The first 20 bytes of the public key, encoded as a hex string
+form the Identity. This string is, in fact, exactly equivalent to the public
+address on Ethereum corresponding to the same private key.
+
+#### Signing
+The identity module implements message signing. It binds to the `Sign` GSB
+message and signs arbitrary 32-byte messages as if they were Ethereum
+Transactions. Thanks to this the private key is never leaked out of the Identity
+module, which makes ensuring that it stays secure easier.
+
+#### Application Keys
+The identity module also manages Application Keys, multiple of which (or none)
+may correspond to a single Identity. An Application Key must be passed in
+headers of all REST API requests other than `/version/get`. This allows the
+port on which the REST API services are served to be exposed to the internet
+without the risk of a 3rd party misusing the Node. Additionally, this alllows
+implementation of a proper permission system where a single Golem Node instance
+is shared across a number of untrusted users in a manner in which they cannot
+harm each other or the Operator of the Node.
+
+The Application Key is also what determines which Identity is used in the case
+that multiple exist.
+
+#### Payments
+Identities and Accounts are currently the same thing. When an Identity is
+created, it can be used for Payments right away if it has sufficient funds.
+Holding an App Key corresponding to the Identity is all that is needed to use
+it for making transactions.
+
+A piece of relevant historical context is that Yagna once managed Accounts
+separately, the user had to run a specific CLI command to create an Account
+corresponding to a specific Identity with permissions to send or receive funds.
+The second one was mostly theoretical, as one cannot block others from sending
+them funds, but the first one was very real – unless the Account with the
+send-permission has been created manually, funds couldn't be expended from the
+Ethereum accounts corresponding to the given Identity. This however turned out
+to be more of a chore than a useful security mechanism, so Accounts became
+equivalent to Identities.
+
 ### GSB
 * what it is, how it works and how it imposes a code structure and how
   addressing works
