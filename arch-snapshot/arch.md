@@ -561,8 +561,39 @@ to be more of a chore than a useful security mechanism, so Accounts became
 equivalent to Identities.
 
 ### GSB
-* what it is, how it works and how it imposes a code structure and how
-  addressing works
+
+Golem Network is built using a custom distributed component model known as
+the **Golem Service Bus** (GSB). Functionally, it is similar to technologies
+like [Windows
+DCOM](https://en.wikipedia.org/wiki/Distributed_Component_Object_Model),
+[CORBA](https://en.wikipedia.org/wiki/CORBA), and
+[UNO](https://en.wikipedia.org/wiki/Universal_Network_Objects).
+
+Key characteristics of GSB include:
+
+* **Language specificity**: GSB is not language-independent. While it is
+  theoretically possible to create compatible implementations in other
+  languages, only a Rust implementation currently exists. No formal effort has
+  been made to specify or develop implementations beyond Rust.
+
+* **Prefix-based component responsibility**: In GSB, components are addressed
+  by paths composed of segments separated by a '/' sign. Components are
+  responsible not just for a single path but for all paths that share a
+  certain prefix. This design allows the path itself to carry additional
+  payload information, enabling flexible and dynamic routing. Users provide
+  GSB with a path, and the process forwards the entire path to the component
+  mapped to the matching prefix.
+
+* **Absence of remote service concepts**: GSB does not distinguish between
+  local and remote services. Instead, a dedicated component, called **Net**,
+  is responsible for forwarding traffic to remote targets. The target’s
+  address is specified within the path, and the Net component uses this
+  address to direct the payload to the appropriate remote destination. It then
+  removes the address prefix from the path before forwarding the remaining
+  path (and payload) to the destination.
+
+Except for the above, most intuitions from the listed similar technologies
+should apply.
 
 ### Networking
 
