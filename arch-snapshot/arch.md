@@ -2410,16 +2410,7 @@ a separate machine.
 #### Provider
 - Yagna
 - Provider Agent
-- Per Activity:
-  - ExeUnit
-    - Runtime
-    - QEMU if Activity is deployed and using VM Runtime.
-    - Wasmtime if Activity is deployed and using WASM Runtime.
-#### Requestor & Provider
-- Yagna
-- Requestor Agent
-- Provider Agent
-- Per Activity:
+- Per each Activity running on the Provider:
   - ExeUnit
     - Runtime
     - QEMU if Activity is deployed and using VM Runtime.
