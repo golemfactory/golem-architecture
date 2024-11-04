@@ -1390,7 +1390,7 @@ Subnets operate at the market level, meaning the Nodes aren't truly separated fr
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
 |             | Provider Proposal                         | Requestor Proposal                        |
-|-------------|:------------------------------------------|:------------------------------------------|
+| ----------- | :---------------------------------------- | :---------------------------------------- |
 | Properties  | "golem.node.debug.subnet": "private-1234" | "golem.node.debug.subnet": "private-1234" |
 | Constraints | (golem.node.debug.subnet=private-1234)    | (golem.node.debug.subnet=private-1234)    |
 
@@ -1435,7 +1435,7 @@ Both agents begin by setting their initial preferred timeout values. With each t
 they either agree on a specific value or one party rejects the proposals, ending the negotiation.
 
 | Provider Proposal                                    |                          | Requestor Proposal                                   |
-|:-----------------------------------------------------|--------------------------|:-----------------------------------------------------|
+| :--------------------------------------------------- | ------------------------ | :--------------------------------------------------- |
 | "golem.com.payment.debit-notes.accept-timeout?": 600 | Initial Offer/Demand     | "golem.com.payment.debit-notes.accept-timeout?": 240 |
 |                                                      | &larr; Counter Proposal  | "golem.com.payment.debit-notes.accept-timeout?": 300 |
 | "golem.com.payment.debit-notes.accept-timeout?": 450 | Counter Proposal &rarr;  |                                                      |
@@ -1501,7 +1501,7 @@ ExeUnit progress reporting feature. The [specification](../specs/command-progres
 properties added for this feature:
 
 | Property                                            | Description                                    |
-|:----------------------------------------------------|:-----------------------------------------------|
+| :-------------------------------------------------- | :--------------------------------------------- |
 | "golem.activity.caps.transfer.report-progress=true" | ExeUnit can report `transfer` command progress |
 | "golem.activity.caps.deploy.report-progress=true"   | ExeUnit can report `deploy` command progress   |
 
@@ -2378,8 +2378,52 @@ process executes using standard UNIX syscalls.
 * which of the logic useful to the user ends up in the SDK
 
 ## Technical view - deployment
-How the components are reflected in processes, where the processes are run, what
-is their relation ship, etc.
+The deployment is quite flexible – you can run a node that acts as a Provider,
+as a Requestor, both or neither – the last of which is useful for e.g. collecting
+Offers to produce statistics about the network.
+
+### Components & Processes
+* Yagna process contains all core components:
+  * Identity
+  * Networking
+  * GSB
+  * Market
+  * Payments
+    * Payment Drivers
+* Requestor Agent is a separate process, usually implemented using an SDK
+* Provider Agent is a separate process (ya-provider)
+* ExeUnits are separate processes
+  * Runtimes are separate proccesses
+  * In case of VM Runtime, QEMU is a separate process
+
+### Process trees
+The lists below show the structure of processes run within a given deployment
+type. All processes listed run on the machine hosting the node in the usual
+case, with the exception of Requestor Agents, that can reasonably run on
+a separate machine.
+
+#### Bare Node
+- Yagna
+#### Requestor
+- Yagna
+- Requestor Agent
+#### Provider
+- Yagna
+- Provider Agent
+- Per Activity:
+  - ExeUnit
+    - Runtime
+    - QEMU if Activity is deployed and using VM Runtime.
+    - Wasmtime if Activity is deployed and using WASM Runtime.
+#### Requestor & Provider
+- Yagna
+- Requestor Agent
+- Provider Agent
+- Per Activity:
+  - ExeUnit
+    - Runtime
+    - QEMU if Activity is deployed and using VM Runtime.
+    - Wasmtime if Activity is deployed and using WASM Runtime.
 
 ## Technical view - flows & algorithms
 This section documents how control and responsibility flows through the listed
