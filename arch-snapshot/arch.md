@@ -2378,6 +2378,19 @@ process executes using standard UNIX syscalls.
 * which of the logic useful to the user ends up in the SDK
 
 ## Technical view - deployment
+Golem, as described in the [layers section](#layers), stacks functionalities on
+top of each other. As a consequence, typically there are following processes
+involved:
+* Yagna – the process which implements the Core Network, i.e. the ability for
+  nodes to find each other and trade
+* ExeUnits are distributed as plugins for Yagna that can be invoked by the
+  Provider Agent.
+* Provider Agent – Software interacting with Yagna to publish Offers and
+  execute tasks on behalf of Requestors via an appropriate ExeUnit.
+* Requestor Agent – Software interacting with Yagna to search for Offers and
+  run tasks on Providers. This is typically implemented by Requestors using
+  SDKs.
+
 The deployment is quite flexible – you can run a node that acts as a Provider,
 as a Requestor, both or neither – the last of which is useful for e.g. collecting
 Offers to produce statistics about the network.
@@ -2386,7 +2399,6 @@ Offers to produce statistics about the network.
 * Yagna process contains all core components:
   * Identity
   * Networking
-  * GSB
   * Market
   * Payments
     * Payment Drivers
