@@ -2576,8 +2576,55 @@ by utilizing the mechanism described in the [VM runtime](#vm-runtime-1).
 * which of the logic useful to the user ends up in the SDK
 
 ## Technical view - deployment
-How the components are reflected in processes, where the processes are run, what
-is their relation ship, etc.
+Golem, as described in the [layers section](#layers), stacks functionalities on
+top of each other. As a consequence, typically there are following processes
+involved:
+* Yagna – the process which implements the Core Network, i.e. the ability for
+  nodes to find each other and trade
+* ExeUnits are distributed as plugins for Yagna that can be invoked by the
+  Provider Agent.
+* Provider Agent – Software interacting with Yagna to publish Offers and
+  execute tasks on behalf of Requestors via an appropriate ExeUnit.
+* Requestor Agent – Software interacting with Yagna to search for Offers and
+  run tasks on Providers. This is typically implemented by Requestors using
+  SDKs.
+
+The deployment is quite flexible – you can run a node that acts as a Provider,
+as a Requestor, both or neither – the last of which is useful for e.g. collecting
+Offers to produce statistics about the network.
+
+### Components & Processes
+* Yagna process contains all core components:
+  * Identity
+  * Networking
+  * Market
+  * Payments
+    * Payment Drivers
+* Requestor Agent is a separate process, usually implemented using an SDK
+* Provider Agent is a separate process (ya-provider)
+* ExeUnits are separate processes
+  * Runtimes are separate proccesses
+  * In case of VM Runtime, QEMU is a separate process
+
+### Process trees
+The lists below show the structure of processes run within a given deployment
+type. All processes listed run on the machine hosting the node in the usual
+case, with the exception of Requestor Agents, that can reasonably run on
+a separate machine.
+
+#### Bare Node
+- Yagna
+#### Requestor
+- Yagna
+- Requestor Agent
+#### Provider
+- Yagna
+- Provider Agent
+- Per each Activity running on the Provider:
+  - ExeUnit
+    - Runtime
+    - QEMU if Activity is deployed and using VM Runtime.
+    - Wasmtime if Activity is deployed and using WASM Runtime.
 
 ## Technical view - flows & algorithms
 This section documents how control and responsibility flows through the listed
