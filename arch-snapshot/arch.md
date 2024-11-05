@@ -2598,10 +2598,104 @@ PR: ya-provider is also from this layer and you could write down what configurat
 This section contains known shortcomings of the implemented architecture —
 irrespective of whether they were intentional or unintentional.
 
-- [Problem with capabilities-based approach](#problems-with-capabilities-based-approach---versioning)
+### Lack of Network Decentralization
 
-### Preexisting two categories of actors
-The preexisting categories of actors (providers and requesters) and their
-asymmetric roles are limiting in certain scenarios. FIXME FIXME FIME
-### TODO
+One of the key principles of Golem Network is decentralization, however the
+current implementation of the Network lacks decentralization in two key areas:
+* **Node Discovery**: How Nodes learn about other Nodes on the Network.
+* **P2P Communication without Public IPs**: When neither of the two Nodes
+  wishing to communicate has a public IP, they must relay their communication
+  through a centralized relay.
 
+This centralization is not due to architectural limitations; it simply has not
+yet been decentralized.
+
+### Insufficient Network Abstraction
+
+The abstraction of the Network component currently lacks clarity and
+separation of concerns. It introduces neighborhood concepts, which are tied to
+a higher-level P2P broadcast algorithm inspired by Kademlia, implemented
+directly in the marketplace. A more effective approach would involve
+introducing three distinct layers:
+* **Network Communication**
+* **Efficient Broadcast Propagation**
+* **Marketplace Offers**
+
+This separation could potentially allow the reuse of
+[libp2p](https://libp2p.io/) for the first two layers, reducing the need for
+custom implementations.
+
+### Lack of Protection Against Malicious Actors
+
+The current implementation lacks mechanisms to protect against malicious
+actors aiming to subvert or disable the Network. Key attack vectors include:
+* **Network Partitioning**: Malicious Nodes can join the Network but ignore
+  the propagation algorithm, potentially leading to Network partitioning or
+  incomplete Offer distribution. At scale, this could render the Network
+  unusable.
+* **Network Overload with Fake Offers**: There is no restriction preventing
+  malicious actors from flooding the Network with fake Offers. The propagation
+  algorithm would attempt to distribute these Offers, overwhelming Nodes with
+  excessive bandwidth and storage demands.
+
+Other potential attack vectors likely exist as well.
+
+### Vulnerability to Overloading from Broad Offers
+
+In cases where a large number of Requestors are awaiting a Provider, a newly
+available Provider may become swamped with connection attempts, resulting in
+an effective DDoS that could overwhelm the Node. A similar issue has occurred
+historically, where a Requestor’s Demand attracted too many Providers,
+overloading the Node. A temporary solution was to make the market asymmetric
+by propagating only Offers, with Requestors contacting Providers directly.
+This approach has so far been effective, as Demand imbalances usually favor
+supply over request volume.
+
+### Limited Offer Query Language
+
+Offers and Demands are structured data without a fixed schema. The existing
+query language can only express simple boolean expressions comprising
+comparisons of features to constant thresholds (e.g., at least 8GB of RAM and a
+CPU with at least 4 cores).
+
+While this may suffice for basic filtering, it is easy to envision more complex
+use cases with today’s simple description of compute resources. For instance, it
+is impossible to filter only for Providers who offer at least 2GB of RAM per
+core.
+
+These limitations become more pronounced when resources are described in greater
+detail. For example, imagine a future scenario where the VM runtime specifies a
+list of available storage devices in the following format:
+```
+[
+  {
+    "capacity": 2048G,
+    "type": "ssd",
+    "sector_size": 4k,
+    "erase_block": 256K
+   },
+   {
+    "capacity": 4096G,
+    "type": "smr",
+    "sector_size": 4k
+   }
+]
+```
+
+Below are some conditions that cannot be expressed with the current query
+language:
+* Providers offering an SSD with at least 100GB capacity
+* Providers with a total of at least 1TB of storage across at most 3 devices
+* Providers offering three distinct storage types
+
+A more powerful query language (e.g., XPath) designed for structured data would
+significantly enhance flexibility and expressiveness.
+
+### Lack of Formalized Schemas for Offers and Demands
+
+Offers and Demands are structured data, but Golem does not enforce a fixed
+schema, allowing users to fork, modify, or create custom Offers. However, this
+flexibility makes it difficult for parties to understand each other's
+requirements and to verify compatibility between Offers and Demands. Using
+schemas, such as JSON Schema, would greatly improve interoperability and
+validation.
