@@ -509,7 +509,8 @@ VM Image is a squashfs image with Golem-specific metadata.
 WASM is a method of computation used by the [WASM Runtime](#wasm-runtime). This
 too is sandboxed from the perspective of the machine running the Provider Agent.
 ##### WASM image
-TODO
+WASM Images are binaries compliant with the WASI standard to be executed by
+Wasmtime.
 
 ### VPN
 VPN is a kind of Virtual Private Network simulated on Golem Network. It allows
@@ -917,7 +918,7 @@ Subnets operate at the market level, meaning the Nodes aren't truly separated fr
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
 |             | Provider Proposal                         | Requestor Proposal                        |
-|-------------|:------------------------------------------|:------------------------------------------|
+| ----------- | :---------------------------------------- | :---------------------------------------- |
 | Properties  | "golem.node.debug.subnet": "private-1234" | "golem.node.debug.subnet": "private-1234" |
 | Constraints | (golem.node.debug.subnet=private-1234)    | (golem.node.debug.subnet=private-1234)    |
 
@@ -962,7 +963,7 @@ Both agents begin by setting their initial preferred timeout values. With each t
 they either agree on a specific value or one party rejects the proposals, ending the negotiation.
 
 | Provider Proposal                                    |                          | Requestor Proposal                                   |
-|:-----------------------------------------------------|--------------------------|:-----------------------------------------------------|
+| :--------------------------------------------------- | ------------------------ | :--------------------------------------------------- |
 | "golem.com.payment.debit-notes.accept-timeout?": 600 | Initial Offer/Demand     | "golem.com.payment.debit-notes.accept-timeout?": 240 |
 |                                                      | &larr; Counter Proposal  | "golem.com.payment.debit-notes.accept-timeout?": 300 |
 | "golem.com.payment.debit-notes.accept-timeout?": 450 | Counter Proposal &rarr;  |                                                      |
@@ -1028,7 +1029,7 @@ ExeUnit progress reporting feature. The [specification](../specs/command-progres
 properties added for this feature:
 
 | Property                                            | Description                                    |
-|:----------------------------------------------------|:-----------------------------------------------|
+| :-------------------------------------------------- | :--------------------------------------------- |
 | "golem.activity.caps.transfer.report-progress=true" | ExeUnit can report `transfer` command progress |
 | "golem.activity.caps.deploy.report-progress=true"   | ExeUnit can report `deploy` command progress   |
 
