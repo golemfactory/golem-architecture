@@ -1474,7 +1474,7 @@ Subnets operate at the market level, meaning the Nodes aren't truly separated fr
 the network. Instead, only the Offers from other Nodes are excluded from being matched with the Demands.
 
 |             | Provider Proposal                         | Requestor Proposal                        |
-|-------------|:------------------------------------------|:------------------------------------------|
+| ----------- | :---------------------------------------- | :---------------------------------------- |
 | Properties  | "golem.node.debug.subnet": "private-1234" | "golem.node.debug.subnet": "private-1234" |
 | Constraints | (golem.node.debug.subnet=private-1234)    | (golem.node.debug.subnet=private-1234)    |
 
@@ -1519,7 +1519,7 @@ Both agents begin by setting their initial preferred timeout values. With each t
 they either agree on a specific value or one party rejects the proposals, ending the negotiation.
 
 | Provider Proposal                                    |                          | Requestor Proposal                                   |
-|:-----------------------------------------------------|--------------------------|:-----------------------------------------------------|
+| :--------------------------------------------------- | ------------------------ | :--------------------------------------------------- |
 | "golem.com.payment.debit-notes.accept-timeout?": 600 | Initial Offer/Demand     | "golem.com.payment.debit-notes.accept-timeout?": 240 |
 |                                                      | &larr; Counter Proposal  | "golem.com.payment.debit-notes.accept-timeout?": 300 |
 | "golem.com.payment.debit-notes.accept-timeout?": 450 | Counter Proposal &rarr;  |                                                      |
@@ -1585,7 +1585,7 @@ ExeUnit progress reporting feature. The [specification](../specs/command-progres
 properties added for this feature:
 
 | Property                                            | Description                                    |
-|:----------------------------------------------------|:-----------------------------------------------|
+| :-------------------------------------------------- | :--------------------------------------------- |
 | "golem.activity.caps.transfer.report-progress=true" | ExeUnit can report `transfer` command progress |
 | "golem.activity.caps.deploy.report-progress=true"   | ExeUnit can report `deploy` command progress   |
 
@@ -2331,40 +2331,19 @@ time.
   over the Internet –
   [ya-runtime-http-auth](https://github.com/golemfactory/ya-runtime-http-auth).
 
-#### Interaction between Golem Node and ExeUnits
-ExeUnits are controlled by the Golem Node using GSB, the same message-passing
-protocol that is used for internal implementation of the Node as well as
-inter-node communication.
-
-In case of the Generic ExeUnits the GSB messages are split into two services:
-- Counters Service
-  - `GetCounters` returns the Usage Counters relevant for the pricing according
-    to the choosen payment model.
-  - `SetCounter` overrides the value of a specific counter.
-  - `Shutdown` informs the service of imminent shutdown.
-- Transfer Service
-  - `DeployImage` transfers the GVMI image and starts the underlying Runtime.*
-  - `TransferResource` transfers a resource (usually a file) between
-    the Provider and the Runtime.*
-  - `AddVolumes` creates additional points within Runtime filesystem writing
-    to which will allow files to be accessed via `TransferResource` by the
-    Requestor. That is, `TransferResource` cannot operate on arbitrary paths
-    when accessing Runtime data, but is instead limited to the *Volumes*
-    created by this GSB call.
-  - `AbortTransfers` cancels all ongoing transfers.
-  - `Shutdown` informs the service of imminent shutdown.
-
-*Note regarding transfers: The destination of a transfer must always implement
-a specific GSB-based interface, but the source can be either a symmetric GSB-API
-*or* an HTTP resource. For the details of the GSB Transfer APIs, see
-[gftp implementation](https://github.com/golemfactory/yagna/tree/master/core/gftp).
-
-Additionally, some GSB endpoints are exposed directly to the Requestor Agent,
-such as:
+#### Interaction between Requestor and ExeUnit
+ExeUnits expose 4 GSB endpoints to be directly called by the Requestor:
 - `Exec`
+  - Executes the ExeScript on the ExeUnit, see [ExeUnit Commands](#exeunit-commands).
 - `GetExecBatchResults`
+  - Returns the results of the batch.
+- `StreamExecBatchResults`
+  - Streams the results of the batch as it progresses.
+- `GetRunningCommand`
+  - Returns the currently running command from the batch
 
-(Details below)
+#### Interaction between Provider and ExeUnit
+- Periodic reporting of Counters' values to the Provider via GSB
 
 #### ExeUnit Commands
 The Requestor Agent does not control the ExeUnit by GSB, but by using
@@ -2373,6 +2352,11 @@ to the `Exec` GSB message that is then sent directly to the ExeUnit.
 
 The specification of the command (so-called `ExeScriptCommand`) can be found
 in [ya-client OpenAPI Activity Specification](https://github.com/golemfactory/ya-client/blob/master/specs/activity-api.yaml).
+
+Note regarding `Transfer` command: The destination of a transfer must always
+implement a specific GSB-based interface, but the source can be either
+a symmetric GSB-API *or* an HTTP resource. For the details of the GSB Transfer
+APIs, see [gftp implementation](https://github.com/golemfactory/yagna/tree/master/core/gftp).
 
 ##### Batches
 Commands are to be sent in *Batches* which are considered done after each
