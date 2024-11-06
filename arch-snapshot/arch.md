@@ -736,7 +736,7 @@ isolates Requestor's work from the Provider's machine.
 ##### VM Image
 VM Image is a squashfs image with Golem-specific metadata.
 ##### WASM
-WASM is a method of computation used by the [WASM Runtime](#wasm-runtime). This
+WASM is a method of computation used by the WASM Runtime. This
 too is sandboxed from the perspective of the machine running the Provider Agent.
 ##### WASM image
 WASM Images are binaries compliant with the WASI standard to be executed by
@@ -746,8 +746,6 @@ Wasmtime.
 VPN is a kind of Virtual Private Network simulated on Golem Network. It allows
 communication between the Requestor and instances of the VM Runtime as if they
 were in a local network.
-#### Network
-TODO
 
 ### Payment System
 #### Payment Driver
@@ -1664,10 +1662,6 @@ On the other hand, the number of CPUs or the amount of RAM might be a more flexi
 cases). Not setting constraints would allow the Requestor Agent to rank Proposals during negotiations and gain insight
 into what's available on the market.
 
-###### Strong vs. weak matching
-
-TODO: Left for later, to decide if it is important to mention at all.
-
 #### Market negotiation protocols
 
 [The Golem Node](#golem-node) doesn’t interpret the meaning of properties and constraints (with a few exceptions). This 
@@ -2551,7 +2545,7 @@ of operation, determined by a swappable *Runtime*.
   images built from a mostly Dockerfile-compatible GVMI format via
   [gvmkit-build](https://github.com/golemfactory/gvmkit-build-rs) and, if the
   image supports SSH, create a tunnel to the VM. See (VM runtime)(#VM-Runtime).
-- WASM – [TODO: Never worked on it]. See (WASM runtime)(#WASM-Runtime).
+- WASM – an ExeUnit allowing for running binaries compiled to WASM in a sandbox.
 
 #### Specialized ExeUnits
 Some ExeUnits with much narrower applicability have been developed over
@@ -2667,9 +2661,6 @@ designated UNIX socket on the host OS. This mechanism facilitates an RPC system
 between ExeUnit and the `init` process. One of these RPCs is an instruction to
 change the IP address of the interface associated with the VPN, which the `init`
 process executes using standard UNIX syscalls.
-
-#### WASM runtime
-[TODO]
 
 ### VPN
 
