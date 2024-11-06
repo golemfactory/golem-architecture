@@ -487,13 +487,91 @@ process.
 
 ## Layers
 
-decomposition into layers. responsibility of the layers.
+Golem Network's applications are unknown in advance. Therefore, based on past
+experience, a decision was made to design the architecture flexible enough to
+swap out key components. This resulted in a three-layer architecture.
 
-### Golem Node
+### Core Network
 
-### Business logic
+The Core Network is the lowermost layer and represents the core of Golem
+Network. It connects machines to form a decentralized network of independent
+agents trading resources. In particular, the following aspects of Golem Network
+fall into this layer:
+ - Communication between Nodes
+ - Discovering Offers in the network
+ - The mechanics of negotiations (i.e. the structure and flow of Offers and
+   counter-Offers, but not the negotiation strategies nor the semantics of what
+   is being negotiated)
+ - Requesting payments for services
+ - Processing payments
+ - Ability to transmit events leading to the start of Agreement execution
+
+What is not part of the Core Network:
+- File transfer (this needs to be addressed in other layers)
+- VPN and other substitutes for direct communication like HTTP proxies, etc.
+
+This layer is divided into fundamental areas:
+- Network: Determines how Nodes find each other and provides means for them to
+  communicate with each other
+- Identity: Managing identity in the network. Provides other modules with
+  access to keys identifying the Nodes
+- Market: Includes functions for searching for offers, broadcasting offers,
+  negotiating Agreements and notifications about the start and end of an
+  Agreement.
+- Payment: Includes functions for reserving funds, notifying about costs,
+  agreeing on settlements, and making payments.
+- Activity: Introducing the state machine governing how services are performed
+  by Providers, i.e. Activities.
 
 ### Execution
+
+The Core Network only specifies a way to express abstract resources and
+ExeUnits. Execution Layer is what gives those resources meanings, e.g. CPU, RAM,
+GPU and ways to utilize them (e.g. through a VM or a WASM runtime). On top of
+this, this layer provides all the necessary tools to allow higher layers to
+build on top of it (e.g. transferring an VM image to a VM Provider to run). More
+specifically, the following aspects fall into this layer:
+- Downloading images needed to execute the task (e.g., AI models or VM images)
+- Managing the cache of these images
+- Transferring files using various protocols
+- Launching processes and monitoring their state
+- Monitoring resource usage
+- Assigning and executing scripts with commands sent to providers
+- Tools for local firewall management for outgoing traffic
+- VPN mechanisms and other communication methods between running components
+  (e.g., message queue server, HTTP proxy)
+
+In this layer, there will be various execution engines such as:
+- VM (launching workloads by starting a VM with a provided image)
+- WASI (launching workloads by starting a WASM binary in a sandbox)
+- GamerHash AI runtime (launching workloads on a specialized ExeUnit for AI
+  inference using one of three curated inference frameworks)
+- Outbound gateway (only routing traffic to the outside world)
+
+### Application logic
+
+This layer utilizes components from the Core Network and Execution layers to
+implement applications. The layer is delivered in the form of SDKs, which
+enables developers to use the other layers in an idiomatic way. For some use
+cases there are also binaries prepared (e.g. to buy or sell computing resoures
+as virtual machines - a binary for expressing needs in a way similar to `docker
+compose` and a binary to run in order to provide those resources as VMs to the
+market.
+
+These aspects of Golem Network fall into this layer:
+* Determining what to sell/buy
+* Negotiating Agreements terms:
+  * what to buy/sell
+  * for how much
+  * on what terms (how long it will last, under what circumstances it can be
+    terminated, what significance the attributes of the negotiated contract
+    have)
+  * to/from whom
+* Determining reputation of other Golem participants
+* Verification of whether the Activities performed by the other party are valid
+* Determining whether the costs charged by Providers is valid
+
+
 
 ## Functional modules
 
