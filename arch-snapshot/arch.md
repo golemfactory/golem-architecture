@@ -528,22 +528,42 @@ Section should serve as dictionary to be linked by other chapters.
 
 ### Participating entities
 
-#### Core Network
-The Core Network is the P2P network of nodes compatible with Golem.
-#### Yagna daemon
-Yagna is the reference implementation of the node participating in the Golem
-Network. The Yagna daemon refers to the process of Yagna running on a machine.
 #### Yagna Node
-Yagna Node is a node participating in the Golem Network that uses the reference
-implementation – yagna.
-#### Provider Agent
-Provider Agent is software operating the Golem Network node serving as a Provider
-on the network. Yagna bundles a reference implementation.
-#### Requester Agent
-Requestor Agent is software operating the Golem Network node for a requestor.
-This role is usually fulfilled by SDKs.
+
+Golem Node AKA Yagna daemon AKA simply Yagna is the building block of the Core
+Network. It is a daemon which every participant needs to run in order to join
+the Golem Network. The network of these daemons implements all the core
+functionalities of Golem Network, i.e. offer propagation, payments, discovery,
+etc.
+
+#### Provider agent
+
+A resource-selling application. It uses the Core Network to broadcast Offers
+on the market and negotiate a Agreements. It is responsible for price
+negotiations and issuing invoices for the used resources.
+
+These are examples of Provider Agents:
+* VM Provider - an application which is able to sell compute resources which
+  will be delivered to buyers as virtual machines
+* AI provider - an application which has a curated set of AI inference
+  frameworks which can be bought to provide resources for that inference
+* Ethereum node - an application which allows running an Ethereum node on the
+  provided resources
+
+#### Requester agent
+
+A resource buying application. It uses the Core Network to find Offers on the
+market and negotiate Agreements. It is responsible for price negotiations and
+verifying costs during service agreement.
+
+This can either be applications developers implement using Golem's SDKs or an
+[application prepared by
+Golem](https://docs.golem.network/docs/creators/dapps/creating-golem-dapps)
+which buys and configures resouces as directed via a domain specific language,
+similar to `docker-compose`.
 
 ### Marketplace
+
 #### Offer
 Offer is a document specifying Provider's capabilities.
 ##### Property
