@@ -1,8 +1,7 @@
 # Golem — current architecture
-Authors: Witold Dzięcioł, Przemysław Rekucki, Marek Dopiera,
-\<YOUR NAME GOES HERE\>\
-Reviewers: Maciej Maciejowski, Paweł Burgchardt\
-Status: WIP
+Authors: Witold Dzięcioł, Kamil Koczurek, Przemysław Rekucki, Marek Dopiera  
+Reviewers: Maciej Maciejowski, Paweł Burgchardt  
+Status: Review
 
 # About this document
 The goal of this document is to describe present Golem architecture in enough
@@ -644,30 +643,6 @@ These aspects of Golem Network fall into this layer:
 * Verification of whether the Activities performed by the other party are valid
 * Determining whether the costs charged by Providers is valid
 
-
-
-## Functional modules
-
-decomposition into functional areas and scopes of responsibility of these layers.
-
-### Market
-### Payment
-### Activity
-### Identity
-### Net
-
-## Applications/Exe-Units
-
-a brief overview of sample applications.
-
-### WASM Runtime
-
-### VM Runtime
-
-### GH/AI Runtime
-
-### HTTP Auth Runtime 
-
 ## Artifacts
 
 This section describes the artifacts, i.e. the terms introduced in Golem Network
@@ -801,15 +776,6 @@ payment mechanism agreed upon in the Agreement.
 #### Transaction (on blockchain)
 Blockchain transactions are the only currently supported means of transferring
 funds.
-
-## Key architectural decisions
-### GLM is built on XYZ
-### GLM is used for clearing
-### No centralized offer matching rules
-### Only providers' offers are propagated
-### Agreements are not stored on the blockchain
-### Offline Requestors are not supported 
-### Local storage (TODO: what role does the local DB play?)
 
 ## Technical view - components
 This section describes key components of Golem Network, i.e. their
@@ -2856,21 +2822,6 @@ a separate machine.
     - Runtime
     - QEMU if Activity is deployed and using VM Runtime.
     - Wasmtime if Activity is deployed and using WASM Runtime.
-
-## Technical view - flows & algorithms
-This section documents how control and responsibility flows through the listed
-components to achieve Golem's functionalities. Any non-trivial algorithms
-spanning more than one component are also described here.
-
-### Starting a provider and publishing an offer
-### Receiving and executing work
-### Finding a provider and requesting work
-### Starting a cluster of VMs
-### Creating a custom image
-
-PR: this is part of the business logic layer. you would need to think about how to add objects from this layer and SDK implementations in different versions to this document. and the concept of building various reputation methods.
-
-PR: ya-provider is also from this layer and you could write down what configurations it supports. e.g. node attestation, authorization certificates, etc.
 
 ## Key architectural shortcomings
 This section contains known shortcomings of the implemented architecture —
