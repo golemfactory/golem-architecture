@@ -482,8 +482,81 @@ The key difference is that they are not required to negotiate with other agents,
 information in their Offer or Demand. This is a more lightweight approach compared to going through the full negotiation
 process.
 
-### Buying on golem platform
-### Running something
+### Buying on golem platform.
+
+Buying on Golem Network, just like [selling](#selling-on-golem-platform),
+involves the [Requestor](#requestor) specifying what one needs in a formal
+language, letting the platform match Offers and a [Requestor
+Agent](#requester-agent) software negotiate and seal the deal.
+
+More specifically, the the Requestor and Requestor Agent need to:
+1. Configure and fund the Wallet
+1. Allocate funds
+1. Create a Demand
+1. Negotiate and Agreement
+1. Activate the service and supervise the Agreement 
+1. Closure the Agreement
+
+#### 1. Configure and fund the Wallet
+
+Before the Requestor begins, they must secure appropriate funds. To do this,
+they should have funds on the wallet address from which they will pay, on one of
+the two supported blockchains: Ethereum or Polygon. It is strongly recommended
+to use the Polygon network.
+
+The Requestor buys GLM tokens on the Polygon network (address:
+0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf), for example, using the
+Quickswap application, and transfers them to the key address generated during
+wallet configuration.
+
+They can also purchase funds via credit card through the onboarding portal.
+
+#### 2. Allocate funds
+
+Since multiple applications using the same wallet can run on a single node, it
+is required to reserve funds for a task to reduce potential issues before
+creating an order. The reservation can be expanded or reduced as execution
+progresses. Such a reservation is called Allocation.
+
+Creating an Allocation verifies that:
+
+- There are sufficient funds on the given wallet and network.
+- There is proper communication with the blockchain node.
+- The sum of allocations does not exceed the account balance.
+
+#### 3. Create a Demand
+
+The Requestor (a person) does not browse through all Providers' Offers on their
+own. Instead, the Requestor Agent is used to programmatically specify which
+Offers are acceptable. Such a specification is called a Demand in the Golem
+nomenclature. The Requestor Agent doesn't send a Demand anywhere - it is its
+internal, ephemeral way of filtering the Offers.
+
+A requestor can specify the same things in a Demand, which the Provider's can in
+an Offer. This was described in detail in the [section about
+selling](#1-describe-resources-using-property-language-to-create-an-offer).
+
+#### 4. Negotiate and Agreement
+
+As Offers are propagated through Golem Network, the matching ones are delivered
+to the Requestor Agent. The section on [Selling on
+Golem](#3-monitor-incoming-proposals-and-negotiate-an-agreement-with-the-most-promising-requestor)
+describes this process in detail.
+
+#### 5. Activate the service and supervise the Agreement 
+
+With an active Agreement, the Requestor activates the service by creating an
+Activity. For a more detailed description defer to the section on [Selling on
+Golem](#5-monitor-resources-usage-and-charge-requestor-agent).
+
+#### 6. Closure the Agreement
+
+The Requestor is responsible for terminating the Agreement.  This notifies the
+Provider to terminate all activities associated with that contract.  The
+Requestor receives an Invoice summarizing the expenses from all Activities
+active under the agreement.  The Requestor confirms that the amount is correct.
+After some time, Golem transfers tokens to Provider's wallet as payment for the
+service.
 
 ## Layers
 
